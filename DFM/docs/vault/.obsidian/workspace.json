@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "46744aa5bac65f31",
+        "id": "213be49d6640b23f",
         "type": "tabs",
         "children": [
           {
-            "id": "3d7ac99f9034d9ea",
+            "id": "80147adbfc0572ae",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "adr/_template.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "_template"
             }
           }
         ]
@@ -155,7 +159,6 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Untitled 1.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -182,14 +185,14 @@
       "bases:Create new base": false
     }
   },
-  "active": "30d3972980b56969",
+  "active": "80147adbfc0572ae",
   "lastOpenFiles": [
-    "gotchas/mcp-tool-naming.md",
     "specs/_template.md",
-    "adr/_template.md",
     "domain/app-info.md",
-    "Untitled.md",
+    "gotchas/mcp-tool-naming.md",
     "Untitled 1.md",
+    "adr/_template.md",
+    "Untitled.md",
     "domain/Untitled.md"
   ]
 }

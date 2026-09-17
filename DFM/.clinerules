@@ -1,0 +1,21 @@
+# Konteks Wajib
+
+Di AWAL setiap task baru:
+1. Baca docs/vault/domain/app-info.md — jangan panggil application-info
+   berulang kecuali dicurigai ada perubahan dependency.
+2. Kalau task menyebut fitur yang ada file spec-nya di docs/vault/specs/,
+   baca spec itu dulu sebelum mulai eksplorasi manual.
+3. Cek docs/vault/gotchas/ kalau menemui error — mungkin sudah pernah
+   terjadi dan solusinya sudah tercatat.
+4. Sebelum search-docs, cek docs/vault/patterns/ dulu — kalau topiknya
+   sudah pernah dicatat, pakai itu, jangan search ulang.
+
+# Setelah Task Selesai
+
+Kalau task ini menghasilkan keputusan arsitektur penting (bukan sekadar
+fix kecil), tawarkan menulis ADR ke docs/vault/adr/.
+Kalau task ini menemukan gotcha baru (error tidak jelas yang makan waktu
+menyelesaikan), tawarkan mencatatnya ke docs/vault/gotchas/.
+
+# Loop Limiter
+Maksimal 3 percobaan untuk error yang sama sebelum berhenti dan lapor.
