@@ -1,0 +1,18 @@
+# Dependency — kode pihak ketiga, hampir tidak pernah perlu dibaca AI
+vendor/
+node_modules/
+
+# Build artifacts
+public/build/
+public/hot
+bootstrap/cache/
+
+# Generated/cache runtime — bisa besar, jarang relevan
+storage/framework/
+
+# Version control
+.git/
+
+# Data besar kalau ada
+*.sqlite
+*.csv
