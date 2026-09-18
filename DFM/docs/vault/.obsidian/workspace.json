@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "adr/_template.md",
+                "file": "specs/_template.md",
                 "mode": "source",
                 "source": false
               },
@@ -187,11 +187,13 @@
   },
   "active": "80147adbfc0572ae",
   "lastOpenFiles": [
-    "specs/_template.md",
-    "domain/app-info.md",
+    "specs/export-laporan.md",
+    "gotchas/auth-middleware-routes.md",
     "gotchas/mcp-tool-naming.md",
-    "Untitled 1.md",
+    "domain/app-info.md",
     "adr/_template.md",
+    "specs/_template.md",
+    "Untitled 1.md",
     "Untitled.md",
     "domain/Untitled.md"
   ]

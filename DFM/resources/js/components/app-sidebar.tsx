@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import { AlertTriangle, BookOpen, Droplet, FolderGit2, Fuel, LayoutGrid } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -21,6 +21,21 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Main Tank Monitor',
+        href: '/fuel-monitoring/main-tank',
+        icon: Fuel,
+    },
+    {
+        title: 'Mobile Tanks Monitor',
+        href: '/fuel-monitoring/mobile-tanks',
+        icon: Droplet,
+    },
+    {
+        title: 'Alarm Log',
+        href: '/fuel-monitoring/alarms',
+        icon: AlertTriangle,
     },
 ];
 
