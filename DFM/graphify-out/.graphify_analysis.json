@@ -1,0 +1,1296 @@
+{
+  "communities": {
+    "0": [
+      "ref_inertiajs_react",
+      "ref_radix_ui_react_checkbox",
+      "ref_radix_ui_react_label",
+      "ref_react",
+      "resources_js_actions_app_http_controllers_settings_profilecontroller",
+      "resources_js_actions_app_http_controllers_settings_securitycontroller",
+      "resources_js_components_delete_user",
+      "resources_js_components_delete_user_deleteuser",
+      "resources_js_components_input_error",
+      "resources_js_components_input_error_inputerror",
+      "resources_js_components_password_input",
+      "resources_js_components_password_input_passwordinput",
+      "resources_js_components_text_link",
+      "resources_js_components_text_link_props",
+      "resources_js_components_text_link_textlink",
+      "resources_js_components_ui_button",
+      "resources_js_components_ui_button_button",
+      "resources_js_components_ui_button_buttonvariants",
+      "resources_js_components_ui_checkbox",
+      "resources_js_components_ui_checkbox_checkbox",
+      "resources_js_components_ui_dialog",
+      "resources_js_components_ui_dialog_dialog",
+      "resources_js_components_ui_dialog_dialogclose",
+      "resources_js_components_ui_dialog_dialogcontent",
+      "resources_js_components_ui_dialog_dialogdescription",
+      "resources_js_components_ui_dialog_dialogfooter",
+      "resources_js_components_ui_dialog_dialogheader",
+      "resources_js_components_ui_dialog_dialogoverlay",
+      "resources_js_components_ui_dialog_dialogportal",
+      "resources_js_components_ui_dialog_dialogtitle",
+      "resources_js_components_ui_dialog_dialogtrigger",
+      "resources_js_components_ui_input",
+      "resources_js_components_ui_input_input",
+      "resources_js_components_ui_label",
+      "resources_js_components_ui_label_label",
+      "resources_js_components_ui_spinner",
+      "resources_js_components_ui_spinner_spinner",
+      "resources_js_lib_utils",
+      "resources_js_lib_utils_cn",
+      "resources_js_pages_auth_forgot_password",
+      "resources_js_pages_auth_forgot_password_forgotpassword",
+      "resources_js_pages_auth_login",
+      "resources_js_pages_auth_login_login",
+      "resources_js_pages_auth_login_props",
+      "resources_js_pages_auth_reset_password",
+      "resources_js_pages_auth_reset_password_props",
+      "resources_js_pages_auth_reset_password_resetpassword",
+      "resources_js_pages_settings_profile",
+      "resources_js_pages_settings_profile_pageprops",
+      "resources_js_pages_settings_profile_profile",
+      "resources_js_pages_settings_security",
+      "resources_js_pages_settings_security_props",
+      "resources_js_pages_settings_security_security",
+      "resources_js_routes_login_index",
+      "resources_js_routes_login_index_store",
+      "resources_js_routes_password_index",
+      "resources_js_routes_password_index_email",
+      "resources_js_routes_password_index_request",
+      "resources_js_routes_password_index_update",
+      "resources_js_types_index_auth"
+    ],
+    "1": [
+      "ref_recharts",
+      "resources_js_components_fuel_monitoring_alarmtable",
+      "resources_js_components_fuel_monitoring_alarmtable_alarmtable",
+      "resources_js_components_fuel_monitoring_alarmtable_alarmtableprops",
+      "resources_js_components_fuel_monitoring_maintankchart",
+      "resources_js_components_fuel_monitoring_maintankchart_maintankchart",
+      "resources_js_components_fuel_monitoring_maintankchart_maintankchartprops",
+      "resources_js_components_fuel_monitoring_maintanktable",
+      "resources_js_components_fuel_monitoring_maintanktable_maintanktable",
+      "resources_js_components_fuel_monitoring_maintanktable_maintanktableprops",
+      "resources_js_components_fuel_monitoring_mobiletankchart",
+      "resources_js_components_fuel_monitoring_mobiletankchart_mobiletankchart",
+      "resources_js_components_fuel_monitoring_mobiletankchart_mobiletankchartprops",
+      "resources_js_components_fuel_monitoring_mobiletanktable",
+      "resources_js_components_fuel_monitoring_mobiletanktable_mobiletanktable",
+      "resources_js_components_fuel_monitoring_mobiletanktable_mobiletanktableprops",
+      "resources_js_components_fuel_monitoring_themetoggle",
+      "resources_js_components_fuel_monitoring_themetoggle_themetoggle",
+      "resources_js_lib_mock_data_generators",
+      "resources_js_lib_mock_data_generators_generatealarmdata",
+      "resources_js_lib_mock_data_generators_generatemaintankdata",
+      "resources_js_lib_mock_data_generators_generatemobiletankdata",
+      "resources_js_pages_fuel_monitoring",
+      "resources_js_pages_fuel_monitoring_alarms",
+      "resources_js_pages_fuel_monitoring_alarms_alarmlog",
+      "resources_js_pages_fuel_monitoring_alarms_alarmsmonitoring",
+      "resources_js_pages_fuel_monitoring_alarms_props",
+      "resources_js_pages_fuel_monitoring_fuelmonitoring",
+      "resources_js_pages_fuel_monitoring_main_tank",
+      "resources_js_pages_fuel_monitoring_main_tank_maintanklog",
+      "resources_js_pages_fuel_monitoring_main_tank_maintankmonitoring",
+      "resources_js_pages_fuel_monitoring_main_tank_props",
+      "resources_js_pages_fuel_monitoring_mobile_tanks",
+      "resources_js_pages_fuel_monitoring_mobile_tanks_mobiletanklog",
+      "resources_js_pages_fuel_monitoring_mobile_tanks_mobiletanksmonitoring",
+      "resources_js_pages_fuel_monitoring_mobile_tanks_props"
+    ],
+    "2": [
+      "app_concerns_passwordvalidationrules",
+      "app_concerns_passwordvalidationrules_passwordvalidationrules",
+      "app_concerns_passwordvalidationrules_passwordvalidationrules_currentpasswordrules",
+      "app_concerns_passwordvalidationrules_passwordvalidationrules_passwordrules",
+      "app_concerns_profilevalidationrules",
+      "app_concerns_profilevalidationrules_profilevalidationrules",
+      "app_concerns_profilevalidationrules_profilevalidationrules_emailrules",
+      "app_concerns_profilevalidationrules_profilevalidationrules_namerules",
+      "app_concerns_profilevalidationrules_profilevalidationrules_profilerules",
+      "app_http_controllers_controller",
+      "app_http_controllers_controller_controller",
+      "app_http_controllers_fuelmonitoringcontroller",
+      "app_http_controllers_fuelmonitoringcontroller_fuelmonitoringcontroller",
+      "app_http_controllers_fuelmonitoringcontroller_fuelmonitoringcontroller_alarms",
+      "app_http_controllers_fuelmonitoringcontroller_fuelmonitoringcontroller_maintank",
+      "app_http_controllers_fuelmonitoringcontroller_fuelmonitoringcontroller_mobiletanks",
+      "app_http_controllers_settings_profilecontroller",
+      "app_http_controllers_settings_profilecontroller_profilecontroller",
+      "app_http_controllers_settings_profilecontroller_profilecontroller_destroy",
+      "app_http_controllers_settings_profilecontroller_profilecontroller_edit",
+      "app_http_controllers_settings_profilecontroller_profilecontroller_update",
+      "app_http_controllers_settings_securitycontroller",
+      "app_http_controllers_settings_securitycontroller_securitycontroller",
+      "app_http_controllers_settings_securitycontroller_securitycontroller_edit",
+      "app_http_controllers_settings_securitycontroller_securitycontroller_update",
+      "app_http_requests_settings_passwordupdaterequest",
+      "app_http_requests_settings_passwordupdaterequest_passwordupdaterequest",
+      "app_http_requests_settings_passwordupdaterequest_passwordupdaterequest_rules",
+      "app_http_requests_settings_profiledeleterequest",
+      "app_http_requests_settings_profiledeleterequest_profiledeleterequest",
+      "app_http_requests_settings_profiledeleterequest_profiledeleterequest_rules",
+      "app_http_requests_settings_profileupdaterequest",
+      "app_http_requests_settings_profileupdaterequest_profileupdaterequest",
+      "app_http_requests_settings_profileupdaterequest_profileupdaterequest_rules",
+      "app_http_requests_settings_twofactorauthenticationrequest",
+      "app_http_requests_settings_twofactorauthenticationrequest_twofactorauthenticationrequest",
+      "app_http_requests_settings_twofactorauthenticationrequest_twofactorauthenticationrequest_rules",
+      "app_models_alarmlog",
+      "app_models_alarmlog_alarmlog",
+      "app_models_maintanklog",
+      "app_models_maintanklog_maintanklog",
+      "app_models_mobiletanklog",
+      "app_models_mobiletanklog_mobiletanklog",
+      "carbon_carbon",
+      "database_seeders_fuelmonitoringseeder",
+      "database_seeders_fuelmonitoringseeder_fuelmonitoringseeder",
+      "database_seeders_fuelmonitoringseeder_fuelmonitoringseeder_run",
+      "illuminate_contracts_auth_mustverifyemail",
+      "illuminate_contracts_validation_validationrule",
+      "illuminate_database_eloquent_model",
+      "illuminate_foundation_http_formrequest",
+      "illuminate_http_redirectresponse",
+      "illuminate_support_facades_auth",
+      "illuminate_support_facades_route",
+      "illuminate_validation_rule",
+      "illuminate_validation_rules_password",
+      "inertia_inertia",
+      "inertia_response",
+      "laravel_fortify_interactswithtwofactorstate",
+      "routes_settings",
+      "routes_web"
+    ],
+    "3": [
+      "ref_radix_ui_react_tooltip",
+      "ref_sonner",
+      "resources_js_app",
+      "resources_js_app_withapp",
+      "resources_js_components_appearance_tabs",
+      "resources_js_components_appearance_tabs_appearancetoggletab",
+      "resources_js_components_ui_sonner",
+      "resources_js_components_ui_sonner_toaster",
+      "resources_js_components_ui_tooltip",
+      "resources_js_components_ui_tooltip_tooltip",
+      "resources_js_components_ui_tooltip_tooltipcontent",
+      "resources_js_components_ui_tooltip_tooltipprovider",
+      "resources_js_components_ui_tooltip_tooltiptrigger",
+      "resources_js_hooks_use_appearance",
+      "resources_js_hooks_use_appearance_appearance",
+      "resources_js_hooks_use_appearance_applytheme",
+      "resources_js_hooks_use_appearance_getstoredappearance",
+      "resources_js_hooks_use_appearance_handlesystemthemechange",
+      "resources_js_hooks_use_appearance_initializetheme",
+      "resources_js_hooks_use_appearance_isdarkmode",
+      "resources_js_hooks_use_appearance_listeners",
+      "resources_js_hooks_use_appearance_mediaquery",
+      "resources_js_hooks_use_appearance_notify",
+      "resources_js_hooks_use_appearance_prefersdark",
+      "resources_js_hooks_use_appearance_resolvedappearance",
+      "resources_js_hooks_use_appearance_setcookie",
+      "resources_js_hooks_use_appearance_subscribe",
+      "resources_js_hooks_use_appearance_useappearance",
+      "resources_js_hooks_use_appearance_useappearancereturn",
+      "resources_js_hooks_use_flash_toast",
+      "resources_js_hooks_use_flash_toast_useflashtoast",
+      "resources_js_layouts_app_layout",
+      "resources_js_layouts_app_layout_applayout"
+    ],
+    "4": [
+      "package_dependencies",
+      "package_dependencies_class_variance_authority"
+    ],
+    "5": [
+      "ref_lucide_react",
+      "resources_js_components_app_content",
+      "resources_js_components_app_content_appcontent",
+      "resources_js_components_app_content_props",
+      "resources_js_components_app_shell",
+      "resources_js_components_app_shell_appshell",
+      "resources_js_components_app_shell_props",
+      "resources_js_components_app_sidebar",
+      "resources_js_components_app_sidebar_appsidebar",
+      "resources_js_components_app_sidebar_footernavitems",
+      "resources_js_components_app_sidebar_header",
+      "resources_js_components_app_sidebar_header_appsidebarheader",
+      "resources_js_components_app_sidebar_mainnavitems",
+      "resources_js_components_breadcrumbs",
+      "resources_js_components_breadcrumbs_breadcrumbs",
+      "resources_js_components_nav_footer",
+      "resources_js_components_nav_footer_navfooter",
+      "resources_js_components_nav_main",
+      "resources_js_components_nav_main_navmain",
+      "resources_js_components_nav_user",
+      "resources_js_components_nav_user_navuser",
+      "resources_js_components_ui_breadcrumb",
+      "resources_js_components_ui_breadcrumb_breadcrumb",
+      "resources_js_components_ui_breadcrumb_breadcrumbellipsis",
+      "resources_js_components_ui_breadcrumb_breadcrumbitem",
+      "resources_js_components_ui_breadcrumb_breadcrumblink",
+      "resources_js_components_ui_breadcrumb_breadcrumblist",
+      "resources_js_components_ui_breadcrumb_breadcrumbpage",
+      "resources_js_components_ui_breadcrumb_breadcrumbseparator",
+      "resources_js_components_ui_icon",
+      "resources_js_components_ui_icon_icon",
+      "resources_js_components_ui_icon_iconprops",
+      "resources_js_components_ui_sidebar",
+      "resources_js_components_ui_sidebar_sidebar",
+      "resources_js_components_ui_sidebar_sidebarcontent",
+      "resources_js_components_ui_sidebar_sidebarfooter",
+      "resources_js_components_ui_sidebar_sidebargroup",
+      "resources_js_components_ui_sidebar_sidebargroupcontent",
+      "resources_js_components_ui_sidebar_sidebargrouplabel",
+      "resources_js_components_ui_sidebar_sidebarheader",
+      "resources_js_components_ui_sidebar_sidebarinset",
+      "resources_js_components_ui_sidebar_sidebarmenu",
+      "resources_js_components_ui_sidebar_sidebarmenubutton",
+      "resources_js_components_ui_sidebar_sidebarmenubuttonvariants",
+      "resources_js_components_ui_sidebar_sidebarmenuitem",
+      "resources_js_components_ui_sidebar_sidebarprovider",
+      "resources_js_components_ui_sidebar_sidebarrail",
+      "resources_js_components_ui_sidebar_sidebartrigger",
+      "resources_js_components_ui_sidebar_usesidebar",
+      "resources_js_hooks_use_mobile",
+      "resources_js_hooks_use_mobile_getserversnapshot",
+      "resources_js_hooks_use_mobile_issmallerthanbreakpoint",
+      "resources_js_hooks_use_mobile_mediaquerylistener",
+      "resources_js_hooks_use_mobile_useismobile",
+      "resources_js_layouts_app_app_header_layout",
+      "resources_js_layouts_app_app_header_layout_appheaderlayout",
+      "resources_js_layouts_app_app_sidebar_layout",
+      "resources_js_layouts_app_app_sidebar_layout_appsidebarlayout",
+      "resources_js_types_index",
+      "resources_js_types_index_applayoutprops",
+      "resources_js_types_index_appvariant",
+      "resources_js_types_index_breadcrumbitem",
+      "resources_js_types_index_navitem",
+      "resources_js_types_navigation",
+      "resources_js_types_navigation_breadcrumbitem",
+      "resources_js_types_navigation_navitem",
+      "resources_js_types_ui",
+      "resources_js_types_ui_applayoutprops",
+      "resources_js_types_ui_appvariant",
+      "resources_js_types_ui_authlayoutprops",
+      "resources_js_types_ui_flashtoast"
+    ],
+    "6": [
+      "resources_js_components_ui_skeleton",
+      "resources_js_components_ui_skeleton_skeleton"
+    ],
+    "7": [
+      "ref_radix_ui_react_avatar",
+      "ref_radix_ui_react_dropdown_menu",
+      "resources_js_components_app_header",
+      "resources_js_components_ui_avatar",
+      "resources_js_components_ui_avatar_avatar",
+      "resources_js_components_ui_avatar_avatarfallback",
+      "resources_js_components_ui_avatar_avatarimage",
+      "resources_js_components_ui_dropdown_menu",
+      "resources_js_components_ui_dropdown_menu_dropdownmenu",
+      "resources_js_components_ui_dropdown_menu_dropdownmenucheckboxitem",
+      "resources_js_components_ui_dropdown_menu_dropdownmenucontent",
+      "resources_js_components_ui_dropdown_menu_dropdownmenugroup",
+      "resources_js_components_ui_dropdown_menu_dropdownmenuitem",
+      "resources_js_components_ui_dropdown_menu_dropdownmenulabel",
+      "resources_js_components_ui_dropdown_menu_dropdownmenuportal",
+      "resources_js_components_ui_dropdown_menu_dropdownmenuradiogroup",
+      "resources_js_components_ui_dropdown_menu_dropdownmenuradioitem",
+      "resources_js_components_ui_dropdown_menu_dropdownmenuseparator",
+      "resources_js_components_ui_dropdown_menu_dropdownmenushortcut",
+      "resources_js_components_ui_dropdown_menu_dropdownmenusub",
+      "resources_js_components_ui_dropdown_menu_dropdownmenusubcontent",
+      "resources_js_components_ui_dropdown_menu_dropdownmenusubtrigger",
+      "resources_js_components_ui_dropdown_menu_dropdownmenutrigger",
+      "resources_js_components_user_info",
+      "resources_js_components_user_info_userinfo",
+      "resources_js_components_user_menu_content",
+      "resources_js_components_user_menu_content_props",
+      "resources_js_components_user_menu_content_usermenucontent",
+      "resources_js_hooks_use_initials",
+      "resources_js_hooks_use_initials_getinitial",
+      "resources_js_hooks_use_initials_getinitialsfn",
+      "resources_js_hooks_use_initials_useinitials",
+      "resources_js_hooks_use_mobile_navigation",
+      "resources_js_hooks_use_mobile_navigation_cleanupfn",
+      "resources_js_hooks_use_mobile_navigation_usemobilenavigation",
+      "resources_js_routes_index_logout",
+      "resources_js_routes_profile_index",
+      "resources_js_routes_profile_index_edit",
+      "resources_js_types_auth",
+      "resources_js_types_auth_auth",
+      "resources_js_types_auth_user",
+      "resources_js_types_global_d",
+      "resources_js_types_global_d_inertiaconfig",
+      "resources_js_types_global_d_inertiajs_core",
+      "resources_js_types_global_d_inputhtmlattributes",
+      "resources_js_types_global_d_react",
+      "resources_js_types_index_user"
+    ],
+    "8": [
+      "package_private"
+    ],
+    "9": [
+      "resources_js_components_app_logo",
+      "resources_js_components_app_logo_applogo",
+      "resources_js_components_app_logo_icon",
+      "resources_js_components_app_logo_icon_applogoicon",
+      "resources_js_components_ui_card",
+      "resources_js_components_ui_card_card",
+      "resources_js_components_ui_card_cardcontent",
+      "resources_js_components_ui_card_carddescription",
+      "resources_js_components_ui_card_cardfooter",
+      "resources_js_components_ui_card_cardheader",
+      "resources_js_components_ui_card_cardtitle",
+      "resources_js_components_ui_placeholder_pattern",
+      "resources_js_components_ui_placeholder_pattern_placeholderpattern",
+      "resources_js_components_ui_placeholder_pattern_placeholderpatternprops",
+      "resources_js_layouts_auth_auth_card_layout",
+      "resources_js_layouts_auth_auth_card_layout_authcardlayout",
+      "resources_js_layouts_auth_auth_simple_layout",
+      "resources_js_layouts_auth_auth_simple_layout_authsimplelayout",
+      "resources_js_layouts_auth_auth_split_layout",
+      "resources_js_layouts_auth_auth_split_layout_authsplitlayout",
+      "resources_js_layouts_auth_layout",
+      "resources_js_layouts_auth_layout_authlayout",
+      "resources_js_pages_dashboard",
+      "resources_js_pages_dashboard_dashboard",
+      "resources_js_pages_welcome",
+      "resources_js_pages_welcome_welcome",
+      "resources_js_routes_index",
+      "resources_js_routes_index_dashboard",
+      "resources_js_routes_index_home",
+      "resources_js_routes_index_login",
+      "resources_js_types_index_authlayoutprops"
+    ],
+    "10": [
+      "database_migrations_0001_01_01_000000_create_users_table",
+      "database_migrations_0001_01_01_000000_create_users_table_down",
+      "database_migrations_0001_01_01_000000_create_users_table_up",
+      "database_migrations_0001_01_01_000001_create_cache_table",
+      "database_migrations_0001_01_01_000001_create_cache_table_down",
+      "database_migrations_0001_01_01_000001_create_cache_table_up",
+      "database_migrations_0001_01_01_000002_create_jobs_table",
+      "database_migrations_0001_01_01_000002_create_jobs_table_down",
+      "database_migrations_0001_01_01_000002_create_jobs_table_up",
+      "database_migrations_2026_09_17_031611_create_main_tank_logs_table",
+      "database_migrations_2026_09_17_031611_create_main_tank_logs_table_down",
+      "database_migrations_2026_09_17_031611_create_main_tank_logs_table_up",
+      "database_migrations_2026_09_17_031612_create_mobile_tank_logs_table",
+      "database_migrations_2026_09_17_031612_create_mobile_tank_logs_table_down",
+      "database_migrations_2026_09_17_031612_create_mobile_tank_logs_table_up",
+      "database_migrations_2026_09_17_031613_create_alarm_logs_table",
+      "database_migrations_2026_09_17_031613_create_alarm_logs_table_down",
+      "database_migrations_2026_09_17_031613_create_alarm_logs_table_up",
+      "illuminate_database_migrations_migration",
+      "illuminate_database_schema_blueprint",
+      "illuminate_support_facades_schema"
+    ],
+    "11": [
+      "ref_class_variance_authority",
+      "ref_radix_ui_react_navigation_menu",
+      "ref_radix_ui_react_slot",
+      "ref_radix_ui_react_toggle",
+      "ref_radix_ui_react_toggle_group",
+      "resources_js_components_alert_error",
+      "resources_js_components_alert_error_alerterror",
+      "resources_js_components_ui_alert",
+      "resources_js_components_ui_alert_alert",
+      "resources_js_components_ui_alert_alertdescription",
+      "resources_js_components_ui_alert_alerttitle",
+      "resources_js_components_ui_alert_alertvariants",
+      "resources_js_components_ui_badge",
+      "resources_js_components_ui_badge_badge",
+      "resources_js_components_ui_badge_badgevariants",
+      "resources_js_components_ui_navigation_menu",
+      "resources_js_components_ui_navigation_menu_navigationmenu",
+      "resources_js_components_ui_navigation_menu_navigationmenucontent",
+      "resources_js_components_ui_navigation_menu_navigationmenuindicator",
+      "resources_js_components_ui_navigation_menu_navigationmenuitem",
+      "resources_js_components_ui_navigation_menu_navigationmenulink",
+      "resources_js_components_ui_navigation_menu_navigationmenulist",
+      "resources_js_components_ui_navigation_menu_navigationmenutrigger",
+      "resources_js_components_ui_navigation_menu_navigationmenutriggerstyle",
+      "resources_js_components_ui_navigation_menu_navigationmenuviewport",
+      "resources_js_components_ui_toggle",
+      "resources_js_components_ui_toggle_group",
+      "resources_js_components_ui_toggle_group_togglegroup",
+      "resources_js_components_ui_toggle_group_togglegroupcontext",
+      "resources_js_components_ui_toggle_group_togglegroupitem",
+      "resources_js_components_ui_toggle_toggle",
+      "resources_js_components_ui_toggle_togglevariants"
+    ],
+    "12": [
+      "ref_radix_ui_react_dialog",
+      "resources_js_components_ui_sheet",
+      "resources_js_components_ui_sheet_sheet",
+      "resources_js_components_ui_sheet_sheetclose",
+      "resources_js_components_ui_sheet_sheetcontent",
+      "resources_js_components_ui_sheet_sheetdescription",
+      "resources_js_components_ui_sheet_sheetfooter",
+      "resources_js_components_ui_sheet_sheetheader",
+      "resources_js_components_ui_sheet_sheetoverlay",
+      "resources_js_components_ui_sheet_sheetportal",
+      "resources_js_components_ui_sheet_sheettitle",
+      "resources_js_components_ui_sheet_sheettrigger"
+    ],
+    "13": [
+      "resources_js_hooks_use_clipboard",
+      "resources_js_hooks_use_clipboard_copiedvalue",
+      "resources_js_hooks_use_clipboard_copyfn",
+      "resources_js_hooks_use_clipboard_useclipboard",
+      "resources_js_hooks_use_clipboard_useclipboardreturn"
+    ],
+    "14": [
+      "app_http_middleware_handleappearance",
+      "app_http_middleware_handleappearance_handleappearance",
+      "app_http_middleware_handleappearance_handleappearance_handle",
+      "app_http_middleware_handleinertiarequests",
+      "app_http_middleware_handleinertiarequests_handleinertiarequests",
+      "app_http_middleware_handleinertiarequests_handleinertiarequests_share",
+      "app_http_middleware_handleinertiarequests_handleinertiarequests_version",
+      "bootstrap_app",
+      "closure",
+      "illuminate_foundation_application",
+      "illuminate_foundation_configuration_exceptions",
+      "illuminate_foundation_configuration_middleware",
+      "illuminate_http_middleware_addlinkheadersforpreloadedassets",
+      "illuminate_http_request",
+      "illuminate_support_facades_view",
+      "inertia_middleware",
+      "public_index",
+      "symfony_component_httpfoundation_response"
+    ],
+    "15": [
+      "components",
+      "components_aliases",
+      "components_aliases_components",
+      "components_aliases_hooks",
+      "components_aliases_lib",
+      "components_aliases_ui",
+      "components_aliases_utils",
+      "components_iconlibrary",
+      "components_rsc",
+      "components_schema",
+      "components_style",
+      "components_tailwind",
+      "components_tailwind_basecolor",
+      "components_tailwind_config",
+      "components_tailwind_css",
+      "components_tailwind_cssvariables",
+      "components_tailwind_prefix",
+      "components_tsx"
+    ],
+    "16": [
+      "tsconfig",
+      "tsconfig_compileroptions",
+      "tsconfig_compileroptions_allowjs",
+      "tsconfig_compileroptions_esmoduleinterop",
+      "tsconfig_compileroptions_forceconsistentcasinginfilenames",
+      "tsconfig_compileroptions_isolatedmodules",
+      "tsconfig_compileroptions_jsx",
+      "tsconfig_compileroptions_module",
+      "tsconfig_compileroptions_moduleresolution",
+      "tsconfig_compileroptions_noemit",
+      "tsconfig_compileroptions_noimplicitany",
+      "tsconfig_compileroptions_paths",
+      "tsconfig_compileroptions_skiplibcheck",
+      "tsconfig_compileroptions_strict",
+      "tsconfig_compileroptions_target",
+      "tsconfig_include"
+    ],
+    "17": [
+      "composer_scripts",
+      "composer_scripts_ci_check",
+      "composer_scripts_dev",
+      "composer_scripts_lint",
+      "composer_scripts_lint_check",
+      "composer_scripts_post_autoload_dump",
+      "composer_scripts_post_create_project_cmd",
+      "composer_scripts_post_root_package_install",
+      "composer_scripts_post_update_cmd",
+      "composer_scripts_pre_package_uninstall",
+      "composer_scripts_setup",
+      "composer_scripts_test",
+      "composer_scripts_types_check"
+    ],
+    "18": [
+      "app_actions_fortify_resetuserpassword",
+      "app_actions_fortify_resetuserpassword_resetuserpassword",
+      "app_actions_fortify_resetuserpassword_resetuserpassword_reset",
+      "app_models_user",
+      "app_models_user_user",
+      "app_models_user_user_casts",
+      "app_providers_fortifyserviceprovider",
+      "config_auth",
+      "config_cache",
+      "config_database",
+      "config_fortify",
+      "config_session",
+      "database_factories_userfactory",
+      "database_factories_userfactory_userfactory",
+      "database_factories_userfactory_userfactory_definition",
+      "database_factories_userfactory_userfactory_unverified",
+      "database_factories_userfactory_userfactory_withtwofactor",
+      "database_seeders_databaseseeder",
+      "database_seeders_databaseseeder_databaseseeder",
+      "database_seeders_databaseseeder_databaseseeder_run",
+      "illuminate_auth_notifications_resetpassword",
+      "illuminate_cache_ratelimiting_limit",
+      "illuminate_database_console_seeds_withoutmodelevents",
+      "illuminate_database_eloquent_attributes_fillable",
+      "illuminate_database_eloquent_attributes_hidden",
+      "illuminate_database_eloquent_factories_factory",
+      "illuminate_database_eloquent_factories_hasfactory",
+      "illuminate_database_seeder",
+      "illuminate_foundation_auth_user",
+      "illuminate_foundation_testing_refreshdatabase",
+      "illuminate_foundation_testing_testcase",
+      "illuminate_notifications_notifiable",
+      "illuminate_support_carbon",
+      "illuminate_support_facades_hash",
+      "illuminate_support_facades_notification",
+      "illuminate_support_facades_ratelimiter",
+      "illuminate_support_facades_validator",
+      "illuminate_support_str",
+      "inertia_testing_assertableinertia",
+      "laravel_fortify_contracts_resetsuserpasswords",
+      "laravel_fortify_features",
+      "laravel_fortify_fortify",
+      "pdo_mysql",
+      "static",
+      "tests_feature_auth_authenticationtest",
+      "tests_feature_auth_passwordresettest",
+      "tests_feature_dashboardtest",
+      "tests_feature_settings_profileupdatetest",
+      "tests_feature_settings_securitytest",
+      "tests_pest",
+      "tests_pest_something",
+      "tests_testcase",
+      "tests_testcase_testcase",
+      "tests_testcase_testcase_skipunlessfortifyhas"
+    ],
+    "19": [
+      "composer",
+      "composer_autoload_dev",
+      "composer_autoload_dev_psr_4",
+      "composer_description",
+      "composer_keywords",
+      "composer_license",
+      "composer_minimum_stability",
+      "composer_name",
+      "composer_prefer_stable",
+      "composer_psr_4_tests",
+      "composer_schema",
+      "composer_type"
+    ],
+    "20": [
+      "composer_require_dev",
+      "composer_require_dev_fakerphp_faker",
+      "composer_require_dev_larastan_larastan",
+      "composer_require_dev_laravel_boost",
+      "composer_require_dev_laravel_pail",
+      "composer_require_dev_laravel_pao",
+      "composer_require_dev_laravel_pint",
+      "composer_require_dev_laravel_sail",
+      "composer_require_dev_mockery_mockery",
+      "composer_require_dev_nunomaduro_collision",
+      "composer_require_dev_pestphp_pest",
+      "composer_require_dev_pestphp_pest_plugin_laravel"
+    ],
+    "21": [
+      "package_dependencies_clsx"
+    ],
+    "22": [
+      "ref_radix_ui_react_select",
+      "resources_js_components_ui_select",
+      "resources_js_components_ui_select_select",
+      "resources_js_components_ui_select_selectcontent",
+      "resources_js_components_ui_select_selectgroup",
+      "resources_js_components_ui_select_selectitem",
+      "resources_js_components_ui_select_selectlabel",
+      "resources_js_components_ui_select_selectscrolldownbutton",
+      "resources_js_components_ui_select_selectscrollupbutton",
+      "resources_js_components_ui_select_selectseparator",
+      "resources_js_components_ui_select_selecttrigger",
+      "resources_js_components_ui_select_selectvalue"
+    ],
+    "23": [
+      "package_dependencies_concurrently"
+    ],
+    "24": [
+      "app_providers_appserviceprovider",
+      "app_providers_appserviceprovider_appserviceprovider",
+      "app_providers_appserviceprovider_appserviceprovider_boot",
+      "app_providers_appserviceprovider_appserviceprovider_configuredefaults",
+      "app_providers_appserviceprovider_appserviceprovider_register",
+      "app_providers_fortifyserviceprovider_fortifyserviceprovider",
+      "app_providers_fortifyserviceprovider_fortifyserviceprovider_boot",
+      "app_providers_fortifyserviceprovider_fortifyserviceprovider_configureactions",
+      "app_providers_fortifyserviceprovider_fortifyserviceprovider_configureratelimiting",
+      "app_providers_fortifyserviceprovider_fortifyserviceprovider_configureviews",
+      "app_providers_fortifyserviceprovider_fortifyserviceprovider_register",
+      "bootstrap_providers",
+      "carbon_carbonimmutable",
+      "illuminate_support_facades_date",
+      "illuminate_support_facades_db",
+      "illuminate_support_serviceprovider"
+    ],
+    "25": [
+      "package_dependencies_inertiajs_react"
+    ],
+    "26": [
+      "package_dependencies_inertiajs_vite"
+    ],
+    "27": [
+      "package",
+      "ref_inertiajs_vite",
+      "ref_laravel_vite_plugin",
+      "ref_laravel_vite_plugin_fonts",
+      "ref_laravel_vite_plugin_wayfinder",
+      "ref_rolldown_plugin_babel",
+      "ref_tailwindcss_vite",
+      "ref_vite_plus",
+      "ref_vitejs_plugin_react",
+      "vite_config"
+    ],
+    "28": [
+      "composer_require",
+      "composer_require_inertiajs_inertia_laravel",
+      "composer_require_laravel_chisel",
+      "composer_require_laravel_fortify",
+      "composer_require_laravel_framework",
+      "composer_require_laravel_tinker",
+      "composer_require_laravel_wayfinder",
+      "composer_require_php"
+    ],
+    "29": [
+      "docs_vault_domain_app_info",
+      "docs_vault_gotchas_auth_middleware_routes",
+      "inertia",
+      "laravel",
+      "laravel_pint",
+      "pest",
+      "pnpm_workspace",
+      "wayfinder"
+    ],
+    "30": [
+      "package_optionaldependencies",
+      "package_optionaldependencies_laravel_multiplex",
+      "package_optionaldependencies_lightningcss_linux_x64_gnu",
+      "package_optionaldependencies_lightningcss_win32_x64_msvc",
+      "package_optionaldependencies_rollup_rollup_linux_x64_gnu",
+      "package_optionaldependencies_rollup_rollup_win32_x64_msvc",
+      "package_optionaldependencies_tailwindcss_oxide_linux_x64_gnu",
+      "package_optionaldependencies_tailwindcss_oxide_win32_x64_msvc"
+    ],
+    "31": [
+      "package_dependencies_laravel_vite_plugin"
+    ],
+    "32": [
+      "alarm_logs",
+      "docs_vault_specs_export_laporan",
+      "fuel_monitoring_alarms",
+      "fuel_monitoring_main_tank",
+      "fuel_monitoring_mobile_tanks",
+      "main_tank_logs",
+      "mobile_tank_logs"
+    ],
+    "33": [
+      "composer_allow_plugins_pestphp_pest_plugin",
+      "composer_allow_plugins_php_http_discovery",
+      "composer_config",
+      "composer_config_allow_plugins",
+      "composer_config_optimize_autoloader",
+      "composer_config_preferred_install",
+      "composer_config_sort_packages"
+    ],
+    "34": [
+      "package_dependencies_lucide_react"
+    ],
+    "35": [
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_build_ssr",
+      "package_scripts_check",
+      "package_scripts_check_fix",
+      "package_scripts_dev",
+      "package_scripts_types_check"
+    ],
+    "36": [
+      "package_dependencies_radix_ui_react_avatar"
+    ],
+    "37": [
+      "package_devdependencies",
+      "package_devdependencies_babel_plugin_react_compiler",
+      "package_devdependencies_laravel_vite_plugin_wayfinder",
+      "package_devdependencies_rolldown_plugin_babel",
+      "package_devdependencies_types_node",
+      "package_devdependencies_vite_plus"
+    ],
+    "38": [
+      "package_dependencies_radix_ui_react_checkbox"
+    ],
+    "39": [
+      "composer_autoload",
+      "composer_autoload_psr_4",
+      "composer_psr_4_app",
+      "composer_psr_4_database_factories",
+      "composer_psr_4_database_seeders"
+    ],
+    "40": [
+      "composer_extra",
+      "composer_extra_laravel",
+      "composer_installer_post_create_project",
+      "composer_laravel_dont_discover",
+      "composer_laravel_installer"
+    ],
+    "41": [
+      "package_dependencies_radix_ui_react_collapsible"
+    ],
+    "42": [
+      "config_logging",
+      "monolog_handler_nullhandler",
+      "monolog_handler_streamhandler",
+      "monolog_handler_syslogudphandler",
+      "monolog_processor_psrlogmessageprocessor"
+    ],
+    "43": [
+      "ref_radix_ui_react_collapsible",
+      "resources_js_components_ui_collapsible",
+      "resources_js_components_ui_collapsible_collapsible",
+      "resources_js_components_ui_collapsible_collapsiblecontent",
+      "resources_js_components_ui_collapsible_collapsibletrigger"
+    ],
+    "44": [
+      "ref_radix_ui_react_separator",
+      "resources_js_components_app_header_appheader",
+      "resources_js_components_heading",
+      "resources_js_components_heading_heading",
+      "resources_js_components_ui_separator",
+      "resources_js_components_ui_separator_separator",
+      "resources_js_hooks_use_current_url",
+      "resources_js_hooks_use_current_url_iscurrentorparenturlfn",
+      "resources_js_hooks_use_current_url_iscurrenturlfn",
+      "resources_js_hooks_use_current_url_usecurrenturl",
+      "resources_js_hooks_use_current_url_usecurrenturlreturn",
+      "resources_js_hooks_use_current_url_whencurrenturlfn",
+      "resources_js_layouts_settings_layout",
+      "resources_js_layouts_settings_layout_settingslayout",
+      "resources_js_layouts_settings_layout_sidebarnavitems",
+      "resources_js_lib_utils_tourl",
+      "resources_js_pages_settings_appearance",
+      "resources_js_pages_settings_appearance_appearance",
+      "resources_js_routes_appearance_index",
+      "resources_js_routes_appearance_index_edit",
+      "resources_js_routes_security_index",
+      "resources_js_routes_security_index_edit"
+    ],
+    "45": [
+      "package_dependencies_radix_ui_react_dialog"
+    ],
+    "46": [
+      "actions_checkout",
+      "actions_setup_node",
+      "actions_setup_php",
+      "github_workflows_tests"
+    ],
+    "47": [
+      "application",
+      "argvinput",
+      "artisan"
+    ],
+    "48": [
+      "illuminate_foundation_inspiring",
+      "illuminate_support_facades_artisan",
+      "routes_console"
+    ],
+    "49": [
+      "package_dependencies_radix_ui_react_dropdown_menu"
+    ],
+    "50": [
+      "github_actions",
+      "github_dependabot"
+    ],
+    "51": [
+      "config_app"
+    ],
+    "52": [
+      "config_filesystems"
+    ],
+    "53": [
+      "config_inertia"
+    ],
+    "54": [
+      "config_mail"
+    ],
+    "55": [
+      "config_queue"
+    ],
+    "56": [
+      "config_services"
+    ],
+    "57": [
+      "docs_vault_adr_template"
+    ],
+    "58": [
+      "docs_vault_gotchas_mcp_tool_naming"
+    ],
+    "59": [
+      "docs_vault_specs_template"
+    ],
+    "60": [
+      "public_favicon_svg"
+    ],
+    "61": [
+      "public_robots_txt"
+    ],
+    "62": [
+      "resources_js_types_vite_env_d"
+    ],
+    "63": [
+      "resources_views_app_blade"
+    ],
+    "64": [
+      "tests_feature_exampletest"
+    ],
+    "65": [
+      "tests_unit_exampletest"
+    ],
+    "66": [
+      "package_dependencies_radix_ui_react_label"
+    ],
+    "67": [
+      "package_dependencies_radix_ui_react_navigation_menu"
+    ],
+    "68": [
+      "package_dependencies_radix_ui_react_select"
+    ],
+    "69": [
+      "package_dependencies_radix_ui_react_separator"
+    ],
+    "70": [
+      "package_dependencies_radix_ui_react_slot"
+    ],
+    "71": [
+      "package_dependencies_radix_ui_react_toggle"
+    ],
+    "72": [
+      "package_dependencies_radix_ui_react_toggle_group"
+    ],
+    "73": [
+      "package_dependencies_radix_ui_react_tooltip"
+    ],
+    "74": [
+      "package_dependencies_react"
+    ],
+    "75": [
+      "package_dependencies_react_dom"
+    ],
+    "76": [
+      "package_dependencies_recharts"
+    ],
+    "77": [
+      "package_dependencies_sonner"
+    ],
+    "78": [
+      "package_dependencies_tailwind_merge"
+    ],
+    "79": [
+      "package_dependencies_tailwindcss"
+    ],
+    "80": [
+      "package_dependencies_tailwindcss_vite"
+    ],
+    "81": [
+      "package_dependencies_tw_animate_css"
+    ],
+    "82": [
+      "package_dependencies_types_react"
+    ],
+    "83": [
+      "package_dependencies_types_react_dom"
+    ],
+    "84": [
+      "package_dependencies_typescript"
+    ],
+    "85": [
+      "package_dependencies_vite"
+    ],
+    "86": [
+      "package_dependencies_vitejs_plugin_react"
+    ],
+    "87": [
+      "package_schema"
+    ],
+    "88": [
+      "package_type"
+    ],
+    "89": [
+      "ref_babel_plugin_react_compiler"
+    ],
+    "90": [
+      "ref_clsx"
+    ],
+    "91": [
+      "ref_concurrently"
+    ],
+    "92": [
+      "ref_laravel_multiplex"
+    ],
+    "93": [
+      "ref_lightningcss_linux_x64_gnu"
+    ],
+    "94": [
+      "ref_lightningcss_win32_x64_msvc"
+    ],
+    "95": [
+      "ref_react_dom"
+    ],
+    "96": [
+      "ref_rollup_rollup_linux_x64_gnu"
+    ],
+    "97": [
+      "ref_rollup_rollup_win32_x64_msvc"
+    ],
+    "98": [
+      "ref_tailwind_merge"
+    ],
+    "99": [
+      "ref_tailwindcss"
+    ],
+    "100": [
+      "ref_tailwindcss_oxide_linux_x64_gnu"
+    ],
+    "101": [
+      "ref_tailwindcss_oxide_win32_x64_msvc"
+    ],
+    "102": [
+      "ref_tw_animate_css"
+    ],
+    "103": [
+      "ref_types_node"
+    ],
+    "104": [
+      "ref_types_react"
+    ],
+    "105": [
+      "ref_types_react_dom"
+    ],
+    "106": [
+      "ref_typescript"
+    ],
+    "107": [
+      "ref_vite"
+    ],
+    "108": [
+      "resources_js_components_app_header_mainnavitems"
+    ],
+    "109": [
+      "resources_js_components_app_header_props"
+    ],
+    "110": [
+      "resources_js_components_app_header_rightnavitems"
+    ],
+    "111": [
+      "resources_js_components_ui_sidebar_sidebarcontext"
+    ],
+    "112": [
+      "resources_js_components_ui_sidebar_sidebargroupaction"
+    ],
+    "113": [
+      "resources_js_components_ui_sidebar_sidebarinput"
+    ],
+    "114": [
+      "resources_js_components_ui_sidebar_sidebarmenuaction"
+    ],
+    "115": [
+      "resources_js_components_ui_sidebar_sidebarmenubadge"
+    ],
+    "116": [
+      "resources_js_components_ui_sidebar_sidebarmenuskeleton"
+    ],
+    "117": [
+      "resources_js_components_ui_sidebar_sidebarmenusub"
+    ],
+    "118": [
+      "resources_js_components_ui_sidebar_sidebarmenusubbutton"
+    ],
+    "119": [
+      "resources_js_components_ui_sidebar_sidebarmenusubitem"
+    ],
+    "120": [
+      "resources_js_components_ui_sidebar_sidebarseparator"
+    ]
+  },
+  "cohesion": {
+    "0": 0.096045197740113,
+    "1": 0.09365079365079365,
+    "2": 0.060109289617486336,
+    "3": 0.10984848484848485,
+    "4": 1.0,
+    "5": 0.06398390342052314,
+    "6": 1.0,
+    "7": 0.06845513413506013,
+    "8": 1.0,
+    "9": 0.1010752688172043,
+    "10": 0.14285714285714285,
+    "11": 0.08266129032258064,
+    "12": 0.16666666666666666,
+    "13": 0.4,
+    "14": 0.16993464052287582,
+    "15": 0.1111111111111111,
+    "16": 0.125,
+    "17": 0.15384615384615385,
+    "18": 0.050314465408805034,
+    "19": 0.16666666666666666,
+    "20": 0.16666666666666666,
+    "21": 1.0,
+    "22": 0.16666666666666666,
+    "23": 1.0,
+    "24": 0.175,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 0.3333333333333333,
+    "28": 0.25,
+    "29": 0.25,
+    "30": 0.25,
+    "31": 1.0,
+    "32": 0.2857142857142857,
+    "33": 0.2857142857142857,
+    "34": 1.0,
+    "35": 0.2857142857142857,
+    "36": 1.0,
+    "37": 0.3333333333333333,
+    "38": 1.0,
+    "39": 0.4,
+    "40": 0.4,
+    "41": 1.0,
+    "42": 0.4,
+    "43": 0.4,
+    "44": 0.13852813852813853,
+    "45": 1.0,
+    "46": 0.5,
+    "47": 0.6666666666666666,
+    "48": 0.6666666666666666,
+    "49": 1.0,
+    "50": 1.0,
+    "51": 1.0,
+    "52": 1.0,
+    "53": 1.0,
+    "54": 1.0,
+    "55": 1.0,
+    "56": 1.0,
+    "57": 1.0,
+    "58": 1.0,
+    "59": 1.0,
+    "60": 1.0,
+    "61": 1.0,
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0,
+    "65": 1.0,
+    "66": 1.0,
+    "67": 1.0,
+    "68": 1.0,
+    "69": 1.0,
+    "70": 1.0,
+    "71": 1.0,
+    "72": 1.0,
+    "73": 1.0,
+    "74": 1.0,
+    "75": 1.0,
+    "76": 1.0,
+    "77": 1.0,
+    "78": 1.0,
+    "79": 1.0,
+    "80": 1.0,
+    "81": 1.0,
+    "82": 1.0,
+    "83": 1.0,
+    "84": 1.0,
+    "85": 1.0,
+    "86": 1.0,
+    "87": 1.0,
+    "88": 1.0,
+    "89": 1.0,
+    "90": 1.0,
+    "91": 1.0,
+    "92": 1.0,
+    "93": 1.0,
+    "94": 1.0,
+    "95": 1.0,
+    "96": 1.0,
+    "97": 1.0,
+    "98": 1.0,
+    "99": 1.0,
+    "100": 1.0,
+    "101": 1.0,
+    "102": 1.0,
+    "103": 1.0,
+    "104": 1.0,
+    "105": 1.0,
+    "106": 1.0,
+    "107": 1.0,
+    "108": 1.0,
+    "109": 1.0,
+    "110": 1.0,
+    "111": 1.0,
+    "112": 1.0,
+    "113": 1.0,
+    "114": 1.0,
+    "115": 1.0,
+    "116": 1.0,
+    "117": 1.0,
+    "118": 1.0,
+    "119": 1.0,
+    "120": 1.0
+  },
+  "gods": [
+    {
+      "id": "ref_lucide_react",
+      "label": "lucide-react",
+      "degree": 21
+    },
+    {
+      "id": "app_models_user_user",
+      "label": "User",
+      "degree": 17
+    },
+    {
+      "id": "tsconfig_compileroptions",
+      "label": "compilerOptions",
+      "degree": 14
+    },
+    {
+      "id": "composer_scripts",
+      "label": "scripts",
+      "degree": 13
+    },
+    {
+      "id": "resources_js_components_ui_button_button",
+      "label": "Button()",
+      "degree": 12
+    },
+    {
+      "id": "resources_js_hooks_use_appearance_useappearance",
+      "label": "useAppearance()",
+      "degree": 12
+    },
+    {
+      "id": "composer_require_dev",
+      "label": "require-dev",
+      "degree": 12
+    },
+    {
+      "id": "app_concerns_passwordvalidationrules_passwordvalidationrules",
+      "label": "PasswordValidationRules",
+      "degree": 9
+    },
+    {
+      "id": "resources_js_lib_utils_tourl",
+      "label": "toUrl()",
+      "degree": 9
+    },
+    {
+      "id": "app_providers_fortifyserviceprovider_fortifyserviceprovider",
+      "label": "FortifyServiceProvider",
+      "degree": 8
+    }
+  ],
+  "surprises": [
+    {
+      "source": "CardFooter()",
+      "target": "cn()",
+      "source_files": [
+        "resources/js/components/ui/card.tsx",
+        "resources/js/lib/utils.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities; peripheral node `CardFooter()` unexpectedly reaches hub `cn()`"
+    },
+    {
+      "source": "ToggleGroup()",
+      "target": "cn()",
+      "source_files": [
+        "resources/js/components/ui/toggle-group.tsx",
+        "resources/js/lib/utils.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities; peripheral node `ToggleGroup()` unexpectedly reaches hub `cn()`"
+    },
+    {
+      "source": "SheetFooter()",
+      "target": "cn()",
+      "source_files": [
+        "resources/js/components/ui/sheet.tsx",
+        "resources/js/lib/utils.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities; peripheral node `SheetFooter()` unexpectedly reaches hub `cn()`"
+    },
+    {
+      "source": "SheetOverlay()",
+      "target": "cn()",
+      "source_files": [
+        "resources/js/components/ui/sheet.tsx",
+        "resources/js/lib/utils.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities; peripheral node `SheetOverlay()` unexpectedly reaches hub `cn()`"
+    },
+    {
+      "source": "SelectContent()",
+      "target": "cn()",
+      "source_files": [
+        "resources/js/components/ui/select.tsx",
+        "resources/js/lib/utils.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities; peripheral node `SelectContent()` unexpectedly reaches hub `cn()`"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `react` connect `cn` to `fuel-monitoring.tsx`, `use-appearance.tsx`, `sidebar.tsx`, `app-header.tsx`, `auth-card-layout.tsx`, `navigation-menu.tsx`, `layout.tsx`, `sheet.tsx`, `use-clipboard.ts`, `select.tsx`, `package.json`?",
+      "why": "High betweenness centrality (0.093) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `@inertiajs/react` connect `cn` to `fuel-monitoring.tsx`, `use-appearance.tsx`, `sidebar.tsx`, `app-header.tsx`, `auth-card-layout.tsx`, `layout.tsx`, `package.json`?",
+      "why": "High betweenness centrality (0.070) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `cn()` connect `cn` to `use-appearance.tsx`, `sidebar.tsx`, `skeleton.tsx`, `app-header.tsx`, `auth-card-layout.tsx`, `navigation-menu.tsx`, `layout.tsx`, `sheet.tsx`, `SidebarGroupAction`, `SidebarInput`, `SidebarMenuAction`, `SidebarMenuBadge`, `SidebarMenuSkeleton`, `SidebarMenuSub`, `select.tsx`, `SidebarMenuSubButton`, `SidebarMenuSubItem`, `SidebarSeparator`?",
+      "why": "High betweenness centrality (0.064) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `Props`, `Props`, `Props` to the rest of the system?",
+      "why": "214 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `cn` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.096045197740113 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `fuel-monitoring.tsx` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.09365079365079365 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `ProfileController.php` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.060109289617486336 - nodes in this community are weakly interconnected."
+    }
+  ]
+}

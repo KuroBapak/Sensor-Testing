@@ -10,6 +10,40 @@ Di AWAL setiap task baru:
 4. Sebelum search-docs, cek docs/vault/patterns/ dulu — kalau topiknya
    sudah pernah dicatat, pakai itu, jangan search ulang.
 
+# Eksplorasi Struktur Kode — pakai Graphify, bukan grep
+
+Sebelum eksplorasi manual (search_codebase / read_files berulang) untuk
+paham keterkaitan antar file/fungsi:
+1. Panggil tool graphify untuk cek god-nodes/query sebelum eksplorasi manual.
+2. Fallback ke search_codebase/read_files kalau graphify tidak cukup.
+
+Sebutkan eksplisit "pakai tool graphify" kalau instruksi ambigu —
+tool ini tidak otomatis dipakai hanya karena tersedia.
+
+## Cara query yang efektif (terverifikasi empiris di project ini)
+
+- Formulasikan query dengan istilah domain SPESIFIK (mis. "fuel
+  monitoring sensor data"), BUKAN istilah generik (mis. "database",
+  "user", "auth"). Istilah generik menarik BFS ke node framework/auth
+  (DatabaseSeeder, config files), bukan domain bisnis sebenarnya.
+- Kalau node ambigu (nama umum yang match >1 file: User, Auth, dst),
+  format error-nya memberi cara fix langsung — pakai
+  path/ke/file.ext::NamaSymbol, bukan nama polos.
+  Contoh: "app/Models/User.php::User", bukan cuma "User".
+- Kalau hasil query di-truncate (terlalu banyak node/noise import),
+  pakai --context call untuk fokus ke pemanggilan fungsi langsung,
+  bukan semua tipe relasi (import, inherits, dst).
+- "No affected nodes" dari command affected BUKAN bukti kode itu tidak
+  terpakai — bisa berarti relasi tidak tertangkap AST extractor
+  (contoh: Laravel $this->call([X::class]) dalam array literal sering
+  tidak terekstrak sebagai edge "calls"). Verifikasi manual sebelum
+  menyimpulkan kode itu dead code.
+- god-nodes bisa didominasi noise (nama package yang di-import banyak
+  file: react, @inertiajs/react, lucide-react, atau key config seperti
+  compilerOptions/require-dev). Itu bukan bug, itu fakta struktural —
+  jangan buang waktu coba "membersihkannya", fokus ke query/explain
+  untuk pertanyaan spesifik alih-alih god-nodes untuk overview umum.
+
 # Setelah Task Selesai
 
 Kalau task ini menghasilkan keputusan arsitektur penting (bukan sekadar
@@ -18,4 +52,5 @@ Kalau task ini menemukan gotcha baru (error tidak jelas yang makan waktu
 menyelesaikan), tawarkan mencatatnya ke docs/vault/gotchas/.
 
 # Loop Limiter
+
 Maksimal 3 percobaan untuk error yang sama sebelum berhenti dan lapor.
