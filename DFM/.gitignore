@@ -42,3 +42,16 @@ yarn-error.log
 /boost.json
 /opencode.json
 /opencode.jsonc
+
+# Graphify — artefak yang regenerable, jangan di-commit
+/graphify-out
+
+# Obsidian — config aplikasi lokal, bukan isi vault
+/docs/vault/.obsidian
+
+# Laravel — cache runtime standar
+/bootstrap/cache/*.php
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
+/storage/logs/*.log
