@@ -43,4 +43,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function hasPermission(string $permission): bool
+    {
+        return true; // Dummy for prototype
+    }
 }

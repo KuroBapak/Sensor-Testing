@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { AlertTriangle, BookOpen, Droplet, FolderGit2, Fuel, LayoutGrid } from 'lucide-react';
+import { AlertTriangle, BookOpen, Droplet, FileSpreadsheet, FolderGit2, Fuel, LayoutGrid } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -37,6 +37,12 @@ const mainNavItems: NavItem[] = [
         href: '/fuel-monitoring/alarms',
         icon: AlertTriangle,
     },
+    {
+        title: 'Reports & Export',
+        href: '/reports',
+        icon: FileSpreadsheet,
+    },
+
 ];
 
 const footerNavItems: NavItem[] = [

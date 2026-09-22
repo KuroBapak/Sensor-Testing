@@ -1,7 +1,9 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
 import AlarmTable from '@/components/fuel-monitoring/AlarmTable';
 import ThemeToggle from '@/components/fuel-monitoring/ThemeToggle';
+import { Button } from '@/components/ui/button';
+import { Download } from 'lucide-react';
 
 interface AlarmLog {
     id: number;
@@ -34,6 +36,12 @@ export default function AlarmsMonitoring({ initialAlarmData = [] }: Props) {
                             </span>
                             <span className="text-sm font-mono text-red-600 dark:text-red-400">MONITORING</span>
                         </div>
+                        <Link href="/reports?report=alarm-log">
+                            <Button variant="outline" size="sm" className="gap-2">
+                                <Download className="h-4 w-4" />
+                                Export Alarm Log
+                            </Button>
+                        </Link>
                         <ThemeToggle />
                     </div>
                 </header>

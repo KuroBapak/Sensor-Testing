@@ -96,16 +96,16 @@
     "semantic_hash": "d14d0de6584117a8eddfedde0cd1e0ba"
   },
   "app/Models/User.php": {
-    "mtime": 1789552504.797774,
-    "seen": 1789702165.6935322,
-    "ast_hash": "653fd36e8422ab3a42e2fb22262389bf",
-    "semantic_hash": "653fd36e8422ab3a42e2fb22262389bf"
+    "mtime": 1790048429.270298,
+    "seen": 1790049083.643677,
+    "ast_hash": "4372f4ecfdc1818cf5b179823fbdb732",
+    "semantic_hash": "4372f4ecfdc1818cf5b179823fbdb732"
   },
   "app/Providers/AppServiceProvider.php": {
-    "mtime": 1789400888.0,
-    "seen": 1789702165.6935322,
-    "ast_hash": "183c0dbbb438655ed74bc8bb2657dcd9",
-    "semantic_hash": "183c0dbbb438655ed74bc8bb2657dcd9"
+    "mtime": 1790048429.3088257,
+    "seen": 1790049083.643677,
+    "ast_hash": "119e75b9d65a4cac2a378b59198f8f83",
+    "semantic_hash": "119e75b9d65a4cac2a378b59198f8f83"
   },
   "app/Providers/FortifyServiceProvider.php": {
     "mtime": 1789552504.8784122,
@@ -336,10 +336,10 @@
     "semantic_hash": "090d91f6d90faec225b47885ad9c3afe"
   },
   "resources/js/components/app-sidebar.tsx": {
-    "mtime": 1789614493.2387855,
-    "seen": 1789702165.6935322,
-    "ast_hash": "721737b6a4dd963b14ec3abc778b18ee",
-    "semantic_hash": "721737b6a4dd963b14ec3abc778b18ee"
+    "mtime": 1790047846.0560377,
+    "seen": 1790049083.6506798,
+    "ast_hash": "77c16a940f0fd951aaf63b56cf35a4a4",
+    "semantic_hash": "77c16a940f0fd951aaf63b56cf35a4a4"
   },
   "resources/js/components/appearance-tabs.tsx": {
     "mtime": 1789400888.0,
@@ -732,22 +732,22 @@
     "semantic_hash": "bd4833806604f377cbe56e82dc7288a5"
   },
   "resources/js/pages/fuel-monitoring/alarms.tsx": {
-    "mtime": 1789615103.403924,
-    "seen": 1789702165.6945362,
-    "ast_hash": "579e783f8fb0d87c731730c0880c02dc",
-    "semantic_hash": "579e783f8fb0d87c731730c0880c02dc"
+    "mtime": 1790047978.732517,
+    "seen": 1790049083.6638114,
+    "ast_hash": "5c848438673023c1d0170ad3073b7b7a",
+    "semantic_hash": "5c848438673023c1d0170ad3073b7b7a"
   },
   "resources/js/pages/fuel-monitoring/main-tank.tsx": {
-    "mtime": 1789615099.2547166,
-    "seen": 1789702165.6945362,
-    "ast_hash": "4164054675397fd5ee48505c547daa1f",
-    "semantic_hash": "4164054675397fd5ee48505c547daa1f"
+    "mtime": 1790047958.7981515,
+    "seen": 1790049083.6638114,
+    "ast_hash": "f492172536bc1cffe0970f266af00016",
+    "semantic_hash": "f492172536bc1cffe0970f266af00016"
   },
   "resources/js/pages/fuel-monitoring/mobile-tanks.tsx": {
-    "mtime": 1789615101.30873,
-    "seen": 1789702165.6945362,
-    "ast_hash": "ada0377ff4b25149081c9d82c6f82c1f",
-    "semantic_hash": "ada0377ff4b25149081c9d82c6f82c1f"
+    "mtime": 1790048041.2301793,
+    "seen": 1790049083.6638114,
+    "ast_hash": "83887ade53cb1a90f77e4a5c4bb85dab",
+    "semantic_hash": "83887ade53cb1a90f77e4a5c4bb85dab"
   },
   "resources/js/pages/settings/appearance.tsx": {
     "mtime": 1789400888.0,
@@ -828,10 +828,10 @@
     "semantic_hash": "fbff9eab53f3847e6b6dcbd0257e140f"
   },
   "routes/web.php": {
-    "mtime": 1789615060.5569792,
-    "seen": 1789702165.6945362,
-    "ast_hash": "ee752952bf2f1e63499524ba7b370af3",
-    "semantic_hash": "ee752952bf2f1e63499524ba7b370af3"
+    "mtime": 1790048429.8981125,
+    "seen": 1790049083.665821,
+    "ast_hash": "f03136821b6175dc40495bdf104f8bde",
+    "semantic_hash": "f03136821b6175dc40495bdf104f8bde"
   },
   "tests/Feature/Auth/AuthenticationTest.php": {
     "mtime": 1789552648.8644724,
@@ -942,10 +942,10 @@
     "semantic_hash": "79166e18fd641f0a1b4ebafdde8bf7fe"
   },
   "docs/vault/specs/export-laporan.md": {
-    "mtime": 1789621040.7875862,
-    "seen": 1789702165.6945362,
-    "ast_hash": "94b8e193f5e9be1394a40ee2d9dbbef1",
-    "semantic_hash": "94b8e193f5e9be1394a40ee2d9dbbef1"
+    "mtime": 1790046880.4491234,
+    "seen": 1790050040.33419,
+    "ast_hash": "050c79c25c2a673f11a42349d870cf62",
+    "semantic_hash": "050c79c25c2a673f11a42349d870cf62"
   },
   "pnpm-workspace.yaml": {
     "mtime": 1789400888.0,
@@ -964,5 +964,41 @@
     "seen": 1789702165.6945362,
     "ast_hash": "6d65603fc671e2ab354f3ff070494594",
     "semantic_hash": "6d65603fc671e2ab354f3ff070494594"
+  },
+  "app/Http/Controllers/ReportExportController.php": {
+    "mtime": 1790048429.0244086,
+    "seen": 1790049083.6416712,
+    "ast_hash": "09cd9a16e59d542e609af9d19ef85e5b",
+    "semantic_hash": "09cd9a16e59d542e609af9d19ef85e5b"
+  },
+  "app/Models/ExportLog.php": {
+    "mtime": 1790047226.41329,
+    "seen": 1790049083.643677,
+    "ast_hash": "e0ca48969a5fc46e7d82958c0089ee78",
+    "semantic_hash": "e0ca48969a5fc46e7d82958c0089ee78"
+  },
+  "database/migrations/2026_09_22_032001_create_export_logs_table.php": {
+    "mtime": 1790047215.6265905,
+    "seen": 1790049083.648679,
+    "ast_hash": "26e91cfe6d5db7a9b3a22aad73ea321d",
+    "semantic_hash": "26e91cfe6d5db7a9b3a22aad73ea321d"
+  },
+  "resources/js/pages/reports/index.tsx": {
+    "mtime": 1790048344.737272,
+    "seen": 1790049083.6638114,
+    "ast_hash": "6d2351d00ddd5931c10fc017a8cd0f80",
+    "semantic_hash": "6d2351d00ddd5931c10fc017a8cd0f80"
+  },
+  "tests/Feature/ReportExportTest.php": {
+    "mtime": 1790048548.762522,
+    "seen": 1790049083.6668205,
+    "ast_hash": "6808392f445b6198f369ab1c4133e688",
+    "semantic_hash": "6808392f445b6198f369ab1c4133e688"
+  },
+  "public/apple-touch-icon.png": {
+    "mtime": 1789400888.0,
+    "seen": 1790049083.6678221,
+    "ast_hash": "4ec34bfee5050d402638888ce2e9a968",
+    "semantic_hash": "4ec34bfee5050d402638888ce2e9a968"
   }
 }

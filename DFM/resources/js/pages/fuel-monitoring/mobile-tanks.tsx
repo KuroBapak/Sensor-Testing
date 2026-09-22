@@ -1,8 +1,10 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
 import MobileTankChart from '@/components/fuel-monitoring/MobileTankChart';
 import MobileTankTable from '@/components/fuel-monitoring/MobileTankTable';
 import ThemeToggle from '@/components/fuel-monitoring/ThemeToggle';
+import { Button } from '@/components/ui/button';
+import { Download } from 'lucide-react';
 
 interface MobileTankLog {
     id: number;
@@ -38,6 +40,12 @@ export default function MobileTanksMonitoring({ initialFuelTankerData = [], init
                             </span>
                             <span className="text-sm font-mono text-emerald-600 dark:text-emerald-400">LIVE</span>
                         </div>
+                        <Link href="/reports?report=browser-tank-refuels">
+                            <Button variant="outline" size="sm" className="gap-2">
+                                <Download className="h-4 w-4" />
+                                Export CSV
+                            </Button>
+                        </Link>
                         <ThemeToggle />
                     </div>
                 </header>
