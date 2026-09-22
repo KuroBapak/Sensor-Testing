@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\AlarmLog;
+use App\Models\Site;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -35,11 +37,28 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
+            'site' => Site::first()?->only(['name', 'timezone']) ?? [
+                'name' => 'PT. Trissan Mining Site',
+                'timezone' => 'Asia/Jakarta',
+            ],
+            'unreadAlarmsCount' => $user ? AlarmLog::count() : 0,
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user ? [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role ? [
+                        'id' => $user->role->id,
+                        'name' => $user->role->name,
+                        'is_system' => $user->role->is_system,
+                    ] : null,
+                    'permissions' => $user->getPermissions(),
+                ] : null,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
