@@ -129,6 +129,15 @@ export function AppSidebar() {
                   },
               ]
             : []),
+        ...(has('geofences.manage')
+            ? [
+                  {
+                      title: 'Geofence Management',
+                      href: '/admin/geofences',
+                      icon: MapPin,
+                  },
+              ]
+            : []),
         ...(has('backup.manage')
             ? [
                   {

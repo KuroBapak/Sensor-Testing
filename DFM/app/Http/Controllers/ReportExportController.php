@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AlarmLog;
+use App\Models\AnomalyLog;
 use App\Models\ExportLog;
-use App\Models\MainTankLog;
-use App\Models\MobileTankLog;
+use App\Models\Tank;
+use App\Models\TankLevelReading;
+use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -165,46 +166,41 @@ class ReportExportController extends Controller
     {
         $directionFilter = strtolower($request->input('direction', 'all'));
         $tankFilter = $request->input('tank');
+        $mainTankIds = Tank::where('division', 'main_tank')->pluck('tank_id');
 
-        MainTankLog::orderBy('id')->chunkById(500, function ($logs) use ($output, $delimiter, $format, &$rowCount, $directionFilter, $tankFilter) {
-            foreach ($logs as $log) {
-                $time = $log->created_at ? $log->created_at->format('Y-m-d H:i:s') : date('Y-m-d ').$log->waktu.':00';
+        $query = Transaction::with(['tank', 'mainTank', 'device'])
+            ->where(function ($q) use ($mainTankIds) {
+                $q->whereIn('tank_id', $mainTankIds)
+                    ->orWhereIn('main_tank_id', $mainTankIds);
+            })
+            ->whereBetween('started_at', [$from, $to])
+            ->orderBy('id');
 
-                if ($log->liter_masuk > 0 && ($directionFilter === 'all' || $directionFilter === 'in')) {
-                    if (! $tankFilter || stripos('Fuel Tanker 01', $tankFilter) !== false) {
-                        $this->writeRow($output, [
-                            $time,
-                            $time,
-                            'Main Tank 1',
-                            'In',
-                            'Fuel Tanker 01',
-                            'fuel_tanker',
-                            'FT-A1B2C3',
-                            'FILL-LINE-01',
-                            number_format($log->liter_masuk, 2, '.', ''),
-                            'live',
-                        ], $delimiter, $format);
-                        $rowCount++;
-                    }
+        $query->chunkById(500, function ($transactions) use ($output, $delimiter, $format, &$rowCount, $directionFilter, $tankFilter) {
+            foreach ($transactions as $txn) {
+                $direction = $txn->transfer_type === 'vendor_fill' ? 'In' : 'Out';
+                if ($directionFilter !== 'all' && strtolower($direction) !== $directionFilter) {
+                    continue;
                 }
 
-                if ($log->liter_keluar > 0 && ($directionFilter === 'all' || $directionFilter === 'out')) {
-                    if (! $tankFilter || stripos('Browser Tank 01', $tankFilter) !== false) {
-                        $this->writeRow($output, [
-                            $time,
-                            $time,
-                            'Main Tank 1',
-                            'Out',
-                            'Browser Tank 01',
-                            'browser_tank',
-                            'BT-D4E5F6',
-                            'DISP-LINE-01',
-                            number_format($log->liter_keluar, 2, '.', ''),
-                            'live',
-                        ], $delimiter, $format);
-                        $rowCount++;
-                    }
+                $tankName = $txn->tank?->name ?? '';
+                if ($tankFilter && stripos($tankName, $tankFilter) === false) {
+                    continue;
                 }
+
+                $this->writeRow($output, [
+                    $txn->started_at?->format('Y-m-d H:i:s'),
+                    $txn->ended_at?->format('Y-m-d H:i:s'),
+                    $txn->mainTank?->name ?? $txn->tank?->name,
+                    $direction,
+                    $txn->tank?->name,
+                    $txn->tank?->division,
+                    $txn->tag_id ?? '',
+                    $txn->device_id ?? '',
+                    number_format((float) $txn->liters, 2, '.', ''),
+                    $txn->sync_status ?? 'live',
+                ], $delimiter, $format);
+                $rowCount++;
             }
 
             if (ob_get_level() > 0) {
@@ -216,37 +212,67 @@ class ReportExportController extends Controller
 
     protected function streamMainTankDailyReconciliation(Request $request, Carbon $from, Carbon $to, $output, string $delimiter, string $format, int &$rowCount): void
     {
+        $mainTanks = Tank::where('division', 'main_tank')->get();
         $current = $from->copy();
         $today = Carbon::today();
 
-        while ($current->lte($to)) {
-            $dateStr = $current->format('Y-m-d');
-            $isComplete = $current->lt($today);
+        foreach ($mainTanks as $tank) {
+            $loopDate = $current->copy();
 
-            $opening = 15000.00;
-            $received = (float) MainTankLog::sum('liter_masuk');
-            $dispensed = (float) MainTankLog::sum('liter_keluar');
-            $expected = $opening + $received - $dispensed;
-            $closing = $expected + rand(-20, 20);
-            $variance = $closing - $expected;
-            $capacity = 20000.00;
-            $variancePercent = ($variance / $capacity) * 100;
+            while ($loopDate->lte($to)) {
+                $dateStr = $loopDate->format('Y-m-d');
+                $dayStart = $loopDate->copy()->startOfDay();
+                $dayEnd = $loopDate->copy()->endOfDay();
+                $isComplete = $loopDate->lt($today);
 
-            $this->writeRow($output, [
-                $dateStr,
-                'Main Tank 1',
-                number_format($opening, 2, '.', ''),
-                number_format($received, 2, '.', ''),
-                number_format($dispensed, 2, '.', ''),
-                number_format($expected, 2, '.', ''),
-                number_format($closing, 2, '.', ''),
-                number_format($variance, 2, '.', ''),
-                number_format($variancePercent, 2, '.', ''),
-                $isComplete,
-            ], $delimiter, $format);
+                // Opening level: last reading before day start
+                $openingReading = TankLevelReading::where('tank_id', $tank->tank_id)
+                    ->where('timestamp', '<', $dayStart)
+                    ->orderByDesc('timestamp')
+                    ->first();
+                $opening = $openingReading ? (float) $openingReading->level_liters : 0;
 
-            $rowCount++;
-            $current->addDay();
+                // Received = sum of vendor_fill transactions for this tank on this day
+                $received = (float) Transaction::where('tank_id', $tank->tank_id)
+                    ->where('transfer_type', 'vendor_fill')
+                    ->whereBetween('started_at', [$dayStart, $dayEnd])
+                    ->sum('liters');
+
+                // Dispensed = sum of outbound transactions (dispense_to_browser, fill_to_main) from this tank
+                $dispensed = (float) Transaction::where('main_tank_id', $tank->tank_id)
+                    ->whereIn('transfer_type', ['fill_to_main', 'dispense_to_browser'])
+                    ->whereBetween('started_at', [$dayStart, $dayEnd])
+                    ->sum('liters');
+
+                $expected = $opening + $received - $dispensed;
+
+                // Closing level: last reading of the day
+                $closingReading = TankLevelReading::where('tank_id', $tank->tank_id)
+                    ->whereBetween('timestamp', [$dayStart, $dayEnd])
+                    ->orderByDesc('timestamp')
+                    ->first();
+                $closing = $closingReading ? (float) $closingReading->level_liters : $expected;
+
+                $variance = $closing - $expected;
+                $capacity = (float) $tank->capacity_liters ?: 1;
+                $variancePercent = ($variance / $capacity) * 100;
+
+                $this->writeRow($output, [
+                    $dateStr,
+                    $tank->name,
+                    number_format($opening, 2, '.', ''),
+                    number_format($received, 2, '.', ''),
+                    number_format($dispensed, 2, '.', ''),
+                    number_format($expected, 2, '.', ''),
+                    number_format($closing, 2, '.', ''),
+                    number_format($variance, 2, '.', ''),
+                    number_format($variancePercent, 2, '.', ''),
+                    $isComplete ? 'true' : 'false',
+                ], $delimiter, $format);
+
+                $rowCount++;
+                $loopDate->addDay();
+            }
         }
 
         if (ob_get_level() > 0) {
@@ -258,56 +284,78 @@ class ReportExportController extends Controller
     protected function streamBrowserTankRefuels(Request $request, Carbon $from, Carbon $to, $output, string $delimiter, string $format, int &$rowCount): void
     {
         $tanksFilter = $request->input('tanks');
+        $browserTankIds = Tank::where('division', 'browser_tank')->pluck('tank_id');
 
-        MobileTankLog::where('tank_type', 'browser')
-            ->orderBy('id')
-            ->chunkById(500, function ($logs) use ($output, $delimiter, $format, &$rowCount, $tanksFilter) {
-                foreach ($logs as $log) {
-                    $time = $log->created_at ? $log->created_at->format('Y-m-d H:i:s') : date('Y-m-d ').$log->waktu;
-                    $tankName = 'Browser Tank '.($log->rfid ? substr($log->rfid, 0, 5) : '01');
+        $query = Transaction::with(['tank', 'mainTank'])
+            ->whereIn('tank_id', $browserTankIds)
+            ->whereBetween('started_at', [$from, $to])
+            ->orderBy('id');
 
-                    if ($tanksFilter && ! in_array($tankName, (array) $tanksFilter, true)) {
+        $query->chunkById(500, function ($transactions) use ($output, $delimiter, $format, &$rowCount, $tanksFilter) {
+            foreach ($transactions as $txn) {
+                if ($tanksFilter) {
+                    $filterList = array_map('trim', explode(',', $tanksFilter));
+                    $match = false;
+                    foreach ($filterList as $f) {
+                        if (stripos($txn->tank?->name ?? '', $f) !== false) {
+                            $match = true;
+
+                            break;
+                        }
+                    }
+                    if (! $match) {
                         continue;
                     }
-
-                    $this->writeRow($output, [
-                        $time,
-                        $time,
-                        $tankName,
-                        $log->rfid ?? 'TAG-BT-001',
-                        number_format($log->liter, 2, '.', ''),
-                        'Main Tank 1',
-                        'DISP-LINE-01',
-                        'live',
-                    ], $delimiter, $format);
-                    $rowCount++;
                 }
 
-                if (ob_get_level() > 0) {
-                    ob_flush();
-                }
-                flush();
-            });
+                $this->writeRow($output, [
+                    $txn->started_at?->format('Y-m-d H:i:s'),
+                    $txn->ended_at?->format('Y-m-d H:i:s'),
+                    $txn->tank?->name,
+                    $txn->tag_id ?? '',
+                    number_format((float) $txn->liters, 2, '.', ''),
+                    $txn->mainTank?->name ?? '',
+                    $txn->device_id ?? '',
+                    $txn->sync_status ?? 'live',
+                ], $delimiter, $format);
+                $rowCount++;
+            }
+
+            if (ob_get_level() > 0) {
+                ob_flush();
+            }
+            flush();
+        });
     }
 
     protected function streamBrowserTankDailyConsumption(Request $request, Carbon $from, Carbon $to, $output, string $delimiter, string $format, int &$rowCount): void
     {
+        $browserTanks = Tank::where('division', 'browser_tank')->get();
         $current = $from->copy();
+
         while ($current->lte($to)) {
             $dateStr = $current->format('Y-m-d');
-            $refuels = MobileTankLog::where('tank_type', 'browser')->get();
+            $dayStart = $current->copy()->startOfDay();
+            $dayEnd = $current->copy()->endOfDay();
 
-            $totalLiters = (float) $refuels->sum('liter');
-            $count = $refuels->count();
+            foreach ($browserTanks as $tank) {
+                $totalLiters = (float) Transaction::where('tank_id', $tank->tank_id)
+                    ->whereBetween('started_at', [$dayStart, $dayEnd])
+                    ->sum('liters');
 
-            $this->writeRow($output, [
-                $dateStr,
-                'Browser Tank 01',
-                $count,
-                number_format($totalLiters, 2, '.', ''),
-            ], $delimiter, $format);
+                $count = Transaction::where('tank_id', $tank->tank_id)
+                    ->whereBetween('started_at', [$dayStart, $dayEnd])
+                    ->count();
 
-            $rowCount++;
+                $this->writeRow($output, [
+                    $dateStr,
+                    $tank->name,
+                    $count,
+                    number_format($totalLiters, 2, '.', ''),
+                ], $delimiter, $format);
+                $rowCount++;
+            }
+
             $current->addDay();
         }
 
@@ -320,81 +368,40 @@ class ReportExportController extends Controller
     protected function streamFuelTankerUnloads(Request $request, Carbon $from, Carbon $to, $output, string $delimiter, string $format, int &$rowCount): void
     {
         $typeFilter = $request->input('type', 'all');
+        $fuelTankerIds = Tank::where('division', 'fuel_tanker')->pluck('tank_id');
 
-        MobileTankLog::where('tank_type', 'fuel_tanker')
-            ->orderBy('id')
-            ->chunkById(500, function ($logs) use ($output, $delimiter, $format, &$rowCount, $typeFilter) {
-                foreach ($logs as $log) {
-                    $time = $log->created_at ? $log->created_at->format('Y-m-d H:i:s') : date('Y-m-d ').$log->waktu;
-                    $tankName = 'Fuel Tanker '.($log->rfid ? substr($log->rfid, 0, 5) : '01');
+        $query = Transaction::with(['tank', 'mainTank'])
+            ->where(function ($q) use ($fuelTankerIds) {
+                $q->whereIn('tank_id', $fuelTankerIds)
+                    ->orWhereIn('main_tank_id', $fuelTankerIds);
+            })
+            ->whereBetween('started_at', [$from, $to])
+            ->orderBy('id');
 
-                    if ($typeFilter === 'all' || $typeFilter === 'unload') {
-                        $this->writeRow($output, [
-                            $time,
-                            $time,
-                            $tankName,
-                            'Unload to Main Tank',
-                            $log->rfid ?? 'FT-TAG-01',
-                            number_format($log->liter, 2, '.', ''),
-                            'Main Tank 1',
-                            'FILL-LINE-01',
-                            '',
-                            'live',
-                        ], $delimiter, $format);
-                        $rowCount++;
+        $query->chunkById(500, function ($transactions) use ($output, $delimiter, $format, &$rowCount, $typeFilter) {
+            foreach ($transactions as $txn) {
+                $txnType = $txn->transfer_type === 'vendor_fill' ? 'Vendor fill' : 'Unload to Main Tank';
+
+                if ($typeFilter !== 'all') {
+                    if ($typeFilter === 'vendor_fill' && $txn->transfer_type !== 'vendor_fill') {
+                        continue;
                     }
-
-                    if ($typeFilter === 'all' || $typeFilter === 'vendor_fill') {
-                        $this->writeRow($output, [
-                            $time,
-                            $time,
-                            $tankName,
-                            'Vendor fill',
-                            '',
-                            number_format($log->liter, 2, '.', ''),
-                            '',
-                            '',
-                            'Operator John',
-                            '',
-                        ], $delimiter, $format);
-                        $rowCount++;
+                    if ($typeFilter === 'unload' && $txn->transfer_type === 'vendor_fill') {
+                        continue;
                     }
-                }
-
-                if (ob_get_level() > 0) {
-                    ob_flush();
-                }
-                flush();
-            });
-    }
-
-    protected function streamAlarmLog(Request $request, Carbon $from, Carbon $to, $output, string $delimiter, string $format, int &$rowCount): void
-    {
-        $statusFilter = $request->input('status');
-
-        AlarmLog::orderBy('id')->chunkById(500, function ($alarms) use ($output, $delimiter, $format, &$rowCount, $statusFilter) {
-            foreach ($alarms as $alarm) {
-                $status = 'resolved';
-                if ($statusFilter && $statusFilter !== 'all' && $status !== $statusFilter) {
-                    continue;
                 }
 
                 $this->writeRow($output, [
-                    $alarm->waktu_kejadian ?? date('Y-m-d H:i:s'),
-                    'Theft Alarm',
-                    'Main Tank 1',
-                    'main_tank',
-                    $alarm->rfid ?? 'UNKNOWN',
-                    number_format($alarm->jumlah_liter ?? 150, 2, '.', ''),
-                    '12.50',
-                    '5.00',
-                    'Medium',
-                    $status,
-                    'Checked and resolved by security team',
-                    'Supervisor Jane',
-                    date('Y-m-d H:i:s'),
-                    '-6.2088',
-                    '106.8456',
+                    $txn->started_at?->format('Y-m-d H:i:s'),
+                    $txn->ended_at?->format('Y-m-d H:i:s'),
+                    $txn->tank?->name,
+                    $txnType,
+                    $txn->tag_id ?? '',
+                    number_format((float) $txn->liters, 2, '.', ''),
+                    $txn->mainTank?->name ?? '',
+                    $txn->device_id ?? '',
+                    $txn->enteredBy?->name ?? '',
+                    $txn->sync_status ?? 'live',
                 ], $delimiter, $format);
                 $rowCount++;
             }
@@ -406,22 +413,68 @@ class ReportExportController extends Controller
         });
     }
 
+    protected function streamAlarmLog(Request $request, Carbon $from, Carbon $to, $output, string $delimiter, string $format, int &$rowCount): void
+    {
+        $statusFilter = $request->input('status');
+
+        AnomalyLog::with(['tank', 'resolvedBy'])
+            ->whereBetween('anomaly_time', [$from, $to])
+            ->orderBy('id')
+            ->chunkById(500, function ($anomalies) use ($output, $delimiter, $format, &$rowCount, $statusFilter) {
+                foreach ($anomalies as $anomaly) {
+                    if ($statusFilter && $statusFilter !== 'all' && $anomaly->status_investigasi !== $statusFilter) {
+                        continue;
+                    }
+
+                    $this->writeRow($output, [
+                        $anomaly->anomaly_time?->format('Y-m-d H:i:s'),
+                        $anomaly->anomaly_type,
+                        $anomaly->tank?->name ?? '',
+                        $anomaly->tank?->division ?? '',
+                        $anomaly->tag_id ?? '',
+                        number_format(abs((float) $anomaly->volume_diff), 2, '.', ''),
+                        number_format((float) $anomaly->observed_percent, 2, '.', ''),
+                        number_format((float) $anomaly->threshold_percent, 2, '.', ''),
+                        $anomaly->sensitivity_mode ?? '',
+                        $anomaly->status_investigasi,
+                        $anomaly->resolution_note ?? '',
+                        $anomaly->resolvedBy?->name ?? '',
+                        $anomaly->resolved_at?->format('Y-m-d H:i:s') ?? '',
+                        (string) ($anomaly->latitude ?? ''),
+                        (string) ($anomaly->longitude ?? ''),
+                    ], $delimiter, $format);
+                    $rowCount++;
+                }
+
+                if (ob_get_level() > 0) {
+                    ob_flush();
+                }
+                flush();
+            });
+    }
+
     protected function streamTankLevelReadings(Request $request, Carbon $from, Carbon $to, $output, string $delimiter, string $format, int &$rowCount): void
     {
-        $tank = $request->input('tank');
+        $tankFilter = $request->input('tank');
 
-        MainTankLog::orderBy('id')->chunkById(500, function ($logs) use ($output, $delimiter, $format, &$rowCount, $tank) {
-            foreach ($logs as $log) {
-                $time = $log->created_at ? $log->created_at->format('Y-m-d H:i:s') : date('Y-m-d ').$log->waktu.':00';
+        $query = TankLevelReading::with(['tank', 'device'])
+            ->whereBetween('timestamp', [$from, $to])
+            ->orderBy('id');
 
+        if ($tankFilter) {
+            $query->whereHas('tank', fn ($q) => $q->where('name', 'like', "%{$tankFilter}%"));
+        }
+
+        $query->chunkById(500, function ($readings) use ($output, $delimiter, $format, &$rowCount) {
+            foreach ($readings as $reading) {
                 $this->writeRow($output, [
-                    $time,
-                    $tank,
-                    number_format($log->total_liter, 2, '.', ''),
-                    '-6.2088',
-                    '106.8456',
-                    12,
-                    'FMC225-8675309',
+                    $reading->timestamp?->format('Y-m-d H:i:s'),
+                    $reading->tank?->name ?? '',
+                    number_format((float) $reading->level_liters, 2, '.', ''),
+                    (string) ($reading->latitude ?? ''),
+                    (string) ($reading->longitude ?? ''),
+                    (string) ($reading->satellites ?? ''),
+                    $reading->device_id ?? '',
                 ], $delimiter, $format);
                 $rowCount++;
             }

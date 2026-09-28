@@ -16,3 +16,4 @@ storage/framework/
 # Data besar kalau ada
 *.sqlite
 *.csv
+graphify-out/

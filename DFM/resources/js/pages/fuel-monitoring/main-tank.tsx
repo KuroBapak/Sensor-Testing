@@ -1,13 +1,14 @@
-import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, Link, router } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import MainTankChart from '@/components/fuel-monitoring/MainTankChart';
 import MainTankTable from '@/components/fuel-monitoring/MainTankTable';
 import ThemeToggle from '@/components/fuel-monitoring/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
+import { subscribe, isRealtimeEnabled } from '@/lib/echo';
 
 interface MainTankLog {
-    id: number;
+    id?: number;
     waktu: string;
     total_liter: number;
     liter_masuk: number;
@@ -22,6 +23,15 @@ interface Props {
 export default function MainTankMonitoring({ initialChartData = [], initialTableData = [] }: Props) {
     const [chartData] = useState<MainTankLog[]>(initialChartData);
     const [tableData] = useState<MainTankLog[]>(initialTableData);
+    const [connected] = useState(isRealtimeEnabled());
+
+    // Refresh aggregates when a new tank reading arrives over WebSocket
+    // (event-driven, not time-based polling — see PRD ch. 6).
+    useEffect(() => {
+        return subscribe('trissan.live.main-tank', 'tank-reading', () => {
+            router.reload({ only: ['initialChartData', 'initialTableData'] });
+        });
+    }, []);
 
     return (
         <>
@@ -38,7 +48,7 @@ export default function MainTankMonitoring({ initialChartData = [], initialTable
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
                             </span>
-                            <span className="text-sm font-mono text-emerald-600 dark:text-emerald-400">LIVE</span>
+                            <span className="text-sm font-mono text-emerald-600 dark:text-emerald-400">{connected ? 'LIVE' : 'STANDBY'}</span>
                         </div>
                         <Link href="/reports?report=main-tank-transactions">
                             <Button variant="outline" size="sm" className="gap-2">

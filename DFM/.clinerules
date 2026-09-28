@@ -20,7 +20,7 @@ paham keterkaitan antar file/fungsi:
 Sebutkan eksplisit "pakai tool graphify" kalau instruksi ambigu —
 tool ini tidak otomatis dipakai hanya karena tersedia.
 
-## Cara query yang efektif (terverifikasi empiris di project ini)
+## Cara query Graphify yang efektif (terverifikasi empiris di project ini)
 
 - Formulasikan query dengan istilah domain SPESIFIK (mis. "fuel
   monitoring sensor data"), BUKAN istilah generik (mis. "database",
@@ -43,6 +43,63 @@ tool ini tidak otomatis dipakai hanya karena tersedia.
   compilerOptions/require-dev). Itu bukan bug, itu fakta struktural —
   jangan buang waktu coba "membersihkannya", fokus ke query/explain
   untuk pertanyaan spesifik alih-alih god-nodes untuk overview umum.
+
+## Kalau harus pakai search_codebase (fallback)
+
+- Hindari kata umum bahasa Inggris ("map", "user", "data") tanpa konteks
+  — akan match ratusan hasil noise (mis. `.map()` method call di mana-mana).
+  Gunakan kata majemuk spesifik ("fleet map", "MapController") atau
+  scope dengan path tertentu.
+- graphify query selalu didahulukan untuk pertanyaan struktural ("di mana
+  X dipakai", "apa yang terhubung ke Y") — sudah punya noise-filtering
+  bawaan (community/edge type). search_codebase adalah fallback terakhir.
+
+## Error TypeScript pada API pihak ketiga
+Kalau `npm run types:check` gagal karena properti tidak dikenal pada tipe
+dari package eksternal (Inertia, dst) — JANGAN tebak-tebak nama properti
+pengganti dengan coba-hapus-satu-per-satu. Langsung panggil search-docs
+SEKALI dengan query nama API-nya (mis. "router.reload options") untuk
+lihat shape lengkap yang benar, baru edit sekali dengan hasil pasti.
+
+# Mekanika Eksekusi — Efisiensi Turn & Token
+
+## Membuat File/Komponen Besar
+
+Tool `editor` punya limit ~6000 karakter per `new_text`. Untuk file baru
+yang diperkirakan besar (komponen React kompleks, class panjang, dst):
+1. Buat kerangka dasar dulu lewat `editor` biasa — import, interface/type,
+   shell function/component kosong.
+2. Tambahkan bagian selanjutnya satu per satu lewat `insert_line` di baris
+   yang TEPAT (akhir file atau akhir suatu block yang sudah lengkap) —
+   JANGAN insert ke tengah body sebuah function/block yang belum ditutup,
+   itu akan memutus block tersebut jadi dua bagian yang salah.
+3. JANGAN coba satu `new_text` besar sekaligus untuk file besar — itu akan
+   gagal dan membuang satu turn penuh tanpa hasil.
+4. Setelah SETIAP insert_line pada file besar, verifikasi dengan read_files
+   pada rentang baris di sekitar titik insert — pastikan tidak ada function/
+   block lain yang "kepotong" atau brace yang tidak matching.
+
+## Batching Command Diagnostik
+
+Kalau butuh beberapa command shell untuk diagnosis (cek config, cek versi,
+cek status), kumpulkan SEMUA command yang independen jadi SATU run_commands
+call dengan array berisi banyak command — jangan satu command per turn.
+Contoh buruk: 4 turn terpisah untuk `npm config list`, `findstr remote`,
+`findstr fetch`, `npm config get allow-remote`.
+Contoh benar: satu run_commands dengan keempat command itu sekaligus.
+
+## npm install
+
+Sebelum npm install package baru, baca docs/vault/domain/npm-config.md
+dulu — ada constraint allow-remote yang perlu di-handle di awal,
+bukan ditemukan lewat trial-error.
+
+## Kapan pakai /smol
+
+Untuk task dengan fase eksplorasi panjang (>10 tool call) sebelum fase
+implementasi berat dimulai, panggil /smol setelah eksplorasi selesai
+tapi SEBELUM mulai generate/edit kode besar. Ini best-practice untuk
+task seperti "integrasi library baru", "fitur lintas banyak file", dst.
 
 # Setelah Task Selesai
 

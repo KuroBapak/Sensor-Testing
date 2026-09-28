@@ -23,6 +23,76 @@ export default function TanksHardwareIndex({ tanks, devices }: Props) {
         division: 'browser_tank',
         capacity_liters: '',
     });
+    const [isDeviceModalOpen, setIsDeviceModalOpen] = useState(false);
+    const [editingDevice, setEditingDevice] = useState<any>(null);
+
+    const { 
+        data: deviceData, 
+        setData: setDeviceData, 
+        post: postDevice, 
+        put: putDevice, 
+        reset: resetDevice, 
+        errors: deviceErrors, 
+        processing: deviceProcessing 
+    } = useForm({
+        device_id: '',
+        device_type: 'mobile_unit',
+        tank_id: '',
+        status: 'active',
+    });
+
+    const openDeviceModal = () => {
+        setEditingDevice(null);
+        resetDevice();
+        setIsDeviceModalOpen(true);
+    };
+
+    const openEditDeviceModal = (device: any) => {
+        setEditingDevice(device);
+        setDeviceData({
+            device_id: device.device_id,
+            device_type: device.device_type,
+            tank_id: device.tank_id || '',
+            status: device.status,
+        });
+        setIsDeviceModalOpen(true);
+    };
+
+    const onDeviceSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (editingDevice) {
+            putDevice(`/admin/hardware/${editingDevice.device_id}`, {
+                onSuccess: () => {
+                    toast.success('Device updated successfully');
+                    setIsDeviceModalOpen(false);
+                },
+            });
+        } else {
+            postDevice('/admin/hardware', {
+                onSuccess: () => {
+                    // Success message is handled by flash in layout or component
+                    setIsDeviceModalOpen(false);
+                },
+            });
+        }
+    };
+
+    const deleteDevice = (deviceId: string) => {
+        if (confirm('Are you sure you want to delete this device?')) {
+            router.delete(`/admin/hardware/${deviceId}`, {
+                onSuccess: () => toast.success('Device deleted successfully'),
+            });
+        }
+    };
+
+    const regenerateToken = (deviceId: string) => {
+        if (confirm('Regenerate API token? The old token will stop working immediately.')) {
+            router.post(`/admin/hardware/${deviceId}/regenerate-token`, {}, {
+                preserveScroll: true,
+            });
+        }
+    };
+
 
     const openCreateModal = () => {
         setEditingTank(null);
@@ -77,7 +147,7 @@ export default function TanksHardwareIndex({ tanks, devices }: Props) {
                 </div>
                 <div className="flex items-center gap-2">
                     <Button size="sm" onClick={openCreateModal}><Plus className="mr-2 h-4 w-4" /> Register Tank</Button>
-                    <Button variant="outline" size="sm"><Plus className="mr-2 h-4 w-4" /> Register Device</Button>
+                    <Button variant="outline" size="sm" onClick={openDeviceModal}><Plus className="mr-2 h-4 w-4" /> Register Device</Button>
                 </div>
             </div>
 
@@ -139,6 +209,7 @@ export default function TanksHardwareIndex({ tanks, devices }: Props) {
                                             <th className="h-10 px-4 font-medium">Type</th>
                                             <th className="h-10 px-4 font-medium">Assigned Tank</th>
                                             <th className="h-10 px-4 font-medium">Status</th>
+                                            <th className="h-10 px-4 font-medium text-right">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y">
@@ -148,6 +219,19 @@ export default function TanksHardwareIndex({ tanks, devices }: Props) {
                                                 <td className="p-4 capitalize">{device.device_type?.replace('_', ' ')}</td>
                                                 <td className="p-4">{device.tank?.name || 'Unassigned'}</td>
                                                 <td className="p-4 capitalize">{device.status || 'Active'}</td>
+                                                <td className="p-4 text-right">
+                                                    <div className="flex justify-end gap-2">
+                                                        <Button variant="outline" size="sm" onClick={() => regenerateToken(device.device_id)}>
+                                                            Regen Token
+                                                        </Button>
+                                                        <Button variant="ghost" size="icon" onClick={() => openEditDeviceModal(device)}>
+                                                            <Edit2 className="h-4 w-4" />
+                                                        </Button>
+                                                        <Button variant="ghost" size="icon" className="text-destructive" onClick={() => deleteDevice(device.device_id)}>
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -206,6 +290,87 @@ export default function TanksHardwareIndex({ tanks, devices }: Props) {
                             </Button>
                             <Button type="submit" disabled={processing}>
                                 {editingTank ? 'Update Tank' : 'Register Tank'}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={isDeviceModalOpen} onOpenChange={setIsDeviceModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{editingDevice ? 'Edit Device' : 'Register New Device'}</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={onDeviceSubmit} className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="device_id">Device ID / Serial Number</Label>
+                            <Input
+                                id="device_id"
+                                value={deviceData.device_id}
+                                onChange={(e) => setDeviceData('device_id', e.target.value)}
+                                disabled={!!editingDevice}
+                            />
+                            {deviceErrors.device_id && <p className="text-sm text-destructive">{deviceErrors.device_id}</p>}
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Device Type</Label>
+                            <Select
+                                value={deviceData.device_type}
+                                onValueChange={(value) => setDeviceData('device_type', value)}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="main_tank_atg">Main Tank ATG</SelectItem>
+                                    <SelectItem value="fill_line">Fill Line Flowmeter</SelectItem>
+                                    <SelectItem value="dispense_line">Dispense Line</SelectItem>
+                                    <SelectItem value="mobile_unit">Mobile Unit (Browser/Tanker)</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {deviceErrors.device_type && <p className="text-sm text-destructive">{deviceErrors.device_type}</p>}
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Assigned Tank</Label>
+                            <Select
+                                value={deviceData.tank_id}
+                                onValueChange={(value) => setDeviceData('tank_id', value)}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select tank (optional)" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="">Unassigned</SelectItem>
+                                    {tanks.map(t => (
+                                        <SelectItem key={t.tank_id} value={t.tank_id.toString()}>{t.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {deviceErrors.tank_id && <p className="text-sm text-destructive">{deviceErrors.tank_id}</p>}
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Status</Label>
+                            <Select
+                                value={deviceData.status}
+                                onValueChange={(value) => setDeviceData('status', value)}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="active">Active</SelectItem>
+                                    <SelectItem value="spare">Spare</SelectItem>
+                                    <SelectItem value="retired">Retired</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {deviceErrors.status && <p className="text-sm text-destructive">{deviceErrors.status}</p>}
+                        </div>
+                        <DialogFooter>
+                            <Button type="button" variant="outline" onClick={() => setIsDeviceModalOpen(false)}>
+                                Cancel
+                            </Button>
+                            <Button type="submit" disabled={deviceProcessing}>
+                                {editingDevice ? 'Update Device' : 'Register Device'}
                             </Button>
                         </DialogFooter>
                     </form>

@@ -1,4 +1,4 @@
-import { Head, router } from '@inertiajs/react';
+﻿import { Head, router } from '@inertiajs/react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,27 +18,54 @@ import {
 } from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';
 import FleetMapLeaflet, { type TankMarkerData, type GeofenceData } from '@/components/fuel-monitoring/FleetMapLeaflet';
+import { subscribe, isRealtimeEnabled } from '@/lib/echo';
 
 interface Props {
     tanks: TankMarkerData[];
     geofences: GeofenceData[];
 }
 
-export default function FleetMap({ tanks = [], geofences = [] }: Props) {
-    const [isPolling, setIsPolling] = useState(true);
+export default function FleetMap({ tanks: initialTanks = [], geofences = [] }: Props) {
+    const [liveTanks, setLiveTanks] = useState<TankMarkerData[]>(initialTanks);
+    const [connected, setConnected] = useState(isRealtimeEnabled());
     const [showGeofences, setShowGeofences] = useState(true);
     const [selectedTank, setSelectedTank] = useState<TankMarkerData | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
 
+    // Re-seed local state when Inertia replaces the props (e.g. manual refresh).
     useEffect(() => {
-        if (!isPolling) return;
+        setLiveTanks(initialTanks);
+    }, [initialTanks]);
 
-        const interval = setInterval(() => {
-            router.reload({ only: ['tanks'] });
-        }, 5000);
+    // Live fleet position stream over WebSocket (no polling â€” see PRD ch. 6).
+    useEffect(() => {
+        const unsubscribe = subscribe('trissan.live.map', 'position-updated', (payload: { positions?: Array<{ tank_id: string | number; lat: number; lng: number; level_liters: number | null; timestamp: string }> }) => {
+            const positions = payload?.positions ?? [];
+            if (positions.length === 0) return;
 
-        return () => clearInterval(interval);
-    }, [isPolling]);
+            setLiveTanks((current) => {
+                const byId = new Map(positions.map((p) => [String(p.tank_id), p]));
+                return current.map((tank) => {
+                    const p = byId.get(String(tank.id));
+                    if (!p) return tank;
+                    return {
+                        ...tank,
+                        lat: Number(p.lat),
+                        lng: Number(p.lng),
+                        capacity: p.level_liters != null ? Number(p.level_liters) : tank.capacity,
+                        status: 'active',
+                        last_updated: p.timestamp,
+                    };
+                });
+            });
+            setConnected(true);
+        });
+
+        return unsubscribe;
+    }, []);
+
+    const tanks = liveTanks;
+
 
     const filteredTanks = useMemo(() => {
         if (!searchQuery.trim()) return tanks;
@@ -71,15 +98,19 @@ export default function FleetMap({ tanks = [], geofences = [] }: Props) {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                    <Button 
-                        variant={isPolling ? "default" : "outline"} 
-                        size="sm" 
-                        onClick={() => setIsPolling(!isPolling)}
+                                        <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => router.reload({ only: ['tanks', 'geofences'] })}
                         className="gap-1.5"
                     >
-                        <RefreshCw className={`h-3.5 w-3.5 ${isPolling ? 'animate-spin' : ''}`} />
-                        {isPolling ? 'Live Updates: ON' : 'Live Updates: OFF'}
+                        <RefreshCw className="h-3.5 w-3.5" />
+                        Refresh
                     </Button>
+                    <Badge variant={connected ? 'default' : 'secondary'} className="gap-1.5 text-[11px]">
+                        <span className={"inline-block h-1.5 w-1.5 rounded-full " + (connected ? "bg-emerald-400 animate-pulse" : "bg-slate-400")} />
+                        {connected ? 'Live (WebSocket)' : 'Offline (no realtime)'}
+                    </Badge>
                     <Button 
                         variant={showGeofences ? "secondary" : "outline"} 
                         size="sm"

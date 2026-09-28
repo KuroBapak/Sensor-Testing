@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Site extends Model
 {
@@ -28,5 +29,20 @@ class Site extends Model
     public function settingsUpdater(): BelongsTo
     {
         return $this->belongsTo(User::class, 'settings_updated_by');
+    }
+
+    public function tanks(): HasMany
+    {
+        return $this->hasMany(Tank::class);
+    }
+
+    public function geofences(): HasMany
+    {
+        return $this->hasMany(Geofence::class);
+    }
+
+    public function hardwareDevices(): HasMany
+    {
+        return $this->hasMany(HardwareDevice::class);
     }
 }

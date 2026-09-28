@@ -1,11 +1,17 @@
 <?php
 
 use App\Http\Controllers\Admin\BackupController;
+use App\Http\Controllers\Admin\HardwareController;
+use App\Http\Controllers\Admin\RfidController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SensitivityController;
 use App\Http\Controllers\Admin\SiteSettingController;
 use App\Http\Controllers\Admin\TankController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VendorFillController;
+use App\Http\Controllers\Api\AlarmApiController;
+use App\Http\Controllers\Api\GeofenceApiController;
+use App\Http\Controllers\FuelMonitoring\GeofenceController;
 use App\Http\Controllers\FuelMonitoring\MapController;
 use App\Http\Controllers\FuelMonitoringController;
 use App\Http\Controllers\ReportExportController;
@@ -39,7 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('permission:map.view')
         ->name('fuel-monitoring.map');
 
-    // Admin: Tanks & Hardware
+    // Admin: Tanks
     Route::get('admin/tanks', [TankController::class, 'index'])
         ->middleware('permission:tanks.manage')
         ->name('admin.tanks.index');
@@ -52,6 +58,63 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('admin/tanks/{tank}', [TankController::class, 'destroy'])
         ->middleware('permission:tanks.manage')
         ->name('admin.tanks.destroy');
+
+    // Admin: Hardware
+    Route::post('admin/hardware', [HardwareController::class, 'store'])
+        ->middleware('permission:hardware.manage')
+        ->name('admin.hardware.store');
+    Route::put('admin/hardware/{hardwareDevice}', [HardwareController::class, 'update'])
+        ->middleware('permission:hardware.manage')
+        ->name('admin.hardware.update');
+    Route::delete('admin/hardware/{hardwareDevice}', [HardwareController::class, 'destroy'])
+        ->middleware('permission:hardware.manage')
+        ->name('admin.hardware.destroy');
+    Route::post('admin/hardware/{hardwareDevice}/regenerate-token', [HardwareController::class, 'regenerateToken'])
+        ->middleware('permission:hardware.manage')
+        ->name('admin.hardware.regenerate-token');
+
+    // Admin: RFID
+    Route::get('admin/rfid', [RfidController::class, 'index'])
+        ->middleware('permission:rfid.manage')
+        ->name('admin.rfid.index');
+    Route::post('admin/rfid', [RfidController::class, 'store'])
+        ->middleware('permission:rfid.manage')
+        ->name('admin.rfid.store');
+    Route::put('admin/rfid/{rfidTag}', [RfidController::class, 'update'])
+        ->middleware('permission:rfid.manage')
+        ->name('admin.rfid.update');
+    Route::delete('admin/rfid/{rfidTag}', [RfidController::class, 'destroy'])
+        ->middleware('permission:rfid.manage')
+        ->name('admin.rfid.destroy');
+
+    // Admin: Vendor Fills
+    Route::get('admin/vendor-fills', [VendorFillController::class, 'index'])
+        ->middleware('permission:vendor_fill.create')
+        ->name('admin.vendor-fills.index');
+    Route::post('admin/vendor-fills', [VendorFillController::class, 'store'])
+        ->middleware('permission:vendor_fill.create')
+        ->name('admin.vendor-fills.store');
+
+    // Admin: Geofences (Leaflet.draw editor)
+    Route::get('admin/geofences', [GeofenceController::class, 'index'])
+        ->middleware('permission:geofences.manage')
+        ->name('admin.geofences.index');
+
+    // Geofence CRUD (JSON, session-authenticated) reused from the API controller
+    Route::post('admin/geofences', [GeofenceApiController::class, 'store'])
+        ->middleware('permission:geofences.manage');
+    Route::put('admin/geofences/{geofence}', [GeofenceApiController::class, 'update'])
+        ->middleware('permission:geofences.manage');
+    Route::delete('admin/geofences/{geofence}', [GeofenceApiController::class, 'destroy'])
+        ->middleware('permission:geofences.manage');
+
+    // Alarm lifecycle (JSON, session-authenticated)
+    Route::post('fuel-monitoring/alarms/{anomalyLog}/read', [AlarmApiController::class, 'markRead'])
+        ->middleware('permission:alarms.view')
+        ->name('fuel-monitoring.alarms.read');
+    Route::put('fuel-monitoring/alarms/{anomalyLog}/status', [AlarmApiController::class, 'updateStatus'])
+        ->middleware('permission:alarms.view')
+        ->name('fuel-monitoring.alarms.status');
 
     // Admin: Sensitivity
     Route::get('admin/sensitivity', [SensitivityController::class, 'index'])

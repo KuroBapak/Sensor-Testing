@@ -1,23 +1,76 @@
-import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
-import AlarmTable from '@/components/fuel-monitoring/AlarmTable';
+import { Head, Link, router } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import AlarmTable, { type AlarmRow } from '@/components/fuel-monitoring/AlarmTable';
 import ThemeToggle from '@/components/fuel-monitoring/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
+import { usePermission } from '@/hooks/use-permission';
+import { subscribe, isRealtimeEnabled } from '@/lib/echo';
+import { httpJson } from '@/lib/http';
 
-interface AlarmLog {
-    id: number;
-    rfid: string;
-    waktu_kejadian: string;
-    jumlah_liter: number;
-}
+type StatusValue = 'open' | 'investigating' | 'resolved' | 'false_positive';
 
 interface Props {
-    initialAlarmData?: AlarmLog[];
+    initialAlarmData?: AlarmRow[];
+}
+
+function formatTime(iso?: string): string {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return Number.isNaN(d.getTime()) ? iso : d.toLocaleString();
 }
 
 export default function AlarmsMonitoring({ initialAlarmData = [] }: Props) {
-    const [alarmData] = useState<AlarmLog[]>(initialAlarmData);
+    const [alarms, setAlarms] = useState<AlarmRow[]>(initialAlarmData);
+    const [connected, setConnected] = useState(isRealtimeEnabled());
+    const canManage = usePermission('alarms.manage');
+
+    useEffect(() => {
+        setAlarms(initialAlarmData);
+    }, [initialAlarmData]);
+
+    // Live anomaly insertion over WebSocket (no polling).
+    useEffect(() => {
+        return subscribe('trissan.alarms', 'anomaly-detected', (payload: Partial<AlarmRow> & { anomaly_time?: string }) => {
+            setConnected(true);
+            if (payload.id == null) return;
+            setAlarms((current) => {
+                if (current.some((a) => a.id === payload.id)) return current;
+                const row: AlarmRow = {
+                    id: payload.id as number,
+                    rfid: (payload as any).rfid ?? '-',
+                    waktu_kejadian: payload.anomaly_time ? formatTime(payload.anomaly_time) : formatTime(payload.waktu_kejadian),
+                    jumlah_liter: Number(Math.abs(Number(payload.jumlah_liter ?? 0))),
+                    anomaly_type: payload.anomaly_type,
+                    tank_name: payload.tank_name ?? null,
+                    status: payload.status ?? 'open',
+                    resolved_by: payload.resolved_by ?? null,
+                    is_read: false,
+                };
+                return [row, ...current];
+            });
+            toast.error(`🚨 Anomali terdeteksi: ${(payload.anomaly_type ?? 'fuel').replace(/_/g, ' ')}`);
+        });
+    }, []);
+
+    const handleMarkRead = async (id: number) => {
+        await httpJson('POST', `/fuel-monitoring/alarms/${id}/read`);
+        setAlarms((current) =>
+            current.map((a) =>
+                a.id === id
+                    ? { ...a, is_read: true, status: a.status === 'open' ? 'investigating' : a.status }
+                    : a,
+            ),
+        );
+        router.reload({ only: ['initialAlarmData'] });
+    };
+
+    const handleStatusChange = async (id: number, status: StatusValue, resolutionNote?: string) => {
+        await httpJson('PUT', `/fuel-monitoring/alarms/${id}/status`, { status, resolution_note: resolutionNote });
+        setAlarms((current) => current.map((a) => (a.id === id ? { ...a, status, is_read: true } : a)));
+        router.reload({ only: ['initialAlarmData'] });
+    };
 
     return (
         <>
@@ -31,10 +84,12 @@ export default function AlarmsMonitoring({ initialAlarmData = [] }: Props) {
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
                             <span className="relative flex h-3 w-3">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75 ${connected ? '' : 'hidden'}`}></span>
                                 <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
                             </span>
-                            <span className="text-sm font-mono text-red-600 dark:text-red-400">MONITORING</span>
+                            <span className="text-sm font-mono text-red-600 dark:text-red-400">
+                                {connected ? 'LIVE' : 'STANDBY'}
+                            </span>
                         </div>
                         <Link href="/reports?report=alarm-log">
                             <Button variant="outline" size="sm" className="gap-2">
@@ -46,8 +101,13 @@ export default function AlarmsMonitoring({ initialAlarmData = [] }: Props) {
                     </div>
                 </header>
 
-                {/* Provide false since we aren't dynamically injecting new alarms continuously for now */}
-                <AlarmTable data={alarmData} isPulsing={false} />
+                <AlarmTable
+                    data={alarms}
+                    isPulsing={connected}
+                    canManage={canManage}
+                    onMarkRead={handleMarkRead}
+                    onStatusChange={handleStatusChange}
+                />
             </div>
         </>
     );

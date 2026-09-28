@@ -12,25 +12,37 @@ class MapController extends Controller
 {
     public function index(): Response
     {
-        $tanks = Tank::whereIn('division', ['browser_tank', 'fuel_tanker'])
-            ->get(['tank_id as id', 'name', 'division as type', 'capacity_liters as capacity'])
-            ->map(function ($tank) {
-                // Mock live coordinates for telemetry simulation.
-                return [
-                    'id' => $tank->id,
-                    'name' => $tank->name,
-                    'type' => $tank->type,
-                    'capacity' => $tank->capacity,
-                    'status' => 'active',
-                    'lat' => -2.6000 + (rand(-100, 100) / 10000),
-                    'lng' => 118.0000 + (rand(-100, 100) / 10000),
-                    'heading' => rand(0, 359),
-                    'speed' => rand(0, 60),
-                    'last_updated' => now()->toIso8601String(),
-                ];
-            });
+        $mobileTanks = Tank::whereIn('division', ['browser_tank', 'fuel_tanker'])
+            ->with('latestReading')
+            ->get();
 
-        // Provide demo units if database has no registered mobile tanks yet
+        $tanks = $mobileTanks->map(function (Tank $tank) {
+            $reading = $tank->latestReading;
+
+            // Determine status based on last reading freshness
+            $status = 'active';
+            if (! $reading || ! $reading->timestamp) {
+                $status = 'no_data';
+            } elseif ($reading->timestamp->lt(now()->subMinutes(15))) {
+                $status = 'signal_lost';
+            }
+
+            return [
+                'id' => $tank->tank_id,
+                'name' => $tank->name,
+                'type' => $tank->division,
+                'capacity' => $tank->capacity_liters,
+                'status' => $status,
+                'lat' => $reading?->latitude ? (float) $reading->latitude : null,
+                'lng' => $reading?->longitude ? (float) $reading->longitude : null,
+                'heading' => 0,
+                'speed' => 0,
+                'fuelLevel' => $reading ? (float) $reading->level_liters : null,
+                'last_updated' => $reading?->timestamp?->toIso8601String(),
+            ];
+        })->filter(fn ($t) => $t['lat'] !== null);
+
+        // Provide demo units if no real GPS data exists yet
         if ($tanks->isEmpty()) {
             $tanks = collect([
                 [
@@ -117,7 +129,7 @@ class MapController extends Controller
         }
 
         return Inertia::render('fuel-monitoring/map', [
-            'tanks' => $tanks,
+            'tanks' => $tanks->values(),
             'geofences' => $geofences,
         ]);
     }

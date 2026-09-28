@@ -1,13 +1,14 @@
-import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, Link, router } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import MobileTankChart from '@/components/fuel-monitoring/MobileTankChart';
 import MobileTankTable from '@/components/fuel-monitoring/MobileTankTable';
 import ThemeToggle from '@/components/fuel-monitoring/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
+import { subscribe, isRealtimeEnabled } from '@/lib/echo';
 
 interface MobileTankLog {
-    id: number;
+    id?: number;
     tank_type: string;
     rfid: string;
     waktu: string;
@@ -22,6 +23,14 @@ interface Props {
 export default function MobileTanksMonitoring({ initialFuelTankerData = [], initialBrowserTankData = [] }: Props) {
     const [fuelTankerData] = useState<MobileTankLog[]>(initialFuelTankerData);
     const [browserTankData] = useState<MobileTankLog[]>(initialBrowserTankData);
+    const [connected] = useState(isRealtimeEnabled());
+
+    // Event-driven refresh on new mobile tank readings (no polling).
+    useEffect(() => {
+        return subscribe('trissan.live.mobile-tanks', 'tank-reading', () => {
+            router.reload({ only: ['initialFuelTankerData', 'initialBrowserTankData'] });
+        });
+    }, []);
 
     return (
         <>
@@ -38,7 +47,7 @@ export default function MobileTanksMonitoring({ initialFuelTankerData = [], init
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
                             </span>
-                            <span className="text-sm font-mono text-emerald-600 dark:text-emerald-400">LIVE</span>
+                            <span className="text-sm font-mono text-emerald-600 dark:text-emerald-400">{connected ? 'LIVE' : 'STANDBY'}</span>
                         </div>
                         <Link href="/reports?report=browser-tank-refuels">
                             <Button variant="outline" size="sm" className="gap-2">

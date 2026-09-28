@@ -24,10 +24,10 @@
     "semantic_hash": "25a307335c0719bc9a91b3f7babd186d"
   },
   "app/Http/Controllers/FuelMonitoringController.php": {
-    "mtime": 1789615109.7835574,
-    "seen": 1789702165.6935322,
-    "ast_hash": "a7173540e78b4f7bb575fb4e1fdf1a9e",
-    "semantic_hash": "a7173540e78b4f7bb575fb4e1fdf1a9e"
+    "mtime": 1790344781.8059037,
+    "seen": 1790346187.294177,
+    "ast_hash": "dc7909d7de14f4278bf92e3c9e5beb51",
+    "semantic_hash": "dc7909d7de14f4278bf92e3c9e5beb51"
   },
   "app/Http/Controllers/Settings/ProfileController.php": {
     "mtime": 1789400888.0,
@@ -96,10 +96,10 @@
     "semantic_hash": "d14d0de6584117a8eddfedde0cd1e0ba"
   },
   "app/Models/User.php": {
-    "mtime": 1790059873.8652647,
-    "seen": 1790060627.2760866,
-    "ast_hash": "283b3e85a2d50d1b651268960f063920",
-    "semantic_hash": "283b3e85a2d50d1b651268960f063920"
+    "mtime": 1790228807.2011044,
+    "seen": 1790346187.2951763,
+    "ast_hash": "5ccdde579a2ac31589e8d2ca731c4e37",
+    "semantic_hash": "5ccdde579a2ac31589e8d2ca731c4e37"
   },
   "app/Providers/AppServiceProvider.php": {
     "mtime": 1790051050.5258672,
@@ -120,10 +120,10 @@
     "semantic_hash": "e66bb13691f6184c762c196427d8e685"
   },
   "bootstrap/app.php": {
-    "mtime": 1790059873.9116037,
-    "seen": 1790060627.2760866,
-    "ast_hash": "cf1f5514fe369424ae245fef8f3ca61f",
-    "semantic_hash": "cf1f5514fe369424ae245fef8f3ca61f"
+    "mtime": 1790345191.3603785,
+    "seen": 1790346187.2951763,
+    "ast_hash": "71d7a2d95f37b1ea33f30f50ccc3a690",
+    "semantic_hash": "71d7a2d95f37b1ea33f30f50ccc3a690"
   },
   "bootstrap/providers.php": {
     "mtime": 1789400888.0,
@@ -138,10 +138,10 @@
     "semantic_hash": "c78a304d2e8f73ae0051a56276bfe9a4"
   },
   "composer.json": {
-    "mtime": 1789552988.7427883,
-    "seen": 1789702165.6935322,
-    "ast_hash": "7ec62ce59eb0025a1974da6b26afd14f",
-    "semantic_hash": "7ec62ce59eb0025a1974da6b26afd14f"
+    "mtime": 1790343459.5405722,
+    "seen": 1790346187.2951763,
+    "ast_hash": "aa31ef3ae9cecead73e1eb7d8e4b7a48",
+    "semantic_hash": "aa31ef3ae9cecead73e1eb7d8e4b7a48"
   },
   "config/app.php": {
     "mtime": 1789400888.0,
@@ -270,10 +270,10 @@
     "semantic_hash": "6c8b6ed81c93f2d795bbf19b09d81fc5"
   },
   "package.json": {
-    "mtime": 1790064809.081431,
-    "seen": 1790068314.0612607,
-    "ast_hash": "58366e71c7d619acf43bdd18bd75eabd",
-    "semantic_hash": "58366e71c7d619acf43bdd18bd75eabd"
+    "mtime": 1790344687.7585945,
+    "seen": 1790346187.299685,
+    "ast_hash": "f9181c646c5783ab93debc4c4e44b272",
+    "semantic_hash": "f9181c646c5783ab93debc4c4e44b272"
   },
   "pint.json": {
     "mtime": 1789400888.0,
@@ -336,10 +336,10 @@
     "semantic_hash": "67f5ad5521c6764eb10e73008b3be2f9"
   },
   "resources/js/components/app-sidebar.tsx": {
-    "mtime": 1790058630.2080324,
-    "seen": 1790060627.2790887,
-    "ast_hash": "2e9e6131a01f6ce426d118c2ae820faf",
-    "semantic_hash": "2e9e6131a01f6ce426d118c2ae820faf"
+    "mtime": 1790344509.3646932,
+    "seen": 1790346187.299685,
+    "ast_hash": "6423a44cdab79b3e1e562649b42f3ede",
+    "semantic_hash": "6423a44cdab79b3e1e562649b42f3ede"
   },
   "resources/js/components/appearance-tabs.tsx": {
     "mtime": 1789400888.0,
@@ -360,10 +360,10 @@
     "semantic_hash": "5d25d3d606f9d641c07e80befe8fef72"
   },
   "resources/js/components/fuel-monitoring/AlarmTable.tsx": {
-    "mtime": 1789614426.7952342,
-    "seen": 1789702165.6935322,
-    "ast_hash": "98147e013292cbe58d6d79dde48472f7",
-    "semantic_hash": "98147e013292cbe58d6d79dde48472f7"
+    "mtime": 1790344706.5780356,
+    "seen": 1790346187.3006847,
+    "ast_hash": "a217df6e4479d566955c5f23e7dcdb0f",
+    "semantic_hash": "a217df6e4479d566955c5f23e7dcdb0f"
   },
   "resources/js/components/fuel-monitoring/MainTankChart.tsx": {
     "mtime": 1789614428.8202446,
@@ -732,22 +732,22 @@
     "semantic_hash": "bd4833806604f377cbe56e82dc7288a5"
   },
   "resources/js/pages/fuel-monitoring/alarms.tsx": {
-    "mtime": 1790047978.732517,
-    "seen": 1790049083.6638114,
-    "ast_hash": "5c848438673023c1d0170ad3073b7b7a",
-    "semantic_hash": "5c848438673023c1d0170ad3073b7b7a"
+    "mtime": 1790344425.3926997,
+    "seen": 1790346187.3056846,
+    "ast_hash": "52862c55f699e96e7bfe19e99d34a752",
+    "semantic_hash": "52862c55f699e96e7bfe19e99d34a752"
   },
   "resources/js/pages/fuel-monitoring/main-tank.tsx": {
-    "mtime": 1790047958.7981515,
-    "seen": 1790049083.6638114,
-    "ast_hash": "f492172536bc1cffe0970f266af00016",
-    "semantic_hash": "f492172536bc1cffe0970f266af00016"
+    "mtime": 1790343943.9879465,
+    "seen": 1790346187.3056846,
+    "ast_hash": "3ce3e53863fd728350e8db5a7b9e1ef5",
+    "semantic_hash": "3ce3e53863fd728350e8db5a7b9e1ef5"
   },
   "resources/js/pages/fuel-monitoring/mobile-tanks.tsx": {
-    "mtime": 1790048041.2301793,
-    "seen": 1790049083.6638114,
-    "ast_hash": "83887ade53cb1a90f77e4a5c4bb85dab",
-    "semantic_hash": "83887ade53cb1a90f77e4a5c4bb85dab"
+    "mtime": 1790343971.0560737,
+    "seen": 1790346187.3056846,
+    "ast_hash": "f8b0b1a0c0b89568c65238a2dd2a1660",
+    "semantic_hash": "f8b0b1a0c0b89568c65238a2dd2a1660"
   },
   "resources/js/pages/settings/appearance.tsx": {
     "mtime": 1789400888.0,
@@ -828,10 +828,10 @@
     "semantic_hash": "fbff9eab53f3847e6b6dcbd0257e140f"
   },
   "routes/web.php": {
-    "mtime": 1790063962.323074,
-    "seen": 1790068314.0744433,
-    "ast_hash": "486f02f4b5488eca45df00837118937d",
-    "semantic_hash": "486f02f4b5488eca45df00837118937d"
+    "mtime": 1790344782.2332206,
+    "seen": 1790346187.306685,
+    "ast_hash": "098146865754fc598650306e67a180f9",
+    "semantic_hash": "098146865754fc598650306e67a180f9"
   },
   "tests/Feature/Auth/AuthenticationTest.php": {
     "mtime": 1789552648.8644724,
@@ -915,7 +915,7 @@
     "mtime": 1789612980.0201387,
     "seen": 1789702165.6945362,
     "ast_hash": "08c6a7e71e338534c18b9c29ab99bed5",
-    "semantic_hash": "08c6a7e71e338534c18b9c29ab99bed5"
+    "semantic_hash": ""
   },
   "docs/vault/domain/app-info.md": {
     "mtime": 1789612266.9939682,
@@ -927,13 +927,13 @@
     "mtime": 1789616515.118154,
     "seen": 1789702165.6945362,
     "ast_hash": "c8d17c40634b21c3bb57d0e26d787550",
-    "semantic_hash": "c8d17c40634b21c3bb57d0e26d787550"
+    "semantic_hash": ""
   },
   "docs/vault/gotchas/mcp-tool-naming.md": {
     "mtime": 1789612281.605811,
     "seen": 1789702165.6945362,
     "ast_hash": "2aed3f2efdc278fadea5cf901bbb5fe4",
-    "semantic_hash": "2aed3f2efdc278fadea5cf901bbb5fe4"
+    "semantic_hash": ""
   },
   "docs/vault/specs/_template.md": {
     "mtime": 1789612287.2336109,
@@ -966,10 +966,10 @@
     "semantic_hash": ""
   },
   "app/Http/Controllers/ReportExportController.php": {
-    "mtime": 1790048429.0244086,
-    "seen": 1790049083.6416712,
-    "ast_hash": "09cd9a16e59d542e609af9d19ef85e5b",
-    "semantic_hash": "09cd9a16e59d542e609af9d19ef85e5b"
+    "mtime": 1790223684.29831,
+    "seen": 1790346187.294177,
+    "ast_hash": "7dd01751b5a4f7aa83f584a0d1161185",
+    "semantic_hash": "7dd01751b5a4f7aa83f584a0d1161185"
   },
   "app/Models/ExportLog.php": {
     "mtime": 1790047226.41329,
@@ -990,10 +990,10 @@
     "semantic_hash": "6d2351d00ddd5931c10fc017a8cd0f80"
   },
   "tests/Feature/ReportExportTest.php": {
-    "mtime": 1790051403.024537,
-    "seen": 1790055111.336127,
-    "ast_hash": "06ffddbef684b18945bea1564abdfbfc",
-    "semantic_hash": "06ffddbef684b18945bea1564abdfbfc"
+    "mtime": 1790344782.3423877,
+    "seen": 1790346187.3077397,
+    "ast_hash": "a17cd172cdc1f978fa8fe0b27cce62b5",
+    "semantic_hash": "a17cd172cdc1f978fa8fe0b27cce62b5"
   },
   "public/apple-touch-icon.png": {
     "mtime": 1789400888.0,
@@ -1038,10 +1038,10 @@
     "semantic_hash": "2b080b33f4913a138e6e37cab58dd98b"
   },
   "app/Models/Site.php": {
-    "mtime": 1790059873.8212073,
-    "seen": 1790060627.2760866,
-    "ast_hash": "714bf2c72831bb17494f3fe0e2f821a0",
-    "semantic_hash": "714bf2c72831bb17494f3fe0e2f821a0"
+    "mtime": 1790344782.06574,
+    "seen": 1790346187.2951763,
+    "ast_hash": "f9c247d99b3a5712e2ad7e76274ba6b2",
+    "semantic_hash": "f9c247d99b3a5712e2ad7e76274ba6b2"
   },
   "app/Support/Permissions.php": {
     "mtime": 1790059873.892408,
@@ -1122,10 +1122,10 @@
     "semantic_hash": "96cb6367ffbd7cafccf7a1cfc1e0c161"
   },
   "app/Http/Controllers/FuelMonitoring/MapController.php": {
-    "mtime": 1790065742.774904,
-    "seen": 1790068314.0542638,
-    "ast_hash": "4daba5ed555f3adf25fe2ad3395dc408",
-    "semantic_hash": "4daba5ed555f3adf25fe2ad3395dc408"
+    "mtime": 1790344781.7771614,
+    "seen": 1790346187.294177,
+    "ast_hash": "98acbe18be98bae285f12e5df781c33c",
+    "semantic_hash": "98acbe18be98bae285f12e5df781c33c"
   },
   "app/Jobs/RunBackupJob.php": {
     "mtime": 1790064055.2086222,
@@ -1134,10 +1134,10 @@
     "semantic_hash": "af3deb8aaa1b036bf63873248a809920"
   },
   "app/Models/AnomalyLog.php": {
-    "mtime": 1790061698.7831292,
-    "seen": 1790068314.0562665,
-    "ast_hash": "8706a0dbae3fab00cf2609c0b4979656",
-    "semantic_hash": "8706a0dbae3fab00cf2609c0b4979656"
+    "mtime": 1790344782.0252807,
+    "seen": 1790346187.2951763,
+    "ast_hash": "6d2978d5aa4e4ff1df8be65d4d3a2545",
+    "semantic_hash": "6d2978d5aa4e4ff1df8be65d4d3a2545"
   },
   "app/Models/BackupRun.php": {
     "mtime": 1790063178.939472,
@@ -1152,10 +1152,10 @@
     "semantic_hash": "9f9cfa37160b9d430491c6cdcf18c198"
   },
   "app/Models/Geofence.php": {
-    "mtime": 1790062784.0212204,
-    "seen": 1790068314.0562665,
-    "ast_hash": "a15b3260a8055a8e863e4fc3d2d88472",
-    "semantic_hash": "a15b3260a8055a8e863e4fc3d2d88472"
+    "mtime": 1790344782.0496202,
+    "seen": 1790346187.2951763,
+    "ast_hash": "5fac2d6c50d912f855b5add854b0cdca",
+    "semantic_hash": "5fac2d6c50d912f855b5add854b0cdca"
   },
   "app/Models/HardwareDevice.php": {
     "mtime": 1790064055.2254655,
@@ -1164,34 +1164,34 @@
     "semantic_hash": "bb303698ca2c4110b8aa4146f20c3f61"
   },
   "app/Models/RfidTag.php": {
-    "mtime": 1790061609.8760948,
-    "seen": 1790068314.0562665,
-    "ast_hash": "ec373e6e22d1d5d492ee517bf079e43b",
-    "semantic_hash": "ec373e6e22d1d5d492ee517bf079e43b"
+    "mtime": 1790344782.0551302,
+    "seen": 1790346187.2951763,
+    "ast_hash": "393ee9aa1f9c1157ec5d8bc6892fe7b3",
+    "semantic_hash": "393ee9aa1f9c1157ec5d8bc6892fe7b3"
   },
   "app/Models/Tank.php": {
-    "mtime": 1790062727.3295412,
-    "seen": 1790068314.0562665,
-    "ast_hash": "5c908f8539c9a2887352ad8711ad91e4",
-    "semantic_hash": "5c908f8539c9a2887352ad8711ad91e4"
+    "mtime": 1790344782.0795126,
+    "seen": 1790346187.2951763,
+    "ast_hash": "e75891dbad296d120b9fea01b60ed46d",
+    "semantic_hash": "e75891dbad296d120b9fea01b60ed46d"
   },
   "app/Models/TankGeofenceState.php": {
-    "mtime": 1790061611.295119,
-    "seen": 1790068314.0562665,
-    "ast_hash": "81fc51e1cfc408735c6128df81e5981b",
-    "semantic_hash": "81fc51e1cfc408735c6128df81e5981b"
+    "mtime": 1790344782.0879614,
+    "seen": 1790346187.2951763,
+    "ast_hash": "ddbe9438eb5c54f79958e5049526ab58",
+    "semantic_hash": "ddbe9438eb5c54f79958e5049526ab58"
   },
   "app/Models/TankLevelReading.php": {
-    "mtime": 1790061698.7681289,
-    "seen": 1790068314.0562665,
-    "ast_hash": "911459aaa9eca5019001b5738348b322",
-    "semantic_hash": "911459aaa9eca5019001b5738348b322"
+    "mtime": 1790344782.0945215,
+    "seen": 1790346187.2951763,
+    "ast_hash": "545026f58bd9247f4ab2ef6e0e3648c8",
+    "semantic_hash": "545026f58bd9247f4ab2ef6e0e3648c8"
   },
   "app/Models/Transaction.php": {
-    "mtime": 1790061698.770129,
-    "seen": 1790068314.0562665,
-    "ast_hash": "0f69f4bb2493d5493a37b1b2be1b4235",
-    "semantic_hash": "0f69f4bb2493d5493a37b1b2be1b4235"
+    "mtime": 1790344782.1025255,
+    "seen": 1790346187.2951763,
+    "ast_hash": "8c8d3605872762705e34fed4e6a066c1",
+    "semantic_hash": "8c8d3605872762705e34fed4e6a066c1"
   },
   "database/migrations/2026_09_22_072008_create_tanks_table.php": {
     "mtime": 1790061946.2155197,
@@ -1278,16 +1278,16 @@
     "semantic_hash": "4aebbe442e2416f65e586b13a9d8d7ef"
   },
   "resources/js/pages/admin/tanks/index.tsx": {
-    "mtime": 1790064154.557061,
-    "seen": 1790068314.0714364,
-    "ast_hash": "3677102255e8c1b03296849e01e60d2b",
-    "semantic_hash": "3677102255e8c1b03296849e01e60d2b"
+    "mtime": 1790227941.678094,
+    "seen": 1790346187.3056846,
+    "ast_hash": "0d9857ed5c5feb0fb7e648ed35e586d3",
+    "semantic_hash": "0d9857ed5c5feb0fb7e648ed35e586d3"
   },
   "resources/js/pages/fuel-monitoring/map.tsx": {
-    "mtime": 1790066173.4943674,
-    "seen": 1790068314.0724428,
-    "ast_hash": "ae33ccb902d8e35c378713df12672f75",
-    "semantic_hash": "ae33ccb902d8e35c378713df12672f75"
+    "mtime": 1790343745.4135196,
+    "seen": 1790346187.3056846,
+    "ast_hash": "e361e4ca21456cab3339cf05b0a87432",
+    "semantic_hash": "e361e4ca21456cab3339cf05b0a87432"
   },
   "tests/Feature/Admin/BackupTest.php": {
     "mtime": 1790064055.3275447,
@@ -1318,5 +1318,215 @@
     "seen": 1790068314.076442,
     "ast_hash": "be163e7b0e6753bf82ed5162b0148746",
     "semantic_hash": "be163e7b0e6753bf82ed5162b0148746"
+  },
+  "app/Events/AnomalyDetected.php": {
+    "mtime": 1790344781.544456,
+    "seen": 1790346187.2931764,
+    "ast_hash": "6733de1c1f7ed70bc09a88c693262702",
+    "semantic_hash": "6733de1c1f7ed70bc09a88c693262702"
+  },
+  "app/Events/FleetPositionUpdated.php": {
+    "mtime": 1790344781.5618255,
+    "seen": 1790346187.2931764,
+    "ast_hash": "5b48c18017817c72b94c592b66acb903",
+    "semantic_hash": "5b48c18017817c72b94c592b66acb903"
+  },
+  "app/Events/TankReadingReceived.php": {
+    "mtime": 1790344781.5783923,
+    "seen": 1790346187.2931764,
+    "ast_hash": "74f3b984c2468af6c82d24a31226a4be",
+    "semantic_hash": "74f3b984c2468af6c82d24a31226a4be"
+  },
+  "app/Http/Controllers/Admin/HardwareController.php": {
+    "mtime": 1790344781.5940554,
+    "seen": 1790346187.2931764,
+    "ast_hash": "6962f941ea20059c95b30a1ca969507a",
+    "semantic_hash": "6962f941ea20059c95b30a1ca969507a"
+  },
+  "app/Http/Controllers/Admin/RfidController.php": {
+    "mtime": 1790344781.6113045,
+    "seen": 1790346187.2931764,
+    "ast_hash": "9782142521291234373f9a7b9c3efe59",
+    "semantic_hash": "9782142521291234373f9a7b9c3efe59"
+  },
+  "app/Http/Controllers/Admin/VendorFillController.php": {
+    "mtime": 1790344781.6238446,
+    "seen": 1790346187.294177,
+    "ast_hash": "05bd808eb48db9fd84c212c766b8d8a1",
+    "semantic_hash": "05bd808eb48db9fd84c212c766b8d8a1"
+  },
+  "app/Http/Controllers/Api/AlarmApiController.php": {
+    "mtime": 1790344781.6399188,
+    "seen": 1790346187.294177,
+    "ast_hash": "2b4cede97c4a4a229a5824dc5d6ca931",
+    "semantic_hash": "2b4cede97c4a4a229a5824dc5d6ca931"
+  },
+  "app/Http/Controllers/Api/AvlIngestionController.php": {
+    "mtime": 1790344781.6656768,
+    "seen": 1790346187.294177,
+    "ast_hash": "9c6bcd6750d946fa2667600251b982af",
+    "semantic_hash": "9c6bcd6750d946fa2667600251b982af"
+  },
+  "app/Http/Controllers/Api/GeofenceApiController.php": {
+    "mtime": 1790344781.6824467,
+    "seen": 1790346187.294177,
+    "ast_hash": "213a716a52ee21e3813bdd8c5fe570c0",
+    "semantic_hash": "213a716a52ee21e3813bdd8c5fe570c0"
+  },
+  "app/Http/Controllers/Api/RfidSyncController.php": {
+    "mtime": 1790344781.69252,
+    "seen": 1790346187.294177,
+    "ast_hash": "2a1abb632f60537d79957bbb77f689a4",
+    "semantic_hash": "2a1abb632f60537d79957bbb77f689a4"
+  },
+  "app/Http/Controllers/Api/SiteReadingController.php": {
+    "mtime": 1790344781.7217376,
+    "seen": 1790346187.294177,
+    "ast_hash": "89e634bebde4ca4bdc3d29f38c53766d",
+    "semantic_hash": "89e634bebde4ca4bdc3d29f38c53766d"
+  },
+  "app/Http/Controllers/Api/TransactionIngestionController.php": {
+    "mtime": 1790344781.7365148,
+    "seen": 1790346187.294177,
+    "ast_hash": "e9f8b4b29c0e5721ffaaaec2a9240ce9",
+    "semantic_hash": "e9f8b4b29c0e5721ffaaaec2a9240ce9"
+  },
+  "app/Http/Controllers/FuelMonitoring/GeofenceController.php": {
+    "mtime": 1790344781.7430487,
+    "seen": 1790346187.294177,
+    "ast_hash": "c09b39b34141bcbfedf05031f62c9f06",
+    "semantic_hash": "c09b39b34141bcbfedf05031f62c9f06"
+  },
+  "app/Http/Middleware/VerifyDeviceToken.php": {
+    "mtime": 1790345264.3070252,
+    "seen": 1790346187.294177,
+    "ast_hash": "8053044dd9b2d5a165990c131ae02d65",
+    "semantic_hash": "8053044dd9b2d5a165990c131ae02d65"
+  },
+  "app/Jobs/CheckGeofenceJob.php": {
+    "mtime": 1790344781.977239,
+    "seen": 1790346187.2951763,
+    "ast_hash": "23cee6210e47c1f4f369f9ec32d712ef",
+    "semantic_hash": "23cee6210e47c1f4f369f9ec32d712ef"
+  },
+  "app/Jobs/DetectAnomalyJob.php": {
+    "mtime": 1790344782.0090642,
+    "seen": 1790346187.2951763,
+    "ast_hash": "9588017bd9049924db29bcb94ee82a3c",
+    "semantic_hash": "9588017bd9049924db29bcb94ee82a3c"
+  },
+  "app/Models/AnomalyRead.php": {
+    "mtime": 1790344782.0312793,
+    "seen": 1790346187.2951763,
+    "ast_hash": "93c7fbc79d5d0d502d706cdd916de903",
+    "semantic_hash": "93c7fbc79d5d0d502d706cdd916de903"
+  },
+  "config/broadcasting.php": {
+    "mtime": 1790343444.5238202,
+    "seen": 1790346187.2966802,
+    "ast_hash": "a3bbc2f15884b20f95b42be59ec0fb8d",
+    "semantic_hash": "a3bbc2f15884b20f95b42be59ec0fb8d"
+  },
+  "config/reverb.php": {
+    "mtime": 1790343444.8185556,
+    "seen": 1790346187.2966802,
+    "ast_hash": "46738b67fc035d576e5fbae04d4d2cdd",
+    "semantic_hash": "46738b67fc035d576e5fbae04d4d2cdd"
+  },
+  "config/sanctum.php": {
+    "mtime": 1790222521.778405,
+    "seen": 1790346187.2966802,
+    "ast_hash": "e3887ebee464a1b2c014cb16696a2b50",
+    "semantic_hash": "e3887ebee464a1b2c014cb16696a2b50"
+  },
+  "database/migrations/2026_09_24_040059_create_anomaly_reads_table.php": {
+    "mtime": 1790344782.1449287,
+    "seen": 1790346187.2986848,
+    "ast_hash": "4629a7eee71052c63ce5062d8f4e818d",
+    "semantic_hash": "4629a7eee71052c63ce5062d8f4e818d"
+  },
+  "database/migrations/2026_09_24_040202_create_personal_access_tokens_table.php": {
+    "mtime": 1790222521.7764041,
+    "seen": 1790346187.2986848,
+    "ast_hash": "eb77af89d184f92ec893eff344c34999",
+    "semantic_hash": "eb77af89d184f92ec893eff344c34999"
+  },
+  "resources/js/lib/echo.ts": {
+    "mtime": 1790344737.5015714,
+    "seen": 1790346187.3046849,
+    "ast_hash": "5fd3c48f266f683fa2da0d062507198c",
+    "semantic_hash": "5fd3c48f266f683fa2da0d062507198c"
+  },
+  "resources/js/lib/http.ts": {
+    "mtime": 1790344014.8844733,
+    "seen": 1790346187.3046849,
+    "ast_hash": "67622de0d14b892ce482e472fff152fb",
+    "semantic_hash": "67622de0d14b892ce482e472fff152fb"
+  },
+  "resources/js/pages/admin/geofences/index.tsx": {
+    "mtime": 1790344210.8036683,
+    "seen": 1790346187.3046849,
+    "ast_hash": "e6cb6f8d8d8f7362ff69ad4fd80fdfa1",
+    "semantic_hash": "e6cb6f8d8d8f7362ff69ad4fd80fdfa1"
+  },
+  "resources/js/pages/admin/rfid/index.tsx": {
+    "mtime": 1790228186.595688,
+    "seen": 1790346187.3046849,
+    "ast_hash": "13c789bcd568b3eca0ac5ba9d506f190",
+    "semantic_hash": "13c789bcd568b3eca0ac5ba9d506f190"
+  },
+  "resources/js/pages/admin/vendor-fills/index.tsx": {
+    "mtime": 1790228269.0895383,
+    "seen": 1790346187.3056846,
+    "ast_hash": "d65e06d11995669481594c3e557880d3",
+    "semantic_hash": "d65e06d11995669481594c3e557880d3"
+  },
+  "routes/api.php": {
+    "mtime": 1790345202.2934542,
+    "seen": 1790346187.306685,
+    "ast_hash": "b4ff6e37a55114a3e42cd5a594bd1527",
+    "semantic_hash": "b4ff6e37a55114a3e42cd5a594bd1527"
+  },
+  "routes/channels.php": {
+    "mtime": 1790344782.18956,
+    "seen": 1790346187.306685,
+    "ast_hash": "139b682add8f3e775b69ad3281b387eb",
+    "semantic_hash": "139b682add8f3e775b69ad3281b387eb"
+  },
+  "tests/Feature/Admin/GeofenceTest.php": {
+    "mtime": 1790344951.8518734,
+    "seen": 1790346187.306685,
+    "ast_hash": "b811df4a3b8c738bdc852fef239ca83e",
+    "semantic_hash": "b811df4a3b8c738bdc852fef239ca83e"
+  },
+  "tests/Feature/Admin/RfidTest.php": {
+    "mtime": 1790344782.2569983,
+    "seen": 1790346187.306685,
+    "ast_hash": "d7e5108d92441a279677058b1c9c7ff9",
+    "semantic_hash": "d7e5108d92441a279677058b1c9c7ff9"
+  },
+  "tests/Feature/Admin/VendorFillTest.php": {
+    "mtime": 1790344782.2785592,
+    "seen": 1790346187.3077397,
+    "ast_hash": "69cafd63e309309f0a6699bba60adcca",
+    "semantic_hash": "69cafd63e309309f0a6699bba60adcca"
+  },
+  "tests/Feature/Api/AlarmApiTest.php": {
+    "mtime": 1790344782.3022935,
+    "seen": 1790346187.3077397,
+    "ast_hash": "1eed691296955d106e03549a3ed05820",
+    "semantic_hash": "1eed691296955d106e03549a3ed05820"
+  },
+  "tests/Feature/Api/EdgeIngestionAuthTest.php": {
+    "mtime": 1790345264.375803,
+    "seen": 1790346187.3077397,
+    "ast_hash": "a8fc93c43351ab45ab23394cefc11eb7",
+    "semantic_hash": "a8fc93c43351ab45ab23394cefc11eb7"
+  },
+  "tests/Feature/FuelMonitoring/AlarmWebLifecycleTest.php": {
+    "mtime": 1790344951.870263,
+    "seen": 1790346187.3077397,
+    "ast_hash": "bff33781f67c9bdeb086e99befa4f40f",
+    "semantic_hash": "bff33781f67c9bdeb086e99befa4f40f"
   }
 }
