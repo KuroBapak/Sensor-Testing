@@ -20,7 +20,7 @@ interface Props {
     geofences: Geofence[];
 }
 
-const SITE_CENTER: [number, number] = [-2.6015, 118.002];
+const SITE_CENTER: [number, number] = [-1.6747, 113.3800];
 
 function toLatLngs(coordinates: [number, number][]): L.LatLngExpression[] {
     return coordinates.map(([lat, lng]) => [lat, lng] as L.LatLngExpression);

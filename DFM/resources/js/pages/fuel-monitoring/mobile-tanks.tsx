@@ -7,30 +7,62 @@ import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { subscribe, isRealtimeEnabled } from '@/lib/echo';
 
-interface MobileTankLog {
-    id?: number;
-    tank_type: string;
-    rfid: string;
-    waktu: string;
-    liter: number;
+interface TankData {
+    tank_id: number;
+    name: string;
+    capacity: number;
+    current_level: number;
+    level_chart_data: Array<{ waktu: string; liter: number }>;
+    transactions: Array<{
+        tank_type: string;
+        rfid: string;
+        waktu: string;
+        liter: number;
+    }>;
 }
 
 interface Props {
-    initialFuelTankerData?: MobileTankLog[];
-    initialBrowserTankData?: MobileTankLog[];
+    browserTanks?: TankData[];
+    fuelTankers?: TankData[];
 }
 
-export default function MobileTanksMonitoring({ initialFuelTankerData = [], initialBrowserTankData = [] }: Props) {
-    const [fuelTankerData] = useState<MobileTankLog[]>(initialFuelTankerData);
-    const [browserTankData] = useState<MobileTankLog[]>(initialBrowserTankData);
+export default function MobileTanksMonitoring({ browserTanks = [], fuelTankers = [] }: Props) {
     const [connected] = useState(isRealtimeEnabled());
 
-    // Event-driven refresh on new mobile tank readings (no polling).
     useEffect(() => {
         return subscribe('trissan.live.mobile-tanks', 'tank-reading', () => {
-            router.reload({ only: ['initialFuelTankerData', 'initialBrowserTankData'] });
+            router.reload({ only: ['browserTanks', 'fuelTankers'] });
         });
     }, []);
+
+    const renderTankList = (tanks: TankData[], color: string, headerColor: string, title: string, emptyMsg: string) => (
+        <div className="space-y-4">
+            <h2 className={`text-xl font-bold ${headerColor} border-b pb-2`}>
+                {title} ({tanks.length})
+            </h2>
+            {tanks.length === 0 ? (
+                <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-lg text-slate-500 text-sm">{emptyMsg}</div>
+            ) : (
+                tanks.map((tank) => (
+                    <div key={tank.tank_id} className="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 border border-slate-200 dark:border-slate-700 space-y-3">
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <h3 className="font-bold text-slate-800 dark:text-slate-100">{tank.name}</h3>
+                                <p className="text-xs text-slate-500">Cap: {tank.capacity?.toLocaleString()} L</p>
+                            </div>
+                            <div className="text-right">
+                                <span className={`text-xl font-mono font-bold ${headerColor}`}>
+                                    {tank.current_level?.toLocaleString()} L
+                                </span>
+                            </div>
+                        </div>
+                        <MobileTankChart data={tank.level_chart_data} color={color} />
+                        <MobileTankTable data={tank.transactions} headerColor={headerColor} />
+                    </div>
+                ))
+            )}
+        </div>
+    );
 
     return (
         <>
@@ -38,8 +70,8 @@ export default function MobileTanksMonitoring({ initialFuelTankerData = [], init
             <div className="flex h-full flex-1 flex-col gap-6 p-6 bg-white dark:bg-slate-900 text-slate-900 dark:text-white min-h-screen">
                 <header className="border-b border-slate-200 dark:border-slate-800 pb-4 flex justify-between items-center">
                     <div>
-                        <h1 className="text-3xl font-extrabold tracking-tight">Mobile Tanks Level Monitoring</h1>
-                        <p className="text-slate-600 dark:text-slate-400 text-sm">Browser Tank & Fuel Tanker Real-Time Data</p>
+                        <h1 className="text-3xl font-extrabold tracking-tight">Mobile Tanks Monitoring</h1>
+                        <p className="text-slate-600 dark:text-slate-400 text-sm">Real-Time Level & Transactions for Mobile Units</p>
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
@@ -59,19 +91,12 @@ export default function MobileTanksMonitoring({ initialFuelTankerData = [], init
                     </div>
                 </header>
 
-                <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-6 border border-slate-200 dark:border-slate-700">
-                        <h3 className="text-xl font-bold mb-4 text-blue-600 dark:text-blue-400">Fuel Tanker</h3>
-                        <MobileTankChart data={fuelTankerData} color="#3B82F6" />
-                        <MobileTankTable data={fuelTankerData} headerColor="text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-6 border border-slate-200 dark:border-slate-700">
-                        <h3 className="text-xl font-bold mb-4 text-purple-600 dark:text-purple-400">Browser Tank</h3>
-                        <MobileTankChart data={browserTankData} color="#A855F7" />
-                        <MobileTankTable data={browserTankData} headerColor="text-purple-600 dark:text-purple-400" />
-                    </div>
+                <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {renderTankList(fuelTankers, '#3B82F6', 'text-blue-600 dark:text-blue-400', 'Fuel Tankers', 'No Fuel Tankers registered')}
+                    {renderTankList(browserTanks, '#A855F7', 'text-purple-600 dark:text-purple-400', 'Browser Tanks', 'No Browser Tanks registered')}
                 </section>
             </div>
         </>
     );
 }
+

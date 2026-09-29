@@ -25,6 +25,11 @@ export async function httpJson<T = any>(
         headers['X-XSRF-TOKEN'] = xsrf;
     }
 
+    // If we're sending a body, set Content-Type to JSON
+    if (body !== undefined) {
+        headers['Content-Type'] = 'application/json';
+    }
+
     const response = await fetch(url, {
         method,
         headers,

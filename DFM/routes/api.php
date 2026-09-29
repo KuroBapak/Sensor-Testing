@@ -3,7 +3,9 @@
 use App\Http\Controllers\Api\AlarmApiController;
 use App\Http\Controllers\Api\AvlIngestionController;
 use App\Http\Controllers\Api\GeofenceApiController;
+use App\Http\Controllers\Api\RfidAuthController;
 use App\Http\Controllers\Api\RfidSyncController;
+use App\Http\Controllers\Api\ScanRejectionController;
 use App\Http\Controllers\Api\SiteReadingController;
 use App\Http\Controllers\Api\TransactionIngestionController;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +30,14 @@ Route::prefix('v1')->middleware('device.token')->group(function () {
     // RFID tag sync (304 if unchanged)
     Route::get('sync/rfid', [RfidSyncController::class, 'sync'])
         ->name('api.v1.sync.rfid');
+
+    // Emergency RFID check for tags missing from local list (PRD §2.A, §5)
+    Route::post('auth/check', [RfidAuthController::class, 'check'])
+        ->name('api.v1.auth.check');
+
+    // Log rejected RFID scans as unauthorized_scan alarms (PRD §2.A, §5)
+    Route::post('scan-rejections', [ScanRejectionController::class, 'store'])
+        ->name('api.v1.scan-rejections');
 });
 
 /*

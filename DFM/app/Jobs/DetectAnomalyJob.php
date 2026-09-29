@@ -122,6 +122,13 @@ class DetectAnomalyJob implements ShouldQueue
             ->exists();
 
         if (! $matchingOutflow) {
+            // Find latest coordinates for this tank/device
+            $latestReading = TankLevelReading::where('tank_id', $txn->tank_id)
+                ->whereNotNull('latitude')
+                ->whereNotNull('longitude')
+                ->orderByDesc('timestamp')
+                ->first();
+
             $anomaly = AnomalyLog::create([
                 'anomaly_type' => 'calibration_needed',
                 'tank_id' => $txn->tank_id,
@@ -129,6 +136,9 @@ class DetectAnomalyJob implements ShouldQueue
                 'transaction_id' => $txn->id,
                 'volume_diff' => $txn->liters,
                 'anomaly_time' => $txn->ended_at,
+                'latitude' => $latestReading?->latitude,
+                'longitude' => $latestReading?->longitude,
+                'position_time' => $latestReading?->timestamp,
                 'status_investigasi' => 'open',
                 'meta' => [
                     'check' => 'transfer_reconciliation',

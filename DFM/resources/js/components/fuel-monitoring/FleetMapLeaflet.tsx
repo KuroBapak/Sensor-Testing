@@ -169,7 +169,6 @@ export default function FleetMapLeaflet({
 }: FleetMapLeafletProps) {
     const [mounted, setMounted] = useState(false);
     const [centerTrigger, setCenterTrigger] = useState(0);
-    const [activeTile, setActiveTile] = useState<'osm' | 'voyager' | 'dark'>('voyager');
 
     useEffect(() => {
         setMounted(true);
@@ -218,43 +217,10 @@ export default function FleetMapLeaflet({
         );
     }
 
-    const tileUrls = {
-        osm: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        voyager: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-        dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    };
-
     return (
         <div className="relative w-full h-[650px] rounded-xl overflow-hidden border shadow-inner isolate">
             {/* Overlay Map Controls */}
             <div className="absolute top-4 right-4 z-[1000] flex flex-col gap-2 pointer-events-auto">
-                <div className="flex items-center gap-1 bg-background/90 backdrop-blur-md p-1.5 rounded-lg border shadow-md">
-                    <Button
-                        variant={activeTile === 'voyager' ? 'default' : 'ghost'}
-                        size="sm"
-                        className="h-7 text-xs px-2"
-                        onClick={() => setActiveTile('voyager')}
-                    >
-                        Map
-                    </Button>
-                    <Button
-                        variant={activeTile === 'dark' ? 'default' : 'ghost'}
-                        size="sm"
-                        className="h-7 text-xs px-2"
-                        onClick={() => setActiveTile('dark')}
-                    >
-                        Dark
-                    </Button>
-                    <Button
-                        variant={activeTile === 'osm' ? 'default' : 'ghost'}
-                        size="sm"
-                        className="h-7 text-xs px-2"
-                        onClick={() => setActiveTile('osm')}
-                    >
-                        OSM
-                    </Button>
-                </div>
-
                 <div className="flex flex-col gap-1.5 bg-background/90 backdrop-blur-md p-1.5 rounded-lg border shadow-md">
                     <Button
                         variant="secondary"
@@ -315,8 +281,8 @@ export default function FleetMapLeaflet({
                 className="h-full w-full z-0"
             >
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
-                    url={tileUrls[activeTile]}
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     maxZoom={19}
                 />
 

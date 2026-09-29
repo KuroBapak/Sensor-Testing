@@ -10,6 +10,11 @@ export interface AlarmRow {
     status?: string;
     resolved_by?: string | null;
     is_read?: boolean;
+    latitude?: number | null;
+    longitude?: number | null;
+    observed_percent?: number | null;
+    threshold_percent?: number | null;
+    sensitivity_mode?: string | null;
 }
 
 type StatusValue = 'open' | 'investigating' | 'resolved' | 'false_positive';
@@ -29,6 +34,31 @@ const STATUS_STYLES: Record<string, string> = {
     investigating: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
     resolved: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
     false_positive: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300',
+};
+
+// PRD §6 Page 3: Anomaly type badge styling
+const ANOMALY_TYPE_BADGES: Record<string, { label: string; className: string }> = {
+    sudden_change_theft: {
+        label: 'Theft Alarm',
+        className: 'bg-red-600 text-white font-bold animate-pulse',
+    },
+    calibration_needed: {
+        label: 'Sensor Needs Calibration',
+        className: 'bg-amber-500 text-white font-semibold',
+    },
+    unauthorized_scan: {
+        label: 'Unauthorized Scan',
+        className: 'bg-slate-500 text-white font-medium',
+    },
+    geofence_exit: {
+        label: 'Geofence Exit',
+        className: 'bg-slate-600 text-white font-medium',
+    },
+};
+
+const getAnomalyBadge = (type?: string) => {
+    const config = ANOMALY_TYPE_BADGES[type || ''] || { label: type || 'Unknown', className: 'bg-slate-400 text-white' };
+    return config;
 };
 
 export default function AlarmTable({ data, isPulsing, canManage = false, onMarkRead = noop, onStatusChange = noop }: AlarmTableProps) {
@@ -98,7 +128,28 @@ export default function AlarmTable({ data, isPulsing, canManage = false, onMarkR
                                             <div>{row.tank_name ?? '-'}</div>
                                             <div className="text-[11px] text-slate-500">{row.rfid}</div>
                                         </td>
-                                        <td className="p-3 text-xs">{row.anomaly_type ?? '-'}</td>
+                                        <td className="p-3">
+                                            {(() => {
+                                                const badge = getAnomalyBadge(row.anomaly_type);
+                                                return (
+                                                    <div className="flex flex-col gap-1 items-start">
+                                                        <span className={`px-2 py-0.5 rounded text-xs tracking-wide uppercase ${badge.className}`}>
+                                                            {badge.label}
+                                                        </span>
+                                                        {row.latitude && row.longitude && (
+                                                            <a
+                                                                href={`https://www.google.com/maps?q=${row.latitude},${row.longitude}`}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="text-[11px] text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1"
+                                                            >
+                                                                📍 Open in map
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })()}
+                                        </td>
                                         <td className="p-3">{row.waktu_kejadian}</td>
                                         <td className="p-3 text-right">{row.jumlah_liter.toLocaleString()}</td>
                                         <td className="p-3 text-xs">{row.resolved_by ?? '-'}</td>
