@@ -10,8 +10,8 @@ MCP_CAN CAN0(CAN_CS_PIN);
 #define ENGINE_SA 0x00
 const unsigned long EEC1_ID = 0x0CF00400UL | ENGINE_SA; // PGN 61444 (EEC1)
 
-float simRPM = 2000.0;
-int   direction = -1;
+float simRPM = 1000.0;
+int   direction = 1;
 unsigned long lastSend = 0;
 
 void setup() {
@@ -23,7 +23,7 @@ void setup() {
     while (1);
   }
   CAN0.setMode(MCP_NORMAL);
-  Serial.println("[TX] Mulai broadcast simulasi EEC1 (RPM sweep 2000 <-> 400)");
+  Serial.println("[TX] Mulai broadcast simulasi EEC1 (RPM sweep 1000 <-> 6000)");
 }
 
 void sendEEC1(float rpm) {
@@ -43,8 +43,8 @@ void loop() {
   if (millis() - lastSend >= 100) {
     lastSend = millis();
     sendEEC1(simRPM);
-    simRPM += direction * 15.0;
-    if (simRPM <= 400)  direction = 1;
-    if (simRPM >= 2000) direction = -1;
+    simRPM += direction * 40.0; // naik/turun lebih cepat biar cepet ngelewatin 3 zona
+    if (simRPM <= 1000) direction = 1;
+    if (simRPM >= 6000) direction = -1;
   }
 }
