@@ -1,35 +1,41 @@
 #include <SPI.h>
 #include <mcp_can.h>
+#include <EEPROM.h>
+#include <IWatchdog.h>
 
-// HW-184 (SPI1 default STM32F103)
+// ================= Hardware pins =================
 #define CAN_CS_PIN   PA4
 #define CAN_CRYSTAL  MCP_8MHZ
 #define CAN_SPEED    CAN_250KBPS
 MCP_CAN CAN0(CAN_CS_PIN);
 
-// Output alarm (ACTIVE LOW: LOW = nyala, HIGH = mati)
 #define PIN_BUZZER_EXT  PB7
 #define PIN_LED_RED     PB6
 #define PIN_LED_GREEN   PB5
-#define PIN_BUZZER_INT  PB4  // dipasangin sama buzzer external (nyala/mati/kedip bareng)
+// Output ACTIVE LOW: LOW = nyala, HIGH = mati
 
 #define PGN_EEC1   61444UL
 
-// ---------------- Threshold RPM (logic baru) ----------------
-const float RPM_CAUTION_LOW = 3000.0; // di bawah ini = aman
-const float RPM_DANGER      = 5000.0; // di atas ini = bahaya, buzzer full
-const unsigned long BLINK_INTERVAL_MS = 1000; // kedip tiap 1 detik (on 1s / off 1s) - dipakai pas zona CAUTION
+// ================= Config tersimpan di flash =================
+struct Config {
+  uint32_t magic;
+  uint16_t version;
+  float    rpmSafeBoundary;    // batas Safe -> Caution
+  float    rpmDangerBoundary;  // batas Caution -> Danger
+  uint32_t checksum;
+};
 
-// ---------------- State sistem ----------------
-// SYS_INIT        : baru nyala, CAN belum siap -> hanya LED merah berkedip (lihat blinkError()), buzzer & hijau mati
-// SYS_WAITING_RPM : CAN sudah init OK, nunggu frame RPM pertama -> LED merah mati, LED hijau berkedip, buzzer mati
-// SYS_NORMAL      : sudah pernah dapat RPM valid -> jalan logic zona (SAFE/CAUTION/DANGER) seperti biasa
+const uint32_t CONFIG_MAGIC   = 0xC0FFEE42;
+const uint16_t CONFIG_VERSION = 1;
+const int      CONFIG_ADDR    = 0;
+const float    DEFAULT_SAFE   = 3000.0;
+const float    DEFAULT_DANGER = 5000.0;
+
+Config cfg;
+
+// ================= State sistem =================
 enum SystemState { SYS_INIT, SYS_WAITING_RPM, SYS_NORMAL };
 SystemState sysState = SYS_INIT;
-
-const unsigned long WAIT_BLINK_INTERVAL_MS = 500; // kedip hijau saat standby/nunggu data (dibedain dari kedip caution)
-bool waitBlinkState = false;
-unsigned long lastWaitBlinkToggle = 0;
 
 enum RpmZone { ZONE_SAFE, ZONE_CAUTION, ZONE_DANGER };
 RpmZone currentZone = ZONE_SAFE;
@@ -37,11 +43,42 @@ float lastRpm = 0;
 
 bool blinkState = false;
 unsigned long lastBlinkToggle = 0;
+const unsigned long BLINK_INTERVAL_MS = 1000; // kedip CAUTION/DANGER
+
+bool waitBlinkState = false;
+unsigned long lastWaitBlinkToggle = 0;
+const unsigned long WAIT_BLINK_INTERVAL_MS = 500; // kedip standby
 
 unsigned long lastRxTime = 0;
 const unsigned long RX_TIMEOUT_MS = 2000;
 bool signalLost = true;
 
+// ---- runtime toggle (TIDAK disimpan ke flash, reset ke default tiap boot) ----
+bool buzzerEnabled    = true; // true = ikut rules RPM, false = mati total
+bool showRpmOnTerminal = true; // true = print tiap RPM kebaca, false = senyap (deteksi tetap jalan)
+
+// buffer command Bluetooth (char array, bukan String, biar ga fragmentasi heap)
+char cmdBuffer[64];
+uint8_t cmdLen = 0;
+
+// ================= Prototypes =================
+void loadConfig();
+void saveConfig();
+uint32_t calcChecksum(const Config &c);
+void pollBluetoothCommands();
+void handleCommand(char *line);
+bool streq(const char *a, const char *b);
+void printHelp();
+void printStatus();
+void handleSetBoundary(bool isSafe, const char *argStr);
+void handleSetBuzzer(const char *argStr);
+void handleShowRpm(const char *argStr);
+void applyOutputs(bool buzzerFromZone, bool ledRed, bool ledGreen);
+void allOff();
+void blinkError();
+void logBoth(const char *s);
+
+// ================= Setup =================
 void setup() {
   Serial.begin(115200);
   Serial2.begin(9600);
@@ -49,27 +86,36 @@ void setup() {
   pinMode(PIN_BUZZER_EXT, OUTPUT);
   pinMode(PIN_LED_RED, OUTPUT);
   pinMode(PIN_LED_GREEN, OUTPUT);
-  pinMode(PIN_BUZZER_INT, OUTPUT);
   allOff();
 
-  sysState = SYS_INIT; // pastikan eksplisit: belum ada buzzer/led merah nyala solid selama init
+  loadConfig();
+
+  IWatchdog.begin(4000000); // 4 detik, auto-reset kalau loop() macet
+
+  sysState = SYS_INIT;
 
   if (CAN0.begin(MCP_ANY, CAN_SPEED, CAN_CRYSTAL) == CAN_OK) {
     logBoth("[RX] MCP2515 init OK");
   } else {
     logBoth("[RX] MCP2515 init GAGAL - cek wiring/crystal/power HW-184");
-    while (1) { blinkError(); } // hanya LED merah berkedip, buzzer & hijau tetap mati (allOff() sudah dipanggil di atas)
+    while (1) { blinkError(); }
   }
   CAN0.setMode(MCP_NORMAL);
   logBoth("[RX] Siap, nunggu frame J1939 dari truk...");
 
-  // init selesai -> masuk mode standby: LED merah mati, LED hijau mulai berkedip sampai RPM pertama didapat
   allOff();
   sysState = SYS_WAITING_RPM;
   lastWaitBlinkToggle = millis();
+
+  printHelp();
 }
 
+// ================= Loop =================
 void loop() {
+  IWatchdog.reload();
+
+  pollBluetoothCommands();
+
   // ---- baca CAN ----
   if (CAN0.checkReceive() == CAN_MSGAVAIL) {
     unsigned long rxId;
@@ -97,7 +143,12 @@ void loop() {
             logBoth("[RX] RPM pertama diterima -> sistem mulai normal");
           }
 
-          logBoth("[RX] RPM=" + String(lastRpm, 1) + " SA=0x" + String(sa, HEX));
+          // deteksi TETAP jalan walau showRpmOnTerminal=false, ini cuma soal print doang
+          if (showRpmOnTerminal) {
+            char buf2[48];
+            snprintf(buf2, sizeof(buf2), "[RX] RPM=%.1f SA=0x%02X", lastRpm, sa);
+            logBoth(buf2);
+          }
         }
       }
     }
@@ -106,44 +157,42 @@ void loop() {
   // ---- signal timeout ----
   if (!signalLost && millis() - lastRxTime > RX_TIMEOUT_MS) {
     signalLost = true;
-    // sinyal hilang lagi -> balik ke mode standby (LED hijau berkedip) sampai dapat data lagi
     sysState = SYS_WAITING_RPM;
     waitBlinkState = false;
     lastWaitBlinkToggle = millis();
-    logBoth("[RX] Sinyal J1939 hilang -> kembali ke mode standby (LED hijau berkedip)");
+    logBoth("[RX] Sinyal J1939 hilang -> kembali ke mode standby");
   }
 
-  // ---- mode standby: nunggu RPM (pertama kali atau setelah sinyal hilang) ----
+  // ---- mode standby ----
   if (sysState == SYS_WAITING_RPM) {
     if (millis() - lastWaitBlinkToggle >= WAIT_BLINK_INTERVAL_MS) {
       lastWaitBlinkToggle = millis();
       waitBlinkState = !waitBlinkState;
     }
-    setOutputs(false, false, waitBlinkState); // buzzer off, merah off, hijau kedip
+    applyOutputs(false, false, waitBlinkState);
     return;
   }
 
-  // ---- dari sini sysState == SYS_NORMAL ----
-
-  // ---- tentuin zona RPM ----
+  // ---- SYS_NORMAL: tentuin zona RPM (deteksi selalu jalan, ga kepengaruh ShowRpm) ----
   RpmZone newZone;
-  if (lastRpm > RPM_DANGER)          newZone = ZONE_DANGER;
-  else if (lastRpm >= RPM_CAUTION_LOW) newZone = ZONE_CAUTION;
-  else                                 newZone = ZONE_SAFE;
+  if (lastRpm > cfg.rpmDangerBoundary)        newZone = ZONE_DANGER;
+  else if (lastRpm >= cfg.rpmSafeBoundary)    newZone = ZONE_CAUTION;
+  else                                        newZone = ZONE_SAFE;
 
   if (newZone != currentZone) {
     currentZone = newZone;
     blinkState = false;
     lastBlinkToggle = millis();
-    const char* zoneName = currentZone == ZONE_SAFE ? "SAFE" :
+    const char *zoneName = currentZone == ZONE_SAFE ? "SAFE" :
                             currentZone == ZONE_CAUTION ? "CAUTION" : "DANGER";
-    logBoth(String("[RX] Zona berubah -> ") + zoneName);
+    char buf3[48];
+    snprintf(buf3, sizeof(buf3), "[RX] Zona berubah -> %s", zoneName);
+    logBoth(buf3);
   }
 
-  // ---- drive output sesuai zona ----
   switch (currentZone) {
     case ZONE_SAFE:
-      setOutputs(false, false, true); // buzzer off, merah off, hijau nyala
+      applyOutputs(false, false, true);
       break;
 
     case ZONE_CAUTION:
@@ -151,24 +200,26 @@ void loop() {
         lastBlinkToggle = millis();
         blinkState = !blinkState;
       }
-      setOutputs(blinkState, blinkState, !blinkState);
+      applyOutputs(blinkState, blinkState, false);
       break;
 
     case ZONE_DANGER:
-      setOutputs(true, false, true); // buzzer full nyala, merah off, hijau nyala
+      applyOutputs(true, true, false);
       break;
   }
 }
 
-void setOutputs(bool buzzer, bool ledRed, bool ledGreen) {
-  digitalWrite(PIN_BUZZER_EXT, !buzzer);
-  digitalWrite(PIN_BUZZER_INT, !buzzer);
+// ================= Output =================
+void applyOutputs(bool buzzerFromZone, bool ledRed, bool ledGreen) {
+  bool buzzerFinal = buzzerEnabled ? buzzerFromZone : false;
+
+  digitalWrite(PIN_BUZZER_EXT, !buzzerFinal);
   digitalWrite(PIN_LED_RED, !ledRed);
   digitalWrite(PIN_LED_GREEN, !ledGreen);
 }
 
 void allOff() {
-  setOutputs(false, false, false);
+  applyOutputs(false, false, false);
 }
 
 void blinkError() {
@@ -176,7 +227,163 @@ void blinkError() {
   delay(300);
 }
 
-void logBoth(const String &s) {
+// ================= EEPROM (flash emulation) =================
+uint32_t calcChecksum(const Config &c) {
+  uint32_t sbBits, dbBits;
+  memcpy(&sbBits, &c.rpmSafeBoundary, 4);
+  memcpy(&dbBits, &c.rpmDangerBoundary, 4);
+  return c.magic ^ c.version ^ sbBits ^ dbBits;
+}
+
+void saveConfig() {
+  cfg.checksum = calcChecksum(cfg);
+  EEPROM.put(CONFIG_ADDR, cfg);
+  logBoth("[CFG] Disimpan ke flash");
+}
+
+void loadConfig() {
+  EEPROM.get(CONFIG_ADDR, cfg);
+  bool valid = (cfg.magic == CONFIG_MAGIC) &&
+               (cfg.version == CONFIG_VERSION) &&
+               (cfg.checksum == calcChecksum(cfg)) &&
+               (cfg.rpmSafeBoundary > 0) &&
+               (cfg.rpmDangerBoundary > cfg.rpmSafeBoundary);
+
+  if (!valid) {
+    cfg.magic = CONFIG_MAGIC;
+    cfg.version = CONFIG_VERSION;
+    cfg.rpmSafeBoundary = DEFAULT_SAFE;
+    cfg.rpmDangerBoundary = DEFAULT_DANGER;
+    saveConfig();
+    logBoth("[CFG] Flash kosong/rusak -> pakai default & simpan");
+  } else {
+    logBoth("[CFG] Config dimuat dari flash");
+  }
+}
+
+// ================= Command Bluetooth =================
+bool streq(const char *a, const char *b) {
+  while (*a && *b) {
+    if (tolower((unsigned char)*a) != tolower((unsigned char)*b)) return false;
+    a++; b++;
+  }
+  return *a == *b;
+}
+
+void pollBluetoothCommands() {
+  while (Serial2.available()) {
+    char c = Serial2.read();
+    if (c == '\r') continue;
+    if (c == '\n') {
+      cmdBuffer[cmdLen] = '\0';
+      if (cmdLen > 0) handleCommand(cmdBuffer);
+      cmdLen = 0;
+    } else if (cmdLen < sizeof(cmdBuffer) - 1) {
+      cmdBuffer[cmdLen++] = c;
+    } else {
+      cmdLen = 0; // overflow guard
+    }
+  }
+}
+
+void handleCommand(char *line) {
+  char *cmd = strtok(line, " ");
+  char *argStr = strtok(NULL, " ");
+  if (cmd == NULL) return;
+
+  if (streq(cmd, "/help")) {
+    printHelp();
+  } else if (streq(cmd, "/SetSafe") || streq(cmd, "/SetCaution")) {
+    handleSetBoundary(true, argStr);
+  } else if (streq(cmd, "/SetDanger")) {
+    handleSetBoundary(false, argStr);
+  } else if (streq(cmd, "/SetBuzzerExt")) {
+    handleSetBuzzer(argStr);
+  } else if (streq(cmd, "/ShowRpm")) {
+    handleShowRpm(argStr);
+  } else if (streq(cmd, "/status")) {
+    printStatus();
+  } else {
+    char buf[64];
+    snprintf(buf, sizeof(buf), "[CMD] Ga dikenal: %s (ketik /help)", cmd);
+    logBoth(buf);
+  }
+}
+
+void handleSetBoundary(bool isSafe, const char *argStr) {
+  if (argStr == NULL) {
+    logBoth("[CMD] Format salah, contoh: /SetSafe 3000");
+    return;
+  }
+  float val = atof(argStr);
+  if (val <= 0) {
+    logBoth("[CMD] Nilai RPM harus > 0");
+    return;
+  }
+
+  float newSafe   = isSafe ? val : cfg.rpmSafeBoundary;
+  float newDanger = isSafe ? cfg.rpmDangerBoundary : val;
+
+  if (newDanger <= newSafe) {
+    logBoth("[CMD] Ditolak: batas Danger harus lebih besar dari Safe");
+    return;
+  }
+
+  cfg.rpmSafeBoundary = newSafe;
+  cfg.rpmDangerBoundary = newDanger;
+  saveConfig();
+
+  char buf[72];
+  snprintf(buf, sizeof(buf), "[CMD] OK: Safe/Caution=%.0f, Caution/Danger=%.0f",
+           cfg.rpmSafeBoundary, cfg.rpmDangerBoundary);
+  logBoth(buf);
+}
+
+void handleSetBuzzer(const char *argStr) {
+  if (argStr == NULL || (strcmp(argStr, "0") != 0 && strcmp(argStr, "1") != 0)) {
+    logBoth("[CMD] Format salah, contoh: /SetBuzzerExt 1  (0=mati total, 1=ikut rules RPM)");
+    return;
+  }
+  buzzerEnabled = (argStr[0] == '1');
+  char buf[64];
+  snprintf(buf, sizeof(buf), "[CMD] Buzzer %s", buzzerEnabled ? "AKTIF (ikut rules RPM)" : "MATI TOTAL");
+  logBoth(buf);
+}
+
+void handleShowRpm(const char *argStr) {
+  if (argStr == NULL || (strcmp(argStr, "0") != 0 && strcmp(argStr, "1") != 0)) {
+    logBoth("[CMD] Format salah, contoh: /ShowRpm 1  (0=senyap, 1=tampilin tiap RPM kebaca)");
+    return;
+  }
+  showRpmOnTerminal = (argStr[0] == '1');
+  char buf[56];
+  snprintf(buf, sizeof(buf), "[CMD] Tampilan RPM di terminal: %s", showRpmOnTerminal ? "ON" : "OFF");
+  logBoth(buf);
+}
+
+void printHelp() {
+  logBoth("=== Daftar Command ===");
+  logBoth("/help               - tampilkan daftar command ini");
+  logBoth("/SetSafe <rpm>      - set batas Safe->Caution (alias /SetCaution)");
+  logBoth("/SetCaution <rpm>   - sama seperti /SetSafe");
+  logBoth("/SetDanger <rpm>    - set batas Caution->Danger");
+  logBoth("/SetBuzzerExt <0|1> - 0=mati total, 1=ikut rules RPM");
+  logBoth("/ShowRpm <0|1>      - 0=senyap, 1=tampilin tiap RPM kebaca (deteksi tetap jalan)");
+  logBoth("/status             - lihat config sekarang (bukan RPM live)");
+}
+
+void printStatus() {
+  char buf[112];
+  snprintf(buf, sizeof(buf),
+    "[STATUS] Safe=%.0f Danger=%.0f BuzzerExt=%s ShowRpm=%s",
+    cfg.rpmSafeBoundary, cfg.rpmDangerBoundary,
+    buzzerEnabled ? "ON" : "OFF",
+    showRpmOnTerminal ? "ON" : "OFF");
+  logBoth(buf);
+}
+
+// ================= Logging =================
+void logBoth(const char *s) {
   Serial.println(s);
   Serial2.println(s);
 }
