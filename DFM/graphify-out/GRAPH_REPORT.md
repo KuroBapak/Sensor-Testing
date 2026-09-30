@@ -1,314 +1,366 @@
-# Graph Report - DFM  (2026-09-18)
+# Graph Report - DFM  (2026-09-30)
 
 ## Corpus Check
 - cluster-only mode — file stats not available
 
 ## Summary
-- 781 nodes · 1503 edges · 121 communities (33 shown, 88 thin omitted)
+- 1392 nodes · 3560 edges · 97 communities (54 shown, 43 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `954ab9b6`
+- Built from commit: `3199e2b7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- cn
-- fuel-monitoring.tsx
-- ProfileController.php
-- use-appearance.tsx
+- react
+- User
+- alarms.tsx
+- Controller
+- Illuminate\Database\Eloquent\Model
 - dependencies
-- sidebar.tsx
-- skeleton.tsx
-- app-header.tsx
-- private
-- auth-card-layout.tsx
-- Illuminate\Database\Migrations\Migration
-- navigation-menu.tsx
-- sheet.tsx
-- use-clipboard.ts
 - Illuminate\Http\Request
+- BackupSetting
+- package.json
+- app-sidebar.tsx
+- Site
+- dropdown-menu.tsx
+- use-appearance.tsx
+- sidebar.tsx
+- AnomalyDetected
+- @inertiajs/react
+- PasswordValidationRules
+- cn
+- index.ts
+- Tank
+- Illuminate\Http\JsonResponse
+- UserController.php
+- TankLevelReading
+- bootstrap/app.php
+- app-header.tsx
 - components.json
 - compilerOptions
+- AnomalyLog
+- HardwareDevice
+- Geofence
+- AlarmLog
+- SecurityTest.php
+- ProfileController.php
+- FortifyServiceProvider
 - scripts
-- User
+- Illuminate\Database\Schema\Blueprint
+- RfidTag
+- FuelMonitoringController.php
 - composer.json
 - require-dev
-- clsx
-- select.tsx
-- concurrently
-- FortifyServiceProvider
-- @inertiajs/react
-- @inertiajs/vite
-- package.json
+- AlarmApiTest.php
+- Illuminate\Database\Seeder
+- RfidTest.php
+- ReportExportTest.php
 - require
-- App Info
-- optionalDependencies
-- laravel-vite-plugin
-- Fuel Monitoring Dashboard Spec
-- config
-- lucide-react
-- scripts
-- @radix-ui/react-avatar
+- PasswordResetTest.php
+- toggle-group.tsx
+- ProfileValidationRules
+- Illuminate\Database\Migrations\Migration
+- Illuminate\Support\Facades\Schema
+- UserFactory.php
 - devDependencies
-- @radix-ui/react-checkbox
+- optionalDependencies
+- vite.config.ts
+- config
+- scripts
+- alert.tsx
+- use-permission.tsx
+- EdgeIngestionAuthTest.php
+- global.d.ts
 - psr-4
 - laravel
-- @radix-ui/react-collapsible
-- logging.php
+- 0001_01_01_000001_create_cache_table.php
+- 2026_09_22_062545_create_roles_and_permissions_tables.php
+- 2026_09_22_062552_add_role_id_to_users_table.php
+- 2026_09_29_202636_add_test_backup_timestamp_to_backup_settings_table.php
 - collapsible.tsx
-- layout.tsx
-- @radix-ui/react-dialog
-- GitHub Actions Tests Workflow
-- artisan
-- console.php
-- @radix-ui/react-dropdown-menu
-- GitHub Actions
-- ADR Template
-- MCP Tool Naming Gotcha
-- Spec Template
-- Favicon SVG
-- Robots.txt
-- @radix-ui/react-label
-- @radix-ui/react-navigation-menu
-- @radix-ui/react-select
-- @radix-ui/react-separator
-- @radix-ui/react-slot
-- @radix-ui/react-toggle
-- @radix-ui/react-toggle-group
-- @radix-ui/react-tooltip
-- react
-- react-dom
-- recharts
-- sonner
-- tailwind-merge
-- tailwindcss
-- @tailwindcss/vite
-- tw-animate-css
-- @types/react
-- @types/react-dom
-- typescript
-- vite
-- @vitejs/plugin-react
-- $schema
-- type
-- babel-plugin-react-compiler
-- clsx
-- concurrently
-- @laravel/multiplex
-- lightningcss-linux-x64-gnu
-- lightningcss-win32-x64-msvc
-- react-dom
-- @rollup/rollup-linux-x64-gnu
-- @rollup/rollup-win32-x64-msvc
-- tailwind-merge
-- tailwindcss
-- @tailwindcss/oxide-linux-x64-gnu
-- @tailwindcss/oxide-win32-x64-msvc
-- tw-animate-css
-- @types/node
-- @types/react
-- @types/react-dom
-- typescript
-- vite
-- mainNavItems
-- Props
-- rightNavItems
-- SidebarContext
-- SidebarGroupAction
-- SidebarInput
-- SidebarMenuAction
-- SidebarMenuBadge
-- SidebarMenuSkeleton
-- SidebarMenuSub
-- SidebarMenuSubButton
-- SidebarMenuSubItem
-- SidebarSeparator
+- use-clipboard.ts
+- 2026_09_17_031611_create_main_tank_logs_table.php
+- 2026_09_17_031612_create_mobile_tank_logs_table.php
+- 2026_09_22_062551_create_sites_table.php
+- 2026_09_22_072008_create_tanks_table.php
+- 2026_09_22_072010_create_rfid_tags_table.php
+- 2026_09_22_072012_create_tank_geofence_states_table.php
+- 2026_09_22_072013_create_backup_settings_table.php
+- 2026_09_22_072014_create_backup_runs_table.php
+- 2026_09_22_072138_create_tank_level_readings_table.php
+- 2026_09_22_072138_create_transactions_table.php
+- 2026_09_22_072139_create_anomaly_logs_table.php
+- 2026_09_24_040059_create_anomaly_reads_table.php
+- 2026_09_24_040202_create_personal_access_tokens_table.php
+- icon.tsx
 
 ## God Nodes (most connected - your core abstractions)
-1. `lucide-react` - 21 edges
-2. `User` - 17 edges
-3. `compilerOptions` - 14 edges
-4. `scripts` - 13 edges
-5. `Button()` - 12 edges
-6. `useAppearance()` - 12 edges
-7. `require-dev` - 12 edges
-8. `PasswordValidationRules` - 9 edges
-9. `toUrl()` - 9 edges
-10. `FortifyServiceProvider` - 8 edges
+1. `cn()` - 123 edges
+2. `User` - 102 edges
+3. `Site` - 73 edges
+4. `react` - 59 edges
+5. `Button()` - 52 edges
+6. `Tank` - 51 edges
+7. `Role` - 45 edges
+8. `Controller` - 45 edges
+9. `@inertiajs/react` - 44 edges
+10. `AnomalyLog` - 40 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `CardFooter()` --calls--> `cn()`  [EXTRACTED]
-  resources/js/components/ui/card.tsx → resources/js/lib/utils.ts
-- `ToggleGroup()` --calls--> `cn()`  [EXTRACTED]
-  resources/js/components/ui/toggle-group.tsx → resources/js/lib/utils.ts
-- `SheetFooter()` --calls--> `cn()`  [EXTRACTED]
-  resources/js/components/ui/sheet.tsx → resources/js/lib/utils.ts
-- `SheetOverlay()` --calls--> `cn()`  [EXTRACTED]
-  resources/js/components/ui/sheet.tsx → resources/js/lib/utils.ts
-- `SelectContent()` --calls--> `cn()`  [EXTRACTED]
-  resources/js/components/ui/select.tsx → resources/js/lib/utils.ts
+- `{closure#1}()` --calls--> `User`  [EXTRACTED]
+  tests/Feature/Admin/BackupTest.php → app/Models/User.php
+- `{closure#4}()` --calls--> `User`  [EXTRACTED]
+  tests/Feature/Admin/GeofenceTest.php → app/Models/User.php
+- `{closure#2}()` --calls--> `User`  [EXTRACTED]
+  tests/Feature/Admin/RfidTest.php → app/Models/User.php
+- `{closure#1}()` --calls--> `User`  [EXTRACTED]
+  tests/Feature/Admin/SensitivityTest.php → app/Models/User.php
+- `{closure#1}()` --calls--> `User`  [EXTRACTED]
+  tests/Feature/Admin/SiteSettingsTest.php → app/Models/User.php
 
 ## Import Cycles
 - None detected.
 
-## Hyperedges (group relationships)
-- **Fuel Monitoring Dashboard Pages** — fuel_monitoring_main_tank, fuel_monitoring_mobile_tanks, fuel_monitoring_alarms [EXTRACTED 0.75]
+## Communities (97 total, 43 thin omitted)
 
-## Communities (121 total, 88 thin omitted)
+### Community 0 - "react"
+Cohesion: 0.06
+Nodes (97): leaflet, leaflet-draw, lucide-react, @radix-ui/react-slot, react, react-leaflet, DeleteUser(), createTankDivIcon() (+89 more)
 
-### Community 0 - "cn"
-Cohesion: 0.10
-Nodes (38): @inertiajs/react, @radix-ui/react-checkbox, @radix-ui/react-label, react, resources_js_actions_app_http_controllers_settings_profilecontroller, resources_js_actions_app_http_controllers_settings_securitycontroller, DeleteUser(), InputError() (+30 more)
+### Community 1 - "User"
+Cohesion: 0.06
+Nodes (27): User, {closure#2}(), {closure#3}(), {closure#4}(), {closure#5}(), {closure#6}(), {closure#7}(), {closure#8}() (+19 more)
 
-### Community 1 - "fuel-monitoring.tsx"
+### Community 2 - "alarms.tsx"
 Cohesion: 0.09
-Nodes (22): recharts, AlarmTable(), AlarmTableProps, MainTankChart(), MainTankChartProps, MainTankTable(), MainTankTableProps, MobileTankChart() (+14 more)
+Nodes (37): recharts, AlarmRow, AlarmTable(), AlarmTableProps, ANOMALY_TYPE_BADGES, getAnomalyBadge(), STATUS_STYLES, StatusValue (+29 more)
 
-### Community 2 - "ProfileController.php"
-Cohesion: 0.06
-Nodes (27): PasswordValidationRules, ProfileValidationRules, Controller, FuelMonitoringController, ProfileController, SecurityController, PasswordUpdateRequest, ProfileDeleteRequest (+19 more)
-
-### Community 3 - "use-appearance.tsx"
-Cohesion: 0.11
-Nodes (25): @radix-ui/react-tooltip, sonner, AppearanceToggleTab(), Toaster(), Tooltip(), TooltipContent(), TooltipProvider(), TooltipTrigger() (+17 more)
-
-### Community 5 - "sidebar.tsx"
-Cohesion: 0.06
-Nodes (52): lucide-react, AppContent(), Props, AppShell(), Props, AppSidebar(), footerNavItems, AppSidebarHeader() (+44 more)
-
-### Community 7 - "app-header.tsx"
-Cohesion: 0.07
-Nodes (35): @radix-ui/react-avatar, @radix-ui/react-dropdown-menu, Avatar(), AvatarFallback(), AvatarImage(), DropdownMenu(), DropdownMenuCheckboxItem(), DropdownMenuContent() (+27 more)
-
-### Community 9 - "auth-card-layout.tsx"
-Cohesion: 0.10
-Nodes (17): AppLogo(), AppLogoIcon(), Card(), CardContent(), CardDescription(), CardFooter(), CardHeader(), CardTitle() (+9 more)
-
-### Community 10 - "Illuminate\Database\Migrations\Migration"
-Cohesion: 0.14
-Nodes (3): Illuminate\Database\Migrations\Migration, Illuminate\Database\Schema\Blueprint, Illuminate\Support\Facades\Schema
-
-### Community 11 - "navigation-menu.tsx"
+### Community 3 - "Controller"
 Cohesion: 0.08
-Nodes (25): class-variance-authority, @radix-ui/react-navigation-menu, @radix-ui/react-slot, @radix-ui/react-toggle, @radix-ui/react-toggle-group, Alert(), AlertDescription(), AlertTitle() (+17 more)
+Nodes (11): RfidController, SensitivityController, SiteSettingController, TankController, VendorFillController, RfidAuthController, Controller, GeofenceController (+3 more)
 
-### Community 12 - "sheet.tsx"
+### Community 4 - "Illuminate\Database\Eloquent\Model"
+Cohesion: 0.08
+Nodes (7): AnomalyRead, ExportLog, RolePermission, TankGeofenceState, Transaction, {closure#2}(), {closure#3}()
+
+### Community 5 - "dependencies"
+Cohesion: 0.05
+Nodes (39): dependencies, class-variance-authority, clsx, concurrently, @inertiajs/react, @inertiajs/vite, laravel-echo, laravel-vite-plugin (+31 more)
+
+### Community 6 - "Illuminate\Http\Request"
+Cohesion: 0.11
+Nodes (12): {closure#1}(), {closure#10}(), {closure#3}(), {closure#4}(), {closure#6}(), {closure#7}(), {closure#9}(), ReportExportController (+4 more)
+
+### Community 7 - "BackupSetting"
+Cohesion: 0.10
+Nodes (5): BackupController, RunBackupJob, BackupRun, BackupSetting, BackupStorageService
+
+### Community 8 - "package.json"
+Cohesion: 0.06
+Nodes (33): private, $schema, type, babel-plugin-react-compiler, clsx, concurrently, laravel-echo, @laravel/multiplex (+25 more)
+
+### Community 9 - "app-sidebar.tsx"
+Cohesion: 0.13
+Nodes (23): AppSidebar(), NavFooter(), NavMain(), Separator(), SidebarContent(), SidebarFooter(), SidebarGroup(), SidebarGroupContent() (+15 more)
+
+### Community 10 - "Site"
+Cohesion: 0.13
+Nodes (18): Role, Site, {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#5}(), {closure#1}() (+10 more)
+
+### Community 11 - "dropdown-menu.tsx"
+Cohesion: 0.12
+Nodes (21): @radix-ui/react-dropdown-menu, NavUser(), DropdownMenu(), DropdownMenuCheckboxItem(), DropdownMenuContent(), DropdownMenuGroup(), DropdownMenuItem(), DropdownMenuLabel() (+13 more)
+
+### Community 12 - "use-appearance.tsx"
+Cohesion: 0.13
+Nodes (21): sonner, AppearanceToggleTab(), Toaster(), Appearance, applyTheme(), getStoredAppearance(), handleSystemThemeChange(), initializeTheme() (+13 more)
+
+### Community 13 - "sidebar.tsx"
+Cohesion: 0.12
+Nodes (24): Sheet(), SheetContent(), SheetDescription(), SheetFooter(), SheetHeader(), SheetOverlay(), SheetPortal(), SheetTitle() (+16 more)
+
+### Community 14 - "AnomalyDetected"
+Cohesion: 0.16
+Nodes (4): AlarmCreated, AnomalyDetected, FleetPositionUpdated, TankReadingReceived
+
+### Community 15 - "@inertiajs/react"
+Cohesion: 0.13
+Nodes (12): @inertiajs/react, withApp(), AppLogo(), AppLogoIcon(), PlaceholderPattern(), PlaceholderPatternProps, TooltipProvider(), AuthSimpleLayout() (+4 more)
+
+### Community 16 - "PasswordValidationRules"
+Cohesion: 0.13
+Nodes (6): ResetUserPassword, PasswordValidationRules, SecurityController, PasswordUpdateRequest, TwoFactorAuthenticationRequest, {closure#1}()
+
+### Community 17 - "cn"
 Cohesion: 0.17
-Nodes (9): @radix-ui/react-dialog, Sheet(), SheetContent(), SheetDescription(), SheetFooter(), SheetHeader(), SheetOverlay(), SheetTitle() (+1 more)
+Nodes (22): @radix-ui/react-navigation-menu, Breadcrumbs(), Breadcrumb(), BreadcrumbEllipsis(), BreadcrumbItem(), BreadcrumbLink(), BreadcrumbList(), BreadcrumbPage() (+14 more)
 
-### Community 13 - "use-clipboard.ts"
-Cohesion: 0.40
-Nodes (3): CopiedValue, CopyFn, UseClipboardReturn
+### Community 18 - "index.ts"
+Cohesion: 0.18
+Nodes (13): AppContent(), Props, AppShell(), Props, AppSidebarHeader(), SidebarInset(), SidebarProvider(), AppHeaderLayout() (+5 more)
 
-### Community 14 - "Illuminate\Http\Request"
-Cohesion: 0.17
-Nodes (11): HandleAppearance, HandleInertiaRequests, Closure, Illuminate\Foundation\Application, Illuminate\Foundation\Configuration\Exceptions, Illuminate\Foundation\Configuration\Middleware, Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets, Illuminate\Http\Request (+3 more)
+### Community 19 - "Tank"
+Cohesion: 0.12
+Nodes (4): Tank, {closure#1}(), {closure#2}(), {closure#3}()
 
-### Community 15 - "components.json"
+### Community 20 - "Illuminate\Http\JsonResponse"
+Cohesion: 0.13
+Nodes (5): AlarmApiController, GeofenceApiController, RfidSyncController, ScanRejectionController, TransactionIngestionController
+
+### Community 21 - "UserController.php"
+Cohesion: 0.13
+Nodes (5): {closure#1}(), RoleController, {closure#1}(), UserController, Permissions
+
+### Community 22 - "TankLevelReading"
+Cohesion: 0.19
+Nodes (5): AvlIngestionController, SiteReadingController, CheckGeofenceJob, DetectAnomalyJob, TankLevelReading
+
+### Community 23 - "bootstrap/app.php"
+Cohesion: 0.15
+Nodes (6): CheckPermission, HandleAppearance, VerifyDeviceToken, {closure#1}(), {closure#2}(), {closure#3}()
+
+### Community 24 - "app-header.tsx"
+Cohesion: 0.25
+Nodes (14): AppHeader(), mainNavItems, Props, rightNavItems, Avatar(), AvatarFallback(), AvatarImage(), Tooltip() (+6 more)
+
+### Community 25 - "components.json"
 Cohesion: 0.11
 Nodes (17): aliases, components, hooks, lib, ui, utils, iconLibrary, rsc (+9 more)
 
-### Community 16 - "compilerOptions"
+### Community 26 - "compilerOptions"
 Cohesion: 0.12
 Nodes (15): compilerOptions, allowJs, esModuleInterop, forceConsistentCasingInFileNames, isolatedModules, jsx, module, moduleResolution (+7 more)
 
-### Community 17 - "scripts"
+### Community 27 - "AnomalyLog"
+Cohesion: 0.16
+Nodes (4): AnomalyLog, {closure#1}(), {closure#2}(), {closure#3}()
+
+### Community 28 - "HardwareDevice"
+Cohesion: 0.17
+Nodes (3): HardwareController, HardwareDevice, {closure#1}()
+
+### Community 29 - "Geofence"
+Cohesion: 0.17
+Nodes (7): Geofence, PlaceholderDataSeeder, {closure#1}(), {closure#2}(), {closure#4}(), {closure#7}(), {closure#8}()
+
+### Community 30 - "AlarmLog"
+Cohesion: 0.20
+Nodes (5): HandleInertiaRequests, AlarmLog, MainTankLog, MobileTankLog, FuelMonitoringSeeder
+
+### Community 31 - "SecurityTest.php"
+Cohesion: 0.18
+Nodes (7): {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#5}(), {closure#6}(), TestCase
+
+### Community 34 - "scripts"
 Cohesion: 0.15
 Nodes (13): scripts, ci:check, dev, lint, lint:check, post-autoload-dump, post-create-project-cmd, post-root-package-install (+5 more)
 
-### Community 18 - "User"
-Cohesion: 0.05
-Nodes (29): ResetUserPassword, User, UserFactory, DatabaseSeeder, Illuminate\Auth\Notifications\ResetPassword, Illuminate\Cache\RateLimiting\Limit, Illuminate\Database\Console\Seeds\WithoutModelEvents, Illuminate\Database\Eloquent\Attributes\Fillable (+21 more)
+### Community 35 - "Illuminate\Database\Schema\Blueprint"
+Cohesion: 0.23
+Nodes (6): {closure#1}(), {closure#2}(), {closure#3}(), {closure#1}(), {closure#2}(), {closure#3}()
 
-### Community 19 - "composer.json"
+### Community 36 - "RfidTag"
+Cohesion: 0.21
+Nodes (5): {closure#1}(), RfidTag, {closure#2}(), {closure#3}(), {closure#11}()
+
+### Community 38 - "composer.json"
 Cohesion: 0.17
 Nodes (11): autoload-dev, psr-4, description, keywords, license, minimum-stability, name, prefer-stable (+3 more)
 
-### Community 20 - "require-dev"
+### Community 39 - "require-dev"
 Cohesion: 0.17
 Nodes (12): require-dev, fakerphp/faker, larastan/larastan, laravel/boost, laravel/pail, laravel/pao, laravel/pint, laravel/sail (+4 more)
 
-### Community 22 - "select.tsx"
+### Community 41 - "Illuminate\Database\Seeder"
+Cohesion: 0.23
+Nodes (3): DatabaseSeeder, RolesAndPermissionsSeeder, SiteSeeder
+
+### Community 42 - "RfidTest.php"
 Cohesion: 0.17
-Nodes (8): @radix-ui/react-select, SelectContent(), SelectItem(), SelectLabel(), SelectScrollDownButton(), SelectScrollUpButton(), SelectSeparator(), SelectTrigger()
+Nodes (5): {closure#1}(), {closure#2}(), {closure#3}(), {closure#6}(), {closure#7}()
 
-### Community 24 - "FortifyServiceProvider"
+### Community 43 - "ReportExportTest.php"
 Cohesion: 0.17
-Nodes (6): AppServiceProvider, FortifyServiceProvider, Carbon\CarbonImmutable, Illuminate\Support\Facades\Date, Illuminate\Support\Facades\DB, Illuminate\Support\ServiceProvider
+Nodes (4): {closure#1}(), {closure#12}(), {closure#13}(), {closure#14}()
 
-### Community 27 - "package.json"
-Cohesion: 0.33
-Nodes (8): @inertiajs/vite, laravel-vite-plugin, ref_laravel_vite_plugin_fonts, @laravel/vite-plugin-wayfinder, @rolldown/plugin-babel, @tailwindcss/vite, vite-plus, @vitejs/plugin-react
+### Community 44 - "require"
+Cohesion: 0.18
+Nodes (11): require, inertiajs/inertia-laravel, laravel/chisel, laravel/fortify, laravel/framework, laravel/reverb, laravel/sanctum, laravel/tinker (+3 more)
 
-### Community 28 - "require"
+### Community 45 - "PasswordResetTest.php"
+Cohesion: 0.18
+Nodes (4): {closure#3}(), {closure#4}(), {closure#6}(), {closure#8}()
+
+### Community 46 - "toggle-group.tsx"
+Cohesion: 0.29
+Nodes (8): class-variance-authority, @radix-ui/react-toggle, @radix-ui/react-toggle-group, ToggleGroup(), ToggleGroupContext, ToggleGroupItem(), Toggle(), toggleVariants
+
+### Community 51 - "devDependencies"
 Cohesion: 0.25
-Nodes (8): require, inertiajs/inertia-laravel, laravel/chisel, laravel/fortify, laravel/framework, laravel/tinker, laravel/wayfinder, php
+Nodes (8): devDependencies, babel-plugin-react-compiler, @laravel/vite-plugin-wayfinder, @rolldown/plugin-babel, @types/leaflet, @types/leaflet-draw, @types/node, vite-plus
 
-### Community 29 - "App Info"
-Cohesion: 0.25
-Nodes (8): App Info, Auth Middleware Routes Gotcha, Inertia, Laravel Framework, Laravel Pint, Pest, pnpm workspace, Wayfinder
-
-### Community 30 - "optionalDependencies"
+### Community 52 - "optionalDependencies"
 Cohesion: 0.25
 Nodes (8): optionalDependencies, @laravel/multiplex, lightningcss-linux-x64-gnu, lightningcss-win32-x64-msvc, @rollup/rollup-linux-x64-gnu, @rollup/rollup-win32-x64-msvc, @tailwindcss/oxide-linux-x64-gnu, @tailwindcss/oxide-win32-x64-msvc
 
-### Community 32 - "Fuel Monitoring Dashboard Spec"
-Cohesion: 0.29
-Nodes (7): Alarm Logs Table, Fuel Monitoring Dashboard Spec, Fuel Monitoring Alarms Route, Fuel Monitoring Main Tank Route, Fuel Monitoring Mobile Tanks Route, Main Tank Logs Table, Mobile Tank Logs Table
+### Community 53 - "vite.config.ts"
+Cohesion: 0.25
+Nodes (7): @inertiajs/vite, laravel-vite-plugin, @laravel/vite-plugin-wayfinder, @rolldown/plugin-babel, @tailwindcss/vite, vite-plus, @vitejs/plugin-react
 
-### Community 33 - "config"
+### Community 54 - "config"
 Cohesion: 0.29
 Nodes (7): pestphp/pest-plugin, php-http/discovery, config, allow-plugins, optimize-autoloader, preferred-install, sort-packages
 
-### Community 35 - "scripts"
+### Community 55 - "scripts"
 Cohesion: 0.29
 Nodes (7): scripts, build, build:ssr, check, check:fix, dev, types:check
 
-### Community 37 - "devDependencies"
-Cohesion: 0.33
-Nodes (6): devDependencies, babel-plugin-react-compiler, @laravel/vite-plugin-wayfinder, @rolldown/plugin-babel, @types/node, vite-plus
+### Community 56 - "alert.tsx"
+Cohesion: 0.62
+Nodes (5): AlertError(), Alert(), AlertDescription(), AlertTitle(), alertVariants
 
-### Community 39 - "psr-4"
+### Community 58 - "EdgeIngestionAuthTest.php"
+Cohesion: 0.48
+Nodes (6): {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#5}(), transactionPayload()
+
+### Community 59 - "global.d.ts"
+Cohesion: 0.40
+Nodes (5): Auth, InertiaConfig, @inertiajs/core, InputHTMLAttributes, react
+
+### Community 60 - "psr-4"
 Cohesion: 0.40
 Nodes (5): autoload, psr-4, App\\, Database\\Factories\\, Database\\Seeders\\
 
-### Community 40 - "laravel"
+### Community 61 - "laravel"
 Cohesion: 0.40
 Nodes (5): extra, laravel, post-create-project, dont-discover, installer
 
-### Community 42 - "logging.php"
+### Community 68 - "use-clipboard.ts"
 Cohesion: 0.40
-Nodes (4): Monolog\Handler\NullHandler, Monolog\Handler\StreamHandler, Monolog\Handler\SyslogUdpHandler, Monolog\Processor\PsrLogMessageProcessor
-
-### Community 44 - "layout.tsx"
-Cohesion: 0.14
-Nodes (16): @radix-ui/react-separator, AppHeader(), Heading(), Separator(), IsCurrentOrParentUrlFn, IsCurrentUrlFn, useCurrentUrl(), UseCurrentUrlReturn (+8 more)
-
-### Community 46 - "GitHub Actions Tests Workflow"
-Cohesion: 0.50
-Nodes (4): actions/checkout, actions/setup-node, actions/setup-php, GitHub Actions Tests Workflow
+Nodes (3): CopiedValue, CopyFn, UseClipboardReturn
 
 ## Knowledge Gaps
-- **214 isolated node(s):** `Props`, `Props`, `Props`, `PageProps`, `Props` (+209 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 323 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **88 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **228 isolated node(s):** `FleetMapLeafletProps`, `Props`, `Geofence`, `Props`, `Props` (+223 more)
+  These have ≤1 connection - possible missing edges. (Counts symbols only; 446 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **43 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `react` connect `cn` to `fuel-monitoring.tsx`, `use-appearance.tsx`, `sidebar.tsx`, `app-header.tsx`, `auth-card-layout.tsx`, `navigation-menu.tsx`, `layout.tsx`, `sheet.tsx`, `use-clipboard.ts`, `select.tsx`, `package.json`?**
-  _High betweenness centrality (0.093) - this node is a cross-community bridge._
-- **Why does `@inertiajs/react` connect `cn` to `fuel-monitoring.tsx`, `use-appearance.tsx`, `sidebar.tsx`, `app-header.tsx`, `auth-card-layout.tsx`, `layout.tsx`, `package.json`?**
-  _High betweenness centrality (0.070) - this node is a cross-community bridge._
-- **Why does `cn()` connect `cn` to `use-appearance.tsx`, `sidebar.tsx`, `skeleton.tsx`, `app-header.tsx`, `auth-card-layout.tsx`, `navigation-menu.tsx`, `layout.tsx`, `sheet.tsx`, `SidebarGroupAction`, `SidebarInput`, `SidebarMenuAction`, `SidebarMenuBadge`, `SidebarMenuSkeleton`, `SidebarMenuSub`, `select.tsx`, `SidebarMenuSubButton`, `SidebarMenuSubItem`, `SidebarSeparator`?**
-  _High betweenness centrality (0.064) - this node is a cross-community bridge._
-- **What connects `Props`, `Props`, `Props` to the rest of the system?**
-  _214 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `cn` be split into smaller, more focused modules?**
-  _Cohesion score 0.096045197740113 - nodes in this community are weakly interconnected._
-- **Should `fuel-monitoring.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.09365079365079365 - nodes in this community are weakly interconnected._
-- **Should `ProfileController.php` be split into smaller, more focused modules?**
-  _Cohesion score 0.060109289617486336 - nodes in this community are weakly interconnected._
+- **Why does `User` connect `User` to `Illuminate\Database\Eloquent\Model`, `AlarmApiTest.php`, `Illuminate\Database\Seeder`, `Site`, `RfidTest.php`, `ReportExportTest.php`, `PasswordResetTest.php`, `ProfileValidationRules`, `PasswordValidationRules`, `UserFactory.php`, `Tank`, `UserController.php`, `AnomalyLog`, `Geofence`, `SecurityTest.php`?**
+  _High betweenness centrality (0.043) - this node is a cross-community bridge._
+- **Why does `react` connect `react` to `alarms.tsx`, `use-clipboard.ts`, `package.json`, `app-sidebar.tsx`, `dropdown-menu.tsx`, `use-appearance.tsx`, `sidebar.tsx`, `toggle-group.tsx`, `@inertiajs/react`, `cn`, `index.ts`, `alert.tsx`, `app-header.tsx`?**
+  _High betweenness centrality (0.041) - this node is a cross-community bridge._
+- **Why does `Site` connect `Site` to `Controller`, `RfidTag`, `FuelMonitoringController.php`, `Illuminate\Database\Eloquent\Model`, `BackupSetting`, `AlarmApiTest.php`, `Illuminate\Database\Seeder`, `RfidTest.php`, `ReportExportTest.php`, `Tank`, `Illuminate\Http\JsonResponse`, `TankLevelReading`, `EdgeIngestionAuthTest.php`, `AnomalyLog`, `HardwareDevice`, `Geofence`, `AlarmLog`?**
+  _High betweenness centrality (0.029) - this node is a cross-community bridge._
+- **What connects `FleetMapLeafletProps`, `Props`, `Geofence` to the rest of the system?**
+  _228 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `react` be split into smaller, more focused modules?**
+  _Cohesion score 0.06452901808011188 - nodes in this community are weakly interconnected._
+- **Should `User` be split into smaller, more focused modules?**
+  _Cohesion score 0.06448979591836734 - nodes in this community are weakly interconnected._
+- **Should `alarms.tsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.08734693877551021 - nodes in this community are weakly interconnected._
