@@ -1,6 +1,7 @@
 <?php
 
 use App\Jobs\RunBackupJob;
+use App\Models\BackupSetting;
 use App\Models\Role;
 use App\Models\Site;
 use App\Models\User;
@@ -50,7 +51,7 @@ it('updates backup settings successfully', function () {
             'enabled' => true,
         ])
         ->assertRedirect()
-        ->assertSessionHas('success', 'Backup settings updated successfully.');
+        ->assertSessionHas('success', 'Backup settings saved. Please run Test Connection before enabling backups.');
 
     $this->assertDatabaseHas('backup_settings', [
         'site_id' => $site->id,
@@ -69,6 +70,20 @@ it('can trigger a manual backup', function () {
         'timezone' => 'UTC',
     ]);
 
+    // Create backup settings with test passed
+    $settings = BackupSetting::create([
+        'site_id' => $site->id,
+        'provider' => 'S3',
+        'endpoint' => 'https://s3.amazonaws.com',
+        'region' => 'us-east-1',
+        'bucket' => 'test-bucket',
+        'access_key_id' => encrypt('test-key'),
+        'secret_access_key' => encrypt('test-secret'),
+        'last_connection_test_at' => now(),
+        'last_connection_test_ok' => true,
+        'last_test_backup_at' => now(),
+    ]);
+
     Queue::fake();
 
     actingAs($user)
@@ -83,4 +98,67 @@ it('can trigger a manual backup', function () {
     ]);
 
     Queue::assertPushed(RunBackupJob::class);
+});
+
+it('rejects manual backup if tests not passed', function () {
+    $role = Role::create(['name' => 'Manager', 'is_system' => false]);
+    $role->permissions()->create(['permission_key' => 'backup.manage']);
+    $user = User::factory()->create(['role_id' => $role->id]);
+
+    $site = Site::create([
+        'name' => 'Test Site',
+        'timezone' => 'UTC',
+    ]);
+
+    // Settings without tests passed
+    BackupSetting::create([
+        'site_id' => $site->id,
+        'provider' => 'S3',
+        'endpoint' => 'https://s3.amazonaws.com',
+        'region' => 'us-east-1',
+        'bucket' => 'test-bucket',
+        'access_key_id' => encrypt('test-key'),
+        'secret_access_key' => encrypt('test-secret'),
+        'last_connection_test_ok' => false,
+    ]);
+
+    Queue::fake();
+
+    actingAs($user)
+        ->post(route('admin.backup.trigger'))
+        ->assertRedirect()
+        ->assertSessionHasErrors(['trigger']);
+
+    Queue::assertNotPushed(RunBackupJob::class);
+});
+
+it('rejects test backup if connection test has not passed', function () {
+    $role = Role::create(['name' => 'Manager', 'is_system' => false]);
+    $role->permissions()->create(['permission_key' => 'backup.manage']);
+    $user = User::factory()->create(['role_id' => $role->id]);
+
+    $site = Site::create([
+        'name' => 'Test Site',
+        'timezone' => 'UTC',
+    ]);
+
+    BackupSetting::create([
+        'site_id' => $site->id,
+        'provider' => 'S3',
+        'endpoint' => 'https://s3.amazonaws.com',
+        'region' => 'us-east-1',
+        'bucket' => 'test-bucket',
+        'access_key_id' => encrypt('test-key'),
+        'secret_access_key' => encrypt('test-secret'),
+        'last_connection_test_ok' => false,
+    ]);
+
+    Queue::fake();
+
+    actingAs($user)
+        ->post(route('admin.backup.test-backup'))
+        ->assertRedirect()
+        ->assertSessionHasErrors(['test_backup']);
+
+    Queue::assertNotPushed(RunBackupJob::class);
 });

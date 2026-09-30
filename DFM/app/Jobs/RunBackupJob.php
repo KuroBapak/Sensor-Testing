@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Models\BackupRun;
+use App\Models\BackupSetting;
+use App\Services\BackupStorageService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -12,30 +14,45 @@ class RunBackupJob implements ShouldQueue
 
     public function __construct(public BackupRun $backupRun) {}
 
-    public function handle(): void
+    public function handle(BackupStorageService $backupService): void
     {
-        // Mark as running
         $this->backupRun->update([
             'status' => 'running',
         ]);
 
-        try {
-            // Perform backup logic here (e.g. database dump, upload to S3)
-            // Simulated backup process:
-            sleep(2);
+        $settings = BackupSetting::where('site_id', $this->backupRun->site_id)->first();
 
-            // Mark as success
-            $this->backupRun->update([
-                'status' => 'success',
-                'finished_at' => now(),
-                'size_bytes' => rand(1024 * 1024, 1024 * 1024 * 50),
-                'object_key' => 'backups/manual/backup-'.now()->timestamp.'.sql.gz',
-            ]);
-        } catch (\Exception $e) {
+        if (! $settings) {
             $this->backupRun->update([
                 'status' => 'failed',
                 'finished_at' => now(),
-                'error_message' => $e->getMessage(),
+                'error_message' => 'Backup settings not configured for this site.',
+            ]);
+
+            return;
+        }
+
+        $result = $backupService->performBackup($settings, $this->backupRun->trigger);
+
+        if ($result['success']) {
+            $this->backupRun->update([
+                'status' => 'success',
+                'finished_at' => now(),
+                'size_bytes' => $result['details']['size_bytes'] ?? null,
+                'object_key' => $result['details']['object_key'] ?? null,
+                'error_message' => null,
+            ]);
+
+            if ($this->backupRun->trigger === 'test') {
+                $settings->update([
+                    'last_test_backup_at' => now(),
+                ]);
+            }
+        } else {
+            $this->backupRun->update([
+                'status' => 'failed',
+                'finished_at' => now(),
+                'error_message' => $result['message'],
             ]);
         }
     }

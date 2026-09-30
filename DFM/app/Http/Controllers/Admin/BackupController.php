@@ -7,6 +7,7 @@ use App\Jobs\RunBackupJob;
 use App\Models\BackupRun;
 use App\Models\BackupSetting;
 use App\Models\Site;
+use App\Services\BackupStorageService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -48,21 +49,96 @@ class BackupController extends Controller
         $site = Site::firstOrFail();
 
         $setting = BackupSetting::firstOrNew(['site_id' => $site->id]);
+
+        // Check if critical fields changed
+        $criticalFields = ['endpoint', 'region', 'bucket', 'path_prefix', 'access_key_id', 'secret_access_key'];
+        $settingsChanged = false;
+
+        foreach ($criticalFields as $field) {
+            if ($setting->exists && $setting->{$field} !== $validated[$field]) {
+                $settingsChanged = true;
+                break;
+            }
+        }
+
         $setting->fill($validated);
         $setting->updated_by = $request->user()->id;
+
+        // Reset test status if settings changed
+        if ($settingsChanged || ! $setting->exists) {
+            $setting->resetTestStatus();
+        }
+
         $setting->save();
 
-        return redirect()->back()->with('success', 'Backup settings updated successfully.');
+        return redirect()->back()->with('success', 'Backup settings saved. Please run Test Connection before enabling backups.');
+    }
+
+    public function testConnection(Request $request, BackupStorageService $backupService)
+    {
+        $site = Site::firstOrFail();
+        $settings = BackupSetting::where('site_id', $site->id)->firstOrFail();
+
+        $result = $backupService->testConnection($settings);
+
+        $settings->update([
+            'last_connection_test_at' => now(),
+            'last_connection_test_ok' => $result['success'],
+        ]);
+
+        if ($result['success']) {
+            return redirect()->back()->with('success', $result['message']);
+        }
+
+        return redirect()->back()->withErrors(['test_connection' => $result['message']]);
+    }
+
+    public function testBackup(Request $request)
+    {
+        $site = Site::firstOrFail();
+        $settings = BackupSetting::where('site_id', $site->id)->firstOrFail();
+
+        // Validate connection test passed
+        if (! $settings->last_connection_test_ok || ! $settings->last_connection_test_at) {
+            return redirect()->back()->withErrors(['test_backup' => 'Please run Test Connection first.']);
+        }
+
+        // Check if settings changed after connection test
+        if ($settings->updated_at > $settings->last_connection_test_at) {
+            return redirect()->back()->withErrors(['test_backup' => 'Settings changed after connection test. Please run Test Connection again.']);
+        }
+
+        $run = BackupRun::create([
+            'site_id' => $site->id,
+            'trigger' => 'test',
+            'status' => 'running',
+            'started_at' => now(),
+            'triggered_by' => $request->user()->id,
+        ]);
+
+        RunBackupJob::dispatch($run);
+
+        return redirect()->back()->with('success', 'Test backup started. Check the run history below for results.');
     }
 
     public function trigger(Request $request)
     {
         $site = Site::firstOrFail();
+        $settings = BackupSetting::where('site_id', $site->id)->first();
+
+        if (! $settings) {
+            return redirect()->back()->withErrors(['trigger' => 'Backup settings not configured.']);
+        }
+
+        // Validate tests passed before manual trigger
+        if (! $settings->isFullyTested()) {
+            return redirect()->back()->withErrors(['trigger' => 'Please complete Test Connection and Test Backup before running manual backups.']);
+        }
 
         $run = BackupRun::create([
             'site_id' => $site->id,
             'trigger' => 'manual',
-            'status' => 'running', // Job will start as running
+            'status' => 'running',
             'started_at' => now(),
             'triggered_by' => $request->user()->id,
         ]);

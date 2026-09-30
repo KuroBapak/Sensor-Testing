@@ -134,6 +134,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('permission:backup.manage')
         ->name('admin.backup.update');
 
+    Route::post('admin/backup/test-connection', [BackupController::class, 'testConnection'])
+        ->middleware('permission:backup.manage')
+        ->name('admin.backup.test-connection');
+
+    Route::post('admin/backup/test-backup', [BackupController::class, 'testBackup'])
+        ->middleware('permission:backup.manage')
+        ->name('admin.backup.test-backup');
+
     Route::post('admin/backup/trigger', [BackupController::class, 'trigger'])
         ->middleware('permission:backup.manage')
         ->name('admin.backup.trigger');
