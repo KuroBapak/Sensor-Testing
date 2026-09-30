@@ -42,6 +42,8 @@ yarn-error.log
 /boost.json
 /opencode.json
 /opencode.jsonc
+/.composer.json
+/.composer.lock
 
 # Graphify — artefak yang regenerable, jangan di-commit
 /graphify-out
