@@ -1,34 +1,17 @@
 /*
- * J1939 PASSIVE LOGGER v2.4  --  STM32 (STM32duino) + HW-184 (MCP2515)
+ * J1939 PASSIVE LOGGER v2.4 (FIXED) --  STM32 (STM32duino) + HW-184 (MCP2515)
  * Target: Iveco Astra HD9, J1939 @ 250 kbps, mode LISTEN-ONLY (tidak pernah TX ke bus)
  * MEJA TEST dengan node TX simulasi: set BENCH_ACK_MODE 1 (listen-only tidak ACK -> TX akan bus-off).
  *
  * Library : "MCP_CAN_lib" by coryjfowler
  * Wiring  : HW-184 VCC=5V, GND, CS=PA4, SCK=PA5, MISO=PA6, MOSI=PA7, INT=PB0 (opsional)
- * Serial   : data keluar lewat Serial2 = USART2 (PA2=TX, PA3=RX) ke adaptor USB-TTL -> di Linux biasanya /dev/ttyUSB0
- *             Sambung: PA2 -> RX adaptor, GND <-> GND (PA3 <- TX adaptor opsional). Baud 921600.
- *             (Ini jalur yang SUDAH terbukti kebaca di hw_check. Kalau mau USB CDC: LOG_SERIAL Serial + menu USB = CDC.)
- *
- * PROTOKOL (tiap baris diakhiri  *CC  =  CRC-8 poly 0x07 dari semua karakter sebelum '*'):
- *   R,seq,t_us,ext,id_hex,pgn,sa,prio,dlc,data_hex     frame CAN mentah (SEMUA frame, std & ext)
- *   D,seq,t_us,sa,signal,value                         hasil decode J1939
- *   S,seq,t_us,rx_total,fps,ring_drop,ring_hwm,hw_ovr,eflg,rec,tec,tx_hwm,loop_max_us,silent_ms,line_drop,opmod
- *   I|W|E,seq,t_us,teks                                info / warning / error
- *
- *  - seq  : nomor urut global, naik 1 per baris. Kalau di PC ada lompatan = ada baris hilang.
- *  - t_us : mikrodetik sejak boot (64-bit, tidak wrap), diambil saat frame dibaca dari MCP2515.
- *
- * LED PC13:
- *   kedip cepat 5 Hz        = init/self-test GAGAL (lihat baris E di serial), auto-retry tiap 2 s
- *   blip pendek 1x / detik  = hidup, tapi belum ada frame CAN (bus sepi / bitrate salah / wiring)
- *   kedip 2 Hz              = frame CAN masuk normal
- *   nyala terus 5 s         = terjadi DATA LOSS (ring penuh / overflow MCP2515)
+ * Serial  : data keluar lewat Serial2 = USART2 (PA2=TX, PA3=RX) ke ST-Link.
  */
 
 #include <SPI.h>
 #include <mcp_can.h>
 
-#define FW_VERSION         "2.4"
+#define FW_VERSION         "2.4-FIXED"
 
 // ===================== KONFIGURASI =====================
 #define CAN_CS_PIN         PA4
@@ -39,13 +22,12 @@
 #define CAN_SPEED_TXT      "250kbps"
 #define CAN_XTAL           MCP_8MHZ     // lihat tulisan di kristal modul: 8.000 atau 16.000
 #define CAN_XTAL_TXT       "8MHz"
-#define LOG_SERIAL         Serial2      // USART2 (PA2/PA3) -> USB-TTL. Ganti ke Serial untuk USB CDC / USART1
-#define LOG_BAUD           921600       // harus sama dg `-b` di Python. Adaptor tidak kuat? turunkan ke 460800 di KEDUA sisi
+#define LOG_SERIAL         Serial2      // USART2 (PA2/PA3) -> ST-Link
+#define LOG_BAUD           115200       // FIX: Diturunkan dari 921600 agar ST-Link stabil dan mencegah crosstalk SPI
 #ifndef EMIT_DECODED
 #define EMIT_DECODED       1            // 1 = kirim baris D (decode di MCU). 0 = hanya raw -> bandwidth serial jauh lebih hemat
 #endif
-#define REQUIRE_DTR        0            // 0 = print tanpa syarat (seperti sketch yang terbukti jalan). 1 = tahan output sampai
-                                        //     !Serial false (DTR) - sempat bikin 0 byte di core tertentu, jangan aktifkan sembarangan
+#define REQUIRE_DTR        0            // 0 = print tanpa syarat. 1 = tahan output sampai !Serial false (DTR)
 #define DTR_WAIT_MS        5000         // saat boot: tunggu host membuka port (maks), lalu lanjut
 #define LED_PIN            PC13
 #define LED_ACTIVE_LOW     1
@@ -107,7 +89,7 @@ static uint8_t  lastEflg = 0;
 static bool     rawOk = true;   // false = baca register langsung tidak cocok dg library -> mode degraded
 
 // ---------- util ----------
-static uint64_t now64us() {  // micros() 32-bit wrap tiap ~71 menit -> jadikan 64-bit
+static uint64_t now64us() {  
   static uint32_t last = 0, hi = 0;
   uint32_t m = micros();
   if (m < last) hi++;
@@ -151,7 +133,7 @@ struct Line {
     for (int8_t i = (digits - 1) * 4; i >= 0; i -= 4) c(HEXCH[(v >> i) & 0xF]);
     return *this;
   }
-  Line &fx(int64_t v, uint8_t dec) {  // fixed-point tanpa printf float
+  Line &fx(int64_t v, uint8_t dec) {  
     if (v < 0) { c('-'); v = -v; }
     uint64_t p = 1;
     for (uint8_t i = 0; i < dec; i++) p *= 10;
@@ -166,7 +148,7 @@ struct Line {
     return *this;
   }
   void start(char type, uint64_t t_us) { n = 0; c(type).c(',').u(seqNo).c(',').u(t_us).c(','); }
-  bool send() {  // seq hanya naik kalau baris benar-benar masuk buffer -> tidak ada gap palsu
+  bool send() {  
     uint8_t ck = crc8(b, n);
     b[n++] = '*'; b[n++] = HEXCH[ck >> 4]; b[n++] = HEXCH[ck & 15]; b[n++] = '\n';
     if (txFree() < n) { st.lineDrop++; return false; }
@@ -194,7 +176,7 @@ static void pumpTx() {
   uint32_t nowMs = millis();
   if (!txCount) { txLastProgressMs = nowMs; return; }
 #if REQUIRE_DTR
-  if (!LOG_SERIAL) { txLastProgressMs = nowMs; return; }  // host belum buka port
+  if (!LOG_SERIAL) { txLastProgressMs = nowMs; return; }  
 #endif
   int room = txUseAvail ? LOG_SERIAL.availableForWrite() : 64;
   if (room <= 0) {
@@ -222,8 +204,6 @@ static void drainTx(uint32_t maxMs) {
   while (txCount && (millis() - t0) < maxMs) pumpTx();
 }
 
-// Breadcrumb: teks polos "# ..." langsung ke serial SEBELUM langkah berisiko, supaya kalau firmware
-// macet kelihatan berhenti di tahap mana. Tidak lewat ring (ring baru terkirim kalau loop jalan).
 static void crumb(const char *msg) {
   drainTx(20);
 #if REQUIRE_DTR
@@ -233,8 +213,7 @@ static void crumb(const char *msg) {
   LOG_SERIAL.println(msg);
 }
 
-// ---------- akses register MCP2515 langsung (untuk diagnosa) ----------
-// HANYA dipakai SETELAH CAN0.begin() sukses (library yang menginisialisasi SPI).
+// ---------- akses register MCP2515 langsung ----------
 static uint8_t mcpRead(uint8_t reg) {
   if (!rawOk) return 0;
   digitalWrite(CAN_CS_PIN, LOW);
@@ -250,12 +229,12 @@ static void mcpModify(uint8_t reg, uint8_t mask, uint8_t val) {
   digitalWrite(CAN_CS_PIN, HIGH);
 }
 
-// ---------- decode J1939 (SAE J1939-71) : semua integer, tanpa float ----------
+// ---------- decode J1939 (SAE J1939-71) ----------
 static inline uint16_t u16(const uint8_t *d, uint8_t i) { return (uint16_t)(d[i] | (d[i + 1] << 8)); }
 static inline uint32_t u32(const uint8_t *d, uint8_t i) {
   return (uint32_t)d[i] | ((uint32_t)d[i + 1] << 8) | ((uint32_t)d[i + 2] << 16) | ((uint32_t)d[i + 3] << 24);
 }
-static inline bool ok8(uint8_t v)   { return v < 0xFB; }        // 0xFB..0xFF = error / not available
+static inline bool ok8(uint8_t v)   { return v < 0xFB; }       
 static inline bool ok16(uint16_t v) { return v < 0xFB00; }
 static inline bool ok32(uint32_t v) { return v < 0xFB000000UL; }
 
@@ -270,55 +249,55 @@ static void decodeJ1939(const Frame &f, uint32_t pgn, uint8_t sa) {
   switch (pgn) {
     case 61444: {  // EEC1
       uint16_t rpm = u16(d, 3);
-      if (ok16(rpm)) emitSig(t, sa, "engine_rpm", (int64_t)rpm * 125, 3);              // SPN190 0.125 rpm/bit
-      if (ok8(d[2])) emitSig(t, sa, "actual_torque_pct", (int)d[2] - 125, 0);          // SPN513
+      if (ok16(rpm)) emitSig(t, sa, "engine_rpm", (int64_t)rpm * 125, 3);              
+      if (ok8(d[2])) emitSig(t, sa, "actual_torque_pct", (int)d[2] - 125, 0);          
       break;
     }
     case 61443:    // EEC2
-      if (ok8(d[1])) emitSig(t, sa, "accel_pedal_pct", (int64_t)d[1] * 4, 1);          // SPN91 0.4 %/bit
-      if (ok8(d[2])) emitSig(t, sa, "engine_load_pct", d[2], 0);                       // SPN92
+      if (ok8(d[1])) emitSig(t, sa, "accel_pedal_pct", (int64_t)d[1] * 4, 1);          
+      if (ok8(d[2])) emitSig(t, sa, "engine_load_pct", d[2], 0);                       
       break;
     case 65265: {  // CCVS
       uint16_t v = u16(d, 1);
-      if (ok16(v)) emitSig(t, sa, "vehicle_speed_kmh", ((int64_t)v * 125 + 16) / 32, 3);  // SPN84 1/256 km/h
+      if (ok16(v)) emitSig(t, sa, "vehicle_speed_kmh", ((int64_t)v * 125 + 16) / 32, 3);  
       break;
     }
     case 65262: {  // ET1
-      if (ok8(d[0])) emitSig(t, sa, "coolant_temp_c", (int)d[0] - 40, 0);              // SPN110
-      if (ok8(d[1])) emitSig(t, sa, "fuel_temp_c", (int)d[1] - 40, 0);                 // SPN174
+      if (ok8(d[0])) emitSig(t, sa, "coolant_temp_c", (int)d[0] - 40, 0);              
+      if (ok8(d[1])) emitSig(t, sa, "fuel_temp_c", (int)d[1] - 40, 0);                 
       uint16_t oil = u16(d, 2);
-      if (ok16(oil)) emitSig(t, sa, "oil_temp_c", ((int64_t)oil * 25 + 4) / 8 - 27300, 2);  // SPN175 0.03125C, -273
+      if (ok16(oil)) emitSig(t, sa, "oil_temp_c", ((int64_t)oil * 25 + 4) / 8 - 27300, 2);  
       break;
     }
     case 65263:    // EFL/P1
-      if (ok8(d[3])) emitSig(t, sa, "oil_pressure_kpa", (int64_t)d[3] * 4, 0);         // SPN100
+      if (ok8(d[3])) emitSig(t, sa, "oil_pressure_kpa", (int64_t)d[3] * 4, 0);         
       break;
     case 65266: {  // LFE
       uint16_t fr = u16(d, 0), fe = u16(d, 2);
-      if (ok16(fr)) emitSig(t, sa, "fuel_rate_lph", (int64_t)fr * 5, 2);               // SPN183 0.05 L/h
-      if (ok16(fe)) emitSig(t, sa, "fuel_econ_inst_kmpl", ((int64_t)fe * 125 + 32) / 64, 3);  // SPN184 1/512
+      if (ok16(fr)) emitSig(t, sa, "fuel_rate_lph", (int64_t)fr * 5, 2);               
+      if (ok16(fe)) emitSig(t, sa, "fuel_econ_inst_kmpl", ((int64_t)fe * 125 + 32) / 64, 3);  
       break;
     }
     case 65270:    // IC1
-      if (ok8(d[1])) emitSig(t, sa, "boost_pressure_kpa", (int64_t)d[1] * 2, 0);       // SPN102
-      if (ok8(d[2])) emitSig(t, sa, "intake_manifold_temp_c", (int)d[2] - 40, 0);      // SPN105
+      if (ok8(d[1])) emitSig(t, sa, "boost_pressure_kpa", (int64_t)d[1] * 2, 0);       
+      if (ok8(d[2])) emitSig(t, sa, "intake_manifold_temp_c", (int)d[2] - 40, 0);      
       break;
     case 65271: {  // VEP1
       uint16_t bv = u16(d, 4);
-      if (ok16(bv)) emitSig(t, sa, "battery_v", (int64_t)bv * 5, 2);                   // SPN168 0.05 V/bit
+      if (ok16(bv)) emitSig(t, sa, "battery_v", (int64_t)bv * 5, 2);                   
       break;
     }
     case 65276:    // Dash display
-      if (ok8(d[1])) emitSig(t, sa, "fuel_level_pct", (int64_t)d[1] * 4, 1);           // SPN96
+      if (ok8(d[1])) emitSig(t, sa, "fuel_level_pct", (int64_t)d[1] * 4, 1);           
       break;
     case 65253: {  // HOURS
       uint32_t h = u32(d, 0);
-      if (ok32(h)) emitSig(t, sa, "engine_hours", (int64_t)h * 5, 2);                  // SPN247 0.05 h/bit
+      if (ok32(h)) emitSig(t, sa, "engine_hours", (int64_t)h * 5, 2);                  
       break;
     }
     case 65248: {  // VD
       uint32_t km = u32(d, 4);
-      if (ok32(km)) emitSig(t, sa, "total_distance_km", (int64_t)km * 125, 3);         // SPN245 0.125 km/bit
+      if (ok32(km)) emitSig(t, sa, "total_distance_km", (int64_t)km * 125, 3);         
       break;
     }
     default: break;
@@ -333,7 +312,7 @@ static void emitFrame(const Frame &f) {
     sa   = f.id & 0xFF;
     uint8_t dp = (f.id >> 24) & 1, pf = (f.id >> 16) & 0xFF, ps = (f.id >> 8) & 0xFF;
     pgn = ((uint32_t)dp << 16) | ((uint32_t)pf << 8);
-    if (pf >= 240) pgn |= ps;  // PDU2 broadcast; PDU1 -> PS = alamat tujuan
+    if (pf >= 240) pgn |= ps;  
   }
   Line l; l.start('R', f.t_us);
   l.u(f.ext).c(',').hx(f.id, 8).c(',').u(pgn).c(',').u(sa).c(',').u(prio).c(',').u(f.len).c(',');
@@ -345,8 +324,6 @@ static void emitFrame(const Frame &f) {
 }
 
 // ---------- bring-up + self-test ----------
-// Urutan sengaja sama dengan sketch sederhana yang terbukti jalan: library menginisialisasi SPI dan chip
-// DULU; akses register langsung baru sesudahnya (hanya untuk diagnosa).
 static bool bringUp() {
   canReady = false;
 
@@ -362,7 +339,7 @@ static bool bringUp() {
   rawOk = true;
   uint8_t cnf1 = mcpRead(REG_CNF1), cnf2 = mcpRead(REG_CNF2), cnf3 = mcpRead(REG_CNF3);
   if (cnf1 == cnf2 && cnf2 == cnf3 && (cnf1 == 0x00 || cnf1 == 0xFF)) {
-    rawOk = false;  // library berhasil tapi baca mentah tidak -> jangan percaya jalur mentah
+    rawOk = false;  
     Line l; l.start('W', now64us());
     l.s("raw SPI tidak cocok dengan library (CNF1/2/3=0x").hx(cnf1, 2).s(") -> MODE DEGRADED: rec/tec/eflg/opmod tidak dipantau");
     l.send();
@@ -417,7 +394,7 @@ static bool bringUp() {
   } else {
     logMsg('W', "mode tidak diverifikasi lewat register (degraded)");
   }
-  for (uint8_t i = 0; i < 8 && CAN0.checkReceive() == CAN_MSGAVAIL; i++) {  // buang sisa self-test
+  for (uint8_t i = 0; i < 8 && CAN0.checkReceive() == CAN_MSGAVAIL; i++) {  
     unsigned long rid; byte rext, rlen, rb[8];
     CAN0.readMsgBuf(&rid, &rext, &rlen, rb);
   }
@@ -452,7 +429,7 @@ static void drainCan(uint8_t maxFrames) {
     if (len > 8) len = 8;
     st.rxTotal++; st.framesSec++;
     lastRxMs = millis(); everRx = true;
-    if (fCount >= FRAME_RING_SIZE) {  // ring penuh -> dihitung, bukan hilang diam-diam
+    if (fCount >= FRAME_RING_SIZE) {  
       st.ringDrop++; st.lossEver = true; st.lastLossMs = lastRxMs;
       continue;
     }
@@ -466,7 +443,7 @@ static void drainCan(uint8_t maxFrames) {
 }
 
 static void formatFrames(uint8_t maxN) {
-  while (maxN-- && fCount && txFree() >= 420) {  // backpressure: frame tetap aman di ring
+  while (maxN-- && fCount && txFree() >= 420) {  
     emitFrame(fring[fTail]);
     fTail = (fTail + 1) % FRAME_RING_SIZE;
     fCount--;
@@ -480,7 +457,7 @@ static void pollHw(uint32_t nowMs) {
   last = nowMs;
   uint8_t e = mcpRead(REG_EFLG);
   lastEflg = e;
-  if (e & 0xC0) {  // RX0OVR / RX1OVR : MCP2515 kehilangan frame
+  if (e & 0xC0) {  
     st.hwOvr++; st.lossEver = true; st.lastLossMs = nowMs;
     mcpModify(REG_EFLG, 0xC0, 0x00);
   }
@@ -491,7 +468,7 @@ static void periodic(uint32_t nowMs) {
   lastStatusMs = nowMs;
   st.fps = st.framesSec; st.framesSec = 0;
 
-  uint8_t opmod = rawOk ? (mcpRead(REG_CANSTAT) >> 5) : 255;  // 255 = tidak diketahui (degraded)
+  uint8_t opmod = rawOk ? (mcpRead(REG_CANSTAT) >> 5) : 255;  
   uint8_t rec = mcpRead(REG_REC), tec = mcpRead(REG_TEC);
   uint32_t silent = nowMs - lastRxMs;
 
@@ -545,9 +522,16 @@ static void periodic(uint32_t nowMs) {
 void setup() {
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LED_ACTIVE_LOW ? LOW : HIGH);  // LED nyala = firmware hidup
-  // CATATAN: tidak ada SPI.begin() / pinMode(CS) di sini -> library MCP_CAN yang mengurusnya,
-  // persis seperti sketch sederhana yang terbukti jalan.
+
+  // FIX: Wajib inisialisasi Serial utama (USB/USART1) untuk mencegah core freeze di STM32duino
+  Serial.begin(115200); 
+
+  // Inisialisasi jalur komunikasi yang dipakai ST-Link (TX2/RX2)
   LOG_SERIAL.begin(LOG_BAUD);
+
+  // FIX: Jeda waktu kritis agar IC MCP2515 & osilator stabil sebelum ditanya
+  delay(1500); 
+
 #if REQUIRE_DTR
   uint32_t tw = millis();
   while (!LOG_SERIAL && (millis() - tw) < DTR_WAIT_MS) {}  // tunggu host membuka port
