@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-J1939 logger (host side) untuk firmware j1939_logger.ino v2.
+J1939 logger (host side) untuk firmware j1939_logger.ino v3.0.
 
   python3 log_to_csv.py --list                       daftar port serial (adaptor USB-TTL -> /dev/ttyUSB0, STM32 CDC -> /dev/ttyACM0)
   python3 log_to_csv.py /dev/ttyUSB0 --check         tes komunikasi 10 detik + diagnosa (tanpa file)
@@ -8,17 +8,24 @@ J1939 logger (host side) untuk firmware j1939_logger.ino v2.
   python3 log_to_csv.py /dev/ttyUSB0 -n truk1        folder tetap logs/truk1 (kalau sudah ada -> ditanya hapus)
   python3 log_to_csv.py /dev/ttyUSB0 -n truk1 --overwrite   hapus file lama tanpa tanya
   python3 log_to_csv.py /dev/ttyUSB0 --monitor       tampilkan semua baris mentah dari MCU
+  python3 log_to_csv.py --redecode logs/truk1        decode ulang raw.csv -> decoded_redecode.csv (mis. setelah nambah PGN)
+
+Baud default 921600 dan HARUS sama dengan LOG_BAUD di firmware.
 
 Isi folder sesi:
-  raw.csv       semua frame CAN (std + ext)
-  decoded.csv   sinyal J1939 hasil decode (format long: signal,value)
+  raw.csv       semua frame CAN (std + ext) apa adanya dari bus; pgn/sa/priority dihitung host dari CAN ID
+  decoded.csv   sinyal J1939 hasil decode HOST (format long: signal,value). seq/t_us = milik frame sumbernya
   status.csv    status tiap detik dari MCU (rx_total, ring_drop, hw_ovr, rec/tec, ...)
-  events.log    boot, gap, disconnect, warning, pesan I/W/E dari firmware
+  events.log    boot, gap, disconnect, warning, pesan I/W/E dari firmware (termasuk hasil scan bitrate)
   bad_lines.log baris rusak (CRC/format salah) apa adanya
   session.json  metadata + counter (di-update tiap 5 detik)
 
-Jaminan: tiap baris ber-seq + CRC8. Baris hilang/rusak TIDAK diam-diam: tercatat di events.log,
-bad_lines.log dan ditampilkan di console. Data di-flush tiap 1 s dan fsync tiap 5 s.
+Kejujuran data:
+  - tiap baris ber-seq + CRC8. Baris rusak/hilang DI KABEL SERIAL tercatat (bad_lines.log, GAP di events.log, console).
+  - Kehilangan DI MCU (ring penuh / overflow MCP2515) TIDAK muncul sebagai gap seq; itu dilaporkan lewat counter
+    ring_drop / hw_ovr di status.csv + events.log ("DATA LOSS di MCU"). Sesi dianggap utuh hanya kalau keduanya 0.
+  - Untuk analisis waktu pakai kolom t_us (jam MCU, per frame) + boot, BUKAN pc_time (satu chunk serial = satu stempel).
+  - Data di-flush tiap 1 s dan fsync tiap 5 s.
 """
 import argparse
 import collections
@@ -34,6 +41,7 @@ import sys
 import threading
 import time
 from datetime import datetime
+from decimal import Decimal, ROUND_HALF_UP
 
 try:
     import serial
@@ -55,6 +63,60 @@ PGN_NAMES = {
     65217: "VDHR", 65242: "SOFT", 65259: "CI", 61441: "EBC1", 65269: "AMB", 65272: "TRF1",
     65213: "FD", 65247: "EEC3",
 }
+
+# ----------------------------------------------------------------------------- decoder J1939-71
+# (signal, byte_awal(0-based), jumlah_byte, skala, offset, desimal)   nilai = raw*skala + offset
+# Skala sebagai string Decimal -> hasil eksak, tanpa error float.
+D = Decimal
+J1939_SIGNALS = {
+    61444: [("actual_torque_pct", 2, 1, D("1"), D("-125"), 0),            # EEC1  SPN 513
+            ("engine_rpm", 3, 2, D("0.125"), D("0"), 3)],                 #       SPN 190
+    61443: [("accel_pedal_pct", 1, 1, D("0.4"), D("0"), 1),               # EEC2  SPN 91
+            ("engine_load_pct", 2, 1, D("1"), D("0"), 0)],                #       SPN 92
+    65265: [("vehicle_speed_kmh", 1, 2, D("0.00390625"), D("0"), 3)],     # CCVS  SPN 84  (1/256 km/h)
+    65262: [("coolant_temp_c", 0, 1, D("1"), D("-40"), 0),                # ET1   SPN 110
+            ("fuel_temp_c", 1, 1, D("1"), D("-40"), 0),                   #       SPN 174
+            ("oil_temp_c", 2, 2, D("0.03125"), D("-273"), 2)],            #       SPN 175
+    65263: [("oil_pressure_kpa", 3, 1, D("4"), D("0"), 0)],               # EFL/P1 SPN 100
+    65266: [("fuel_rate_lph", 0, 2, D("0.05"), D("0"), 2),                # LFE   SPN 183
+            ("fuel_econ_inst_kmpl", 2, 2, D("0.001953125"), D("0"), 3)],  #       SPN 184 (1/512 km/L)
+    65270: [("boost_pressure_kpa", 1, 1, D("2"), D("0"), 0),              # IC1   SPN 102
+            ("intake_manifold_temp_c", 2, 1, D("1"), D("-40"), 0)],       #       SPN 105
+    65271: [("battery_v", 4, 2, D("0.05"), D("0"), 2)],                   # VEP1  SPN 168
+    65276: [("fuel_level_pct", 1, 1, D("0.4"), D("0"), 1)],               # DD    SPN 96
+    65253: [("engine_hours", 0, 4, D("0.05"), D("0"), 2)],                # HOURS SPN 247
+    65248: [("total_distance_km", 4, 4, D("0.125"), D("0"), 3)],          # VD    SPN 245
+    61441: [("brake_pedal_pct", 1, 1, D("0.4"), D("0"), 1)],              # EBC1  SPN 521 (tambahan, verifikasi vs raw)
+}
+# raw >= nilai ini = "error / not available" menurut J1939-71 (0xFB.. s/d 0xFF..)
+NA_MIN = {1: 0xFB, 2: 0xFB00, 4: 0xFB000000}
+
+
+def parse_id(can_id: int):
+    """29-bit J1939 ID -> (pgn, sa, prio). PDU1 (PF<240): PS = alamat tujuan, bukan bagian PGN."""
+    prio = (can_id >> 26) & 0x07
+    sa = can_id & 0xFF
+    pf = (can_id >> 16) & 0xFF
+    ps = (can_id >> 8) & 0xFF
+    pgn = (((can_id >> 24) & 0x03) << 16) | (pf << 8)      # EDP + DP + PF
+    if pf >= 240:
+        pgn |= ps
+    return pgn, sa, prio
+
+
+def decode_frame(pgn: int, data: bytes):
+    """-> list[(nama_sinyal, nilai_string)]. Nilai NA/error dilewati."""
+    spec = J1939_SIGNALS.get(pgn)
+    if not spec or len(data) < 8:
+        return []
+    out = []
+    for name, start, size, scale, offset, dec in spec:
+        raw = int.from_bytes(data[start:start + size], "little")
+        if raw >= NA_MIN[size]:
+            continue
+        val = Decimal(raw) * scale + offset
+        out.append((name, f"{val.quantize(Decimal(1).scaleb(-dec), rounding=ROUND_HALF_UP):f}"))
+    return out
 
 
 def crc8(data: bytes) -> int:
@@ -173,6 +235,7 @@ class Session:
         self.st, self.st_prev = None, None
         self.total_bytes, self.last_byte_ts = 0, None
         self.connected, self.t_connect, self.ever_connected = False, None, False
+        self.first_pending = False      # baris pertama setelah (re)connect biasanya terpotong -> bukan error
         self.fw_msgs = []
         self.crumbs = []
         self.t0 = time.time()
@@ -198,6 +261,15 @@ class Session:
         if self.c["bad"] <= 5 or self.c["bad"] % 100 == 0:
             self.say(f"[BAD] baris {kind} (total {self.c['bad']}): {text[:80]!r}")
 
+    def reject(self, ts, kind, text):
+        """Baris gagal validasi. Kalau ini baris pertama setelah connect -> kemungkinan besar potongan, bukan korupsi."""
+        if self.first_pending:
+            self.first_pending = False
+            self.c["partial_start"] += 1
+            self.rec.bad(ts, "PARTIAL-START", text)
+            return
+        self.bad(ts, kind, text)
+
     # ---- item dari reader thread
     def on_item(self, item):
         kind, ts, payload = item
@@ -205,6 +277,7 @@ class Session:
             self.feed(ts, payload)
         elif kind == "connected":
             self.connected, self.t_connect, self.last_byte_ts, self.ever_connected = True, ts, ts, True
+            self.first_pending = True
             self.event(ts, "INFO", f"serial terhubung: {payload}")
             self.say(f"[OK] serial terbuka: {payload}")
         elif kind == "disconnected":
@@ -243,6 +316,7 @@ class Session:
             self.say(text)
         plain = text.lstrip("\ufffd\x00\x1b ")  # buang karakter sampah di awal (efek buka port)
         if plain.startswith("#"):
+            self.first_pending = False
             msg = plain[1:].strip()
             self.c["plain"] += 1
             self.crumbs.append(msg)
@@ -251,14 +325,14 @@ class Session:
             return
         star = text.rfind("*")
         if star < 1 or len(text) - star - 1 != 2:
-            return self.bad(ts, "FORMAT", text)
+            return self.reject(ts, "FORMAT", text)
         payload, ck = text[:star], text[star + 1:]
         try:
             ok = int(ck, 16) == crc8(payload.encode("ascii", errors="replace"))
         except ValueError:
             ok = False
         if not ok:
-            return self.bad(ts, "CRC", text)
+            return self.reject(ts, "CRC", text)
 
         typ = payload[:1]
         if typ in "IWE":
@@ -266,27 +340,45 @@ class Session:
             need = 4
         else:
             f = payload.split(",")
-            need = {"R": 10, "D": 6, "S": 16}.get(typ, -1)
+            need = {"R": 7, "S": 16}.get(typ, -1)
         if len(f) != need:
-            return self.bad(ts, "FIELDS", text)
+            return self.reject(ts, "FIELDS", text)
         try:
             seq, t_us = int(f[1]), int(f[2])
         except ValueError:
-            return self.bad(ts, "FORMAT", text)
+            return self.reject(ts, "FORMAT", text)
 
+        frame = None
+        if typ == "R":      # R,seq,t_us,ext,idhex8,dlc,datahex
+            try:
+                ext, idhex, dlc_s, data_hex = f[3], f[4], f[5], f[6]
+                if ext not in ("0", "1") or len(idhex) != 8:
+                    raise ValueError
+                can_id, dlc = int(idhex, 16), int(dlc_s)
+                if not 0 <= dlc <= 8 or len(data_hex) != 2 * dlc:
+                    raise ValueError
+                frame = (ext, idhex, can_id, dlc, data_hex, bytes.fromhex(data_hex))
+            except ValueError:
+                return self.reject(ts, "FIELDS", text)
+
+        self.first_pending = False
         self.c["valid"] += 1
         self.check_seq(ts, typ, seq, f[3] if typ in "IWE" else "")
         p = iso(ts)
 
         if typ == "R":
+            ext, idhex, can_id, dlc, data_hex, data = frame
             self.c["raw"] += 1
-            self.rec.raw([p, self.boot, seq, t_us] + f[3:])
-            if f[3] == "1":
-                self.pgns[(int(f[5]), int(f[6]))] += 1
-        elif typ == "D":
-            self.c["dec"] += 1
-            self.rec.dec([p, self.boot, seq, t_us] + f[3:])
-            self.latest[f[4]] = f[5]
+            if ext == "1":
+                pgn, sa, prio = parse_id(can_id)
+                self.pgns[(pgn, sa)] += 1
+                for name, val in decode_frame(pgn, data):
+                    self.c["dec"] += 1
+                    self.rec.dec([p, self.boot, seq, t_us, sa, name, val])
+                    self.latest[name] = val
+            else:
+                pgn = sa = prio = 0
+            self.rec.raw([p, self.boot, seq, t_us, ext, idhex, pgn, sa, prio, dlc, data_hex])
         elif typ == "S":
             self.c["status"] += 1
             self.rec.status([p, self.boot, seq, t_us] + f[3:])
@@ -391,7 +483,7 @@ class Session:
             out.append("  !! SERIAL TIDAK PERNAH TERHUBUNG -> tidak ada data yang terekam (folder sesi kosong).")
         out += [
                f"  byte diterima      : {self.total_bytes}",
-               f"  baris valid        : {c['valid']}   (rusak/CRC: {c['bad']})",
+               f"  baris valid        : {c['valid']}   (rusak/CRC: {c['bad']}, potongan awal: {c['partial_start']})",
                f"  frame CAN (raw)    : {c['raw']}",
                f"  sinyal decode      : {c['dec']}",
                f"  gap seq            : {c['gaps']} kejadian, {c['lost_lines']} baris hilang",
@@ -420,11 +512,11 @@ class Session:
             return False, "MCU komunikasi OK tapi init CAN GAGAL:\n  - " + "\n  - ".join(dict.fromkeys(errs))
         if not c["raw"]:
             return False, ("Komunikasi MCU OK, chip MCP2515 OK, tapi TIDAK ADA FRAME CAN.\n"
-                           "  Cek: kontak mobil ON | CAN-H/CAN-L tidak tertukar & memang bus J1939 | bitrate (coba 500k)\n"
-                           "  | xtal modul 8/16 MHz | jumper terminasi 120 ohm | GND bersama\n"
-                           "  Lihat rec/tec/eflg di ringkasan: kalau rec naik, curiga bitrate/xtal salah.")
+                           "  Firmware sudah mencoba scan 250/500k x xtal 8/16MHz (lihat baris 'scan cfg=' di atas).\n"
+                           "  Cek: kontak mobil ON | CAN-H/CAN-L tidak tertukar & memang bus J1939 | GND bersama\n"
+                           "  | jumper terminasi 120 ohm HW-184 DILEPAS di truk | konektor/pin diagnostik yang benar.")
         if c["bad"] or c["gaps"]:
-            return False, f"Frame masuk tapi ada baris rusak ({c['bad']}) / gap ({c['gaps']}): cek kabel USB / baud."
+            return False, f"Frame masuk tapi ada baris rusak ({c['bad']}) / gap ({c['gaps']}): cek kabel USB-TTL / baud."
         if self.st and (self.st["ring_drop"] or self.st["hw_ovr"]):
             return False, "Frame masuk tapi MCU melaporkan DATA LOSS (ring_drop/hw_ovr > 0)."
         if not c["dec"]:
@@ -434,22 +526,23 @@ class Session:
 
 
 NO_BYTES_HELP = """[!] Tidak ada byte dari MCU selama {n:.0f}s. Kemungkinan:
-    1. Port salah        -> python3 log_to_csv.py --list   (firmware v2.4 keluar di Serial2/USART2 lewat adaptor USB-TTL
+    1. Port salah        -> python3 log_to_csv.py --list   (firmware v3.0 keluar di Serial2/USART2 lewat adaptor USB-TTL
                             = biasanya /dev/ttyUSB0, BUKAN /dev/ttyACM0)
     2. Arduino IDE       -> Tools > USB support = "CDC (generic 'Serial' supersede U(S)ART)"; kalau tidak,
                             Serial = USART1 (PA9/PA10), bukan USB. Re-upload setelah ganti.
-    3. Adaptor USB-TTL   -> PA2 (TX2) -> RX adaptor, GND bersama; baud firmware (LOG_BAUD) harus sama dg -b. Teks kotak-kotak
-                            = baud beda. Adaptor tidak kuat 921600? pakai 460800 di firmware DAN Python.
+    3. Adaptor USB-TTL   -> PA2 (TX2) -> RX adaptor, GND bersama; baud firmware (LOG_BAUD) harus sama dg -b (default 921600).
+                            Teks kotak-kotak = baud beda. Adaptor tidak kuat 921600? pakai 460800 di firmware DAN Python
+                            (cukup untuk bus <= ~700 frame/s).
     4. Kabel USB charge-only / board belum ter-flash -> ganti kabel, upload ulang
-    5. LED PC13          -> mati terus = firmware tidak jalan; kedip 5Hz = init gagal; blip 1/detik = hidup tapi bus sepi
+    5. LED PC13          -> mati terus = firmware tidak jalan; kedip 5Hz = init/scan bitrate; blip 1/detik = hidup tapi bus sepi
     6. Permission        -> sudo usermod -aG dialout $USER  (lalu logout/login)
     7. Firmware macet sebelum sempat nge-print -> tekan RESET di board saat logger jalan (breadcrumb
-                            "# stage ..." muncul tiap tahap), atau flash j1939_bringup_diag.ino"""
+                            "# stage ..." muncul tiap tahap)"""
 STALL_HELP = """[!] MCU HIDUP (mengirim breadcrumb) tapi protokol logger belum jalan.
     Breadcrumb terakhir : {last}
     Artinya             : {hint}"""
 GARBAGE_HELP = """[!] Ada byte masuk tapi bukan protokol logger (contoh: {s!r}).
-    Kemungkinan baud salah (harus sama dengan LOG_BAUD, 921600), firmware lama v1, atau port dipakai program lain."""
+    Kemungkinan baud salah (harus sama dengan LOG_BAUD, default 921600), firmware lama (v2.x format beda), atau port dipakai program lain."""
 
 
 def stage_hint(last: str) -> str:
@@ -461,7 +554,7 @@ def stage_hint(last: str) -> str:
     if "stage 3" in l:
         return "berhenti di self-test loopback internal: chip/SPI tidak stabil."
     if "stage 4" in l:
-        return "berhenti saat set mode CAN."
+        return "berhenti saat scan bitrate / set mode CAN."
     if "stage 5" in l or "ready" in l:
         return "init selesai; harusnya baris protokol sudah jalan -> cek LOG_BAUD/serial."
     if "boot" in l:
@@ -542,21 +635,46 @@ def prepare_folder(outdir, name, overwrite):
     return folder
 
 
+def redecode(path):
+    """Decode ulang raw.csv memakai tabel sinyal yang sekarang. Tidak menyentuh raw.csv / decoded.csv asli."""
+    raw_path = os.path.join(path, "raw.csv") if os.path.isdir(path) else path
+    out_path = os.path.join(os.path.dirname(raw_path) or ".", "decoded_redecode.csv")
+    if not os.path.isfile(raw_path):
+        sys.exit(f"tidak ada file: {raw_path}")
+    n_in = n_ext = n_out = 0
+    with open(raw_path, newline="") as fi, open(out_path, "x", newline="") as fo:
+        w = csv.writer(fo, lineterminator="\n")
+        w.writerow(DEC_HDR)
+        for row in csv.DictReader(fi):
+            n_in += 1
+            if row["ext"] != "1":
+                continue
+            n_ext += 1
+            pgn, sa, _ = parse_id(int(row["can_id_hex"], 16))
+            for name, val in decode_frame(pgn, bytes.fromhex(row["data_hex"])):
+                w.writerow([row["pc_time"], row["boot"], row["seq"], row["t_us"], sa, name, val])
+                n_out += 1
+    print(f"[OK] {n_in} frame raw ({n_ext} extended) -> {n_out} sinyal di {out_path}")
+
+
 def main():
     ap = argparse.ArgumentParser(description="J1939 logger host", formatter_class=argparse.RawDescriptionHelpFormatter,
                                  epilog=__doc__)
     ap.add_argument("port", nargs="?")
-    ap.add_argument("-b", "--baud", type=int, default=921600)
+    ap.add_argument("-b", "--baud", type=int, default=921600, help="harus sama dengan LOG_BAUD firmware (default 921600)")
     ap.add_argument("-o", "--outdir", default="logs")
     ap.add_argument("-n", "--name")
     ap.add_argument("--overwrite", action="store_true")
     ap.add_argument("--check", type=int, nargs="?", const=10, metavar="DETIK")
     ap.add_argument("--monitor", action="store_true")
     ap.add_argument("--list", action="store_true")
+    ap.add_argument("--redecode", metavar="FOLDER_ATAU_RAW_CSV")
     args = ap.parse_args()
 
     if args.list:
         return list_all_ports()
+    if args.redecode:
+        return redecode(args.redecode)
     if not args.port:
         ap.error("port wajib (lihat: --list)")
 

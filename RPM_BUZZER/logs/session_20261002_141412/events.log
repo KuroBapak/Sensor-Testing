@@ -1,0 +1,3 @@
+2026-10-02T14:14:12.421	INFO	boot=0 serial terhubung: /dev/ttyACM0
+2026-10-02T14:14:36.983	FW-W	boot=1 seq=48264 t_us=193055317 BUS SEPI 3812 ms opmod=3 eflg=0x00 rec=0 tec=0 | cek: kontak ON, CAN-H/L, GND, jumper 120R HW-184 dilepas (bus truk sudah terminasi)
+2026-10-02T14:14:41.983	FW-W	boot=1 seq=48270 t_us=198055308 BUS SEPI 8812 ms opmod=3 eflg=0x00 rec=0 tec=0 | cek: kontak ON, CAN-H/L, GND, jumper 120R HW-184 dilepas (bus truk sudah terminasi)
