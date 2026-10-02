@@ -1,10 +1,13 @@
 /*
- * J1939 PASSIVE LOGGER v2.0  --  STM32 (STM32duino) + HW-184 (MCP2515)
+ * J1939 PASSIVE LOGGER v2.4  --  STM32 (STM32duino) + HW-184 (MCP2515)
  * Target: Iveco Astra HD9, J1939 @ 250 kbps, mode LISTEN-ONLY (tidak pernah TX ke bus)
+ * MEJA TEST dengan node TX simulasi: set BENCH_ACK_MODE 1 (listen-only tidak ACK -> TX akan bus-off).
  *
  * Library : "MCP_CAN_lib" by coryjfowler
  * Wiring  : HW-184 VCC=5V, GND, CS=PA4, SCK=PA5, MISO=PA6, MOSI=PA7, INT=PB0 (opsional)
- * Arduino IDE (Blue Pill): Tools > USB support > "CDC (generic 'Serial' supersede U(S)ART)"
+ * Serial   : data keluar lewat Serial2 = USART2 (PA2=TX, PA3=RX) ke adaptor USB-TTL -> di Linux biasanya /dev/ttyUSB0
+ *             Sambung: PA2 -> RX adaptor, GND <-> GND (PA3 <- TX adaptor opsional). Baud 921600.
+ *             (Ini jalur yang SUDAH terbukti kebaca di hw_check. Kalau mau USB CDC: LOG_SERIAL Serial + menu USB = CDC.)
  *
  * PROTOKOL (tiap baris diakhiri  *CC  =  CRC-8 poly 0x07 dari semua karakter sebelum '*'):
  *   R,seq,t_us,ext,id_hex,pgn,sa,prio,dlc,data_hex     frame CAN mentah (SEMUA frame, std & ext)
@@ -25,7 +28,7 @@
 #include <SPI.h>
 #include <mcp_can.h>
 
-#define FW_VERSION         "2.0"
+#define FW_VERSION         "2.4"
 
 // ===================== KONFIGURASI =====================
 #define CAN_CS_PIN         PA4
@@ -36,17 +39,35 @@
 #define CAN_SPEED_TXT      "250kbps"
 #define CAN_XTAL           MCP_8MHZ     // lihat tulisan di kristal modul: 8.000 atau 16.000
 #define CAN_XTAL_TXT       "8MHz"
-#define LOG_SERIAL         Serial
-#define LOG_BAUD           921600       // dipakai kalau Serial = UART; diabaikan kalau USB CDC
-#define REQUIRE_DTR        1            // USB CDC: tahan output sampai port dibuka host (buffer 4KB)
+#define LOG_SERIAL         Serial2      // USART2 (PA2/PA3) -> USB-TTL. Ganti ke Serial untuk USB CDC / USART1
+#define LOG_BAUD           921600       // harus sama dg `-b` di Python. Adaptor tidak kuat? turunkan ke 460800 di KEDUA sisi
+#ifndef EMIT_DECODED
+#define EMIT_DECODED       1            // 1 = kirim baris D (decode di MCU). 0 = hanya raw -> bandwidth serial jauh lebih hemat
+#endif
+#define REQUIRE_DTR        0            // 0 = print tanpa syarat (seperti sketch yang terbukti jalan). 1 = tahan output sampai
+                                        //     !Serial false (DTR) - sempat bikin 0 byte di core tertentu, jangan aktifkan sembarangan
+#define DTR_WAIT_MS        5000         // saat boot: tunggu host membuka port (maks), lalu lanjut
 #define LED_PIN            PC13
 #define LED_ACTIVE_LOW     1
 #define SELFTEST_LOOPBACK  1            // tes chip MCP2515 secara internal (tidak menyentuh bus)
+#ifndef BENCH_ACK_MODE
+#define BENCH_ACK_MODE     0            // 0 = TRUK (listen-only, tidak pernah ACK/TX). 1 = MEJA TEST:
+#endif                                  //     mode NORMAL supaya node TX simulasi mendapat ACK. JANGAN 1 di truk!
 #define FRAME_RING_SIZE    256          // frame CAN yang ditahan di RAM
 #define TX_RING_SIZE       4096         // byte serial yang ditahan di RAM
 #define STATUS_PERIOD_MS   1000UL
 #define SILENT_WARN_MS     3000UL
 // =======================================================
+
+#if BENCH_ACK_MODE
+  #define RUN_MODE      MCP_NORMAL
+  #define RUN_OPMOD     0
+  #define RUN_MODE_TXT  "NORMAL-ACK(BENCH)"
+#else
+  #define RUN_MODE      MCP_LISTENONLY
+  #define RUN_OPMOD     3
+  #define RUN_MODE_TXT  "LISTEN-ONLY"
+#endif
 
 MCP_CAN CAN0(CAN_CS_PIN);
 
@@ -83,6 +104,7 @@ static bool     canReady = false, everRx = false;
 static uint32_t lastRxMs = 0, lastStatusMs = 0, lastInitTryMs = 0, lastSilentWarnMs = 0;
 static uint32_t prevRingDrop = 0, prevHwOvr = 0, prevLineDrop = 0;
 static uint8_t  lastEflg = 0;
+static bool     rawOk = true;   // false = baca register langsung tidak cocok dg library -> mode degraded
 
 // ---------- util ----------
 static uint64_t now64us() {  // micros() 32-bit wrap tiap ~71 menit -> jadikan 64-bit
@@ -195,8 +217,26 @@ static void waitMs(uint32_t ms) {
   while ((millis() - t0) < ms) { pumpTx(); ledUpdate(millis()); }
 }
 
+static void drainTx(uint32_t maxMs) {
+  uint32_t t0 = millis();
+  while (txCount && (millis() - t0) < maxMs) pumpTx();
+}
+
+// Breadcrumb: teks polos "# ..." langsung ke serial SEBELUM langkah berisiko, supaya kalau firmware
+// macet kelihatan berhenti di tahap mana. Tidak lewat ring (ring baru terkirim kalau loop jalan).
+static void crumb(const char *msg) {
+  drainTx(20);
+#if REQUIRE_DTR
+  if (!LOG_SERIAL) return;
+#endif
+  LOG_SERIAL.print("# ");
+  LOG_SERIAL.println(msg);
+}
+
 // ---------- akses register MCP2515 langsung (untuk diagnosa) ----------
+// HANYA dipakai SETELAH CAN0.begin() sukses (library yang menginisialisasi SPI).
 static uint8_t mcpRead(uint8_t reg) {
+  if (!rawOk) return 0;
   digitalWrite(CAN_CS_PIN, LOW);
   SPI.transfer(0x03); SPI.transfer(reg);
   uint8_t v = SPI.transfer(0x00);
@@ -204,13 +244,9 @@ static uint8_t mcpRead(uint8_t reg) {
   return v;
 }
 static void mcpModify(uint8_t reg, uint8_t mask, uint8_t val) {
+  if (!rawOk) return;
   digitalWrite(CAN_CS_PIN, LOW);
   SPI.transfer(0x05); SPI.transfer(reg); SPI.transfer(mask); SPI.transfer(val);
-  digitalWrite(CAN_CS_PIN, HIGH);
-}
-static void mcpReset() {
-  digitalWrite(CAN_CS_PIN, LOW);
-  SPI.transfer(0xC0);
   digitalWrite(CAN_CS_PIN, HIGH);
 }
 
@@ -303,33 +339,45 @@ static void emitFrame(const Frame &f) {
   l.u(f.ext).c(',').hx(f.id, 8).c(',').u(pgn).c(',').u(sa).c(',').u(prio).c(',').u(f.len).c(',');
   for (uint8_t i = 0; i < f.len; i++) l.hx(f.data[i], 2);
   l.send();
+#if EMIT_DECODED
   if (f.ext) decodeJ1939(f, pgn, sa);
+#endif
 }
 
 // ---------- bring-up + self-test ----------
+// Urutan sengaja sama dengan sketch sederhana yang terbukti jalan: library menginisialisasi SPI dan chip
+// DULU; akses register langsung baru sesudahnya (hanya untuk diagnosa).
 static bool bringUp() {
   canReady = false;
-  mcpReset();
-  waitMs(10);
-  uint8_t cstat = mcpRead(REG_CANSTAT), cctrl = mcpRead(REG_CANCTRL);
-  { Line l; l.start('I', now64us());
-    l.s("SPI probe setelah RESET: CANSTAT=0x").hx(cstat, 2).s(" (harus 0x80) CANCTRL=0x").hx(cctrl, 2).s(" (harus 0x87)");
-    l.send(); }
-  if ((cstat & 0xE0) != 0x80) {
-    logMsg('E', "SPI probe GAGAL: MCP2515 tidak menjawab (0x00/0xFF = tanpa respon). Cek VCC=5V GND CS=PA4 SCK=PA5 MISO=PA6 MOSI=PA7");
-    return false;
-  }
+
+  crumb("stage 1/5: CAN0.begin() (library: reset + set bitrate)...");
   if (CAN0.begin(MCP_ANY, CAN_SPEED, CAN_XTAL) != CAN_OK) {
-    logMsg('E', "CAN0.begin() GAGAL: init MCP2515 / kombinasi bitrate-xtal tidak valid");
+    crumb("stage 1 GAGAL: CAN0.begin() mengembalikan error");
+    logMsg('E', "CAN0.begin() GAGAL: MCP2515 tidak menjawab / kristal-bitrate tidak valid. Cek VCC=5V GND CS=PA4 SCK=PA5 MISO=PA6 MOSI=PA7");
     return false;
   }
-  { Line l; l.start('I', now64us());
-    l.s("MCP2515 init OK cfg=" CAN_SPEED_TXT "/" CAN_XTAL_TXT " CNF1=0x").hx(mcpRead(REG_CNF1), 2)
-     .s(" CNF2=0x").hx(mcpRead(REG_CNF2), 2).s(" CNF3=0x").hx(mcpRead(REG_CNF3), 2);
-    l.send(); }
+  crumb("stage 1 OK: MCP2515 menjawab");
+
+  crumb("stage 2/5: baca register langsung (raw SPI)...");
+  rawOk = true;
+  uint8_t cnf1 = mcpRead(REG_CNF1), cnf2 = mcpRead(REG_CNF2), cnf3 = mcpRead(REG_CNF3);
+  if (cnf1 == cnf2 && cnf2 == cnf3 && (cnf1 == 0x00 || cnf1 == 0xFF)) {
+    rawOk = false;  // library berhasil tapi baca mentah tidak -> jangan percaya jalur mentah
+    Line l; l.start('W', now64us());
+    l.s("raw SPI tidak cocok dengan library (CNF1/2/3=0x").hx(cnf1, 2).s(") -> MODE DEGRADED: rec/tec/eflg/opmod tidak dipantau");
+    l.send();
+    crumb("stage 2: raw SPI tidak cocok -> degraded (library tetap dipakai)");
+  } else {
+    Line l; l.start('I', now64us());
+    l.s("MCP2515 init OK cfg=" CAN_SPEED_TXT "/" CAN_XTAL_TXT " CNF1=0x").hx(cnf1, 2)
+     .s(" CNF2=0x").hx(cnf2, 2).s(" CNF3=0x").hx(cnf3, 2);
+    l.send();
+    crumb("stage 2 OK");
+  }
 
 #if SELFTEST_LOOPBACK
-  CAN0.setMode(MCP_LOOPBACK);  // internal saja, TXCAN tidak menyentuh bus
+  crumb("stage 3/5: self-test loopback internal (tidak menyentuh bus)...");
+  CAN0.setMode(MCP_LOOPBACK);
   waitMs(5);
   byte txd[8] = {0xA5, 0x5A, 0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC};
   byte txr = CAN0.sendMsgBuf(0x18FEF1AAUL, 1, 8, txd);
@@ -344,22 +392,30 @@ static bool bringUp() {
     }
   }
   if (!pass) {
+    crumb("stage 3 GAGAL: loopback tidak kembali");
     Line l; l.start('E', now64us());
     l.s("SELFTEST loopback GAGAL (send=").u(txr).s(") -> chip MCP2515 / SPI bermasalah (modul palsu atau sinyal SPI jelek)");
     l.send();
     return false;
   }
   logMsg('I', "SELFTEST loopback PASS: SPI + controller OK");
+  crumb("stage 3 OK");
 #endif
 
-  CAN0.setMode(MCP_LISTENONLY);
+  crumb("stage 4/5: set mode " RUN_MODE_TXT "...");
+  CAN0.setMode(RUN_MODE);
   waitMs(5);
-  uint8_t opmod = mcpRead(REG_CANSTAT) >> 5;
-  if (opmod != 3) {
-    Line l; l.start('E', now64us());
-    l.s("Gagal masuk LISTEN-ONLY, opmod=").u(opmod).s(" (harus 3)");
-    l.send();
-    return false;
+  if (rawOk) {
+    uint8_t opmod = mcpRead(REG_CANSTAT) >> 5;
+    if (opmod != RUN_OPMOD) {
+      crumb("stage 4 GAGAL: mode tidak sesuai");
+      Line l; l.start('E', now64us());
+      l.s("Gagal masuk mode " RUN_MODE_TXT ", opmod=").u(opmod).s(" (harus ").u(RUN_OPMOD).s(")");
+      l.send();
+      return false;
+    }
+  } else {
+    logMsg('W', "mode tidak diverifikasi lewat register (degraded)");
   }
   for (uint8_t i = 0; i < 8 && CAN0.checkReceive() == CAN_MSGAVAIL; i++) {  // buang sisa self-test
     unsigned long rid; byte rext, rlen, rb[8];
@@ -369,7 +425,12 @@ static bool bringUp() {
   lastRxMs = millis();
   everRx = false;
   canReady = true;
-  logMsg('I', "READY: LISTEN-ONLY terverifikasi (opmod=3). Menunggu frame CAN...");
+  crumb("stage 5/5: READY");
+  if (rawOk) logMsg('I', "READY: mode " RUN_MODE_TXT " terverifikasi lewat register. Menunggu frame CAN...");
+  else       logMsg('I', "READY: mode " RUN_MODE_TXT " (tanpa verifikasi register). Menunggu frame CAN...");
+#if BENCH_ACK_MODE
+  logMsg('W', "BENCH_ACK_MODE=1: logger AKTIF di bus (memberi ACK). Hanya untuk meja test, JANGAN dipasang ke truk");
+#endif
   return true;
 }
 
@@ -413,6 +474,7 @@ static void formatFrames(uint8_t maxN) {
 }
 
 static void pollHw(uint32_t nowMs) {
+  if (!rawOk) return;
   static uint32_t last = 0;
   if ((nowMs - last) < 20) return;
   last = nowMs;
@@ -429,7 +491,7 @@ static void periodic(uint32_t nowMs) {
   lastStatusMs = nowMs;
   st.fps = st.framesSec; st.framesSec = 0;
 
-  uint8_t opmod = mcpRead(REG_CANSTAT) >> 5;
+  uint8_t opmod = rawOk ? (mcpRead(REG_CANSTAT) >> 5) : 255;  // 255 = tidak diketahui (degraded)
   uint8_t rec = mcpRead(REG_REC), tec = mcpRead(REG_TEC);
   uint32_t silent = nowMs - lastRxMs;
 
@@ -439,9 +501,9 @@ static void periodic(uint32_t nowMs) {
      .u(silent).c(',').u(st.lineDrop).c(',').u(opmod);
     l.send(); }
 
-  if (opmod != 3) {
+  if (rawOk && opmod != RUN_OPMOD) {
     Line l; l.start('E', now64us());
-    l.s("MCP2515 keluar dari LISTEN-ONLY (opmod=").u(opmod).s(") / SPI putus -> re-init");
+    l.s("MCP2515 keluar dari mode " RUN_MODE_TXT " (opmod=").u(opmod).s(") / SPI putus -> re-init");
     l.send();
     canReady = false; lastInitTryMs = nowMs;
   }
@@ -482,18 +544,19 @@ static void periodic(uint32_t nowMs) {
 // ---------- Arduino ----------
 void setup() {
   pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LED_ACTIVE_LOW ? LOW : HIGH);
-  pinMode(CAN_CS_PIN, OUTPUT);
-  digitalWrite(CAN_CS_PIN, HIGH);
-#if USE_INT_PIN
-  pinMode(CAN_INT_PIN, INPUT_PULLUP);
-#endif
+  digitalWrite(LED_PIN, LED_ACTIVE_LOW ? LOW : HIGH);  // LED nyala = firmware hidup
+  // CATATAN: tidak ada SPI.begin() / pinMode(CS) di sini -> library MCP_CAN yang mengurusnya,
+  // persis seperti sketch sederhana yang terbukti jalan.
   LOG_SERIAL.begin(LOG_BAUD);
-  SPI.begin();
+#if REQUIRE_DTR
+  uint32_t tw = millis();
+  while (!LOG_SERIAL && (millis() - tw) < DTR_WAIT_MS) {}  // tunggu host membuka port
+#endif
+  crumb("BOOT fw=" FW_VERSION " build=" __DATE__ " " __TIME__ " mode=" RUN_MODE_TXT);
 
   { Line l; l.start('I', now64us());
     l.s("BOOT fw=" FW_VERSION " build=" __DATE__ " " __TIME__ " can=" CAN_SPEED_TXT "/" CAN_XTAL_TXT
-        " cs=" CAN_CS_TXT " ring=").u(FRAME_RING_SIZE).s("/").u(TX_RING_SIZE);
+        " cs=" CAN_CS_TXT " mode=" RUN_MODE_TXT " ring=").u(FRAME_RING_SIZE).s("/").u(TX_RING_SIZE);
     l.send(); }
   lastInitTryMs = millis();
   bringUp();

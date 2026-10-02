@@ -2,12 +2,12 @@
 """
 J1939 logger (host side) untuk firmware j1939_logger.ino v2.
 
-  python3 log_to_csv.py --list                       daftar port serial (STM32 CDC = 0483:5740)
-  python3 log_to_csv.py /dev/ttyACM0 --check         tes komunikasi 10 detik + diagnosa (tanpa file)
-  python3 log_to_csv.py /dev/ttyACM0                 rekam (folder sesi baru: logs/session_<timestamp>/)
-  python3 log_to_csv.py /dev/ttyACM0 -n truk1        folder tetap logs/truk1 (kalau sudah ada -> ditanya hapus)
-  python3 log_to_csv.py /dev/ttyACM0 -n truk1 --overwrite   hapus file lama tanpa tanya
-  python3 log_to_csv.py /dev/ttyACM0 --monitor       tampilkan semua baris mentah dari MCU
+  python3 log_to_csv.py --list                       daftar port serial (adaptor USB-TTL -> /dev/ttyUSB0, STM32 CDC -> /dev/ttyACM0)
+  python3 log_to_csv.py /dev/ttyUSB0 --check         tes komunikasi 10 detik + diagnosa (tanpa file)
+  python3 log_to_csv.py /dev/ttyUSB0                 rekam (folder sesi baru: logs/session_<timestamp>/)
+  python3 log_to_csv.py /dev/ttyUSB0 -n truk1        folder tetap logs/truk1 (kalau sudah ada -> ditanya hapus)
+  python3 log_to_csv.py /dev/ttyUSB0 -n truk1 --overwrite   hapus file lama tanpa tanya
+  python3 log_to_csv.py /dev/ttyUSB0 --monitor       tampilkan semua baris mentah dari MCU
 
 Isi folder sesi:
   raw.csv       semua frame CAN (std + ext)
@@ -29,6 +29,7 @@ import queue
 import re
 import shutil
 import socket
+import subprocess
 import sys
 import threading
 import time
@@ -64,6 +65,39 @@ def crc8(data: bytes) -> int:
         for _ in range(8):
             crc = ((crc << 1) ^ 0x07) & 0xFF if crc & 0x80 else (crc << 1) & 0xFF
     return crc
+
+
+def term_cols() -> int:
+    return max(40, shutil.get_terminal_size((120, 24)).columns - 1)
+
+
+def who_holds(port):
+    """Coba tampilkan proses yang memegang port (fuser/lsof)."""
+    for cmd in (["fuser", "-v", port], ["lsof", port]):
+        try:
+            r = subprocess.run(cmd, capture_output=True, text=True, timeout=3)
+            out = (r.stdout + r.stderr).strip()
+            if out:
+                return "\n".join("      " + ln for ln in out.splitlines())
+        except (OSError, subprocess.SubprocessError):
+            continue
+    return ""
+
+
+def port_hint(err, port):
+    e = err.lower()
+    if "busy" in e or "errno 16" in e:
+        h = who_holds(port)
+        return ("    -> Port SEDANG DIPAKAI proses lain. Tutup: Serial Monitor Arduino IDE, screen/minicom, logger lain.\n"
+                "       ModemManager juga sering menyomot /dev/ttyACM*:  sudo systemctl stop ModemManager\n"
+                + (f"       Pemegang port saat ini:\n{h}" if h else
+                   f"       Cek pemegang:  sudo fuser -v {port}   atau   sudo lsof {port}"))
+    if "permission" in e or "errno 13" in e:
+        return "    -> Tidak ada izin: sudo usermod -aG dialout $USER  (lalu logout/login)"
+    if "no such file" in e or "errno 2" in e:
+        return ("    -> Port tidak ada. Jalankan: python3 log_to_csv.py --list   (adaptor USB-TTL = ttyUSB*, STM32 USB = ttyACM*)\n"
+                "       Baru dicolok? cek: dmesg | tail")
+    return ""
 
 
 def iso(ts: float) -> str:
@@ -138,8 +172,9 @@ class Session:
         self.boot, self.expected = 0, None
         self.st, self.st_prev = None, None
         self.total_bytes, self.last_byte_ts = 0, None
-        self.connected, self.t_connect = False, None
+        self.connected, self.t_connect, self.ever_connected = False, None, False
         self.fw_msgs = []
+        self.crumbs = []
         self.t0 = time.time()
         self.last_console = self.last_flush = self.last_sync = self.t0
         self.last_raw_cnt = 0
@@ -149,7 +184,7 @@ class Session:
     # ---- output helpers
     def say(self, msg):
         if self.tty:
-            sys.stdout.write("\r" + " " * 150 + "\r")
+            sys.stdout.write("\r" + " " * term_cols() + "\r")
         print(msg, flush=True)
 
     def event(self, ts, level, msg, show=True):
@@ -169,7 +204,7 @@ class Session:
         if kind == "data":
             self.feed(ts, payload)
         elif kind == "connected":
-            self.connected, self.t_connect, self.last_byte_ts = True, ts, ts
+            self.connected, self.t_connect, self.last_byte_ts, self.ever_connected = True, ts, ts, True
             self.event(ts, "INFO", f"serial terhubung: {payload}")
             self.say(f"[OK] serial terbuka: {payload}")
         elif kind == "disconnected":
@@ -178,6 +213,9 @@ class Session:
             self.event(ts, "ERROR", f"serial putus: {payload} (auto-reconnect...)")
         elif kind == "waiting":
             self.say(f"[..] menunggu port: {payload}")
+            h = port_hint(payload, self.meta.get("port", ""))
+            if h:
+                self.say(h)
 
     def feed(self, ts, data):
         self.total_bytes += len(data)
@@ -203,6 +241,14 @@ class Session:
             return
         if self.monitor:
             self.say(text)
+        plain = text.lstrip("\ufffd\x00\x1b ")  # buang karakter sampah di awal (efek buka port)
+        if plain.startswith("#"):
+            msg = plain[1:].strip()
+            self.c["plain"] += 1
+            self.crumbs.append(msg)
+            self.rec.event(ts, "FW-#", f"boot={self.boot} {msg}")
+            self.say(f"[FW#] {msg}")
+            return
         star = text.rfind("*")
         if star < 1 or len(text) - star - 1 != 2:
             return self.bad(ts, "FORMAT", text)
@@ -300,7 +346,11 @@ class Session:
             if (self.total_bytes and not self.c["valid"] and now - self.t_connect > 5
                     and now - self.last_garbage_warn > 5):
                 self.last_garbage_warn = now
-                self.say(GARBAGE_HELP.format(s=bytes(self.sample[:60])))
+                if self.c["plain"]:
+                    last = self.crumbs[-1] if self.crumbs else "?"
+                    self.say(STALL_HELP.format(last=last, hint=stage_hint(last)))
+                else:
+                    self.say(GARBAGE_HELP.format(s=bytes(self.sample[:60])))
         if now - self.last_console >= 1.0:
             dt = now - self.last_console
             rate = (self.c["raw"] - self.last_raw_cnt) / dt
@@ -311,8 +361,12 @@ class Session:
                     f"bad={self.c['bad']} | MCU silent={st.get('silent_ms', '-')}ms drop={st.get('ring_drop', '-')}/"
                     f"{st.get('hw_ovr', '-')} rec={st.get('rec', '-')} | rpm={self.latest.get('engine_rpm', '-')} "
                     f"spd={self.latest.get('vehicle_speed_kmh', '-')}")
+            if not self.connected:
+                line = (f"{line[:10]} SERIAL TIDAK TERHUBUNG ke {self.meta.get('port', '?')} "
+                        f"-- lihat pesan [..] di atas. Data TIDAK direkam.")
             if self.tty:
-                sys.stdout.write("\r" + line.ljust(150)[:150])
+                w = term_cols()
+                sys.stdout.write("\r" + line.ljust(w)[:w])
                 sys.stdout.flush()
             elif int(now) % 5 == 0:
                 print(line, flush=True)
@@ -332,7 +386,10 @@ class Session:
     # ---- ringkasan
     def summary(self):
         c = self.c
-        out = ["", "=" * 60, "RINGKASAN",
+        out = ["", "=" * 60, "RINGKASAN"]
+        if not self.ever_connected and self.rec.enabled:
+            out.append("  !! SERIAL TIDAK PERNAH TERHUBUNG -> tidak ada data yang terekam (folder sesi kosong).")
+        out += [
                f"  byte diterima      : {self.total_bytes}",
                f"  baris valid        : {c['valid']}   (rusak/CRC: {c['bad']})",
                f"  frame CAN (raw)    : {c['raw']}",
@@ -354,6 +411,9 @@ class Session:
         if self.total_bytes == 0:
             return False, "TIDAK ADA BYTE dari MCU.\n" + NO_BYTES_HELP.format(n=0)
         if not c["valid"]:
+            if c["plain"]:
+                last = self.crumbs[-1] if self.crumbs else "?"
+                return False, STALL_HELP.format(last=last, hint=stage_hint(last))
             return False, "Ada byte tapi tidak ada baris valid.\n" + GARBAGE_HELP.format(s=bytes(self.sample[:60]))
         errs = [m for t, m in self.fw_msgs if t == "E"]
         if errs:
@@ -374,15 +434,39 @@ class Session:
 
 
 NO_BYTES_HELP = """[!] Tidak ada byte dari MCU selama {n:.0f}s. Kemungkinan:
-    1. Port salah        -> python3 log_to_csv.py --list   (STM32 CDC = VID:PID 0483:5740)
+    1. Port salah        -> python3 log_to_csv.py --list   (firmware v2.4 keluar di Serial2/USART2 lewat adaptor USB-TTL
+                            = biasanya /dev/ttyUSB0, BUKAN /dev/ttyACM0)
     2. Arduino IDE       -> Tools > USB support = "CDC (generic 'Serial' supersede U(S)ART)"; kalau tidak,
                             Serial = USART1 (PA9/PA10), bukan USB. Re-upload setelah ganti.
-    3. Pakai USB-TTL     -> ganti LOG_SERIAL ke Serial1/USART, baud harus sama (921600), TX->RX silang, GND bersama
+    3. Adaptor USB-TTL   -> PA2 (TX2) -> RX adaptor, GND bersama; baud firmware (LOG_BAUD) harus sama dg -b. Teks kotak-kotak
+                            = baud beda. Adaptor tidak kuat 921600? pakai 460800 di firmware DAN Python.
     4. Kabel USB charge-only / board belum ter-flash -> ganti kabel, upload ulang
     5. LED PC13          -> mati terus = firmware tidak jalan; kedip 5Hz = init gagal; blip 1/detik = hidup tapi bus sepi
-    6. Permission        -> sudo usermod -aG dialout $USER  (lalu logout/login)"""
+    6. Permission        -> sudo usermod -aG dialout $USER  (lalu logout/login)
+    7. Firmware macet sebelum sempat nge-print -> tekan RESET di board saat logger jalan (breadcrumb
+                            "# stage ..." muncul tiap tahap), atau flash j1939_bringup_diag.ino"""
+STALL_HELP = """[!] MCU HIDUP (mengirim breadcrumb) tapi protokol logger belum jalan.
+    Breadcrumb terakhir : {last}
+    Artinya             : {hint}"""
 GARBAGE_HELP = """[!] Ada byte masuk tapi bukan protokol logger (contoh: {s!r}).
     Kemungkinan baud salah (harus sama dengan LOG_BAUD, 921600), firmware lama v1, atau port dipakai program lain."""
+
+
+def stage_hint(last: str) -> str:
+    l = last.lower()
+    if "stage 1/5" in l or "stage 1 gagal" in l:
+        return "berhenti/gagal di CAN0.begin(): SPI atau modul MCP2515 (cek CS=PA4 SCK=PA5 MISO=PA6 MOSI=PA7, VCC=5V, GND)."
+    if "stage 2" in l:
+        return "berhenti saat baca register langsung (raw SPI). Library OK tapi jalur mentah bermasalah."
+    if "stage 3" in l:
+        return "berhenti di self-test loopback internal: chip/SPI tidak stabil."
+    if "stage 4" in l:
+        return "berhenti saat set mode CAN."
+    if "stage 5" in l or "ready" in l:
+        return "init selesai; harusnya baris protokol sudah jalan -> cek LOG_BAUD/serial."
+    if "boot" in l:
+        return "firmware baru boot lalu berhenti sebelum stage 1: curiga macet di inisialisasi awal."
+    return "tahap tidak dikenal."
 
 
 # ----------------------------------------------------------------------------- reader thread
@@ -396,7 +480,8 @@ class Reader(threading.Thread):
         while not self.stop.is_set():
             if ser is None:
                 try:
-                    ser = serial.Serial(self.port, self.baud, timeout=0.1)
+                    kw = {"exclusive": True} if os.name == "posix" else {}  # cegah dua proses rebutan port
+                    ser = serial.Serial(self.port, self.baud, timeout=0.1, **kw)
                     self.q.put(("connected", time.time(), self.port))
                     last_err = None
                 except (serial.SerialException, OSError, ValueError) as e:
@@ -428,7 +513,8 @@ def list_all_ports():
         print("Tidak ada port serial terdeteksi. (Linux: cek kabel USB data, `dmesg | tail`, grup dialout)")
     for p in ports:
         vp = f"{p.vid:04X}:{p.pid:04X}" if p.vid else "----:----"
-        hint = "  <-- STM32 USB CDC" if vp == "0483:5740" else ""
+        hint = {"0483:5740": "  <-- STM32 USB CDC", "1A86:7523": "  <-- adaptor CH340 (USB-TTL)",
+                "10C4:EA60": "  <-- adaptor CP210x (USB-TTL)", "0403:6001": "  <-- adaptor FTDI (USB-TTL)"}.get(vp, "")
         print(f"{p.device:<18} {vp}  {p.description}{hint}")
 
 
