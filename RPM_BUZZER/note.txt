@@ -1,0 +1,2 @@
+python3 log_to_csv.py /dev/ttyACM0 -b 921600
+source .venv/bin/activate

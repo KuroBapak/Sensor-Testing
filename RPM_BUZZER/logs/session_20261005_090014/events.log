@@ -1,0 +1,2 @@
+2026-10-05T09:00:14.139	INFO	boot=0 serial terhubung: /dev/ttyACM0
+2026-10-05T09:00:14.334	WARN	boot=1 GAP seq: expected=136 got=461 -> 325 baris hilang

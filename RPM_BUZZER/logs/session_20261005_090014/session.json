@@ -1,0 +1,42 @@
+{
+  "port": "/dev/ttyACM0",
+  "baud": 921600,
+  "start": "2026-10-05T09:00:14.138",
+  "argv": [
+    "log_to_csv.py",
+    "/dev/ttyACM0",
+    "-b",
+    "921600"
+  ],
+  "host": "LaptopKentankMledug",
+  "updated": "2026-10-05T09:00:44.518",
+  "final": true,
+  "boots": 1,
+  "counters": {
+    "partial_start": 1,
+    "valid": 352,
+    "raw": 320,
+    "dec": 320,
+    "status": 32,
+    "bad": 1,
+    "gaps": 1,
+    "lost_lines": 325
+  },
+  "total_bytes": 17490,
+  "last_status": {
+    "rx_total": 475,
+    "fps": 10,
+    "ring_drop": 0,
+    "ring_hwm": 1,
+    "hw_ovr": 0,
+    "eflg": 0,
+    "rec": 0,
+    "tec": 0,
+    "tx_hwm": 284,
+    "loop_max_us": 333,
+    "silent_ms": 95,
+    "line_drop": 0,
+    "opmod": 0,
+    "boot": 1
+  }
+}
