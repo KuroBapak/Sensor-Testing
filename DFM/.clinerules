@@ -1,113 +1,83 @@
 # Konteks Wajib
 
-Di AWAL setiap task baru:
-1. Baca docs/vault/domain/app-info.md — jangan panggil application-info
-   berulang kecuali dicurigai ada perubahan dependency.
-2. Kalau task menyebut fitur yang ada file spec-nya di docs/vault/specs/,
-   baca spec itu dulu sebelum mulai eksplorasi manual.
-3. Cek docs/vault/gotchas/ kalau menemui error — mungkin sudah pernah
-   terjadi dan solusinya sudah tercatat.
-4. Sebelum search-docs, cek docs/vault/patterns/ dulu — kalau topiknya
-   sudah pernah dicatat, pakai itu, jangan search ulang.
+Di AWAL task: baca docs/vault/domain/app-info.md, cek docs/vault/gotchas/ untuk error.
 
-# Eksplorasi Struktur Kode — pakai Graphify, bukan grep
+# PRD Besar
 
-Sebelum eksplorasi manual (search_codebase / read_files berulang) untuk
-paham keterkaitan antar file/fungsi:
-1. Panggil tool graphify untuk cek god-nodes/query sebelum eksplorasi manual.
-2. Fallback ke search_codebase/read_files kalau graphify tidak cukup.
+PRD (613 baris) kepotong waktu read — butuh 7x read ulang.
+Baca docs/vault/specs/PRD-digest.md dulu (150 baris), baru detail spesifik kalau perlu.
 
-Sebutkan eksplisit "pakai tool graphify" kalau instruksi ambigu —
-tool ini tidak otomatis dipakai hanya karena tersedia.
+# Eksplorasi
 
-## Cara query Graphify yang efektif (terverifikasi empiris di project ini)
+**Graphify:** dependency tree, "siapa manggil X"
+**search_codebase:** pattern match, `artisan route:list --path=api`
 
-- Formulasikan query dengan istilah domain SPESIFIK (mis. "fuel
-  monitoring sensor data"), BUKAN istilah generik (mis. "database",
-  "user", "auth"). Istilah generik menarik BFS ke node framework/auth
-  (DatabaseSeeder, config files), bukan domain bisnis sebenarnya.
-- Kalau node ambigu (nama umum yang match >1 file: User, Auth, dst),
-  format error-nya memberi cara fix langsung — pakai
-  path/ke/file.ext::NamaSymbol, bukan nama polos.
-  Contoh: "app/Models/User.php::User", bukan cuma "User".
-- Kalau hasil query di-truncate (terlalu banyak node/noise import),
-  pakai --context call untuk fokus ke pemanggilan fungsi langsung,
-  bukan semua tipe relasi (import, inherits, dst).
-- "No affected nodes" dari command affected BUKAN bukti kode itu tidak
-  terpakai — bisa berarti relasi tidak tertangkap AST extractor
-  (contoh: Laravel $this->call([X::class]) dalam array literal sering
-  tidak terekstrak sebagai edge "calls"). Verifikasi manual sebelum
-  menyimpulkan kode itu dead code.
-- god-nodes bisa didominasi noise (nama package yang di-import banyak
-  file: react, @inertiajs/react, lucide-react, atau key config seperti
-  compilerOptions/require-dev). Itu bukan bug, itu fakta struktural —
-  jangan buang waktu coba "membersihkannya", fokus ke query/explain
-  untuk pertanyaan spesifik alih-alih god-nodes untuk overview umum.
+Jangan graphify query generik — query domain spesifik ("fuel transaction RFID").
 
-## Kalau harus pakai search_codebase (fallback)
+## Query Graphify Efektif
+- Node ambigu: pakai path/ke/file.ext::NamaSymbol (bukan nama polos)
+- Hasil di-truncate: pakai context_filter=["call"]
+- "No affected nodes" bukan bukti dead code (Laravel $this->call([X::class]) ga tertangkap)
 
-- Hindari kata umum bahasa Inggris ("map", "user", "data") tanpa konteks
-  — akan match ratusan hasil noise (mis. `.map()` method call di mana-mana).
-  Gunakan kata majemuk spesifik ("fleet map", "MapController") atau
-  scope dengan path tertentu.
-- graphify query selalu didahulukan untuk pertanyaan struktural ("di mana
-  X dipakai", "apa yang terhubung ke Y") — sudah punya noise-filtering
-  bawaan (community/edge type). search_codebase adalah fallback terakhir.
-
-## Error TypeScript pada API pihak ketiga
+## Error TypeScript pada API Pihak Ketiga
 Kalau `npm run types:check` gagal karena properti tidak dikenal pada tipe
-dari package eksternal (Inertia, dst) — JANGAN tebak-tebak nama properti
-pengganti dengan coba-hapus-satu-per-satu. Langsung panggil search-docs
-SEKALI dengan query nama API-nya (mis. "router.reload options") untuk
-lihat shape lengkap yang benar, baru edit sekali dengan hasil pasti.
+dari package eksternal — JANGAN tebak-tebak. Langsung panggil search-docs
+SEKALI dengan query nama API-nya, baru edit sekali dengan hasil pasti.
 
-# Mekanika Eksekusi — Efisiensi Turn & Token
+# Mekanika Eksekusi
+
+## Command Panjang (pest, composer, npm, migrate)
+
+`cmd /c "<command> --no-ansi > out.txt 2>&1"` lalu `tail -30 out.txt` SATU kali.
+JANGAN: Select-Object pipe, Start-Sleep polling, baca log berulang.
+Flag: `pest --compact`, `composer --no-ansi --no-progress`
+
+Kenapa cmd /c: PowerShell wrap stderr jadi NativeCommandError.
 
 ## Membuat File/Komponen Besar
 
-Tool `editor` punya limit ~6000 karakter per `new_text`. Untuk file baru
-yang diperkirakan besar (komponen React kompleks, class panjang, dst):
-1. Buat kerangka dasar dulu lewat `editor` biasa — import, interface/type,
-   shell function/component kosong.
+Tool `editor` punya limit ~6000 karakter per `new_text`. Untuk file besar:
+1. Buat kerangka dasar dulu — import, interface/type, shell function kosong.
 2. Tambahkan bagian selanjutnya satu per satu lewat `insert_line` di baris
-   yang TEPAT (akhir file atau akhir suatu block yang sudah lengkap) —
-   JANGAN insert ke tengah body sebuah function/block yang belum ditutup,
-   itu akan memutus block tersebut jadi dua bagian yang salah.
-3. JANGAN coba satu `new_text` besar sekaligus untuk file besar — itu akan
-   gagal dan membuang satu turn penuh tanpa hasil.
-4. Setelah SETIAP insert_line pada file besar, verifikasi dengan read_files
-   pada rentang baris di sekitar titik insert — pastikan tidak ada function/
-   block lain yang "kepotong" atau brace yang tidak matching.
+   yang TEPAT (akhir file atau akhir block yang sudah lengkap).
+3. JANGAN insert ke tengah body function/block yang belum ditutup.
+4. Setelah SETIAP insert_line, verifikasi dengan read_files rentang baris
+   di sekitar titik insert.
 
 ## Batching Command Diagnostik
 
 Kalau butuh beberapa command shell untuk diagnosis (cek config, cek versi,
-cek status), kumpulkan SEMUA command yang independen jadi SATU run_commands
-call dengan array berisi banyak command — jangan satu command per turn.
-Contoh buruk: 4 turn terpisah untuk `npm config list`, `findstr remote`,
-`findstr fetch`, `npm config get allow-remote`.
-Contoh benar: satu run_commands dengan keempat command itu sekaligus.
+cek status), kumpulkan SEMUA command independen jadi SATU run_commands call
+dengan array — jangan satu command per turn.
 
 ## npm install
 
-Sebelum npm install package baru, baca docs/vault/domain/npm-config.md
-dulu — ada constraint allow-remote yang perlu di-handle di awal,
-bukan ditemukan lewat trial-error.
+Baca docs/vault/domain/npm-config.md dulu — ada constraint allow-remote yang
+perlu di-handle di awal, bukan trial-error.
 
 ## Kapan pakai /smol
 
 Untuk task dengan fase eksplorasi panjang (>10 tool call) sebelum fase
-implementasi berat dimulai, panggil /smol setelah eksplorasi selesai
-tapi SEBELUM mulai generate/edit kode besar. Ini best-practice untuk
-task seperti "integrasi library baru", "fitur lintas banyak file", dst.
+implementasi dimulai, panggil /smol setelah eksplorasi selesai tapi SEBELUM
+mulai generate/edit kode besar.
 
 # Setelah Task Selesai
 
-Kalau task ini menghasilkan keputusan arsitektur penting (bukan sekadar
-fix kecil), tawarkan menulis ADR ke docs/vault/adr/.
-Kalau task ini menemukan gotcha baru (error tidak jelas yang makan waktu
-menyelesaikan), tawarkan mencatatnya ke docs/vault/gotchas/.
+Kalau task ini menghasilkan keputusan arsitektur penting (bukan fix kecil),
+tawarkan menulis ADR ke docs/vault/adr/.
+Kalau task ini menemukan gotcha baru (error tidak jelas yang makan waktu),
+tawarkan mencatatnya ke docs/vault/gotchas/.
 
 # Loop Limiter
 
-Maksimal 3 percobaan untuk error yang sama sebelum berhenti dan lapor.
+Maks 3 retry untuk error sama. Kalau gagal: baca 10 baris error, analisis root cause, fix dulu baru retry.
+
+# Token Budget
+
+## Progressive: baca header 20 baris dulu, kalau perlu baru full.
+## Error >500 baris: ekstrak message + 10 baris stack trace saja.
+## Graphify: set token_budget (1000 exploratory, 2000 detailed, 3000 max).
+## MCP: database-schema pakai summary=true, read-log max 10 entries.
+## Command: `| head -20`, redirect besar ke /tmp/out.txt.
+## Summarization: >15 tool calls → tulis /tmp/task-progress.md, reference itu.
+

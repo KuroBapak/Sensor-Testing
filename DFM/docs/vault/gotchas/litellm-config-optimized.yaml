@@ -1,0 +1,37 @@
+# LiteLLM Smart Router — Optimized Config
+# Place at ~/.config/litellm/config.yaml or run: litellm --config <path>
+
+model_list:
+  # Single model for Act mode — Plan uses heavy model in Cline settings
+  - model_name: daily-coding
+    litellm_params:
+      model: anthropic/claude-3-5-sonnet-20241022
+      temperature: 0.5
+    model_info:
+      mode: completion
+      tier: standard
+
+router_settings:
+  routing_strategy: simple-shuffle
+  allowed_fails: 1
+  num_retries: 2
+  timeout: 600
+  request_timeout: 600
+
+general_settings:
+  # Langfuse tracking
+  success_callback: ["langfuse"]
+  failure_callback: ["langfuse"]
+  
+  # Prompt caching at provider level (90% cost reduction on cached content)
+  # Anthropic auto-caches, LiteLLM forwards cache_control markers
+  # See: https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching
+
+litellm_settings:
+  drop_params: true
+  json_logs: true
+  
+environment_variables:
+  LANGFUSE_PUBLIC_KEY: "your-key"
+  LANGFUSE_SECRET_KEY: "your-secret"
+  LANGFUSE_HOST: "https://cloud.langfuse.com"

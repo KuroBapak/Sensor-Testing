@@ -9,6 +9,11 @@ bootstrap/cache/
 
 # Generated/cache runtime — bisa besar, jarang relevan
 storage/framework/
+storage/logs/
+storage/inertia-devtools/
+
+# Graphify output — MCP tool baca langsung graph.json, jangan search
+graphify-out/
 
 # Version control
 .git/
@@ -16,4 +21,8 @@ storage/framework/
 # Data besar kalau ada
 *.sqlite
 *.csv
-graphify-out/
+
+# Test output temporary
+test-output.txt
+out.txt
+

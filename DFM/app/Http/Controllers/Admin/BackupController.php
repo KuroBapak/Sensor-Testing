@@ -71,6 +71,7 @@ class BackupController extends Controller
 
         $setting->save();
 
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Backup settings saved. Please run Test Connection before enabling backups.']);
         return redirect()->back()->with('success', 'Backup settings saved. Please run Test Connection before enabling backups.');
     }
 
@@ -86,10 +87,12 @@ class BackupController extends Controller
             'last_connection_test_ok' => $result['success'],
         ]);
 
+            Inertia::flash('toast', ['type' => 'success', 'message' => $result['message']]);
         if ($result['success']) {
             return redirect()->back()->with('success', $result['message']);
         }
 
+        Inertia::flash('toast', ['type' => 'error', 'message' => $result['message']]);
         return redirect()->back()->withErrors(['test_connection' => $result['message']]);
     }
 
@@ -100,11 +103,13 @@ class BackupController extends Controller
 
         // Validate connection test passed
         if (! $settings->last_connection_test_ok || ! $settings->last_connection_test_at) {
+            Inertia::flash('toast', ['type' => 'error', 'message' => 'Please run Test Connection first.']);
             return redirect()->back()->withErrors(['test_backup' => 'Please run Test Connection first.']);
         }
 
         // Check if settings changed after connection test
         if ($settings->updated_at > $settings->last_connection_test_at) {
+            Inertia::flash('toast', ['type' => 'error', 'message' => 'Settings changed after connection test. Please run Test Connection again.']);
             return redirect()->back()->withErrors(['test_backup' => 'Settings changed after connection test. Please run Test Connection again.']);
         }
 
@@ -116,9 +121,17 @@ class BackupController extends Controller
             'triggered_by' => $request->user()->id,
         ]);
 
-        RunBackupJob::dispatch($run);
+        RunBackupJob::dispatchSync($run);
+        $run->refresh();
 
-        return redirect()->back()->with('success', 'Test backup started. Check the run history below for results.');
+        if ($run->status === 'success') {
+            $size = $run->size_bytes ? number_format($run->size_bytes / 1024, 1) . ' KB' : '';
+            Inertia::flash('toast', ['type' => 'success', 'message' => "Test backup completed successfully ($size)."]);
+            return redirect()->back()->with('success', "Test backup completed successfully ($size).");
+        }
+
+        Inertia::flash('toast', ['type' => 'error', 'message' => 'Test backup failed: ' . ($run->error_message ?? 'Unknown error')]);
+        return redirect()->back()->withErrors(['test_backup' => 'Test backup failed: ' . ($run->error_message ?? 'Unknown error')]);
     }
 
     public function trigger(Request $request)
@@ -127,11 +140,13 @@ class BackupController extends Controller
         $settings = BackupSetting::where('site_id', $site->id)->first();
 
         if (! $settings) {
+            Inertia::flash('toast', ['type' => 'error', 'message' => 'Backup settings not configured.']);
             return redirect()->back()->withErrors(['trigger' => 'Backup settings not configured.']);
         }
 
         // Validate tests passed before manual trigger
         if (! $settings->isFullyTested()) {
+            Inertia::flash('toast', ['type' => 'error', 'message' => 'Please complete Test Connection and Test Backup before running manual backups.']);
             return redirect()->back()->withErrors(['trigger' => 'Please complete Test Connection and Test Backup before running manual backups.']);
         }
 
@@ -145,6 +160,7 @@ class BackupController extends Controller
 
         RunBackupJob::dispatch($run);
 
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Backup triggered successfully. It will run in the background.']);
         return redirect()->back()->with('success', 'Backup triggered successfully. It will run in the background.');
     }
 }
