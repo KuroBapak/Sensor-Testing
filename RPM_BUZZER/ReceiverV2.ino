@@ -28,6 +28,25 @@ const uint16_t RPM_RAW_INVALID_MIN = 0xFB00;
 // Print RPM ke terminal dibatasi (Bluetooth 9600 baud cuma muat ~960 byte/detik)
 const unsigned long RPM_PRINT_INTERVAL_MS = 500;
 
+// ================= Mode bus =================
+// 0 = TRUK  : LISTEN-ONLY (tidak pernah ACK / TX / error frame).
+// 1 = MEJA TEST: mode NORMAL supaya node TX simulasi mendapat ACK (listen-only tidak ACK -> pengirim bus-off).
+//     !!! JANGAN 1 di truk: chip jadi node aktif di bus truk !!!
+// Ganti angka di bawah, ATAU tanpa edit file: buat build_opt.h (satu folder dengan .ino) berisi -DBENCH_ACK_MODE=1
+#ifndef BENCH_ACK_MODE
+#define BENCH_ACK_MODE 0
+#endif
+
+#if BENCH_ACK_MODE
+  #define RUN_MODE      MCP_NORMAL
+  #define RUN_OPMOD     0
+  #define RUN_MODE_TXT  "NORMAL-ACK(BENCH)"
+#else
+  #define RUN_MODE      MCP_LISTENONLY
+  #define RUN_OPMOD     3
+  #define RUN_MODE_TXT  "LISTEN-ONLY"
+#endif
+
 // MCP2515 register (akses langsung untuk verifikasi mode)
 #define REG_CANSTAT 0x0E
 #define REG_CNF3    0x28
@@ -102,12 +121,14 @@ void blinkError();
 void logBoth(const char *s);
 void logBothLossy(const char *s);
 uint8_t mcpReadReg(uint8_t reg);
-bool enterListenOnly();
+bool enterRunMode();
 
 // ================= Setup =================
 void setup() {
   Serial.begin(115200);
   Serial2.begin(9600);
+  Serial1.setRx(PA10);
+  Serial1.setTx(PA9);
 
   pinMode(PIN_BUZZER_EXT, OUTPUT);
   pinMode(PIN_LED_RED, OUTPUT);
@@ -127,13 +148,17 @@ void setup() {
     while (1) { blinkError(); }
   }
 
-  // LISTEN-ONLY: node pasif (tidak ACK, tidak TX, tidak kirim error frame). Alat ini tidak pernah TX,
-  // jadi NORMAL tidak ada gunanya dan hanya menambah risiko mengganggu bus truk.
-  if (!enterListenOnly()) {
-    logBoth("[RX] GAGAL masuk LISTEN-ONLY -> berhenti demi keamanan bus (watchdog akan reset)");
+  // Truk: LISTEN-ONLY = node pasif (tidak ACK, tidak TX, tidak kirim error frame). Alat ini tidak pernah TX,
+  // jadi NORMAL tidak ada gunanya di truk dan hanya menambah risiko mengganggu bus.
+  // Meja test (BENCH_ACK_MODE=1): NORMAL supaya node TX simulasi mendapat ACK.
+  if (!enterRunMode()) {
+    logBoth("[RX] GAGAL masuk mode " RUN_MODE_TXT " -> berhenti demi keamanan bus (watchdog akan reset)");
     while (1) { blinkError(); }
   }
-  logBoth("[RX] Mode LISTEN-ONLY aktif, nunggu frame J1939 dari truk...");
+  logBoth("[RX] Mode " RUN_MODE_TXT " aktif, nunggu frame J1939...");
+#if BENCH_ACK_MODE
+  logBoth("[RX] !!! BENCH_ACK_MODE=1: alat AKTIF di bus (memberi ACK). Hanya untuk meja test, JANGAN dipasang ke truk !!!");
+#endif
 
   allOff();
   sysState = SYS_WAITING_RPM;
@@ -265,9 +290,9 @@ uint8_t mcpReadReg(uint8_t reg) {
   return v;
 }
 
-// true = chip terbukti (atau tidak bisa dicek, lihat peringatan) di LISTEN-ONLY.
-bool enterListenOnly() {
-  if (CAN0.setMode(MCP_LISTENONLY) != CAN_OK) return false;
+// true = chip terbukti (atau tidak bisa dicek, lihat peringatan) berada di RUN_MODE.
+bool enterRunMode() {
+  if (CAN0.setMode(RUN_MODE) != CAN_OK) return false;
 
   uint8_t cnf1 = mcpReadReg(REG_CNF1), cnf2 = mcpReadReg(REG_CNF2), cnf3 = mcpReadReg(REG_CNF3);
   if (cnf1 == cnf2 && cnf2 == cnf3 && (cnf1 == 0x00 || cnf1 == 0xFF)) {
@@ -275,10 +300,10 @@ bool enterListenOnly() {
     logBoth("[RX] PERINGATAN: baca register langsung tidak cocok, mode tidak bisa diverifikasi");
     return true;
   }
-  uint8_t opmod = mcpReadReg(REG_CANSTAT) >> 5;     // 3 = LISTEN-ONLY
-  if (opmod != 3) {
-    char b[48];
-    snprintf(b, sizeof(b), "[RX] opmod=%u (harus 3 = LISTEN-ONLY)", (unsigned)opmod);
+  uint8_t opmod = mcpReadReg(REG_CANSTAT) >> 5;     // 0 = NORMAL, 3 = LISTEN-ONLY
+  if (opmod != RUN_OPMOD) {
+    char b[64];
+    snprintf(b, sizeof(b), "[RX] opmod=%u (harus %u = " RUN_MODE_TXT ")", (unsigned)opmod, (unsigned)RUN_OPMOD);
     logBoth(b);
     return false;
   }
@@ -453,13 +478,13 @@ void printStatus() {
   if (RPM_SA_FILTER == 0xFFFF) strcpy(saTxt, "ANY");
   else snprintf(saTxt, sizeof(saTxt), "0x%02X", (unsigned)RPM_SA_FILTER);
 
-  char buf[128];
+  char buf[160];
   snprintf(buf, sizeof(buf),
-    "[STATUS] Safe=%.0f Danger=%.0f BuzzerExt=%s ShowRpm=%s SA=%s EEC1invalid=%lu",
+    "[STATUS] Safe=%.0f Danger=%.0f BuzzerExt=%s ShowRpm=%s SA=%s EEC1invalid=%lu Mode=%s",
     cfg.rpmSafeBoundary, cfg.rpmDangerBoundary,
     buzzerEnabled ? "ON" : "OFF",
     showRpmOnTerminal ? "ON" : "OFF",
-    saTxt, (unsigned long)invalidRpmFrames);
+    saTxt, (unsigned long)invalidRpmFrames, RUN_MODE_TXT);
   logBoth(buf);
 }
 

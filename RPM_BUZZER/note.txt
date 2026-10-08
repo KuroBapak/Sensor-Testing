@@ -1,10 +1,12 @@
-python3 log_to_csv.py /dev/ttyACM0 -b 921600
 source .venv/bin/activate
-python3 log_to_csv.py /dev/ttyUSB0 --check
+python3 log_to_csvV3.py /dev/ttyACM0 -b 921600 --bench 0
+python3 log_to_csvV3.py /dev/ttyACM0 -b 921600 --bench 1 
+python3 log_to_csvV3.py /dev/ttyACM0 -b 921600
+python3 log_to_csv.py /dev/ttyACM0 --check
 
 Urutan aman di lokasi
-Kontak OFF, ukur resistansi CAN-H ke CAN-L di titik colok. Panduan servis menyarankan ukur resistansi H–L dengan ignition off. Kira-kira 60 Ω berarti bus punya terminasi di dua ujung, jadi lepas jumper 120R di HW-184. 
-jimcontent
+Kontak OFF, ukur resistansi CAN-H ke CAN-L di titik colok. Panduan servis menyarankan ukur resistansi H–L dengan ignition off. 
+Kira-kira 60 Ω berarti bus punya terminasi di dua ujung, jadi lepas jumper 120R di HW-184. 
 Colok logger dulu (listen-only). Cari ID 0CF00400 (EEC1, SA 0x00) dengan laju ±50/detik. Catat SA yang muncul.
 Kalau EEC1 terlihat, baru flash firmware buzzer (setelah fix poin 1–3 di atas) dengan SA yang sudah terbukti.
 Kalau logger lihat nol frame di semua cfg, ganti titik colok sebelum curiga ke kode.

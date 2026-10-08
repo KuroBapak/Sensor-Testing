@@ -1,7 +1,15 @@
 /*
- * J1939 PASSIVE LOGGER v3.0 -- STM32 (STM32duino) + HW-184 (MCP2515)
+ * J1939 PASSIVE LOGGER v3.1 -- STM32 (STM32duino) + HW-184 (MCP2515)
  * Target : Iveco Astra HD9, J1939 (250 kbps, bisa auto-scan 250/500k), mode LISTEN-ONLY (TIDAK PERNAH TX ke bus)
- * MEJA TEST dengan node TX simulasi: set BENCH_ACK_MODE 1 (listen-only tidak ACK -> TX akan bus-off).
+ *
+ * BENCH MODE (meja test dengan node TX simulasi) = RUNTIME lewat serial, BUKAN compile-time:
+ *   - DEFAULT 0 SETIAP BOOT/RESET (LISTEN-ONLY, aman untuk truk). TIDAK disimpan ke flash.
+ *   - Perintah dikirim ke LOG_SERIAL (Serial2 = USART2, RX = PA3 <- TX adaptor USB-TTL), diakhiri newline:
+ *       bench 1   -> mode NORMAL (memberi ACK, AKTIF di bus). HANYA meja test. JANGAN di truk.
+ *       bench 0   -> kembali LISTEN-ONLY (pasif)
+ *       bench     -> tampilkan status bench
+ *   - Dari PC (tanpa terminal):  python3 log_to_csv.py <port> --bench 1   /   --bench 0
+ *   - Reset / cabut daya -> otomatis kembali ke bench 0.
  *
  * Library : "MCP_CAN_lib" by coryjfowler
  * Wiring  : HW-184 VCC=5V, GND, CS=PA4, SCK=PA5, MISO=PA6, MOSI=PA7, INT=PB0 (opsional)
@@ -9,6 +17,10 @@
  *
  * WAJIB: file build_opt.h (satu folder dengan .ino ini) berisi  -DSERIAL_TX_BUFFER_SIZE=1024
  *        (default STM32duino cuma 64 byte -> throughput serial 921600 tidak tercapai).
+ *        (Opsi compile-time -DBENCH_ACK_MODE sudah DIHAPUS; kalau masih ada di build_opt.h, diabaikan.)
+ *
+ * Perubahan v3.1 dibanding v3.0:
+ *  - BENCH_ACK_MODE compile-time diganti perintah serial "bench 0|1" (default 0 tiap boot).
  *
  * Perubahan v3.0 dibanding v2.4:
  *  - LOG_BAUD 921600 (cocok dg default log_to_csv.py). 115200 cuma muat ~175 frame/s -> data hilang.
@@ -19,14 +31,14 @@
  *  - AUTO_BITRATE: scan 250/500k x xtal 8/16MHz dalam mode LISTEN-ONLY (aman, tidak mengirim apa pun),
  *    kunci cfg yang bus-nya hidup. Scan ulang kalau bus sepi > RESCAN_SILENT_MS.
  *  - Pengaman: setelah tiap begin() mode chip dibaca; kalau library meninggalkan chip di NORMAL
- *    (aktif di bus) -> dipaksa LISTEN-ONLY dan scan dimatikan.
+ *    (aktif di bus) dan bench=0 -> dipaksa LISTEN-ONLY dan scan dimatikan.
  *  - crumb() tidak pernah menyelip di tengah baris.
  */
 
 #include <SPI.h>
 #include <mcp_can.h>
 
-#define FW_VERSION         "3.0"
+#define FW_VERSION         "3.1"
 
 // ===================== KONFIGURASI =====================
 #define CAN_CS_PIN         PA4
@@ -42,9 +54,6 @@
 #define LED_PIN            PC13
 #define LED_ACTIVE_LOW     1
 #define SELFTEST_LOOPBACK  1            // tes chip MCP2515 secara internal (tidak menyentuh bus)
-#ifndef BENCH_ACK_MODE
-#define BENCH_ACK_MODE     0            // 0 = TRUK (listen-only, tidak pernah ACK/TX). 1 = MEJA TEST:
-#endif                                  //     mode NORMAL supaya node TX simulasi mendapat ACK. JANGAN 1 di truk!
 #define FRAME_RING_SIZE    256          // frame CAN yang ditahan di RAM
 #define TX_RING_SIZE       4096         // byte serial yang ditahan di RAM
 #define STATUS_PERIOD_MS   1000UL
@@ -61,15 +70,8 @@
 #warning "SERIAL_TX_BUFFER_SIZE < 256: buat build_opt.h berisi -DSERIAL_TX_BUFFER_SIZE=1024 (lihat header)"
 #endif
 
-#if BENCH_ACK_MODE
-  #define RUN_MODE      MCP_NORMAL
-  #define RUN_OPMOD     0
-  #define RUN_MODE_TXT  "NORMAL-ACK(BENCH)"
-#else
-  #define RUN_MODE      MCP_LISTENONLY
-  #define RUN_OPMOD     3
-  #define RUN_MODE_TXT  "LISTEN-ONLY"
-#endif
+#define MODE_TXT_LISTEN  "LISTEN-ONLY"
+#define MODE_TXT_BENCH   "NORMAL-ACK(BENCH)"
 
 MCP_CAN CAN0(CAN_CS_PIN);
 
@@ -121,6 +123,16 @@ static bool     rawOk = true;       // false = baca register langsung tidak coco
 static bool     autoOk = false;     // true = scan bitrate diizinkan (aman & terverifikasi)
 static int8_t   lastGood = -1;      // indeks CFGS yang terakhir terbukti hidup
 static uint8_t  curCfg = 0;         // indeks CFGS yang sedang terpasang di chip
+
+// BENCH: HANYA di RAM. Nilai awal false (= LISTEN-ONLY, aman untuk truk) pada setiap boot/reset.
+static bool     benchMode = false;
+static inline uint8_t     runMode()    { return benchMode ? MCP_NORMAL : MCP_LISTENONLY; }
+static inline uint8_t     runOpmod()   { return benchMode ? 0 : 3; }
+static inline const char *runModeTxt() { return benchMode ? MODE_TXT_BENCH : MODE_TXT_LISTEN; }
+
+// perintah serial (bench 0|1)
+static char     cmdBuf[32];
+static uint8_t  cmdLen = 0;
 
 // ---------- util ----------
 static uint64_t now64us() {
@@ -318,6 +330,84 @@ static void settleMs(uint32_t ms) {
   while ((millis() - t0) < ms) { drainCan(8); pumpTx(); ledUpdate(millis()); }
 }
 
+// ---------- BENCH: perintah serial "bench 0|1" ----------
+static void reportBench() {
+  if (benchMode) logMsg('I', "BENCH=1 AKTIF: chip NORMAL (memberi ACK, aktif di bus). Hanya meja test, JANGAN di truk. Kirim 'bench 0' untuk kembali");
+  else           logMsg('I', "BENCH=0: LISTEN-ONLY (pasif, aman untuk truk). Default setiap boot");
+}
+
+static void setBench(bool on) {
+  if (on == benchMode) { reportBench(); return; }
+
+  if (!canReady) {                          // chip belum siap: cukup catat, bringUp() yang menerapkan mode ini
+    benchMode = on;
+    if (on) logMsg('W', "BENCH=1 AKTIF (menunggu init selesai): setelah READY chip NORMAL, memberi ACK di bus. JANGAN di truk");
+    else    logMsg('I', "BENCH=0: LISTEN-ONLY (pasif, aman untuk truk)");
+    return;
+  }
+
+  byte r = CAN0.setMode(on ? MCP_NORMAL : MCP_LISTENONLY);
+  settleMs(5);
+  bool ok = (r == CAN_OK);
+  if (ok && rawOk) ok = ((mcpRead(REG_CANSTAT) >> 5) == (on ? 0 : 3));
+
+  if (ok) {
+    benchMode = on;
+    mcpModify(REG_EFLG, 0xC0, 0x00);
+    if (on) {
+      logMsg('W', "BENCH=1 AKTIF: chip NORMAL (memberi ACK, aktif di bus). Hanya meja test, JANGAN di truk. Kirim 'bench 0' untuk kembali");
+      if (!rawOk) logMsg('W', "BENCH=1: mode tidak diverifikasi lewat register (degraded)");
+    } else {
+      logMsg('I', "BENCH=0: LISTEN-ONLY (pasif, aman untuk truk)");
+    }
+    return;
+  }
+
+  // gagal: SELALU berakhir di sisi aman
+  benchMode = false;
+  CAN0.setMode(MCP_LISTENONLY);
+  settleMs(5);
+  if (on) {
+    logMsg('E', "BENCH=0 (permintaan bench 1 GAGAL: chip tidak masuk NORMAL) -> dikembalikan ke LISTEN-ONLY");
+  } else {
+    logMsg('E', "BENCH=0 GAGAL masuk LISTEN-ONLY -> re-init chip (selalu LISTEN-ONLY)");
+    canReady = false;
+    lastInitTryMs = millis() - 2000UL;
+  }
+}
+
+static void handleCmd(char *s) {
+  while (*s == ' ') s++;
+  if (*s == '/') s++;
+  for (char *p = s; *p; p++) *p = (char)tolower((unsigned char)*p);
+  size_t n = strlen(s);
+  while (n && s[n - 1] == ' ') s[--n] = 0;
+
+  if (strcmp(s, "bench 1") == 0)      setBench(true);
+  else if (strcmp(s, "bench 0") == 0) setBench(false);
+  else if (strcmp(s, "bench") == 0)   reportBench();
+  else if (strncmp(s, "bench", 5) == 0) logMsg('W', "format: bench 0|1   (0 = LISTEN-ONLY aman untuk truk, 1 = NORMAL-ACK hanya meja test)");
+  // baris lain diabaikan diam-diam (noise di jalur RX tidak boleh memicu apa pun)
+}
+
+static void pollCmd() {
+  for (uint8_t guard = 0; guard < 32 && LOG_SERIAL.available(); guard++) {
+    int ch = LOG_SERIAL.read();
+    if (ch < 0) break;
+    char c = (char)ch;
+    if (c == '\r') continue;
+    if (c == '\n') {
+      cmdBuf[cmdLen] = '\0';
+      if (cmdLen > 0) handleCmd(cmdBuf);
+      cmdLen = 0;
+    } else if (cmdLen < sizeof(cmdBuf) - 1) {
+      cmdBuf[cmdLen++] = c;
+    } else {
+      cmdLen = 0;                           // terlalu panjang -> buang
+    }
+  }
+}
+
 // ---------- pemilihan cfg bitrate ----------
 // Urutan kandidat: cfg terakhir yang terbukti hidup (atau cfg user), lalu sisanya; duplikat (speed,xtal) dilewati.
 static uint8_t buildOrder(uint8_t *ord) {
@@ -336,7 +426,7 @@ static uint8_t buildOrder(uint8_t *ord) {
 }
 
 // Dipanggil tepat setelah CAN0.begin(): library bisa meninggalkan chip di mode apa saja.
-// NORMAL = chip aktif di bus (ACK/error frame) -> di truk TIDAK boleh. Paksa LISTEN-ONLY & matikan scan.
+// NORMAL = chip aktif di bus (ACK/error frame) -> di truk TIDAK boleh. Kalau bench=0: paksa LISTEN-ONLY & matikan scan.
 static void guardModeAfterBegin(bool report) {
   if (!rawOk) return;
   uint8_t m = mcpRead(REG_CANSTAT) >> 5;
@@ -345,13 +435,11 @@ static void guardModeAfterBegin(bool report) {
     l.s("begin() meninggalkan chip di opmod=").u(m).s(" (0=NORMAL 2=LOOPBACK 3=LISTEN 4=CONFIG)");
     l.send();
   }
-#if !BENCH_ACK_MODE
-  if (m == 0) {
+  if (m == 0 && !benchMode) {
     CAN0.setMode(MCP_LISTENONLY);
     autoOk = false;
     logMsg('W', "library begin() meninggalkan chip di NORMAL -> dipaksa LISTEN-ONLY, scan bitrate dimatikan demi keamanan bus");
   }
-#endif
 }
 
 // Dengarkan bus (LISTEN-ONLY) selama windowMs. Valid bila cukup banyak frame extended DAN ID-nya berulang
@@ -437,8 +525,8 @@ static bool bringUp() {
   crumb("stage 3 OK");
 #endif
 
-  // ---- stage 4: kunci bitrate (scan LISTEN-ONLY) lalu masuk mode kerja ----
-  crumb("stage 4/5: bitrate lock + set mode " RUN_MODE_TXT "...");
+  // ---- stage 4: kunci bitrate (scan LISTEN-ONLY) lalu masuk mode kerja (LISTEN-ONLY, atau NORMAL kalau bench=1) ----
+  crumb("stage 4/5: bitrate lock + set mode kerja...");
   uint8_t ord[NCFG];
   uint8_t norder = autoOk ? buildOrder(ord) : 1;
   if (!autoOk) ord[0] = curCfg;
@@ -480,14 +568,14 @@ static bool bringUp() {
   }
   if (found) lastGood = (int8_t)target;
 
-  CAN0.setMode(RUN_MODE);
+  CAN0.setMode(runMode());
   settleMs(5);
   if (rawOk) {
     uint8_t opmod = mcpRead(REG_CANSTAT) >> 5;
-    if (opmod != RUN_OPMOD) {
+    if (opmod != runOpmod()) {
       crumb("stage 4 GAGAL: mode tidak sesuai");
       Line l; l.start('E', now64us());
-      l.s("Gagal masuk mode " RUN_MODE_TXT ", opmod=").u(opmod).s(" (harus ").u(RUN_OPMOD).s(")");
+      l.s("Gagal masuk mode ").s(runModeTxt()).s(", opmod=").u(opmod).s(" (harus ").u(runOpmod()).s(")");
       l.send();
       return false;
     }
@@ -501,11 +589,9 @@ static bool bringUp() {
   crumb("stage 5/5: READY");
   { Line l; l.start('I', now64us());
     l.s("READY: cfg=").s(CFGS[curCfg].txt).s(found ? " (terkunci via scan)" : " (tanpa bukti bus)")
-     .s(" mode " RUN_MODE_TXT).s(rawOk ? " terverifikasi lewat register" : " (tanpa verifikasi register)");
+     .s(" mode ").s(runModeTxt()).s(rawOk ? " terverifikasi lewat register" : " (tanpa verifikasi register)");
     l.send(); }
-#if BENCH_ACK_MODE
-  logMsg('W', "BENCH_ACK_MODE=1: logger AKTIF di bus (memberi ACK). Hanya untuk meja test, JANGAN dipasang ke truk");
-#endif
+  if (benchMode) logMsg('W', "BENCH=1 AKTIF: logger AKTIF di bus (memberi ACK). Hanya untuk meja test, JANGAN dipasang ke truk");
   return true;
 }
 
@@ -524,9 +610,9 @@ static void periodic(uint32_t nowMs) {
      .u(silent).c(',').u(st.lineDrop).c(',').u(opmod);
     l.send(); }
 
-  if (rawOk && opmod != RUN_OPMOD) {
+  if (rawOk && opmod != runOpmod()) {
     Line l; l.start('E', now64us());
-    l.s("MCP2515 keluar dari mode " RUN_MODE_TXT " (opmod=").u(opmod).s(") / SPI putus -> re-init");
+    l.s("MCP2515 keluar dari mode ").s(runModeTxt()).s(" (opmod=").u(opmod).s(") / SPI putus -> re-init");
     l.send();
     canReady = false; lastInitTryMs = nowMs;
   }
@@ -573,6 +659,8 @@ static void periodic(uint32_t nowMs) {
 
 // ---------- Arduino ----------
 void setup() {
+  benchMode = false;             // eksplisit: SETIAP boot mulai di LISTEN-ONLY (aman untuk truk)
+
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LED_ACTIVE_LOW ? LOW : HIGH);  // LED nyala = firmware hidup
 #if USE_INT_PIN
@@ -585,10 +673,10 @@ void setup() {
   LOG_SERIAL.begin(LOG_BAUD);
   delay(1500);                   // beri waktu MCP2515 & osilator stabil
 
-  crumb("BOOT fw=" FW_VERSION " build=" __DATE__ " " __TIME__ " mode=" RUN_MODE_TXT);
+  crumb("BOOT fw=" FW_VERSION " build=" __DATE__ " " __TIME__ " mode=" MODE_TXT_LISTEN " (bench=0)");
 
   { Line l; l.start('I', now64us());
-    l.s("BOOT fw=" FW_VERSION " build=" __DATE__ " " __TIME__ " mode=" RUN_MODE_TXT " cs=" CAN_CS_TXT " baud=").u(LOG_BAUD)
+    l.s("BOOT fw=" FW_VERSION " build=" __DATE__ " " __TIME__ " mode=" MODE_TXT_LISTEN " bench=0 cs=" CAN_CS_TXT " baud=").u(LOG_BAUD)
      .s(" serial_txbuf=").u(SERIAL_TX_BUFFER_SIZE).s(" auto=").u(AUTO_BITRATE)
      .s(" ring=").u(FRAME_RING_SIZE).s("/").u(TX_RING_SIZE);
     l.send(); }
@@ -598,6 +686,8 @@ void setup() {
 
 void loop() {
   uint32_t nowMs = millis();
+
+  pollCmd();                     // perintah "bench 0|1" (RX Serial2); dibatasi 32 byte per putaran
 
   if (!canReady) {
     if ((nowMs - lastInitTryMs) >= 2000) { lastInitTryMs = nowMs; bringUp(); }

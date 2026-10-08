@@ -3,6 +3,9 @@
 #include <EEPROM.h>
 #include <IWatchdog.h>
 
+// Catatan build STM32duino: supaya %f di snprintf tampil, pilih
+//   Tools > C Runtime Library > "Newlib Nano + Float Printf"
+
 // ================= Hardware pins =================
 #define CAN_CS_PIN   PA4
 #define CAN_CRYSTAL  MCP_8MHZ
@@ -15,6 +18,30 @@ MCP_CAN CAN0(CAN_CS_PIN);
 // Output ACTIVE LOW: LOW = nyala, HIGH = mati
 
 #define PGN_EEC1   61444UL
+
+// ================= Fix v2 =================
+// SA pengirim EEC1 yang dipercaya. 0xFFFF = terima dari SA mana pun (ANY).
+// Isi dengan SA yang terbukti di log logger / "log_to_csv.py --check" (biasanya 0x00 = engine #1).
+const uint16_t RPM_SA_FILTER = 0xFFFF;
+// J1939-71: raw >= 0xFB00 = error / not-available (nilai valid max 0xFAFF = 8031.875 rpm)
+const uint16_t RPM_RAW_INVALID_MIN = 0xFB00;
+// Print RPM ke terminal dibatasi (Bluetooth 9600 baud cuma muat ~960 byte/detik)
+const unsigned long RPM_PRINT_INTERVAL_MS = 500;
+
+// ================= Mode bus (RUNTIME, bukan compile-time) =================
+// DEFAULT SETIAP BOOT/RESET = 0 -> LISTEN-ONLY (tidak pernah ACK / TX / error frame), AMAN UNTUK TRUK.
+// TIDAK disimpan ke flash. Mode meja test (NORMAL, memberi ACK ke node TX simulasi) hanya bisa dinyalakan
+// lewat serial/Bluetooth:   /bench 1      kembali:   /bench 0      cek:   /bench
+// !!! JANGAN /bench 1 di truk: chip jadi node aktif di bus truk !!!
+#define MODE_TXT_LISTEN "LISTEN-ONLY"
+#define MODE_TXT_BENCH  "NORMAL-ACK(BENCH)"
+bool benchMode = false;
+
+// MCP2515 register (akses langsung untuk verifikasi mode)
+#define REG_CANSTAT 0x0E
+#define REG_CNF3    0x28
+#define REG_CNF2    0x29
+#define REG_CNF1    0x2A
 
 // ================= Config tersimpan di flash =================
 struct Config {
@@ -53,9 +80,14 @@ unsigned long lastRxTime = 0;
 const unsigned long RX_TIMEOUT_MS = 2000;
 bool signalLost = true;
 
+// ---- counter / throttle log (fix) ----
+unsigned long lastRpmPrint = 0;
+unsigned long lastInvalidLog = 0;
+uint32_t invalidRpmFrames = 0;
+
 // ---- runtime toggle (TIDAK disimpan ke flash, reset ke default tiap boot) ----
 bool buzzerEnabled    = true; // true = ikut rules RPM, false = mati total
-bool showRpmOnTerminal = true; // true = print tiap RPM kebaca, false = senyap (deteksi tetap jalan)
+bool showRpmOnTerminal = true; // true = print RPM (max 2 Hz), false = senyap (deteksi tetap jalan)
 
 // buffer command Bluetooth (char array, bukan String, biar ga fragmentasi heap)
 char cmdBuffer[64];
@@ -77,6 +109,10 @@ void applyOutputs(bool buzzerFromZone, bool ledRed, bool ledGreen);
 void allOff();
 void blinkError();
 void logBoth(const char *s);
+void logBothLossy(const char *s);
+uint8_t mcpReadReg(uint8_t reg);
+bool applyBusMode(bool bench);
+void handleBench(const char *argStr);
 
 // ================= Setup =================
 void setup() {
@@ -102,8 +138,15 @@ void setup() {
     logBoth("[RX] MCP2515 init GAGAL - cek wiring/crystal/power HW-184");
     while (1) { blinkError(); }
   }
-  CAN0.setMode(MCP_NORMAL);
-  logBoth("[RX] Siap, nunggu frame J1939 dari truk...");
+
+  // SETIAP boot: LISTEN-ONLY = node pasif (tidak ACK, tidak TX, tidak kirim error frame). Alat ini tidak pernah TX,
+  // jadi NORMAL tidak ada gunanya di truk. Mode meja test hanya lewat perintah "/bench 1".
+  benchMode = false;
+  if (!applyBusMode(false)) {
+    logBoth("[RX] GAGAL masuk LISTEN-ONLY -> berhenti demi keamanan bus (watchdog akan reset)");
+    while (1) { blinkError(); }
+  }
+  logBoth("[RX] Mode LISTEN-ONLY aktif (bench=0), nunggu frame J1939...");
 
   allOff();
   sysState = SYS_WAITING_RPM;
@@ -133,9 +176,12 @@ void loop() {
       unsigned long pgn = (pf < 240) ? ((unsigned long)pf << 8)
                                       : (((unsigned long)pf << 8) | ps);
 
-      if (pgn == PGN_EEC1 && len >= 5) {
+      if (pgn == PGN_EEC1 && len >= 5 &&
+          (RPM_SA_FILTER == 0xFFFF || sa == RPM_SA_FILTER)) {
         uint16_t raw = buf[3] | ((uint16_t)buf[4] << 8);
-        if (raw != 0xFFFF) {
+
+        if (raw < RPM_RAW_INVALID_MIN) {
+          // ---- RPM valid ----
           lastRpm = raw * 0.125f;
           lastRxTime = millis();
           signalLost = false;
@@ -145,11 +191,22 @@ void loop() {
             logBoth("[RX] RPM pertama diterima -> sistem mulai normal");
           }
 
-          // deteksi TETAP jalan walau showRpmOnTerminal=false, ini cuma soal print doang
-          if (showRpmOnTerminal) {
+          // deteksi TETAP jalan walau showRpmOnTerminal=false; throttle cuma untuk print
+          if (showRpmOnTerminal && (millis() - lastRpmPrint) >= RPM_PRINT_INTERVAL_MS) {
+            lastRpmPrint = millis();
             char buf2[48];
             snprintf(buf2, sizeof(buf2), "[RX] RPM=%.1f SA=0x%02X", lastRpm, sa);
-            logBoth(buf2);
+            logBothLossy(buf2);
+          }
+        } else {
+          // ---- error / not-available: JANGAN dipakai sebagai RPM, lastRxTime tidak di-refresh ----
+          invalidRpmFrames++;
+          if (showRpmOnTerminal && (millis() - lastInvalidLog) >= 2000) {
+            lastInvalidLog = millis();
+            char buf4[64];
+            snprintf(buf4, sizeof(buf4), "[RX] EEC1 RPM tidak valid raw=0x%04X (total %lu)",
+                     (unsigned)raw, (unsigned long)invalidRpmFrames);
+            logBothLossy(buf4);
           }
         }
       }
@@ -208,6 +265,78 @@ void loop() {
     case ZONE_DANGER:
       applyOutputs(true, true, false);
       break;
+  }
+}
+
+// ================= MCP2515: LISTEN-ONLY + verifikasi =================
+uint8_t mcpReadReg(uint8_t reg) {
+  digitalWrite(CAN_CS_PIN, LOW);
+  SPI.transfer(0x03);
+  SPI.transfer(reg);
+  uint8_t v = SPI.transfer(0x00);
+  digitalWrite(CAN_CS_PIN, HIGH);
+  return v;
+}
+
+// true = chip terbukti (atau tidak bisa dicek, lihat peringatan) berada di mode yang diminta.
+// bench=false -> LISTEN-ONLY (opmod 3), bench=true -> NORMAL (opmod 0).
+bool applyBusMode(bool bench) {
+  const uint8_t wantMode  = bench ? MCP_NORMAL : MCP_LISTENONLY;
+  const uint8_t wantOpmod = bench ? 0 : 3;
+  if (CAN0.setMode(wantMode) != CAN_OK) return false;
+
+  uint8_t cnf1 = mcpReadReg(REG_CNF1), cnf2 = mcpReadReg(REG_CNF2), cnf3 = mcpReadReg(REG_CNF3);
+  if (cnf1 == cnf2 && cnf2 == cnf3 && (cnf1 == 0x00 || cnf1 == 0xFF)) {
+    // jalur SPI mentah tidak cocok dengan library -> tidak bisa memverifikasi lewat register
+    logBoth("[RX] PERINGATAN: baca register langsung tidak cocok, mode tidak bisa diverifikasi");
+    return true;
+  }
+  uint8_t opmod = mcpReadReg(REG_CANSTAT) >> 5;     // 0 = NORMAL, 3 = LISTEN-ONLY
+  if (opmod != wantOpmod) {
+    char b[64];
+    snprintf(b, sizeof(b), "[RX] opmod=%u (harus %u)", (unsigned)opmod, (unsigned)wantOpmod);
+    logBoth(b);
+    return false;
+  }
+  return true;
+}
+
+// /bench <0|1> : 0 = LISTEN-ONLY (aman untuk truk), 1 = NORMAL-ACK (HANYA meja test). Tanpa argumen = lihat status.
+void handleBench(const char *argStr) {
+  if (argStr == NULL) {
+    logBoth(benchMode ? "[CMD] BENCH=1 AKTIF (NORMAL-ACK, aktif di bus). Kirim /bench 0 untuk kembali"
+                      : "[CMD] BENCH=0 (LISTEN-ONLY, aman untuk truk). Default setiap boot");
+    return;
+  }
+  if (strcmp(argStr, "0") != 0 && strcmp(argStr, "1") != 0) {
+    logBoth("[CMD] Format salah, contoh: /bench 1  (0=LISTEN-ONLY aman untuk truk, 1=NORMAL-ACK hanya meja test)");
+    return;
+  }
+  bool want = (argStr[0] == '1');
+  if (want == benchMode) {
+    logBoth(want ? "[CMD] BENCH sudah 1 (NORMAL-ACK)" : "[CMD] BENCH sudah 0 (LISTEN-ONLY)");
+    return;
+  }
+
+  if (want) {
+    if (applyBusMode(true)) {
+      benchMode = true;
+      logBoth("[CMD] BENCH=1 AKTIF: chip NORMAL (memberi ACK, aktif di bus). Hanya meja test, JANGAN di truk!");
+    } else {
+      logBoth("[CMD] BENCH=1 GAGAL: chip tidak masuk NORMAL -> kembali ke LISTEN-ONLY");
+      if (!applyBusMode(false)) {
+        logBoth("[CMD] GAGAL kembali ke LISTEN-ONLY -> reset demi keamanan bus");
+        while (1) { blinkError(); }               // watchdog mereset -> boot di LISTEN-ONLY
+      }
+    }
+  } else {
+    if (applyBusMode(false)) {
+      benchMode = false;
+      logBoth("[CMD] BENCH=0: LISTEN-ONLY (pasif, aman untuk truk)");
+    } else {
+      logBoth("[CMD] BENCH=0 GAGAL masuk LISTEN-ONLY -> reset demi keamanan bus");
+      while (1) { blinkError(); }                 // watchdog mereset -> boot di LISTEN-ONLY
+    }
   }
 }
 
@@ -303,6 +432,8 @@ void handleCommand(char *line) {
     handleSetBuzzer(argStr);
   } else if (streq(cmd, "/ShowRpm")) {
     handleShowRpm(argStr);
+  } else if (streq(cmd, "/bench") || streq(cmd, "bench")) {
+    handleBench(argStr);
   } else if (streq(cmd, "/status")) {
     printStatus();
   } else {
@@ -354,7 +485,7 @@ void handleSetBuzzer(const char *argStr) {
 
 void handleShowRpm(const char *argStr) {
   if (argStr == NULL || (strcmp(argStr, "0") != 0 && strcmp(argStr, "1") != 0)) {
-    logBoth("[CMD] Format salah, contoh: /ShowRpm 1  (0=senyap, 1=tampilin tiap RPM kebaca)");
+    logBoth("[CMD] Format salah, contoh: /ShowRpm 1  (0=senyap, 1=tampilin RPM max 2x/detik)");
     return;
   }
   showRpmOnTerminal = (argStr[0] == '1');
@@ -370,17 +501,23 @@ void printHelp() {
   logBoth("/SetCaution <rpm>   - sama seperti /SetSafe");
   logBoth("/SetDanger <rpm>    - set batas Caution->Danger");
   logBoth("/SetBuzzerExt <0|1> - 0=mati total, 1=ikut rules RPM");
-  logBoth("/ShowRpm <0|1>      - 0=senyap, 1=tampilin tiap RPM kebaca (deteksi tetap jalan)");
+  logBoth("/ShowRpm <0|1>      - 0=senyap, 1=tampilin RPM max 2x/detik (deteksi tetap jalan)");
+  logBoth("/bench <0|1>        - 0=LISTEN-ONLY (aman truk, default tiap boot), 1=NORMAL-ACK (HANYA meja test)");
   logBoth("/status             - lihat config sekarang (bukan RPM live)");
 }
 
 void printStatus() {
-  char buf[112];
+  char saTxt[8];
+  if (RPM_SA_FILTER == 0xFFFF) strcpy(saTxt, "ANY");
+  else snprintf(saTxt, sizeof(saTxt), "0x%02X", (unsigned)RPM_SA_FILTER);
+
+  char buf[160];
   snprintf(buf, sizeof(buf),
-    "[STATUS] Safe=%.0f Danger=%.0f BuzzerExt=%s ShowRpm=%s",
+    "[STATUS] Safe=%.0f Danger=%.0f BuzzerExt=%s ShowRpm=%s SA=%s EEC1invalid=%lu Mode=%s",
     cfg.rpmSafeBoundary, cfg.rpmDangerBoundary,
     buzzerEnabled ? "ON" : "OFF",
-    showRpmOnTerminal ? "ON" : "OFF");
+    showRpmOnTerminal ? "ON" : "OFF",
+    saTxt, (unsigned long)invalidRpmFrames, benchMode ? MODE_TXT_BENCH : MODE_TXT_LISTEN);
   logBoth(buf);
 }
 
@@ -388,4 +525,11 @@ void printStatus() {
 void logBoth(const char *s) {
   Serial.println(s);
   Serial2.println(s);
+}
+
+// Untuk log yang sering (RPM): kalau buffer TX Bluetooth belum cukup, lewati Serial2 daripada memblokir loop().
+void logBothLossy(const char *s) {
+  int need = (int)strlen(s) + 2;                       // + CR LF
+  if (Serial2.availableForWrite() >= need) Serial2.println(s);
+  Serial.println(s);
 }
