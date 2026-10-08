@@ -1,8 +1,8 @@
 source .venv/bin/activate
-python3 log_to_csvV3.py /dev/ttyACM0 -b 921600 --bench 0
-python3 log_to_csvV3.py /dev/ttyACM0 -b 921600 --bench 1 
-python3 log_to_csvV3.py /dev/ttyACM0 -b 921600
-python3 log_to_csv.py /dev/ttyACM0 --check
+python3 log_to_csvV4.py /dev/ttyACM0 -b 921600 --bench 0
+python3 log_to_csvV4.py /dev/ttyACM0 -b 921600 --bench 1 
+python3 log_to_csvV4.py /dev/ttyACM0 -b 921600
+python3 log_to_csvV4.py /dev/ttyACM0 --check
 
 Urutan aman di lokasi
 Kontak OFF, ukur resistansi CAN-H ke CAN-L di titik colok. Panduan servis menyarankan ukur resistansi H–L dengan ignition off. 
