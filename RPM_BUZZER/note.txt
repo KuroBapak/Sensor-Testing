@@ -1,8 +1,12 @@
 source .venv/bin/activate
-python3 log_to_csvV4.py /dev/ttyACM0 -b 921600 --bench 0
-python3 log_to_csvV4.py /dev/ttyACM0 -b 921600 --bench 1 
-python3 log_to_csvV4.py /dev/ttyACM0 -b 921600
-python3 log_to_csvV4.py /dev/ttyACM0 --check
+python3 log_to_csvV4.py /dev/ttyACM0 -b 921600 --bench 0 // buat mode di truk(tidak ack, data dummy kebaca floating)
+python3 log_to_csvV4.py /dev/ttyACM0 -b 921600 --bench 1 //buat mode testing dummy data rpm terbaca normal
+python3 log_to_csvV4.py /dev/ttyACM0 --check  // setelah set bench lakukan check dulu apakah data berhasil masuk baru rekam
+python3 log_to_csvV4.py /dev/ttyACM0 -b 921600 //mulai rekam untuk simpan ke logs
+
+untuk RPM lewat serial terminal
+bench 0 // buat mode di truk(tidak ack, data dummy kebaca floating)
+bench 1 //buat mode testing dummy data rpm terbaca normal
 
 Urutan aman di lokasi
 Kontak OFF, ukur resistansi CAN-H ke CAN-L di titik colok. Panduan servis menyarankan ukur resistansi H–L dengan ignition off. 
