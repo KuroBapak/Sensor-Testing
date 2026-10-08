@@ -900,40 +900,40 @@
     "semantic_hash": "db141151a42d17eb31b3ba64884f8c65"
   },
   ".github/dependabot.yml": {
-    "mtime": 1789400888.0,
-    "seen": 1789702165.6945362,
+    "mtime": 1790646867.4714835,
+    "seen": 1791455390.2374876,
     "ast_hash": "2d1dafbc9ecfd469752dbd29e997d413",
-    "semantic_hash": ""
+    "semantic_hash": "2d1dafbc9ecfd469752dbd29e997d413"
   },
   ".github/workflows/tests.yml": {
-    "mtime": 1789552648.1436946,
-    "seen": 1789702165.6945362,
+    "mtime": 1790646867.4715579,
+    "seen": 1791455390.2374892,
     "ast_hash": "8b0398fb475a45903ce7c9aecc6b4697",
-    "semantic_hash": ""
+    "semantic_hash": "8b0398fb475a45903ce7c9aecc6b4697"
   },
   "docs/vault/adr/_template.md": {
-    "mtime": 1789612980.0201387,
-    "seen": 1789702165.6945362,
+    "mtime": 1790646867.4748917,
+    "seen": 1791455390.2374914,
     "ast_hash": "08c6a7e71e338534c18b9c29ab99bed5",
-    "semantic_hash": ""
+    "semantic_hash": "08c6a7e71e338534c18b9c29ab99bed5"
   },
   "docs/vault/domain/app-info.md": {
-    "mtime": 1789612266.9939682,
-    "seen": 1789702165.6945362,
+    "mtime": 1790646867.4748917,
+    "seen": 1791455390.2374933,
     "ast_hash": "328a17685286998d9ea3f72c65d528dd",
-    "semantic_hash": ""
+    "semantic_hash": "328a17685286998d9ea3f72c65d528dd"
   },
   "docs/vault/gotchas/auth-middleware-routes.md": {
-    "mtime": 1789616515.118154,
-    "seen": 1789702165.6945362,
+    "mtime": 1790646867.4749854,
+    "seen": 1791455390.2374947,
     "ast_hash": "c8d17c40634b21c3bb57d0e26d787550",
-    "semantic_hash": ""
+    "semantic_hash": "c8d17c40634b21c3bb57d0e26d787550"
   },
   "docs/vault/gotchas/mcp-tool-naming.md": {
-    "mtime": 1789612281.605811,
-    "seen": 1789702165.6945362,
+    "mtime": 1790646867.4750273,
+    "seen": 1791455390.237498,
     "ast_hash": "2aed3f2efdc278fadea5cf901bbb5fe4",
-    "semantic_hash": ""
+    "semantic_hash": "2aed3f2efdc278fadea5cf901bbb5fe4"
   },
   "docs/vault/specs/_template.md": {
     "mtime": 1789612287.2336109,
@@ -942,16 +942,16 @@
     "semantic_hash": ""
   },
   "docs/vault/specs/export-laporan.md": {
-    "mtime": 1790046880.4491234,
-    "seen": 1790050040.33419,
+    "mtime": 1790646867.4753928,
+    "seen": 1791455390.2375002,
     "ast_hash": "050c79c25c2a673f11a42349d870cf62",
-    "semantic_hash": ""
+    "semantic_hash": "050c79c25c2a673f11a42349d870cf62"
   },
   "pnpm-workspace.yaml": {
-    "mtime": 1789400888.0,
-    "seen": 1789702165.6945362,
+    "mtime": 1790646867.4815817,
+    "seen": 1791455390.2375019,
     "ast_hash": "5a2f8aadd5a50b3cee0d6a99075249c5",
-    "semantic_hash": ""
+    "semantic_hash": "5a2f8aadd5a50b3cee0d6a99075249c5"
   },
   "public/robots.txt": {
     "mtime": 1789400888.0,
@@ -1002,10 +1002,10 @@
     "semantic_hash": ""
   },
   "docs/vault/specs/website-features-phased.md": {
-    "mtime": 1790054449.12624,
-    "seen": 1790055111.3381474,
-    "ast_hash": "d989c2bf22c9b81714d4a1745665113a",
-    "semantic_hash": ""
+    "mtime": 1790646867.4753928,
+    "seen": 1791455390.2375011,
+    "ast_hash": "77470865c24e1b6ffeaea386de22d47f",
+    "semantic_hash": "77470865c24e1b6ffeaea386de22d47f"
   },
   "app/Http/Controllers/Admin/RoleController.php": {
     "mtime": 1790646867.4718235,
@@ -1314,10 +1314,10 @@
     "semantic_hash": "43c366320e89e9e711cdf833832f9c9d"
   },
   "docs/vault/specs/PRD_Fuel_Management_Unified_v2.5.md": {
-    "mtime": 1790044700.021044,
-    "seen": 1790068314.076442,
+    "mtime": 1790646867.4750273,
+    "seen": 1791455390.2374995,
     "ast_hash": "be163e7b0e6753bf82ed5162b0148746",
-    "semantic_hash": ""
+    "semantic_hash": "be163e7b0e6753bf82ed5162b0148746"
   },
   "app/Events/AnomalyDetected.php": {
     "mtime": 1790646867.4717004,
@@ -1576,5 +1576,47 @@
     "seen": 1790760407.2579665,
     "ast_hash": "217bff8e1ad49d67b5e51e2045df617c",
     "semantic_hash": "217bff8e1ad49d67b5e51e2045df617c"
+  },
+  "docs/vault/PRD_ALIGNMENT_IMPLEMENTATION_SUMMARY.md": {
+    "mtime": 1790759869.3721116,
+    "seen": 1791455390.2374904,
+    "ast_hash": "6332ca69d379b46353e4e7cd03e26099",
+    "semantic_hash": "6332ca69d379b46353e4e7cd03e26099"
+  },
+  "docs/vault/adr/litellm-smart-router-config.md": {
+    "mtime": 1791363623.6766415,
+    "seen": 1791455390.2374926,
+    "ast_hash": "64f4b0d873aa4dece55dfc8039af6207",
+    "semantic_hash": "64f4b0d873aa4dece55dfc8039af6207"
+  },
+  "docs/vault/domain/npm-config.md": {
+    "mtime": 1790646867.4749854,
+    "seen": 1791455390.237494,
+    "ast_hash": "950d4d73194b420d5470c54f48245e41",
+    "semantic_hash": "950d4d73194b420d5470c54f48245e41"
+  },
+  "docs/vault/gotchas/inertia-reload-options.md": {
+    "mtime": 1790646867.4750273,
+    "seen": 1791455390.237496,
+    "ast_hash": "cfcfe2794d9759761b55651fdc934fda",
+    "semantic_hash": "cfcfe2794d9759761b55651fdc934fda"
+  },
+  "docs/vault/gotchas/litellm-config-migration.md": {
+    "mtime": 1791363127.8469765,
+    "seen": 1791455390.2374966,
+    "ast_hash": "66f5992708738dfb82d07c6b4a959ffa",
+    "semantic_hash": "66f5992708738dfb82d07c6b4a959ffa"
+  },
+  "docs/vault/gotchas/litellm-config-optimized.yaml": {
+    "mtime": 1791365042.598517,
+    "seen": 1791455390.2374973,
+    "ast_hash": "e5610289cf152a6c3a9854d8123dcfe4",
+    "semantic_hash": "e5610289cf152a6c3a9854d8123dcfe4"
+  },
+  "docs/vault/specs/PRD-digest.md": {
+    "mtime": 1791364925.1448805,
+    "seen": 1791455390.2374985,
+    "ast_hash": "b0b1428adb84647a814b84f25a1c9986",
+    "semantic_hash": "b0b1428adb84647a814b84f25a1c9986"
   }
 }
