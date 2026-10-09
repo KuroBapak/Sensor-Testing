@@ -8,7 +8,7 @@ services:
   dfm-app:
     # build: .
     # Use GitHub Container Registry:
-    image: ghcr.io/kurobapak/Sensor-Testing:latest
+    image: ghcr.io/kurobapak/sensor-testing:latest
     pull_policy: always
     expose:
       - "8000"
