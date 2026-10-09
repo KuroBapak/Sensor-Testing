@@ -94,14 +94,19 @@ COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 # Configure Supervisor
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Optimize Laravel
-RUN php artisan config:cache || true \
-    && php artisan route:cache || true \
+# DO NOT cache config during build - it will use .env from build context
+# Config should be cached at runtime with production environment variables
+# Only cache routes and views which don't depend on environment
+RUN php artisan route:cache || true \
     && php artisan view:cache || true
 
 # Expose port
 EXPOSE 8000
 
+# Create startup script to handle runtime optimization
+COPY docker/startup.sh /usr/local/bin/startup.sh
+RUN chmod +x /usr/local/bin/startup.sh
+
 # Start services via supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/usr/local/bin/startup.sh"]
 
