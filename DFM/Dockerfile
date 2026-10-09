@@ -41,6 +41,7 @@ RUN apk add --no-cache \
     nginx \
     supervisor \
     sqlite \
+    sqlite-dev \
     curl \
     wget \
     libpng-dev \
