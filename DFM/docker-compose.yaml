@@ -1,0 +1,60 @@
+# =============================================================
+# DFM — Docker Compose (Server Kurobapak / Coolify)
+# Laravel 13 + Inertia React Application
+# Database is handled externally by Coolify.
+# =============================================================
+
+services:
+  dfm-app:
+    # build: .
+    # Use GitHub Container Registry:
+    image: ghcr.io/kurobapak/dfm-app:latest
+    pull_policy: always
+    expose:
+      - "8000"
+    networks:
+      - coolify
+    env_file:
+      - .env
+    environment:
+      # Override specific env vars if needed
+      - APP_ENV=production
+      - APP_DEBUG=false
+    volumes:
+      # Persist Laravel storage (logs, cache, uploads) across redeployments
+      - storage:/app/storage
+      # Persist SQLite database if using SQLite
+      - database:/app/database
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:8000/up || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  coolify:
+    external: true
+
+volumes:
+  storage:
+  database:
+
+# =============================================================
+# CARA BUILD DAN PUSH IMAGE (MENGGUNAKAN DOCKER):
+# =============================================================
+# 1. Build image dari Dockerfile:
+#    docker build --no-cache -t ghcr.io/kurobapak/dfm-app:latest -f Dockerfile .
+#
+# 2. Setelah build selesai, push ke GitHub Container Registry:
+#    docker push ghcr.io/kurobapak/dfm-app:latest
+#
+# 3. Coolify akan otomatis pull image terbaru saat deploy
+# =============================================================
+#
+# CATATAN:
+# - Pastikan .env sudah dikonfigurasi di Coolify
+# - Database eksternal (MySQL/PostgreSQL) harus sudah tersedia
+# - Untuk migrasi otomatis, tambahkan command di Coolify:
+#   php artisan migrate --force
+# =============================================================
