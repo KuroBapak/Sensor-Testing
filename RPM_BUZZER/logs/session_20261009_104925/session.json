@@ -1,0 +1,57 @@
+{
+  "port": "/dev/ttyACM0",
+  "baud": 921600,
+  "start": "2026-10-09T10:49:25.104",
+  "argv": [
+    "log_to_csvV4.py",
+    "/dev/ttyACM0",
+    "-b",
+    "921600"
+  ],
+  "host": "LaptopKentankMledug",
+  "updated": "2026-10-09T10:50:22.308",
+  "final": true,
+  "boots": 1,
+  "counters": {
+    "partial_start": 2,
+    "valid": 42917,
+    "raw": 42863,
+    "eec1_frames": 5422,
+    "dec": 14637,
+    "stale_start": 1,
+    "stale_lines": 9878,
+    "dtc_changes": 2,
+    "status": 54
+  },
+  "total_bytes": 2145438,
+  "last_status": {
+    "rx_total": 71575,
+    "fps": 791,
+    "ring_drop": 0,
+    "ring_hwm": 4,
+    "hw_ovr": 0,
+    "eflg": 0,
+    "rec": 0,
+    "tec": 0,
+    "tx_hwm": 366,
+    "loop_max_us": 442,
+    "silent_ms": 1,
+    "line_drop": 0,
+    "opmod": 3,
+    "boot": 1
+  },
+  "tp": {
+    "timeout": 0,
+    "started": 108,
+    "completed": 108
+  },
+  "rpm_sources": {
+    "0x00": {
+      "n": 5422,
+      "t0": 26972638,
+      "t1": 93617543,
+      "min": 509.0,
+      "max": 1029.0
+    }
+  }
+}

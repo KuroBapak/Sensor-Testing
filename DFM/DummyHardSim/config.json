@@ -1,0 +1,45 @@
+{
+  "api_base_url": "http://localhost:8000",
+  "devices": {
+    "mobile_unit": {
+      "device_id": "SIM_MOBILE_001",
+      "token": "sfdgsdfefad",
+      "imei": "SIM_MOBILE_001",
+      "tank_id": 2
+    },
+    "fill_line": {
+      "device_id": "SIM_FILL_001",
+      "token": "g4h45g6hryh46t",
+      "main_tank_id": 1
+    },
+    "dispense_line": {
+      "device_id": "SIM_DISPENSE_001",
+      "token": "sdff43gfe43",
+      "main_tank_id": 1
+    },
+    "main_tank_atg": {
+      "device_id": "SIM_ATG_001",
+      "token": "e5g34tg4tg4tg5rg4t",
+      "tank_id": 1
+    }
+  },
+  "simulation": {
+    "mobile_unit_interval_sec": 30,
+    "atg_interval_sec": 30,
+    "auto_transaction_interval_sec": 60
+  },
+  "sample_data": {
+    "rfid_tags": {
+      "fuel_tankers": ["RFID_FT_001", "RFID_FT_002"],
+      "browser_tanks": ["RFID_BT_001", "RFID_BT_002", "RFID_BT_003"]
+    },
+    "tank_ids": {
+      "fuel_tankers": [2, 3],
+      "browser_tanks": [4, 5, 6]
+    },
+    "base_gps": {
+      "latitude": -6.2088,
+      "longitude": 106.8456
+    }
+  }
+}

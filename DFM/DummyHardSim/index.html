@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFM Hardware Simulator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <style>
+        body { background-color: #f8f9fa; }
+        .log-box { height: 220px; overflow-y: auto; background: #212529; color: #00ff00; font-family: monospace; padding: 10px; font-size: 0.85rem; }
+        #map { height: 260px; border-radius: 8px; }
+        .card { margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <h3 class="mb-3">📡 DFM Hardware Simulator</h3>
+        
+        <!-- Data Transmission Info Table -->
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-dark text-white py-2">
+                <strong>📊 Device Data Transmission Overview</strong>
+            </div>
+            <div class="card-body p-2">
+                <table class="table table-sm table-bordered mb-0" style="font-size: 0.85rem;">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Device Type</th>
+                            <th>Device ID</th>
+                            <th>Endpoint</th>
+                            <th>Data Transmitted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge bg-primary">Mobile Unit (FMC225)</span></td>
+                            <td><code>SIM_MOBILE_001</code></td>
+                            <td><code>POST /api/internal/ingest/avl</code></td>
+                            <td><small>IMEI, GPS (Lat/Lng), Satellites, Fuel Level, Timestamp</small></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-info">Main Tank ATG (RUT956)</span></td>
+                            <td><code>SIM_ATG_001</code></td>
+                            <td><code>POST /api/v1/site/readings</code></td>
+                            <td><small>Device ID, Tank ID, Level (Liters), Timestamp (batch: 2 readings)</small></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-success">Fill Line (RUT956)</span></td>
+                            <td><code>SIM_FILL_001</code></td>
+                            <td><code>POST /api/v1/transactions</code></td>
+                            <td><small>Device ID, RFID Tag, Transfer Type (fill_to_main), Liters, Duration, Timestamps</small></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge bg-warning text-dark">Dispense Line (RUT956)</span></td>
+                            <td><code>SIM_DISPENSE_001</code></td>
+                            <td><code>POST /api/v1/transactions</code></td>
+                            <td><small>Device ID, RFID Tag, Transfer Type (dispense_to_browser), Liters, Duration, Timestamps</small></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><small><strong>RFID Sync (All RUT956)</strong></small></td>
+                            <td><code>GET /api/v1/sync/rfid</code></td>
+                            <td><small>X-Device-ID, X-RFID-Version headers → Returns active RFID list (or 304 if unchanged)</small></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Mobile Unit -->
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2">
+                        <strong class="mb-0">Mobile Unit (FMC225)</strong>
+                        <button id="btn-mobile-auto" class="btn btn-light btn-sm py-0">Start Auto</button>
+                    </div>
+                    <div class="card-body">
+                        <div id="map" class="mb-2"></div>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="small">Tank Level (L)</label>
+                                <input type="number" id="mobile-level" class="form-control form-control-sm" value="5000">
+                            </div>
+                            <div class="col-6">
+                                <label class="small">Satellites</label>
+                                <input type="number" id="mobile-sat" class="form-control form-control-sm" value="8">
+                            </div>
+                        </div>
+                        <button id="btn-mobile-send" class="btn btn-primary btn-sm w-100 mt-2">Send AVL Record</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-md-6">
+                <!-- Main Tank ATG -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center py-2">
+                        <strong class="mb-0">Main Tank ATG (RUT956)</strong>
+                        <button id="btn-atg-auto" class="btn btn-light btn-sm py-0">Start Auto</button>
+                    </div>
+                    <div class="card-body py-2">
+                        <div class="row g-2 align-items-end">
+                            <div class="col-7">
+                                <label class="small">Main Level (L)</label>
+                                <input type="number" id="atg-level" class="form-control form-control-sm" value="25000">
+                            </div>
+                            <div class="col-5">
+                                <button id="btn-atg-send" class="btn btn-info btn-sm w-100 text-white">Send ATG Batch</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transactions -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white py-2">
+                        <strong class="mb-0">Transactions (RUT956)</strong>
+                    </div>
+                    <div class="card-body py-2">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <span class="badge bg-secondary mb-1">Fill Line</span>
+                                <input type="number" id="fill-liters" class="form-control form-control-sm mb-1" value="1500" placeholder="Liters">
+                                <button id="btn-fill-send" class="btn btn-success btn-sm w-100 mb-1">Send Fill</button>
+                                <button id="btn-fill-sync" class="btn btn-outline-success btn-sm w-100">Sync RFID</button>
+                            </div>
+                            <div class="col-6">
+                                <span class="badge bg-secondary mb-1">Dispense Line</span>
+                                <input type="number" id="dispense-liters" class="form-control form-control-sm mb-1" value="450" placeholder="Liters">
+                                <button id="btn-dispense-send" class="btn btn-success btn-sm w-100 mb-1">Send Dispense</button>
+                                <button id="btn-dispense-sync" class="btn btn-outline-success btn-sm w-100">Sync RFID</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Terminal Logs -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white d-flex justify-content-between py-1 px-3">
+                <span class="small">Terminal Logs</span>
+                <button onclick="document.getElementById('logs').innerHTML=''" class="btn btn-xs btn-outline-light py-0">Clear</button>
+            </div>
+            <div class="card-body p-0">
+                <div id="logs" class="log-box"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let config = null;
+        let map, marker;
+        let currentPos = [-6.2088, 106.8456];
+        let autoMobileInterval = null;
+        let autoAtgInterval = null;
+
+        function log(msg) {
+            const time = new Date().toLocaleTimeString();
+            const el = document.getElementById('logs');
+            el.innerHTML += `[${time}] ${msg}\n`;
+            el.scrollTop = el.scrollHeight;
+        }
+
+        async function init() {
+            try {
+                const res = await fetch('/api/config');
+                config = await res.json();
+                currentPos = [config.sample_data.base_gps.latitude, config.sample_data.base_gps.longitude];
+                
+                map = L.map('map').setView(currentPos, 14);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                
+                marker = L.marker(currentPos, {draggable: true}).addTo(map);
+                marker.on('dragend', function(e) {
+                    currentPos = [e.target.getLatLng().lat, e.target.getLatLng().lng];
+                    log(`📍 Position updated: ${currentPos[0].toFixed(4)}, ${currentPos[1].toFixed(4)}`);
+                });
+
+                setupEventListeners();
+                log("✅ Simulator ready!");
+            } catch (e) {
+                log("❌ Error loading config: " + e);
+            }
+        }
+
+        function generateUUID() {
+            if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+                return crypto.randomUUID();
+            }
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        async function proxyPost(url, payload, headers = {}, method = null) {
+            const httpMethod = method || (payload !== null ? 'POST' : 'GET');
+            log(`📤 ${httpMethod} ${url}`);
+            try {
+                const res = await fetch('/api/proxy', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ url, payload, headers, method: httpMethod })
+                });
+                const text = await res.text();
+                if (res.ok) {
+                    log(`✅ [${res.status}] ${text}`);
+                } else if (res.status === 304) {
+                    log(`ℹ️ [304] RFID List Not Modified (Already Up to Date)`);
+                } else {
+                    log(`❌ [${res.status}] ${text}`);
+                }
+            } catch (e) {
+                log(`❌ Error: ${e}`);
+            }
+        }
+
+        function setupEventListeners() {
+            document.getElementById('btn-mobile-send').onclick = () => {
+                const payload = {
+                    imei: config.devices.mobile_unit.imei,
+                    records: [{
+                        timestamp: new Date().toISOString(),
+                        latitude: currentPos[0],
+                        longitude: currentPos[1],
+                        satellites: parseInt(document.getElementById('mobile-sat').value),
+                        fuel_level_liters: parseFloat(document.getElementById('mobile-level').value)
+                    }]
+                };
+                proxyPost(`${config.api_base_url}/api/internal/ingest/avl`, payload);
+            };
+
+            document.getElementById('btn-mobile-auto').onclick = (e) => {
+                if (autoMobileInterval) {
+                    clearInterval(autoMobileInterval);
+                    autoMobileInterval = null;
+                    e.target.innerText = "Start Auto";
+                    e.target.className = "btn btn-light btn-sm py-0";
+                } else {
+                    e.target.innerText = "Stop Auto";
+                    e.target.className = "btn btn-danger btn-sm py-0";
+                    autoMobileInterval = setInterval(() => {
+                        currentPos[0] += (Math.random() - 0.5) * 0.001;
+                        currentPos[1] += (Math.random() - 0.5) * 0.001;
+                        marker.setLatLng(currentPos);
+                        map.panTo(currentPos);
+                        document.getElementById('btn-mobile-send').click();
+                    }, config.simulation.mobile_unit_interval_sec * 1000);
+                }
+            };
+
+            document.getElementById('btn-atg-auto').onclick = (e) => {
+                if (autoAtgInterval) {
+                    clearInterval(autoAtgInterval);
+                    autoAtgInterval = null;
+                    e.target.innerText = "Start Auto";
+                    e.target.className = "btn btn-light btn-sm py-0";
+                } else {
+                    e.target.innerText = "Stop Auto";
+                    e.target.className = "btn btn-danger btn-sm py-0";
+                    autoAtgInterval = setInterval(() => {
+                        document.getElementById('btn-atg-send').click();
+                    }, config.simulation.atg_interval_sec * 1000);
+                }
+            };
+
+            document.getElementById('btn-atg-send').onclick = () => {
+                const level = parseFloat(document.getElementById('atg-level').value);
+                const dev = config.devices.main_tank_atg;
+                const now = new Date();
+                proxyPost(`${config.api_base_url}/api/v1/site/readings`, {
+                    readings: [
+                        { device_id: dev.device_id, tank_id: dev.tank_id, level_liters: level, 
+                          latitude: null, longitude: null, satellites: null,
+                          timestamp: new Date(now.getTime() - 30000).toISOString() },
+                        { device_id: dev.device_id, tank_id: dev.tank_id, level_liters: level - 0.5, 
+                          latitude: null, longitude: null, satellites: null, timestamp: now.toISOString() }
+                    ]
+                }, {
+                    'Authorization': `Bearer ${dev.token}`,
+                    'X-Device-ID': dev.device_id
+                });
+            };
+
+            document.getElementById('btn-fill-send').onclick = () => {
+                const dev = config.devices.fill_line;
+                const now = new Date();
+                proxyPost(`${config.api_base_url}/api/v1/transactions`, {
+                    device_txn_id: generateUUID(),
+                    device_id: dev.device_id,
+                    transfer_type: "fill_to_main",
+                    tag_id: config.sample_data.rfid_tags.fuel_tankers[0],
+                    tank_id: config.sample_data.tank_ids.fuel_tankers[0],
+                    main_tank_id: dev.main_tank_id,
+                    liters: parseFloat(document.getElementById('fill-liters').value),
+                    started_at: new Date(now.getTime() - 15*60000).toISOString(),
+                    ended_at: now.toISOString()
+                }, {
+                    'Authorization': `Bearer ${dev.token}`,
+                    'X-Device-ID': dev.device_id
+                });
+            };
+
+            document.getElementById('btn-dispense-send').onclick = () => {
+                const dev = config.devices.dispense_line;
+                const now = new Date();
+                proxyPost(`${config.api_base_url}/api/v1/transactions`, {
+                    device_txn_id: generateUUID(),
+                    device_id: dev.device_id,
+                    transfer_type: "dispense_to_browser",
+                    tag_id: config.sample_data.rfid_tags.browser_tanks[0],
+                    tank_id: config.sample_data.tank_ids.browser_tanks[0],
+                    main_tank_id: dev.main_tank_id,
+                    liters: parseFloat(document.getElementById('dispense-liters').value),
+                    started_at: new Date(now.getTime() - 5*60000).toISOString(),
+                    ended_at: now.toISOString()
+                }, {
+                    'Authorization': `Bearer ${dev.token}`,
+                    'X-Device-ID': dev.device_id
+                });
+            };
+
+            document.getElementById('btn-fill-sync').onclick = () => syncRfid('fill_line');
+            document.getElementById('btn-dispense-sync').onclick = () => syncRfid('dispense_line');
+        }
+
+        function syncRfid(deviceType) {
+            const dev = config.devices[deviceType];
+            proxyPost(`${config.api_base_url}/api/v1/sync/rfid`, null, {
+                'Authorization': `Bearer ${dev.token}`,
+                'X-Device-ID': dev.device_id,
+                'X-RFID-Version': '0'
+            }, 'GET');
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

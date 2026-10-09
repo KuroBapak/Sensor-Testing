@@ -1,0 +1,3 @@
+pc_time,boot,seq,t_us,sa,msg,lamp_mil,lamp_red,lamp_amber,lamp_protect,spn,fmi,occurrence,cm
+2026-10-09T10:49:25.395,1,29471,39738156,61,DM1,off,off,off,off,,,,
+2026-10-09T10:49:25.563,1,29597,39906635,0,DM1,off,off,off,na,,,,

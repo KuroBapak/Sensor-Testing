@@ -16,7 +16,6 @@ class PlaceholderDataSeeder extends Seeder
     {
         $site = Site::first() ?? Site::create([
             'name' => 'PT. Trissan Mining Site',
-            'location' => 'Kalimantan Tengah',
             'timezone' => 'Asia/Jakarta',
         ]);
 

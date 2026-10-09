@@ -1,0 +1,4 @@
+2026-10-09T10:49:25.106	INFO	boot=0 serial terhubung: /dev/ttyACM0
+2026-10-09T10:49:25.109	INFO	boot=1 awal sesi: lompatan seq 19369->29247 (9878 baris) = data lama/basi dari buffer USB-serial / data yang lewat saat port tertutup, BUKAN kehilangan di dalam sesi
+2026-10-09T10:49:25.395	DTC	boot=1 DM1 SA=61 [mil=off red=off amber=off protect=off] tidak ada DTC
+2026-10-09T10:49:25.563	DTC	boot=1 DM1 SA=0 [mil=off red=off amber=off protect=na] tidak ada DTC

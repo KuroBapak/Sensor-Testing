@@ -1,83 +1,108 @@
-# Konteks Wajib
+# Project Rules (Laravel + Inertia/React, Laravel Boost, Graphify)
 
-Di AWAL task: baca docs/vault/domain/app-info.md, cek docs/vault/gotchas/ untuk error.
+Shell: Linux bash. Do not switch shells or wrappers (no `bash -c`, `sh -c`, `script`) unless the user asks.
 
-# PRD Besar
+## 1. Start of Task
 
-PRD (613 baris) kepotong waktu read — butuh 7x read ulang.
-Baca docs/vault/specs/PRD-digest.md dulu (150 baris), baru detail spesifik kalau perlu.
+1. Read `docs/vault/domain/app-info.md`. Do not call `application-info` again unless dependencies likely changed.
+2. If the task mentions a feature with a spec in `docs/vault/specs/`, read that spec first.
+3. Large PRD: read `docs/vault/specs/PRD-digest.md` first. Open the full PRD only by line range for a specific section. Never read it whole.
+4. On any error, check `docs/vault/gotchas/` first.
+5. Before `search-docs`, check `docs/vault/patterns/`. If the topic exists, use it.
 
-# Eksplorasi
+## 2. Tool Selection
 
-**Graphify:** dependency tree, "siapa manggil X"
-**search_codebase:** pattern match, `artisan route:list --path=api`
+| Need | Tool |
+|---|---|
+| Code relationships ("who calls X", dependencies) | Graphify |
+| Exact text/pattern lookup | search_codebase (fallback only) |
+| Framework/package API (Laravel, Inertia, Pest, etc.) | `search-docs` |
+| DB structure | `database-schema` (`summary=true` first) |
+| DB data | `database-query` (SELECT + LIMIT only) |
+| Quick PHP/Eloquent check | `tinker` |
+| Routes | `list-routes` or `php artisan route:list --path=api` |
+| Unknown artisan options | `list-artisan-commands` |
+| Debugging | `last-error` first, then `read-log-entries` (max 10), `browser-logs` |
 
-Jangan graphify query generik — query domain spesifik ("fuel transaction RFID").
+Graphify is not used automatically. Call it explicitly for structural questions BEFORE repeated search_codebase/read_files.
 
-## Query Graphify Efektif
-- Node ambigu: pakai path/ke/file.ext::NamaSymbol (bukan nama polos)
-- Hasil di-truncate: pakai context_filter=["call"]
-- "No affected nodes" bukan bukti dead code (Laravel $this->call([X::class]) ga tertangkap)
+### Graphify
+- Use SPECIFIC domain terms ("fuel transaction RFID"), never generic ones ("database", "user", "auth").
+- Ambiguous node: use `path/to/file.ext::Symbol` (e.g. `app/Models/User.php::User`).
+- Truncated result: use `context_filter=["call"]`.
+- Always set `token_budget`: 1000 exploratory, 2000 detailed, 3000 max.
+- "No affected nodes" is NOT proof of dead code (`$this->call([X::class])` is not captured). Verify manually.
+- Ignore god-node noise (react, inertia, config keys). Use query/explain for specific questions.
 
-## Error TypeScript pada API Pihak Ketiga
-Kalau `npm run types:check` gagal karena properti tidak dikenal pada tipe
-dari package eksternal — JANGAN tebak-tebak. Langsung panggil search-docs
-SEKALI dengan query nama API-nya, baru edit sekali dengan hasil pasti.
+### search_codebase
+- Avoid generic words ("map", "user", "data"). Use compound terms ("fleet map", "MapController") or scope by path.
 
-# Mekanika Eksekusi
+### Laravel Boost
+- `search-docs`: call ONCE per topic with several short queries in one array. Filter by `packages` when known. Never guess APIs from memory.
+- `database-query`: never modify data.
+- Create Laravel files with `php artisan make:* --no-interaction`, not hand-written boilerplate.
 
-## Command Panjang (pest, composer, npm, migrate)
+### TypeScript errors on third-party types
+If `npm run types:check` fails on an unknown property from an external package (Inertia, etc.): do NOT guess or remove properties one by one. Call `search-docs` ONCE with the API name (e.g. "router.reload options"), then edit once.
 
-`cmd /c "<command> --no-ansi > out.txt 2>&1"` lalu `tail -30 out.txt` SATU kali.
-JANGAN: Select-Object pipe, Start-Sleep polling, baca log berulang.
-Flag: `pest --compact`, `composer --no-ansi --no-progress`
+## 3. Running Commands
 
-Kenapa cmd /c: PowerShell wrap stderr jadi NativeCommandError.
+Applies to pest, composer, npm, artisan migrate, and any command with long output.
 
-## Membuat File/Komponen Besar
+1. Run ONCE, output redirected, in a single call:
+   `<command> --no-ansi > /tmp/out.txt 2>&1; echo "exit=$?"; tail -30 /tmp/out.txt`
+2. Trust the printed `exit=` code. Exit 0 means success even if output looks empty.
+3. Empty terminal output does NOT mean failure. Read `/tmp/out.txt` before concluding anything.
+4. Never re-run the same command because the output looked empty or odd.
+5. Never read full logs. Use `tail -N` or targeted `grep -n -m 20`.
+6. Do not poll or sleep. Do not run interactive commands (use `--no-interaction`, `-n`, or `--force` where appropriate).
+7. Output-saving flags: `pest --compact`, `composer --no-ansi --no-progress`, `npm --no-progress --loglevel=error`.
 
-Tool `editor` punya limit ~6000 karakter per `new_text`. Untuk file besar:
-1. Buat kerangka dasar dulu — import, interface/type, shell function kosong.
-2. Tambahkan bagian selanjutnya satu per satu lewat `insert_line` di baris
-   yang TEPAT (akhir file atau akhir block yang sudah lengkap).
-3. JANGAN insert ke tengah body function/block yang belum ditutup.
-4. Setelah SETIAP insert_line, verifikasi dengan read_files rentang baris
-   di sekitar titik insert.
+If a command fails:
+1. Read the last 10 lines of the error.
+2. Identify the root cause.
+3. Change ONE thing and retry at most once.
+4. Still failing: STOP and report to the user with a short summary. Do not chain alternative approaches.
 
-## Batching Command Diagnostik
+Independent diagnostic commands (config, versions, status): batch them in ONE `run_commands` call, not one per turn.
 
-Kalau butuh beberapa command shell untuk diagnosis (cek config, cek versi,
-cek status), kumpulkan SEMUA command independen jadi SATU run_commands call
-dengan array — jangan satu command per turn.
+## 4. Verification
 
-## npm install
+- Run only relevant tests (`--filter=` or a file path). No full suite unless asked.
+- PHP format: `vendor/bin/pint --dirty`.
+- `npm run types:check` only when TS/TSX files were touched.
+- Before `npm install`, read `docs/vault/domain/npm-config.md` (allow-remote constraint).
 
-Baca docs/vault/domain/npm-config.md dulu — ada constraint allow-remote yang
-perlu di-handle di awal, bukan trial-error.
+## 5. Editing Files
 
-## Kapan pakai /smol
+- Existing files: targeted edits (replace/diff). Never rewrite a whole file.
+- New large files (editor limit about 6000 chars per `new_text`):
+  1. Create a skeleton first: imports, types/interfaces, empty function shells.
+  2. Add each part with `insert_line` at the EXACT line (end of file or end of a complete block).
+  3. Never insert inside an unclosed function/block.
+  4. After EACH insert, verify with `read_files` around the insert point (check braces, truncated blocks).
+- If a response is cut off or a tool call is malformed: do NOT resend the whole file. Continue with a smaller chunk from the last successful point.
 
-Untuk task dengan fase eksplorasi panjang (>10 tool call) sebelum fase
-implementasi dimulai, panggil /smol setelah eksplorasi selesai tapi SEBELUM
-mulai generate/edit kode besar.
+## 6. Safety
 
-# Setelah Task Selesai
+- No `migrate:fresh`, `migrate:rollback`, `db:wipe`, `rm -rf`, or any destructive command without explicit user confirmation.
+- Already-run migrations: create a new migration, never edit the old one.
+- Never edit `.env`.
+- Check file ownership/permissions before `chmod`/`chown`. Never use `sudo` unless the user asks.
 
-Kalau task ini menghasilkan keputusan arsitektur penting (bukan fix kecil),
-tawarkan menulis ADR ke docs/vault/adr/.
-Kalau task ini menemukan gotcha baru (error tidak jelas yang makan waktu),
-tawarkan mencatatnya ke docs/vault/gotchas/.
+## 7. Token Budget
 
-# Loop Limiter
+- Read progressively: first 20 lines/header, full file only if needed.
+- Errors over 500 lines: keep the message + 10 stack trace lines only.
+- Command output: limit to 20 lines when possible (`| head -20`), large output goes to `/tmp/out.txt`.
+- More than 15 tool calls: write a summary to `/tmp/task-progress.md` and refer to it instead of re-reading.
+- Long exploration (>10 tool calls) before implementation: run `/smol` after exploration, BEFORE generating or editing large code.
 
-Maks 3 retry untuk error sama. Kalau gagal: baca 10 baris error, analisis root cause, fix dulu baru retry.
+## 8. Loop Limiter
 
-# Token Budget
+Max 3 attempts on the same error. Before each retry: read the error, find the root cause, fix. Still failing: stop and report.
 
-## Progressive: baca header 20 baris dulu, kalau perlu baru full.
-## Error >500 baris: ekstrak message + 10 baris stack trace saja.
-## Graphify: set token_budget (1000 exploratory, 2000 detailed, 3000 max).
-## MCP: database-schema pakai summary=true, read-log max 10 entries.
-## Command: `| head -20`, redirect besar ke /tmp/out.txt.
-## Summarization: >15 tool calls → tulis /tmp/task-progress.md, reference itu.
+## 9. After Task
 
+- Important architecture decision (not a small fix): offer to write an ADR to `docs/vault/adr/`.
+- New gotcha (unclear error that cost time): offer to record it in `docs/vault/gotchas/`.

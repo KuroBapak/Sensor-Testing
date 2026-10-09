@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             RolesAndPermissionsSeeder::class,
             PlaceholderDataSeeder::class,
             SiteSeeder::class,
+            HardwareSimulatorSeeder::class, // Must run before FuelMonitoringSeeder
             FuelMonitoringSeeder::class,
         ]);
 
