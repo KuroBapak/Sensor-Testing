@@ -8,18 +8,17 @@ services:
   dfm-app:
     # build: .
     # Use GitHub Container Registry:
-    image: ghcr.io/kurobapak/dfm-app:latest
+    image: ghcr.io/kurobapak/sensor-testing:latest
     pull_policy: always
     expose:
       - "8000"
     networks:
       - coolify
-    env_file:
-      - .env
     environment:
-      # Override specific env vars if needed
-      - APP_ENV=production
-      - APP_DEBUG=false
+      # All environment variables should be defined in the Coolify Dashboard
+      # "Environment Variables" section instead of an .env file.
+      APP_ENV: production
+      APP_DEBUG: "false"
     volumes:
       # Persist Laravel storage (logs, cache, uploads) across redeployments
       - storage:/app/storage

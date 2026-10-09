@@ -54,9 +54,11 @@ Coolify akan otomatis:
 3. Mount volumes untuk storage & database
 4. Connect ke network `coolify`
 
-## Konfigurasi Environment
+## Konfigurasi Environment di Coolify Dashboard
 
-Pastikan `.env` di Coolify sudah berisi:
+**PENTING**: Coolify **TIDAK** menggunakan file `.env` dari repository untuk alasan keamanan. Semua environment variables harus dikonfigurasi melalui **Coolify Dashboard → Service → Environment Variables**.
+
+Tambahkan variabel berikut di Coolify Dashboard:
 
 ```env
 APP_NAME=DFM

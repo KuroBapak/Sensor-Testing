@@ -3,27 +3,35 @@
 # Target: Production deployment via Coolify
 # =============================================================
 
-# Stage 1: Build frontend assets
-FROM node:20-alpine AS frontend-builder
+# Stage 1: Build dependencies and assets
+FROM php:8.4-fpm-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
+# Install Node.js, npm, composer, and required zip extension for composer
+RUN apk add --no-cache nodejs npm git unzip curl zip libzip-dev \
+    && docker-php-ext-install zip
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Copy composer files and install PHP dependencies first 
+# (Needed by Wayfinder/Ziggy during Vite build)
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --optimize-autoloader --no-scripts
+
+# Copy npm files and install Node dependencies
 COPY package*.json ./
 COPY pnpm-workspace.yaml ./
-
-# Install dependencies
 RUN npm ci --no-audit --no-fund
 
-# Copy source files needed for build
-COPY resources ./resources
-COPY public ./public
-COPY tsconfig.json ./
-COPY vite.config.ts ./
-COPY components.json ./
+# Copy the rest of the application
+COPY . .
 
-# Build frontend assets
+# Build frontend assets (Vite will run php artisan wayfinder:generate automatically)
 RUN npm run build
+
+# Remove node_modules to keep the production image clean
+RUN rm -rf node_modules
 
 # Stage 2: Production PHP image
 FROM php:8.4-fpm-alpine AS production
@@ -58,20 +66,11 @@ RUN apk add --no-cache \
         intl \
         opcache
 
-# Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
 # Set working directory
 WORKDIR /app
 
-# Copy application files
-COPY . .
-
-# Copy built frontend assets from frontend-builder stage
-COPY --from=frontend-builder /app/public/build ./public/build
-
-# Install PHP dependencies (production only)
-RUN composer install --no-dev --no-interaction --optimize-autoloader --no-scripts
+# Copy built application from builder stage
+COPY --from=builder /app /app
 
 # Set permissions
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
@@ -104,3 +103,4 @@ EXPOSE 8000
 
 # Start services via supervisor
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
