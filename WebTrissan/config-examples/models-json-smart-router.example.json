@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "providers": {
+    "REPLACE_WITH_EXACT_CLINE_PROVIDER_ID": {
+      "models": {
+        "smart-router": {
+          "contextWindow": 96000,
+          "maxInputTokens": 96000
+        }
+      }
+    }
+  }
+}
