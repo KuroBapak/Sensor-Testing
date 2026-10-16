@@ -1,0 +1,438 @@
+{
+  "communities": {
+    "0": [
+      "composer",
+      "composer_autoload",
+      "composer_autoload_dev",
+      "composer_autoload_dev_psr_4",
+      "composer_autoload_psr_4",
+      "composer_description",
+      "composer_extra",
+      "composer_extra_laravel",
+      "composer_keywords",
+      "composer_laravel_dont_discover",
+      "composer_license",
+      "composer_minimum_stability",
+      "composer_name",
+      "composer_prefer_stable",
+      "composer_psr_4_app",
+      "composer_psr_4_database_factories",
+      "composer_psr_4_database_seeders",
+      "composer_psr_4_tests",
+      "composer_require",
+      "composer_require_laravel_framework",
+      "composer_require_laravel_tinker",
+      "composer_require_php",
+      "composer_schema",
+      "composer_type"
+    ],
+    "1": [
+      "database_migrations_0001_01_01_000000_create_users_table",
+      "database_migrations_0001_01_01_000000_create_users_table_closure_1",
+      "database_migrations_0001_01_01_000000_create_users_table_closure_2",
+      "database_migrations_0001_01_01_000000_create_users_table_closure_3",
+      "database_migrations_0001_01_01_000000_create_users_table_down",
+      "database_migrations_0001_01_01_000000_create_users_table_up",
+      "database_migrations_0001_01_01_000001_create_cache_table",
+      "database_migrations_0001_01_01_000001_create_cache_table_closure_1",
+      "database_migrations_0001_01_01_000001_create_cache_table_closure_2",
+      "database_migrations_0001_01_01_000001_create_cache_table_down",
+      "database_migrations_0001_01_01_000001_create_cache_table_up",
+      "database_migrations_0001_01_01_000002_create_jobs_table",
+      "database_migrations_0001_01_01_000002_create_jobs_table_closure_1",
+      "database_migrations_0001_01_01_000002_create_jobs_table_closure_2",
+      "database_migrations_0001_01_01_000002_create_jobs_table_closure_3",
+      "database_migrations_0001_01_01_000002_create_jobs_table_down",
+      "database_migrations_0001_01_01_000002_create_jobs_table_up",
+      "illuminate_database_migrations_migration",
+      "illuminate_database_schema_blueprint",
+      "illuminate_support_facades_schema"
+    ],
+    "2": [
+      "package",
+      "package_optionaldependencies",
+      "package_optionaldependencies_laravel_multiplex",
+      "package_private",
+      "package_schema",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_dev",
+      "package_type",
+      "ref_concurrently",
+      "ref_laravel_multiplex",
+      "ref_laravel_vite_plugin",
+      "ref_tailwindcss",
+      "ref_tailwindcss_vite",
+      "ref_vite",
+      "vite_config"
+    ],
+    "3": [
+      "app_models_user",
+      "app_models_user_user",
+      "app_models_user_user_casts",
+      "config_auth",
+      "database_seeders_databaseseeder",
+      "database_seeders_databaseseeder_databaseseeder",
+      "database_seeders_databaseseeder_databaseseeder_run",
+      "illuminate_database_console_seeds_withoutmodelevents",
+      "illuminate_database_eloquent_attributes_fillable",
+      "illuminate_database_eloquent_attributes_hidden",
+      "illuminate_database_eloquent_factories_hasfactory",
+      "illuminate_database_seeder",
+      "illuminate_foundation_auth_user",
+      "illuminate_notifications_notifiable"
+    ],
+    "4": [
+      "config_cache",
+      "config_database",
+      "config_session",
+      "database_factories_userfactory",
+      "database_factories_userfactory_closure_1",
+      "database_factories_userfactory_userfactory",
+      "database_factories_userfactory_userfactory_definition",
+      "database_factories_userfactory_userfactory_unverified",
+      "illuminate_database_eloquent_factories_factory",
+      "illuminate_support_facades_hash",
+      "illuminate_support_str",
+      "pdo_mysql",
+      "static"
+    ],
+    "5": [
+      "composer_require_dev",
+      "composer_require_dev_fakerphp_faker",
+      "composer_require_dev_laravel_boost",
+      "composer_require_dev_laravel_pail",
+      "composer_require_dev_laravel_pao",
+      "composer_require_dev_laravel_pint",
+      "composer_require_dev_mockery_mockery",
+      "composer_require_dev_nunomaduro_collision",
+      "composer_require_dev_pestphp_pest",
+      "composer_require_dev_pestphp_pest_plugin_laravel"
+    ],
+    "6": [
+      "bootstrap_app",
+      "bootstrap_app_closure_1",
+      "bootstrap_app_closure_2",
+      "bootstrap_app_closure_3",
+      "illuminate_foundation_application",
+      "illuminate_foundation_configuration_exceptions",
+      "illuminate_foundation_configuration_middleware",
+      "illuminate_http_request",
+      "public_index"
+    ],
+    "7": [
+      "composer_scripts",
+      "composer_scripts_dev",
+      "composer_scripts_post_autoload_dump",
+      "composer_scripts_post_create_project_cmd",
+      "composer_scripts_post_root_package_install",
+      "composer_scripts_post_update_cmd",
+      "composer_scripts_pre_package_uninstall",
+      "composer_scripts_setup",
+      "composer_scripts_test"
+    ],
+    "8": [
+      "agents_laravel_boost_guidelines",
+      "agents_repository_guidance",
+      "cline_rules_10_command_efficiency",
+      "cline_rules_20_laravel",
+      "cline_rules_30_frontend",
+      "public_robots_txt",
+      "readme_readme"
+    ],
+    "9": [
+      "composer_allow_plugins_pestphp_pest_plugin",
+      "composer_allow_plugins_php_http_discovery",
+      "composer_config",
+      "composer_config_allow_plugins",
+      "composer_config_optimize_autoloader",
+      "composer_config_preferred_install",
+      "composer_config_sort_packages"
+    ],
+    "10": [
+      "illuminate_foundation_testing_refreshdatabase",
+      "illuminate_foundation_testing_testcase",
+      "tests_pest",
+      "tests_pest_closure_1",
+      "tests_pest_something",
+      "tests_testcase",
+      "tests_testcase_testcase"
+    ],
+    "11": [
+      "illuminate_support_facades_route",
+      "routes_web",
+      "routes_web_get",
+      "routes_web_get_about",
+      "routes_web_get_license",
+      "routes_web_get_portofolio",
+      "routes_web_get_works"
+    ],
+    "12": [
+      "app_providers_appserviceprovider",
+      "app_providers_appserviceprovider_appserviceprovider",
+      "app_providers_appserviceprovider_appserviceprovider_boot",
+      "app_providers_appserviceprovider_appserviceprovider_register",
+      "bootstrap_providers",
+      "illuminate_support_serviceprovider"
+    ],
+    "13": [
+      "package_devdependencies",
+      "package_devdependencies_concurrently",
+      "package_devdependencies_laravel_vite_plugin",
+      "package_devdependencies_tailwindcss",
+      "package_devdependencies_tailwindcss_vite",
+      "package_devdependencies_vite"
+    ],
+    "14": [
+      "config_logging",
+      "monolog_handler_nullhandler",
+      "monolog_handler_streamhandler",
+      "monolog_handler_syslogudphandler",
+      "monolog_processor_psrlogmessageprocessor"
+    ],
+    "15": [
+      "illuminate_foundation_inspiring",
+      "illuminate_support_facades_artisan",
+      "routes_console",
+      "routes_console_closure_1"
+    ],
+    "16": [
+      "application",
+      "argvinput",
+      "artisan"
+    ],
+    "17": [
+      "mcp",
+      "mcp_command_php",
+      "mcp_mcp_server_laravel_boost"
+    ],
+    "18": [
+      "app_http_controllers_controller",
+      "app_http_controllers_controller_controller"
+    ],
+    "19": [
+      "tests_feature_exampletest",
+      "tests_feature_exampletest_closure_1"
+    ],
+    "20": [
+      "tests_unit_exampletest",
+      "tests_unit_exampletest_closure_1"
+    ],
+    "21": [
+      "cline_setup_prompt_cline_setup_prompt"
+    ],
+    "22": [
+      "config_app"
+    ],
+    "23": [
+      "config_filesystems"
+    ],
+    "24": [
+      "config_mail"
+    ],
+    "25": [
+      "config_queue"
+    ],
+    "26": [
+      "config_services"
+    ],
+    "27": [
+      "resources_js_app"
+    ],
+    "28": [
+      "resources_views_abtus_blade"
+    ],
+    "29": [
+      "resources_views_home_blade"
+    ],
+    "30": [
+      "resources_views_license_blade"
+    ],
+    "31": [
+      "resources_views_portofolio_blade"
+    ],
+    "32": [
+      "resources_views_welcome_blade"
+    ],
+    "33": [
+      "resources_views_works_blade"
+    ]
+  },
+  "cohesion": {
+    "0": 0.08333333333333333,
+    "1": 0.1631578947368421,
+    "2": 0.14166666666666666,
+    "3": 0.2087912087912088,
+    "4": 0.1794871794871795,
+    "5": 0.2,
+    "6": 0.3333333333333333,
+    "7": 0.2222222222222222,
+    "8": 0.38095238095238093,
+    "9": 0.2857142857142857,
+    "10": 0.3333333333333333,
+    "11": 0.2857142857142857,
+    "12": 0.4,
+    "13": 0.3333333333333333,
+    "14": 0.4,
+    "15": 0.5,
+    "16": 0.6666666666666666,
+    "17": 0.6666666666666666,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0,
+    "26": 1.0,
+    "27": 1.0,
+    "28": 1.0,
+    "29": 1.0,
+    "30": 1.0,
+    "31": 1.0,
+    "32": 1.0,
+    "33": 1.0
+  },
+  "gods": [
+    {
+      "id": "composer_require_dev",
+      "label": "require-dev",
+      "degree": 10
+    },
+    {
+      "id": "app_models_user_user",
+      "label": "User",
+      "degree": 9
+    },
+    {
+      "id": "composer_scripts",
+      "label": "scripts",
+      "degree": 9
+    },
+    {
+      "id": "agents_repository_guidance",
+      "label": "Repository Guidance",
+      "degree": 6
+    },
+    {
+      "id": "app_providers_appserviceprovider_appserviceprovider",
+      "label": "AppServiceProvider",
+      "degree": 5
+    },
+    {
+      "id": "database_factories_userfactory_userfactory",
+      "label": "UserFactory",
+      "degree": 5
+    },
+    {
+      "id": "composer_config",
+      "label": "config",
+      "degree": 5
+    },
+    {
+      "id": "database_seeders_databaseseeder_databaseseeder",
+      "label": "DatabaseSeeder",
+      "degree": 4
+    },
+    {
+      "id": "composer_autoload_psr_4",
+      "label": "psr-4",
+      "degree": 4
+    },
+    {
+      "id": "composer_require",
+      "label": "require",
+      "degree": 4
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Repository Guidance",
+      "target": "Command and Context Efficiency Rules",
+      "source_files": [
+        "AGENTS.md",
+        ".clinerules/10-command-efficiency.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "conceptually_related_to",
+      "why": "connects across different repos/directories; peripheral node `Command and Context Efficiency Rules` unexpectedly reaches hub `Repository Guidance`"
+    },
+    {
+      "source": "Repository Guidance",
+      "target": "Laravel Implementation Rules",
+      "source_files": [
+        "AGENTS.md",
+        ".clinerules/20-laravel.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "conceptually_related_to",
+      "why": "connects across different repos/directories; peripheral node `Laravel Implementation Rules` unexpectedly reaches hub `Repository Guidance`"
+    },
+    {
+      "source": "Repository Guidance",
+      "target": "Frontend Rules",
+      "source_files": [
+        "AGENTS.md",
+        ".clinerules/30-frontend.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "conceptually_related_to",
+      "why": "connects across different repos/directories; peripheral node `Frontend Rules` unexpectedly reaches hub `Repository Guidance`"
+    },
+    {
+      "source": "Repository Guidance",
+      "target": "Robots.txt",
+      "source_files": [
+        "AGENTS.md",
+        "public/robots.txt"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "conceptually_related_to",
+      "why": "connects across different repos/directories; peripheral node `Robots.txt` unexpectedly reaches hub `Repository Guidance`"
+    },
+    {
+      "source": "Laravel Implementation Rules",
+      "target": "Laravel Boost Guidelines",
+      "source_files": [
+        ".clinerules/20-laravel.md",
+        "AGENTS.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `require-dev` connect `Development Dependencies` to `Composer Configuration`?",
+      "why": "High betweenness centrality (0.023) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `Controller`, `description`, `keywords` to the rest of the system?",
+      "why": "58 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Composer Configuration` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.08333333333333333 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `scripts` connect `Composer Scripts` to `Composer Configuration`?",
+      "why": "High betweenness centrality (0.020) - this node is a cross-community bridge."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Frontend Dependencies` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.14166666666666666 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `config` connect `Composer Settings` to `Composer Configuration`?",
+      "why": "High betweenness centrality (0.015) - this node is a cross-community bridge."
+    }
+  ]
+}
