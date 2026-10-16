@@ -1,23 +1,16 @@
 <?php
 
+use App\Http\Controllers\AboutController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LicensesController;
+use App\Http\Controllers\PortfolioController;
+use App\Http\Controllers\WorksController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('home');
-});
-
-Route::get('/license', function () {
-    return view('license');
-});
-
-Route::get('/works', function () {
-    return view('works');
-});
-
-Route::get('/about', function () {
-    return view('abtus');
-});
-
-Route::get('/portofolio', function () {
-    return view('portofolio');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/license', [LicensesController::class, 'index'])->name('licenses');
+Route::get('/works', [WorksController::class, 'index'])->name('works');
+Route::get('/about', [AboutController::class, 'index'])->name('about');
+Route::get('/portofolio', [PortfolioController::class, 'index'])->name('portfolio');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
