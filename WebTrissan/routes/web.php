@@ -11,7 +11,7 @@ Route::get('/license', function () {
 });
 
 Route::get('/works', function () {
-    return view('work');
+    return view('works');
 });
 
 Route::get('/about', function () {

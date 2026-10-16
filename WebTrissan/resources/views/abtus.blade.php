@@ -45,6 +45,7 @@
   </style>
 </head>
 <body class="bg-[#f8f9ff] min-h-screen antialiased text-slate-800 selection:bg-blue-600 selection:text-white">
+@include('layouts.navbar')
 <!-- Top Hero / Header Section: Clean & Spacious Architectural Layout -->
 <header class="bg-gradient-to-b from-[#0d2137] via-[#091829] to-[#071321] text-white py-4 md:py-12 px-4 md:px-8 relative overflow-hidden" style="background: linear-gradient(rgb(13, 33, 55) 0%, rgb(9, 24, 41) 50%, rgb(7, 19, 33) calc(100% - 150px), rgb(248, 249, 255) calc(100% - 150px), rgb(248, 249, 255) 100%);">
   <div class="absolute -top-40 right-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
@@ -302,6 +303,7 @@
 </section>
 <!-- CTA Section: Balanced & Spacious Architectural Finish -->
 
+@include('layouts.footer')
 <!-- Clean Bottom Bar -->
 
 

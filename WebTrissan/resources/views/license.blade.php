@@ -242,7 +242,7 @@
 <meta content="web_standard" name="shell-type">
 </head>
 <body class="bg-surface text-on-surface antialiased relative selection:bg-primary-container selection:text-on-primary">
-<!-- 1. Bilah Navigasi (Header) -->
+@include('layouts.navbar')
 
 <main class="relative"><div class="flex flex-col w-full">
 <!-- SECTION 1: HEADER & COMPLIANCE METRICS -->
@@ -379,6 +379,7 @@
     }
   </script>
 </div></main>
+@include('layouts.footer')
 <!-- Footer Penutup Sederhana -->
 <script>
   window.addEventListener('DOMContentLoaded', () => {

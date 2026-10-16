@@ -1,5 +1,7 @@
 <!DOCTYPE html><html lang="en" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Montserrat:wght@600;700;800&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"on-background":"#0b1c30","on-primary-fixed-variant":"#364860","surface-container-high":"#dce9ff","on-primary-fixed":"#081c32","secondary":"#416279","on-primary-container":"#7689a4","on-secondary-fixed-variant":"#284a60","secondary-fixed":"#c8e6ff","on-primary":"#ffffff","surface-container":"#e5eeff","outline-variant":"#c4c6cd","on-secondary":"#ffffff","primary-fixed":"#d2e4ff","inverse-surface":"#213145","surface-tint":"#4d6079","on-surface-variant":"#44474d","on-secondary-container":"#45667d","error-container":"#ffdad6","surface":"#f8f9ff","error":"#ba1a1a","inverse-on-surface":"#eaf1ff","surface-container-highest":"#d3e4fe","surface-variant":"#d3e4fe","secondary-fixed-dim":"#a9cbe5","on-surface":"#0b1c30","on-tertiary-fixed":"#0d1c2d","surface-container-low":"#eff4ff","tertiary-fixed-dim":"#b9c8de","on-error":"#ffffff","on-tertiary-fixed-variant":"#39485a","tertiary-fixed":"#d4e4fa","surface-bright":"#f8f9ff","tertiary-container":"#122131","background":"#f8f9ff","on-secondary-fixed":"#001e2e","inverse-primary":"#b5c8e5","primary-fixed-dim":"#b5c8e5","outline":"#74777d","surface-container-lowest":"#ffffff","surface-dim":"#cbdbf5","secondary-container":"#c2e4ff","primary":"#000917","primary-container":"#0d2137","on-error-container":"#93000a","on-tertiary":"#ffffff","tertiary":"#000916","on-tertiary-container":"#7a899d"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"margin":"1rem","space-md":"1rem","space-xs":"0.25rem","gutter-desktop":"2rem","space-2xl":"4rem","gutter":"1.5rem","margin-desktop":"4rem","space-lg":"1.5rem","margin-tablet":"2.5rem","space-3xl":"6rem","space-sm":"0.5rem","space-xl":"2.5rem"},"fontFamily":{"label-sm":["Inter"],"display-hero-mobile":["Montserrat"],"body-md":["Inter"],"headline-lg-mobile":["Montserrat"],"headline-lg":["Montserrat"],"label-caps":["Montserrat"],"display-hero":["Montserrat"],"body-lg":["Inter"],"headline-sm":["Montserrat"],"body-sm":["Inter"],"label-md":["Inter"],"headline-md":["Montserrat"],"title-md":["Inter"]},"fontSize":{"label-sm":["12px",{"lineHeight":"16px","fontWeight":"500"}],"display-hero-mobile":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"800"}],"body-md":["16px",{"lineHeight":"24px","fontWeight":"400"}],"headline-lg-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"700"}],"headline-lg":["40px",{"lineHeight":"48px","letterSpacing":"-0.015em","fontWeight":"700"}],"label-caps":["12px",{"lineHeight":"16px","letterSpacing":"0.08em","fontWeight":"700"}],"display-hero":["56px",{"lineHeight":"64px","letterSpacing":"-0.02em","fontWeight":"800"}],"body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"600"}],"body-sm":["14px",{"lineHeight":"20px","fontWeight":"400"}],"label-md":["14px",{"lineHeight":"20px","fontWeight":"500"}],"headline-md":["28px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"700"}],"title-md":["18px",{"lineHeight":"26px","fontWeight":"600"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface antialiased selection:bg-secondary-container selection:text-on-secondary-container min-h-screen overflow-y-auto" style="overflow: hidden;"><main class="w-full bg-surface min-h-screen pb-space-lg"><div class="flex flex-col w-full">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"on-background":"#0b1c30","on-primary-fixed-variant":"#364860","surface-container-high":"#dce9ff","on-primary-fixed":"#081c32","secondary":"#416279","on-primary-container":"#7689a4","on-secondary-fixed-variant":"#284a60","secondary-fixed":"#c8e6ff","on-primary":"#ffffff","surface-container":"#e5eeff","outline-variant":"#c4c6cd","on-secondary":"#ffffff","primary-fixed":"#d2e4ff","inverse-surface":"#213145","surface-tint":"#4d6079","on-surface-variant":"#44474d","on-secondary-container":"#45667d","error-container":"#ffdad6","surface":"#f8f9ff","error":"#ba1a1a","inverse-on-surface":"#eaf1ff","surface-container-highest":"#d3e4fe","surface-variant":"#d3e4fe","secondary-fixed-dim":"#a9cbe5","on-surface":"#0b1c30","on-tertiary-fixed":"#0d1c2d","surface-container-low":"#eff4ff","tertiary-fixed-dim":"#b9c8de","on-error":"#ffffff","on-tertiary-fixed-variant":"#39485a","tertiary-fixed":"#d4e4fa","surface-bright":"#f8f9ff","tertiary-container":"#122131","background":"#f8f9ff","on-secondary-fixed":"#001e2e","inverse-primary":"#b5c8e5","primary-fixed-dim":"#b5c8e5","outline":"#74777d","surface-container-lowest":"#ffffff","surface-dim":"#cbdbf5","secondary-container":"#c2e4ff","primary":"#000917","primary-container":"#0d2137","on-error-container":"#93000a","on-tertiary":"#ffffff","tertiary":"#000916","on-tertiary-container":"#7a899d"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"margin":"1rem","space-md":"1rem","space-xs":"0.25rem","gutter-desktop":"2rem","space-2xl":"4rem","gutter":"1.5rem","margin-desktop":"4rem","space-lg":"1.5rem","margin-tablet":"2.5rem","space-3xl":"6rem","space-sm":"0.5rem","space-xl":"2.5rem"},"fontFamily":{"label-sm":["Inter"],"display-hero-mobile":["Montserrat"],"body-md":["Inter"],"headline-lg-mobile":["Montserrat"],"headline-lg":["Montserrat"],"label-caps":["Montserrat"],"display-hero":["Montserrat"],"body-lg":["Inter"],"headline-sm":["Montserrat"],"body-sm":["Inter"],"label-md":["Inter"],"headline-md":["Montserrat"],"title-md":["Inter"]},"fontSize":{"label-sm":["12px",{"lineHeight":"16px","fontWeight":"500"}],"display-hero-mobile":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"800"}],"body-md":["16px",{"lineHeight":"24px","fontWeight":"400"}],"headline-lg-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"700"}],"headline-lg":["40px",{"lineHeight":"48px","letterSpacing":"-0.015em","fontWeight":"700"}],"label-caps":["12px",{"lineHeight":"16px","letterSpacing":"0.08em","fontWeight":"700"}],"display-hero":["56px",{"lineHeight":"64px","letterSpacing":"-0.02em","fontWeight":"800"}],"body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"600"}],"body-sm":["14px",{"lineHeight":"20px","fontWeight":"400"}],"label-md":["14px",{"lineHeight":"20px","fontWeight":"500"}],"headline-md":["28px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"700"}],"title-md":["18px",{"lineHeight":"26px","fontWeight":"600"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface antialiased selection:bg-secondary-container selection:text-on-secondary-container min-h-screen overflow-y-auto">
+@include('layouts.navbar')
+<main class="w-full bg-surface min-h-screen pb-space-lg"><div class="flex flex-col w-full">
 <!-- Top Breadcrumb & Hero Archive Section -->
 <section class="w-full bg-surface-container-low border-b border-surface-container-high/60 py-space-xl lg:py-space-2xl">
 <div class="max-w-[1360px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex flex-col">
@@ -181,8 +183,8 @@
 </div>
 </section>
 <!-- Interactive Showcase Modal (Large Image & Full Comprehensive Details - 2 Columns) -->
-<div aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 md:p-6 bg-black/80 backdrop-blur-md transition-all duration-300 opacity-100 pointer-events-auto" id="projectDetailModal" role="dialog">
-<div class="relative w-full max-w-5xl bg-surface-container-lowest rounded-lg sm:rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col border border-surface-container-high transform transition-all duration-300 scale-100" id="modalContentContainer">
+<div aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 md:p-6 bg-black/80 backdrop-blur-md transition-all duration-300 opacity-0 pointer-events-none" id="projectDetailModal" role="dialog">
+<div class="relative w-full max-w-5xl bg-surface-container-lowest rounded-lg sm:rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col border border-surface-container-high transform transition-all duration-300 scale-95" id="modalContentContainer">
 <!-- Modal Floating / Sticky Close Button -->
 <button aria-label="Tutup Showcase Modal" class="absolute top-3.5 right-3.5 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-surface-container-lowest/90 text-on-surface hover:bg-primary hover:text-on-primary shadow-md border border-surface-container-high transition-all focus:outline-none" onclick="closeProjectModal()" type="button">
 <span class="material-symbols-outlined text-xl sm:text-2xl font-bold leading-none">close</span>
@@ -282,6 +284,40 @@
         applyFilterAndSearch();
       });
     });
+
+    // Auto-select category from URL parameter on page load
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryParam = urlParams.get('category');
+    if (categoryParam) {
+      const targetBtn = Array.from(filterButtons).find(btn => btn.getAttribute('data-filter') === categoryParam);
+      if (targetBtn) {
+        targetBtn.click();
+        // Scroll to filter section smoothly
+        setTimeout(() => {
+          const filterSection = document.getElementById('filterTabGroup');
+          if (filterSection) {
+            filterSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
+      }
+    }
+
+    // Auto-open modal from URL hash on page load (for featured works from landing page)
+    const hash = window.location.hash.slice(1); // Remove '#' prefix
+    if (hash) {
+      // Find card with matching data-title (slugified)
+      const targetCard = Array.from(cards).find(card => {
+        const title = card.getAttribute('data-title') || '';
+        const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        return slug === hash;
+      });
+      if (targetCard) {
+        // Wait for filter animation to complete if category was also selected
+        setTimeout(() => {
+          populateAndOpenModalFromCard(targetCard);
+        }, categoryParam ? 400 : 200);
+      }
+    }
 
     // Real-time search filter input listener
     if (searchInput) {
@@ -488,5 +524,7 @@
     }
   </script>
 </div></main>
+
+@include('layouts.footer')
 
 </body></html>
