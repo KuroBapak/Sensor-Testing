@@ -45,6 +45,8 @@ class CorporateAccreditationResource extends Resource
                 Forms\Components\TextInput::make('modal_title')
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('certificate_image')
+                    ->disk('public')
+                    ->directory('accreditations')
                     ->image(),
                 Forms\Components\TextInput::make('sort_order')
                     ->required()

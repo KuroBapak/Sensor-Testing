@@ -67,9 +67,11 @@ class WorkResource extends Resource
                 Forms\Components\Section::make('Media')
                     ->schema([
                         Forms\Components\FileUpload::make('work_image')
+                            ->disk('public')
                             ->image()
                             ->directory('works'),
                         Forms\Components\FileUpload::make('gallery_images')
+                            ->disk('public')
                             ->image()
                             ->multiple()
                             ->reorderable()

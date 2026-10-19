@@ -42,6 +42,18 @@ class ManagePageSettings extends Page implements HasForms
             $setting = PageSetting::forPage($pageKey);
             $data[$pageKey] = $setting ? $setting->attributesToArray() : [];
         }
+
+        if (isset($data['landing']['about_teaser']) && is_array($data['landing']['about_teaser'])) {
+            if (empty($data['landing']['about_teaser']['description'])) {
+                $p1 = $data['landing']['about_teaser']['paragraph_1'] ?? '';
+                $p2 = $data['landing']['about_teaser']['paragraph_2'] ?? '';
+                $combined = trim($p1.($p1 && $p2 ? "\n\n" : '').$p2);
+                if (! empty($combined)) {
+                    $data['landing']['about_teaser']['description'] = $combined;
+                }
+            }
+        }
+
         $this->form->fill($data);
     }
 
@@ -91,6 +103,7 @@ class ManagePageSettings extends Page implements HasForms
                             ->label('Hero Background Carousel Slides')
                             ->schema([
                                 FileUpload::make('image')
+                                    ->disk('public')
                                     ->image()
                                     ->directory('hero'),
                                 TextInput::make('alt_text')
@@ -133,6 +146,7 @@ class ManagePageSettings extends Page implements HasForms
                     ->description('Company introduction preview section on the landing page.')
                     ->schema([
                         FileUpload::make('about_teaser.image')
+                            ->disk('public')
                             ->label('Teaser Image')
                             ->image()
                             ->directory('about'),
@@ -145,13 +159,9 @@ class ManagePageSettings extends Page implements HasForms
                         TextInput::make('about_teaser.title')
                             ->label('Section Title')
                             ->placeholder('Dedikasi Presisi Sejak 1998'),
-                        Textarea::make('about_teaser.paragraph_1')
-                            ->label('Paragraph 1')
-                            ->rows(3)
-                            ->columnSpanFull(),
-                        Textarea::make('about_teaser.paragraph_2')
-                            ->label('Paragraph 2')
-                            ->rows(3)
+                        Textarea::make('about_teaser.description')
+                            ->label('Description')
+                            ->rows(4)
                             ->columnSpanFull(),
                         TextInput::make('about_teaser.cta_text')
                             ->label('CTA Button Text')

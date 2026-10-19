@@ -83,12 +83,15 @@ class ManageAboutCompany extends Page implements HasForms
                     ->rows(4)
                     ->columnSpanFull(),
                 FileUpload::make('hero_image')
+                    ->disk('public')
                     ->image()
                     ->directory('about'),
                 FileUpload::make('company_profile_pdf')
+                    ->disk('public')
                     ->acceptedFileTypes(['application/pdf'])
                     ->directory('documents'),
                 FileUpload::make('partners_image')
+                    ->disk('public')
                     ->image()
                     ->directory('about'),
                 Section::make('Hero Image Overlay Badges')
@@ -162,6 +165,7 @@ class ManageAboutCompany extends Page implements HasForms
                 Repeater::make('facilities')
                     ->schema([
                         FileUpload::make('facility_image')
+                            ->disk('public')
                             ->image()
                             ->directory('facilities'),
                         TextInput::make('facility_tag')->required(),
@@ -213,7 +217,7 @@ class ManageAboutCompany extends Page implements HasForms
                         TextInput::make('org_chart.ceo.name')->label('Name')->required(),
                         TextInput::make('org_chart.ceo.position')->label('Position')->required(),
                         TextInput::make('org_chart.ceo.experience_tag')->label('Experience Tag'),
-                        FileUpload::make('org_chart.ceo.photo')->image()->directory('team'),
+                        FileUpload::make('org_chart.ceo.photo')->disk('public')->image()->directory('team'),
                     ])->columns(2),
 
                 Section::make('General Manager / COO')

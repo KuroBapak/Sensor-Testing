@@ -61,12 +61,15 @@ class ManageGlobalSettings extends Page implements HasForms
                         ->required()
                         ->maxLength(255),
                     FileUpload::make('navbar_logo')
+                        ->disk('public')
                         ->image()
                         ->directory('branding'),
                     FileUpload::make('footer_logo')
+                        ->disk('public')
                         ->image()
                         ->directory('branding'),
                     FileUpload::make('footer_partner_image')
+                        ->disk('public')
                         ->image()
                         ->directory('branding'),
                     TextInput::make('copyright_text')

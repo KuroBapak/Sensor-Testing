@@ -80,6 +80,7 @@ test('admin can update page settings via ManagePageSettings form', function () {
         ->test(ManagePageSettings::class)
         ->assertSuccessful()
         ->set('data.landing.hero_title', 'Precision Engineering Leaders')
+        ->set('data.landing.about_teaser.description', 'Single consolidated description text for about teaser.')
         ->set('data.works.hero_title', 'Industrial Capabilities')
         ->set('data.portfolio.hero_title', 'Master Project Directory')
         ->set('data.licenses.hero_title', 'Accreditations & Compliance')
@@ -87,7 +88,30 @@ test('admin can update page settings via ManagePageSettings form', function () {
         ->assertHasNoErrors();
 
     expect(PageSetting::forPage('landing')->hero_title)->toBe('Precision Engineering Leaders');
+    expect(PageSetting::forPage('landing')->about_teaser['description'])->toBe('Single consolidated description text for about teaser.');
     expect(PageSetting::forPage('works')->hero_title)->toBe('Industrial Capabilities');
     expect(PageSetting::forPage('portfolio')->hero_title)->toBe('Master Project Directory');
     expect(PageSetting::forPage('licenses')->hero_title)->toBe('Accreditations & Compliance');
+});
+
+test('ManagePageSettings mounts legacy paragraph_1 and paragraph_2 into single description field', function () {
+    $admin = User::factory()->create([
+        'email' => 'admin_test5@example.com',
+    ]);
+
+    $landing = PageSetting::forPage('landing');
+    $landing->update([
+        'about_teaser' => [
+            'paragraph_1' => 'Apex Industrial Engineering berdiri dengan komitmen memberikan solusi teknik presisi.',
+            'paragraph_2' => 'Didukung oleh lebih dari 150 insinyur berkualifikasi tinggi.',
+        ],
+    ]);
+
+    Livewire\Livewire::actingAs($admin)
+        ->test(ManagePageSettings::class)
+        ->assertSuccessful()
+        ->assertSet(
+            'data.landing.about_teaser.description',
+            "Apex Industrial Engineering berdiri dengan komitmen memberikan solusi teknik presisi.\n\nDidukung oleh lebih dari 150 insinyur berkualifikasi tinggi."
+        );
 });

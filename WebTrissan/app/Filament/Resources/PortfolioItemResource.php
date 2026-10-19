@@ -33,6 +33,8 @@ class PortfolioItemResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('image')
+                    ->disk('public')
+                    ->directory('portfolio')
                     ->image(),
                 Forms\Components\TextInput::make('industry_tag')
                     ->maxLength(255),

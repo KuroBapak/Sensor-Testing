@@ -78,9 +78,11 @@ class ProductCertificationResource extends Resource
                             ->maxItems(4)
                             ->columnSpanFull(),
                         Forms\Components\FileUpload::make('certificate_image')
+                            ->disk('public')
                             ->image()
                             ->directory('certificates/images'),
                         Forms\Components\FileUpload::make('certificate_pdf')
+                            ->disk('public')
                             ->acceptedFileTypes(['application/pdf'])
                             ->directory('certificates/pdf'),
                     ])->columns(2),
