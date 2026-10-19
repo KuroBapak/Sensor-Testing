@@ -31,11 +31,13 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->navigationGroups([
-                'Content Management',
-                'Certifications & Accreditations',
-                'Team & Organization',
+                'Landing Page',
+                'About Page',
+                'Works Page',
+                'License & Certification',
+                'Portfolio Page',
+                'Global Data Settings',
                 'Inquiries',
-                'Site Configuration',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

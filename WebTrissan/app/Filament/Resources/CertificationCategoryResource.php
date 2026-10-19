@@ -14,7 +14,13 @@ class CertificationCategoryResource extends Resource
 {
     protected static ?string $model = CertificationCategory::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
+
+    protected static ?string $navigationGroup = 'Global Data Settings';
+
+    protected static ?string $navigationLabel = 'Certification Categories';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

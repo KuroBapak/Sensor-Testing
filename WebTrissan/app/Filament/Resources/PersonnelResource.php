@@ -14,7 +14,13 @@ class PersonnelResource extends Resource
 {
     protected static ?string $model = Personnel::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    protected static ?string $navigationGroup = 'Portfolio Page';
+
+    protected static ?string $navigationLabel = 'Personnel Directory';
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -22,12 +28,12 @@ class PersonnelResource extends Resource
             ->schema([
                 Forms\Components\Select::make('specialty_cluster_id')
                     ->relationship('specialtyCluster', 'name')
+                    ->searchable()
+                    ->preload()
                     ->required(),
                 Forms\Components\TextInput::make('registration_id')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Toggle::make('status')
-                    ->required(),
                 Forms\Components\TextInput::make('job_role')
                     ->required()
                     ->maxLength(255),
@@ -35,10 +41,20 @@ class PersonnelResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('qualification_rank')
                     ->numeric(),
+                Forms\Components\Toggle::make('status')
+                    ->required()
+                    ->default(true),
                 Forms\Components\TextInput::make('sort_order')
                     ->required()
                     ->numeric()
                     ->default(0),
+                Forms\Components\Select::make('skills')
+                    ->relationship('skills', 'skill_name')
+                    ->multiple()
+                    ->preload()
+                    ->minItems(1)
+                    ->maxItems(3)
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -46,17 +62,20 @@ class PersonnelResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('specialtyCluster.name')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('registration_id')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('specialtyCluster.name')
+                    ->sortable()
                     ->searchable(),
-                Tables\Columns\IconColumn::make('status')
-                    ->boolean(),
                 Tables\Columns\TextColumn::make('job_role')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('technical_focus')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('skills.skill_name')
+                    ->badge()
+                    ->separator(', '),
+                Tables\Columns\IconColumn::make('status')
+                    ->boolean()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('qualification_rank')
                     ->numeric()
                     ->sortable(),
@@ -73,7 +92,10 @@ class PersonnelResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\TernaryFilter::make('status'),
+                Tables\Filters\SelectFilter::make('specialty_cluster_id')
+                    ->relationship('specialtyCluster', 'name')
+                    ->label('Specialty Cluster'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

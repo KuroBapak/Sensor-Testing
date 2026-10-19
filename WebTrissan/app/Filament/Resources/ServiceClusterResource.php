@@ -14,7 +14,13 @@ class ServiceClusterResource extends Resource
 {
     protected static ?string $model = ServiceCluster::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
+
+    protected static ?string $navigationGroup = 'Works Page';
+
+    protected static ?string $navigationLabel = 'Service Clusters';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

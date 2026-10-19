@@ -14,7 +14,13 @@ class CorporateAccreditationResource extends Resource
 {
     protected static ?string $model = CorporateAccreditation::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shield-check';
+
+    protected static ?string $navigationGroup = 'License & Certification';
+
+    protected static ?string $navigationLabel = 'Corporate Accreditations';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -51,10 +57,12 @@ class CorporateAccreditationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('certificationCategory.name')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\ImageColumn::make('certificate_image'),
                 Tables\Columns\TextColumn::make('standard_name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('certificationCategory.name')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('accreditation_body')
                     ->searchable(),
@@ -65,7 +73,6 @@ class CorporateAccreditationResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('modal_title')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('certificate_image'),
                 Tables\Columns\TextColumn::make('sort_order')
                     ->numeric()
                     ->sortable(),
@@ -79,7 +86,9 @@ class CorporateAccreditationResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('certification_category_id')
+                    ->relationship('certificationCategory', 'name')
+                    ->label('Category'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

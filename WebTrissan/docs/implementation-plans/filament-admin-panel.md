@@ -1,121 +1,89 @@
-# Filament Admin Panel Installation — Implementation Plan
+# Filament Admin Panel Implementation — PRD v2.1 Alignment Plan
 
 ## Task Objective
-Install and configure Filament v3 admin panel for managing all CMS content defined in PRD v2.1.
+Build and configure the Filament v3 admin panel to achieve full functional alignment with PRD v2.1. This includes navigation grouping, resource form and table enhancements, and fully implementing the three singleton pages (`ManageGlobalSettings`, `ManageAboutCompany`, and `ManagePageSettings`).
 
 ## Source PRD
-`prd.md` — PRD v2.1
+`prd.md` — Unified CMS Architecture: Apex Industrial Engineering (v2.1)
 
-## Prerequisites
-- ✅ Database schema aligned with PRD v2.1
-- ✅ All 16 models created with correct casts and relationships
-- ✅ All 8 seeders populated with PRD-compliant data
-- ✅ Test suite validates schema integrity (119 assertions passing)
-
----
-
-## Phase 1 — Install Filament ✅ COMPLETE
-
-### Checklist
-- [x] Run `composer require filament/filament:"^3.0"` to install Filament v3
-- [x] Run `php artisan filament:install --panels` to scaffold admin panel
-- [x] Run `php artisan make:filament-user` to create admin user
-- [x] Verify Filament panel accessible at `/admin`
-- [x] Configure Filament panel in `app/Providers/Filament/AdminPanelProvider.php`
-- [x] Add `FilamentUser` interface to `User` model with `canAccessPanel()` method
-
-### Exit Criteria ✅
-- Filament v3.3.57 installed successfully
-- Admin panel accessible at `/admin` route
-- Admin user can log in to Filament dashboard
-- Test user can access admin panel in test environment
+## Status
+- Overall Status: Complete
+- Phase 1 (Navigation Grouping & Icons): Complete
+- Phase 2 (Resource Forms & Tables Fixes): Complete
+- Phase 3 (ManageGlobalSettings Page): Complete
+- Phase 4 (ManageAboutCompany Page): Complete
+- Phase 5 (ManagePageSettings Page): Complete
 
 ---
 
-## Phase 2 — Collection Resources
+## Phase 1 — Navigation Grouping & Icons
+Configure navigation groups, sorts, icons, and labels across all 11 resources and 3 singleton pages.
 
-Create Filament resources for all collection models with proper forms, tables, and relationships.
+- [x] Update `AdminPanelProvider.php` with official navigation groups
+- [x] Configure `ManageGlobalSettings` (⚙️ Global Data Settings, sort: 1)
+- [x] Configure `CertificationCategoryResource` (⚙️ Global Data Settings, sort: 2)
+- [x] Configure `PortfolioCategoryResource` (⚙️ Global Data Settings, sort: 3)
+- [x] Configure `SpecialtyClusterResource` (⚙️ Global Data Settings, sort: 4)
+- [x] Configure `SkillResource` (⚙️ Global Data Settings, sort: 5)
+- [x] Configure `ManagePageSettings` (🏠 Landing Page, sort: 1)
+- [x] Configure `ManageAboutCompany` (ℹ️ About Page, sort: 1)
+- [x] Configure `ServiceClusterResource` (🔧 Works Page, sort: 1)
+- [x] Configure `ServiceResource` (🔧 Works Page, sort: 2)
+- [x] Configure `WorkResource` (🔧 Works Page, sort: 3)
+- [x] Configure `CorporateAccreditationResource` (📜 License & Certification, sort: 1)
+- [x] Configure `ProductCertificationResource` (📜 License & Certification, sort: 2)
+- [x] Configure `PortfolioItemResource` (📁 Portfolio Page, sort: 1)
+- [x] Configure `PersonnelResource` (📁 Portfolio Page, sort: 2)
+- [x] Configure `ContactSubmissionResource` (📬 Inquiries, sort: 1)
 
-### 2a. Service Management
-- [ ] `php artisan make:filament-resource ServiceCluster --generate`
-- [ ] `php artisan make:filament-resource Service --generate`
-- [ ] Configure ServiceCluster form: `cluster_name`, `cluster_tag`, `cluster_icon`, `sort_order`
-- [ ] Configure Service form: `service_name`, `short_title`, `description`, `service_icon_svg`, `is_active`, `sort_order`, BelongsTo `service_cluster`
-- [ ] Add RelationManager: ServiceCluster → Services
-
-### 2b. Works Management
-- [ ] `php artisan make:filament-resource Work --generate`
-- [ ] Configure form fields: `title`, `work_slug`, `featured_image`, `gallery_images` (repeater), `top_badge`, `bottom_badge`, `serial_number`, `client_name`, `client_sector`, `project_year`, `short_description`, `full_description`, `highlight_tags` (repeater), `quality_standards` (repeater), `tolerance_value`, `scale_value`, `production_date`, `is_featured`, `sort_order`, BelongsTo `service`
-- [ ] Configure table columns: `featured_image`, `title`, `client_name`, `is_featured`, `sort_order`
-- [ ] Add filters: `is_featured`, `service_id`
-
-### 2c. Certification Management
-- [ ] `php artisan make:filament-resource CertificationCategory --generate`
-- [ ] `php artisan make:filament-resource CorporateAccreditation --generate`
-- [ ] `php artisan make:filament-resource ProductCertification --generate`
-- [ ] Configure CertificationCategory form: `name`, `slug`, `sort_order`
-- [ ] Configure CorporateAccreditation form: `title`, `modal_title`, `registration_id`, `certificate_image`, `issuing_body`, `validity_date`, `scope_detail`, `sort_order`, BelongsTo `certification_category`
-
-### 2d. Portfolio Management
-- [ ] `php artisan make:filament-resource PortfolioCategory --generate`
-- [ ] `php artisan make:filament-resource PortfolioItem --generate`
-- [ ] Configure PortfolioCategory form: `name`, `slug`, `sort_order`
-- [ ] Configure PortfolioItem form: `title`, `industry_tag`, `image`, `description`, `project_year`, `sort_order`, BelongsTo `portfolio_category`
-
-### 2e. Personnel Management
-- [ ] `php artisan make:filament-resource SpecialtyCluster --generate`
-- [ ] `php artisan make:filament-resource Skill --generate`
-- [ ] `php artisan make:filament-resource Personnel --generate`
-- [ ] Configure SpecialtyCluster form: `name`, `sort_order`
-- [ ] Configure Skill form: `skill_name`
-- [ ] Configure Personnel form: `name`, `registration_id`, `position`, `photo`, `technical_focus`, `qualification_rank`, `status`, `sort_order`, BelongsTo `specialty_cluster`, BelongsToMany `skills`
-
-### 2f. Contact Submissions
-- [ ] `php artisan make:filament-resource ContactSubmission --generate`
-- [ ] Configure form: `name`, `email`, `phone`, `message`, `status` (select: new/in_progress/resolved/closed), BelongsTo `service` (nullable)
-- [ ] Configure table: `name`, `email`, `phone`, `status`, `created_at`
-- [ ] Add filters: `status`, `service_id`, `created_at` (date range)
-- [ ] Make form read-only (contact submissions should not be edited, only status updated)
+Exit Criteria: Admin sidebar displays 7 distinct groups with correct order, labels, and icons.
 
 ---
 
-## Phase 3 — Singleton Pages
+## Phase 2 — Fix All Resource Forms & Tables
+Upgrade raw scaffolded forms and tables to production-grade UX.
 
-Create custom Filament pages for singleton models that only have one record.
+- [x] `WorkResource`: relationship select `service_title`, `gallery_images` FileUpload, `highlight_tags` & `quality_standards` repeaters, `full_description` RichEditor, `production_date` required, sectioned form, table columns and filters.
+- [x] `ServiceResource`: relationship select `cluster_name`, table column.
+- [x] `ProductCertificationResource`: relationship select `work_title`, `spec_rows` repeater, `certificate_pdf` FileUpload, table column.
+- [x] `ContactSubmissionResource`: relationship select `service_title`, `status` select, table column and filters.
+- [x] `PersonnelResource`: `skills` multi-select relationship, table column fixes.
+- [x] `CorporateAccreditationResource`: table column type fixes.
+- [x] `PortfolioItemResource`: table column type fixes.
 
-### 3a. Global Settings Page
-- [ ] `php artisan make:filament-page ManageGlobalSettings`
-- [ ] Load `GlobalSetting::current()` in mount method
-- [ ] Create form with sections: Company Info, Contact Info, Social Media, Footer, Statistics, Map
-
-### 3b. About Company Page
-- [ ] `php artisan make:filament-page ManageAboutCompany`
-- [ ] Load `AboutCompany::current()` in mount method
-- [ ] Create form with sections: Hero, Overview, Vision/Mission/Values, Facilities, Milestones, Organization
-
-### 3c. Page Settings Manager
-- [ ] `php artisan make:filament-page ManagePageSettings`
-- [ ] Add tabs for each page: Landing, Works, Portfolio, Licenses, About
-- [ ] Load `PageSetting::forPage($page)` per tab
-- [ ] Create forms per page type
+Exit Criteria: All collection forms and tables use human-readable options, validated repeaters, and appropriate inputs matching PRD constraints.
 
 ---
 
-## Phase 4 — Navigation & Polish
+## Phase 3 — Build ManageGlobalSettings Page
+Implement singleton configuration page for site-wide settings.
 
-- [ ] Organize navigation groups: Content, Certifications, People, Submissions, Settings
-- [ ] Add icons for resources and pages
-- [ ] Test all CRUD operations
-- [ ] Test file uploads, repeaters, and relationships
+- [x] Form schema for PRD Section 4.1: Brand, Company Stats (4 items), Contact Info (phones, emails), Locations, Social Media, Notification Email.
+- [x] Mount and save methods linked to `GlobalSetting::current()`.
+- [x] Update blade view with form and action buttons.
+
+Exit Criteria: Admin can modify and persist all global branding, contact, stats, and social media data.
 
 ---
 
-## Validation Summary
+## Phase 4 — Build ManageAboutCompany Page
+Implement singleton configuration page for company profile and about page.
 
-- **Installation**: Filament v3 installed, admin panel accessible
-- **Resources**: 11 collection resources created with forms, tables, filters
-- **Pages**: 3 singleton pages created for global/about/page settings
-- **Navigation**: Organized into logical groups with icons
-- **Testing**: All CRUD operations verified, test suite passing
+- [x] Form schema for PRD Section 4.3: Hero Profile, Vision/Mission/Values (3 cards), Facilities, Milestones, Org Chart.
+- [x] Mount and save methods linked to `AboutCompany::current()`.
+- [x] Update blade view with form and action buttons.
 
-- [ ] Configure ProductCertification form: `title`, `slug`, `category_tag`, `category_icon`, `card_icon`, `model_spec_identifier`, `certificate_number`, `issuing_body`, `spec_rows` (repeater: label/value), `scope_description`, `validity_date`, `certificate_image`, `certificate_pdf`, `is_featured`, `sort_order`, BelongsTo `work`
+Exit Criteria: Admin can modify and persist all about page data including facilities, milestones, and org chart.
+
+---
+
+## Phase 5 — Build ManagePageSettings Page
+Implement multi-page hero, SEO, and stat settings per page slug.
+
+- [x] Implement tabbed layout for `landing`, `works`, `portfolio`, and `licenses`.
+- [x] Form schemas for each tab per PRD Section 4.2 (min/max repeaters, trust card, about teaser, registry tags, corporate highlights, stats).
+- [x] Load and save handlers for each `PageSetting` record mapped per statePath.
+- [x] Blade view with `<x-filament-panels::form>` and action buttons.
+- [x] Automated test coverage in `FilamentAdminTest` verifying access and multi-page state persistence.
+
+Exit Criteria: Admin can manage individual page settings across all four core pages.

@@ -4,11 +4,11 @@
     <!-- Logo Perusahaan di Sebelah Kiri -->
     <a href="{{ url('/') }}" class="flex items-center gap-3.5 group">
       <div class="w-11 h-11 rounded-lg overflow-hidden border border-brand-navy/15 flex items-center justify-center bg-white shadow-sm transition group-hover:scale-105">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiMPbIsbS-sC9J4DTxtsdSwTVeBEABqrpT_kyCq3jV6W5K1bOH8NOSdxswUhegkBvpOBQsbNnQCkpHCSZVOkGYzisKUZn9NESn9dVQlSR1cMINm9F4zGmpZ7-wcyktFR5YG7eAQVSieih4YiiLAs808ouuT9UMz-7VXekJTTRRHErI1fXIfdGZgJorwjnRKJwQvqz3_Otqvt8F9_RTYXbxS4dQWRCPCnUH4b_Nvr0rswPl2qvjwLG6" alt="Apex Industrial Logo" class="w-full h-full object-cover">
+        <img src="{{ $globalSettings->company_logo ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuCiMPbIsbS-sC9J4DTxtsdSwTVeBEABqrpT_kyCq3jV6W5K1bOH8NOSdxswUhegkBvpOBQsbNnQCkpHCSZVOkGYzisKUZn9NESn9dVQlSR1cMINm9F4zGmpZ7-wcyktFR5YG7eAQVSieih4YiiLAs808ouuT9UMz-7VXekJTTRRHErI1fXIfdGZgJorwjnRKJwQvqz3_Otqvt8F9_RTYXbxS4dQWRCPCnUH4b_Nvr0rswPl2qvjwLG6' }}" alt="{{ $globalSettings->company_name ?? 'Apex Industrial Logo' }}" class="w-full h-full object-cover">
       </div>
       <div class="flex flex-col">
-        <span class="font-heading font-extrabold text-xl text-brand-navy tracking-tight leading-none group-hover:text-brand-accent transition">PT. Trissan</span>
-        <span class="text-[10px] font-semibold text-brand-grayMuted tracking-widest uppercase mt-0.5">Industrial Engineering</span>
+        <span class="font-heading font-extrabold text-xl text-brand-navy tracking-tight leading-none group-hover:text-brand-accent transition">{{ $globalSettings->company_name ?? 'PT. Trissan' }}</span>
+        <span class="text-[10px] font-semibold text-brand-grayMuted tracking-widest uppercase mt-0.5">{{ $globalSettings->company_tagline ?? 'Industrial Engineering' }}</span>
       </div>
     </a>
 

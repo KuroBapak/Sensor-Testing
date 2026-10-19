@@ -7,15 +7,15 @@
       <div class="md:col-span-5 space-y-6">
         <a href="{{ url('/') }}" class="flex items-center gap-3.5 group">
           <div class="w-11 h-11 rounded-lg overflow-hidden border border-white/20 flex items-center justify-center bg-white shadow-sm transition group-hover:scale-105 shrink-0">
-            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiMPbIsbS-sC9J4DTxtsdSwTVeBEABqrpT_kyCq3jV6W5K1bOH8NOSdxswUhegkBvpOBQsbNnQCkpHCSZVOkGYzisKUZn9NESn9dVQlSR1cMINm9F4zGmpZ7-wcyktFR5YG7eAQVSieih4YiiLAs808ouuT9UMz-7VXekJTTRRHErI1fXIfdGZgJorwjnRKJwQvqz3_Otqvt8F9_RTYXbxS4dQWRCPCnUH4b_Nvr0rswPl2qvjwLG6" alt="PT. Trissan Logo" class="w-full h-full object-cover">
+            <img src="{{ $globalSettings->company_logo ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuCiMPbIsbS-sC9J4DTxtsdSwTVeBEABqrpT_kyCq3jV6W5K1bOH8NOSdxswUhegkBvpOBQsbNnQCkpHCSZVOkGYzisKUZn9NESn9dVQlSR1cMINm9F4zGmpZ7-wcyktFR5YG7eAQVSieih4YiiLAs808ouuT9UMz-7VXekJTTRRHErI1fXIfdGZgJorwjnRKJwQvqz3_Otqvt8F9_RTYXbxS4dQWRCPCnUH4b_Nvr0rswPl2qvjwLG6' }}" alt="{{ $globalSettings->company_name ?? 'PT. Trissan Logo' }}" class="w-full h-full object-cover">
           </div>
           <div class="flex flex-col">
-            <span class="font-heading font-extrabold text-xl text-white tracking-tight leading-none group-hover:text-blue-400 transition">PT. Trissan</span>
-            <span class="text-[10px] font-semibold text-slate-400 tracking-widest uppercase mt-0.5">Industrial Engineering</span>
+            <span class="font-heading font-extrabold text-xl text-white tracking-tight leading-none group-hover:text-blue-400 transition">{{ $globalSettings->company_name ?? 'PT. Trissan' }}</span>
+            <span class="text-[10px] font-semibold text-slate-400 tracking-widest uppercase mt-0.5">{{ $globalSettings->company_tagline ?? 'Industrial Engineering' }}</span>
           </div>
         </a>
         <p class="text-sm text-slate-400 leading-relaxed max-w-md">
-          Mitra manufaktur presisi tier-1 berstandar global. Mengkhususkan diri pada permesinan CNC 5-sumbu, pengelasan orbital bertekanan tinggi, dan integrasi mekatronika otomatis untuk sektor kedirgantaraan, energi, dan alat berat.
+          {{ $globalSettings->footer_about_text ?? 'Mitra manufaktur presisi tier-1 berstandar global. Mengkhususkan diri pada permesinan CNC 5-sumbu, pengelasan orbital bertekanan tinggi, dan integrasi mekatronika otomatis untuk sektor kedirgantaraan, energi, dan alat berat.' }}
         </p>
         <div class="w-full max-w-sm rounded-lg border border-slate-700/60 bg-white/5 p-1.5 shadow-sm overflow-hidden">
           <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUHSxtTMgXJMPz_oY9plipZG-hSnmDiY3VnqLHppZAzpBSpDb1OAa6NWrAtzWm3ONexnhqlbgU6rimppsYKMXUkDZpoTjiFyEZUqkeujt4YCNwWS2nqCRVcnhiUYF_FDtdbC_PITQ_iwYm7GpyFZUn7GU41be-Zld71LZ63yKru8-uRgc0atTT5UeGic7lTXdyU7BlroF4YM-uzSVeoLDZNhFlcGkD1F945Ocu5otju1DquhtG967Gp0q3FWA2ZP7ryQ" alt="Our Partner" class="w-full h-auto object-contain rounded">
@@ -45,7 +45,7 @@
           </div>
           <div>
             <span class="text-[10px] font-mono tracking-wider text-slate-500 uppercase block">LOKASI PABRIK & KANTOR</span>
-            <p class="text-xs text-slate-300 font-medium leading-relaxed mt-0.5">Kawasan Industri MM2100, Jl. Irian Blok V, Blok C-18 No. 4, Cikarang, Bekasi 17530, Jawa Barat, Indonesia</p>
+            <p class="text-xs text-slate-300 font-medium leading-relaxed mt-0.5">{{ $globalSettings->contact_address ?? 'Kawasan Industri MM2100, Jl. Irian Blok V, Blok C-18 No. 4, Cikarang, Bekasi 17530, Jawa Barat, Indonesia' }}</p>
           </div>
         </div>
         <div class="p-3.5 rounded-lg bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors flex items-start gap-3.5 group">
@@ -54,7 +54,7 @@
           </div>
           <div>
             <span class="text-[10px] font-mono tracking-wider text-slate-500 uppercase block">TELEPON HOTLINE & WHATSAPP</span>
-            <p class="text-xs text-slate-300 font-medium leading-relaxed mt-0.5"><span class="text-white font-semibold">+62 (21) 5508-8990</span> / <span class="text-white font-semibold">+62 811-9870-221</span></p>
+            <p class="text-xs text-slate-300 font-medium leading-relaxed mt-0.5"><span class="text-white font-semibold">{{ $globalSettings->contact_phone ?? '+62 (21) 5508-8990' }}</span> / <span class="text-white font-semibold">{{ $globalSettings->contact_whatsapp ?? '+62 811-9870-221' }}</span></p>
           </div>
         </div>
         <div class="p-3.5 rounded-lg bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors flex items-start gap-3.5 group">
@@ -63,7 +63,7 @@
           </div>
           <div>
             <span class="text-[10px] font-mono tracking-wider text-slate-500 uppercase block">SURAT ELEKTRONIK (EMAIL):</span>
-            <p class="text-xs text-slate-300 font-medium leading-relaxed mt-0.5"><a href="mailto:contact@apex-engineering.co.id" class="text-blue-400 hover:underline">contact@apex-engineering.co.id</a> · <a href="mailto:corporate@apex-engineering.co.id" class="text-blue-400 hover:underline">corporate@apex-engineering.co.id</a></p>
+            <p class="text-xs text-slate-300 font-medium leading-relaxed mt-0.5"><a href="mailto:{{ $globalSettings->contact_email ?? 'contact@apex-engineering.co.id' }}" class="text-blue-400 hover:underline">{{ $globalSettings->contact_email ?? 'contact@apex-engineering.co.id' }}</a> · <a href="mailto:{{ $globalSettings->contact_email_secondary ?? 'corporate@apex-engineering.co.id' }}" class="text-blue-400 hover:underline">{{ $globalSettings->contact_email_secondary ?? 'corporate@apex-engineering.co.id' }}</a></p>
           </div>
         </div>
       </div>
@@ -73,7 +73,7 @@
     <div class="border-t border-slate-800/80 mt-12 pt-6 flex flex-col md:flex-row items-center justify-between text-xs text-slate-400 gap-4">
       <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
         <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
-        <span>© 2025 PT Apex Industrial Engineering. All rights reserved.</span>
+        <span>{{ $globalSettings->copyright_text ?? '© 2025 PT Apex Industrial Engineering. All rights reserved.' }}</span>
       </div>
       <div class="flex flex-wrap gap-6 items-center text-[11px] font-mono">
         <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
