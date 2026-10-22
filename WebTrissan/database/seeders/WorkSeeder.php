@@ -1,0 +1,257 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Service;
+use App\Models\Work;
+use Illuminate\Database\Seeder;
+
+class WorkSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $services = Service::all()->keyBy('slug');
+
+        $allWorks = array_merge($this->featuredWorks(), $this->standardWorks());
+
+        foreach ($allWorks as $item) {
+            $service = $services[$item['service_slug']] ?? null;
+            if ($service) {
+                $item['service_id'] = $service->id;
+                unset($item['service_slug']);
+                Work::updateOrCreate(['work_slug' => $item['work_slug']], $item);
+            }
+        }
+    }
+
+    private function featuredWorks(): array
+    {
+        return [
+            [
+                'service_slug' => 'mechanical-electrical',
+                'work_title' => 'Turbine Gearbox Shafts',
+                'work_slug' => 'turbine-gearbox-shafts',
+                'is_featured' => true,
+                'featured_sort_order' => 1,
+                'work_image' => '/images/work-1.jpg',
+                'gallery_images' => ['/images/work-1.jpg', '/images/work-1-sub1.jpg', '/images/work-1-sub2.jpg'],
+                'top_badge' => 'MECHANICAL',
+                'bottom_badge' => '0.002 mm',
+                'serial_number' => 'SERIES-AG-8840',
+                'client_sector' => 'AEROSPACE T1',
+                'short_description' => 'Poros transmisi turbin presisi tinggi dengan toleransi mikron.',
+                'full_description' => 'Komponen poros transmisi turbin presisi tinggi berbahan Inconel 625 Clad dengan turning 5-axis.',
+                'highlight_tags' => ['Aerospace T1', '5-Axis Turning', 'Inconel Clad'],
+                'quality_standards' => ['ASME Sec IX', 'API 6A Spec', 'AS9100D Audited'],
+                'material' => 'Inconel 625 Clad + ASTM A694 F65',
+                'tolerance_specs' => '0.002mm Max Deviation',
+                'tolerance_value' => 0.002,
+                'batch_scale' => '1,200 Units / Cycle',
+                'scale_value' => 1200,
+                'production_date' => '2024-10-01',
+                'sort_order' => 1,
+            ],
+            [
+                'service_slug' => 'digital-automation',
+                'work_title' => 'Robotic Gantries High Precision',
+                'work_slug' => 'robotic-gantries',
+                'is_featured' => true,
+                'featured_sort_order' => 2,
+                'work_image' => '/images/work-2.jpg',
+                'gallery_images' => ['/images/work-2.jpg'],
+                'top_badge' => 'AUTOMATION',
+                'bottom_badge' => '0.005 mm',
+                'serial_number' => 'GANTRY-AUTO-V3',
+                'client_sector' => 'AUTOMOTIVE T1',
+                'short_description' => 'Sistem gantry robotika berkecepatan tinggi servomotor mikron.',
+                'full_description' => 'Gantry robotik linear 3-axis terintegrasi PLC dan sistem optik sensor.',
+                'highlight_tags' => ['Automotive T1', 'Linear Servo', 'Repeatability 5µm'],
+                'quality_standards' => ['ISO 9001:2015', 'CE Machinery Directive'],
+                'material' => 'Aluminum 7075-T6 + Carbon Steel',
+                'tolerance_specs' => '0.005mm Max Deviation',
+                'tolerance_value' => 0.005,
+                'batch_scale' => '50 Units / Cycle',
+                'scale_value' => 50,
+                'production_date' => '2024-09-15',
+                'sort_order' => 2,
+            ],
+            [
+                'service_slug' => 'jigs-fixtures',
+                'work_title' => 'Precision Inspection Jigs',
+                'work_slug' => 'inspection-jigs',
+                'is_featured' => true,
+                'featured_sort_order' => 3,
+                'work_image' => '/images/work-3.jpg',
+                'gallery_images' => ['/images/work-3.jpg'],
+                'top_badge' => 'JIGS & FIXTURE',
+                'bottom_badge' => '0.001 mm',
+                'serial_number' => 'JIG-CMM-900',
+                'client_sector' => 'AEROSPACE',
+                'short_description' => 'Jig inspeksi CMM presisi ultra-tinggi untuk aero struktur.',
+                'full_description' => 'Perangkat jig inspeksi presisi berbahan SKD11 tool steel yang dikeraskan 62 HRC.',
+                'highlight_tags' => ['SKD11 Hardened', 'Sub-micron', 'Zeiss Verified'],
+                'quality_standards' => ['AS9100D Audited', '100% CMM Inspected'],
+                'material' => 'SKD11 Tool Steel Hardened',
+                'tolerance_specs' => '0.001mm Max Deviation',
+                'tolerance_value' => 0.001,
+                'batch_scale' => '25 Units / Cycle',
+                'scale_value' => 25,
+                'production_date' => '2024-08-20',
+                'sort_order' => 3,
+            ],
+        ];
+    }
+
+    private function standardWorks(): array
+    {
+        return [
+            [
+                'service_slug' => 'unload-robot-chucking',
+                'work_title' => 'Pneumatic Chucking Arm',
+                'work_slug' => 'pneumatic-chucking-arm',
+                'is_featured' => true,
+                'featured_sort_order' => 4,
+                'work_image' => '/images/work-4.jpg',
+                'gallery_images' => ['/images/work-4.jpg'],
+                'top_badge' => 'ROBOTICS',
+                'bottom_badge' => '0.003 mm',
+                'serial_number' => 'CHUCK-PN-400',
+                'client_sector' => 'ELECTRONICS',
+                'short_description' => 'Mekanisme pencekam otomatis titanium berkecepatan tinggi.',
+                'full_description' => 'Arm pencekam pneumatik paduan titanium Ti-6Al-4V ringan untuk perakitan elektronik presisi.',
+                'highlight_tags' => ['Titanium Ti-6Al-4V', 'Fast Cycle', 'Cleanroom Ready'],
+                'quality_standards' => ['ISO 14644 Cleanroom Class 6', '100% CMM Inspected'],
+                'material' => 'Titanium Ti-6Al-4V',
+                'tolerance_specs' => '0.003mm Max Deviation',
+                'tolerance_value' => 0.003,
+                'batch_scale' => '300 Units / Cycle',
+                'scale_value' => 300,
+                'production_date' => '2024-07-10',
+                'sort_order' => 4,
+            ],
+            [
+                'service_slug' => 'material-handling',
+                'work_title' => 'Automated Roller Conveyor',
+                'work_slug' => 'automated-roller-conveyor',
+                'is_featured' => true,
+                'featured_sort_order' => 5,
+                'work_image' => '/images/work-5.jpg',
+                'gallery_images' => ['/images/work-5.jpg'],
+                'top_badge' => 'CONVEYOR',
+                'bottom_badge' => '0.010 mm',
+                'serial_number' => 'CONV-HD-1200',
+                'client_sector' => 'LOGISTICS',
+                'short_description' => 'Konveyor modular stainless steel heavy-duty dengan sensor tracking.',
+                'full_description' => 'Sistem konveyor bertenaga motor efisien dengan rangka SUS304 untuk beban hingga 2 ton per meter.',
+                'highlight_tags' => ['SUS304 Stainless', 'Heavy Duty', 'Sensor Interlock'],
+                'quality_standards' => ['ISO 9001:2015', 'OSHA Safety Compliant'],
+                'material' => 'Stainless Steel SUS304',
+                'tolerance_specs' => '0.010mm Max Deviation',
+                'tolerance_value' => 0.010,
+                'batch_scale' => '15 Units / Cycle',
+                'scale_value' => 15,
+                'production_date' => '2024-06-05',
+                'sort_order' => 5,
+            ],
+            [
+                'service_slug' => 'distribution-panel',
+                'work_title' => 'SCADA Integrated Power Panel',
+                'work_slug' => 'scada-power-panel',
+                'is_featured' => true,
+                'featured_sort_order' => 6,
+                'work_image' => '/images/work-6.jpg',
+                'gallery_images' => ['/images/work-6.jpg'],
+                'top_badge' => 'ELECTRICAL',
+                'bottom_badge' => 'IP65 Rated',
+                'serial_number' => 'PNL-SCADA-415',
+                'client_sector' => 'ENERGY & POWER',
+                'short_description' => 'Panel distribusi daya cerdas terintegrasi SCADA dan IoT.',
+                'full_description' => 'Panel distribusi listrik 415V berproteksi IP65 dengan modul Modbus/TCP.',
+                'highlight_tags' => ['IP65 Enclosure', 'IoT Telemetry', 'Schneider Inside'],
+                'quality_standards' => ['IEC 61439-1/2', 'ISO 9001:2015'],
+                'material' => 'Powder Coated Mild Steel',
+                'tolerance_specs' => 'IP65 Enclosure Standard',
+                'tolerance_value' => 0.050,
+                'batch_scale' => '80 Units / Cycle',
+                'scale_value' => 80,
+                'production_date' => '2024-05-18',
+                'sort_order' => 6,
+            ],
+            [
+                'service_slug' => 'electrical-installation',
+                'work_title' => '10kV Substation Busbar Link',
+                'work_slug' => 'substation-busbar-link',
+                'is_featured' => false,
+                'featured_sort_order' => 0,
+                'work_image' => '/images/work-7.jpg',
+                'gallery_images' => ['/images/work-7.jpg'],
+                'top_badge' => 'SUBSTATION',
+                'bottom_badge' => '99.9% Cu',
+                'serial_number' => 'BUS-10KV-09',
+                'client_sector' => 'POWER GRID',
+                'short_description' => 'Tembaga murni 99.9% busbar fleksibel berlapis perak.',
+                'full_description' => 'Busbar tembaga berkonduktivitas tinggi dengan perlakuan tin/silver plating.',
+                'highlight_tags' => ['ETP Copper 99.9%', 'Silver Plated', '10kV Rated'],
+                'quality_standards' => ['IEC 60105', 'ASTM B187'],
+                'material' => 'Electrolytic Tough Pitch Copper',
+                'tolerance_specs' => '±0.020mm Tolerance',
+                'tolerance_value' => 0.020,
+                'batch_scale' => '400 Units / Cycle',
+                'scale_value' => 400,
+                'production_date' => '2024-04-12',
+                'sort_order' => 7,
+            ],
+            [
+                'service_slug' => 'grease-system',
+                'work_title' => 'Centralized Auto Lubrication Manifold',
+                'work_slug' => 'lubrication-manifold',
+                'is_featured' => false,
+                'featured_sort_order' => 0,
+                'work_image' => '/images/work-8.jpg',
+                'gallery_images' => ['/images/work-8.jpg'],
+                'top_badge' => 'LUBRICATION',
+                'bottom_badge' => '350 Bar',
+                'serial_number' => 'LUB-MNF-350',
+                'client_sector' => 'HEAVY MINING',
+                'short_description' => 'Manifold distribusi grease otomatis 350 bar.',
+                'full_description' => 'Blok manifold hidrolik berbahan AISI 4140 dengan katup mikro terkalibrasi.',
+                'highlight_tags' => ['Forged AISI 4140', '350 Bar Working', 'Progressive Divider'],
+                'quality_standards' => ['DIN 2353', 'ISO 9001:2015'],
+                'material' => 'Forged Alloy Steel AISI 4140',
+                'tolerance_specs' => '0.005mm Valve Seat',
+                'tolerance_value' => 0.005,
+                'batch_scale' => '150 Units / Cycle',
+                'scale_value' => 150,
+                'production_date' => '2024-03-25',
+                'sort_order' => 8,
+            ],
+            [
+                'service_slug' => 'general-supplier',
+                'work_title' => '5-Axis Precision Planetary Carrier Gears',
+                'work_slug' => 'planetary-carrier-gears',
+                'is_featured' => false,
+                'featured_sort_order' => 0,
+                'work_image' => '/images/work-9.jpg',
+                'gallery_images' => ['/images/work-9.jpg'],
+                'top_badge' => 'GEARING',
+                'bottom_badge' => 'DIN Class 4',
+                'serial_number' => 'GEAR-PLN-55',
+                'client_sector' => 'DEFENSE & MARINE',
+                'short_description' => 'Carrier gear planetary presisi standar DIN Class 4.',
+                'full_description' => 'Gigi pembawa planetary presisi untuk transmisi kelautan berdaya tinggi.',
+                'highlight_tags' => ['18CrNiMo7-6', 'Carburized 60 HRC', 'DIN Class 4'],
+                'quality_standards' => ['AGMA 2001', 'ISO 1328 Gear Accuracy'],
+                'material' => 'Case Hardened 18CrNiMo7-6',
+                'tolerance_specs' => '0.002mm Tooth Profile',
+                'tolerance_value' => 0.002,
+                'batch_scale' => '600 Units / Cycle',
+                'scale_value' => 600,
+                'production_date' => '2024-02-14',
+                'sort_order' => 9,
+            ],
+        ];
+    }
+}

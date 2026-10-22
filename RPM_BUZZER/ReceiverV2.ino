@@ -1,10 +1,21 @@
+// =====================================================================
+//  J1939 RPM Monitor - MCP2515 (HW-184) + STM32
+//  - Default LISTEN-ONLY tiap boot (pasif: tidak ACK / TX / error frame). /bench 1 hanya untuk meja test.
+//  - Serial: SEMENTARA log ke Serial1 DAN Serial2 (panggilan langsung, bukan lewat pointer) sampai jalur yang benar ketahuan.
+//  - Non-blocking: log lewat ring buffer, loop() tidak pernah menunggu UART.
+//  - Zona RPM pakai hysteresis + debounce keluar: masuk DANGER langsung bunyi, beep makin cepat saat RPM naik.
+//  - Tidak butuh "Newlib Nano + Float Printf" (semua print pakai integer).
+// =====================================================================
 #include <SPI.h>
 #include <mcp_can.h>
 #include <EEPROM.h>
 #include <IWatchdog.h>
 
-// Catatan build STM32duino: supaya %f di snprintf tampil, pilih
-//   Tools > C Runtime Library > "Newlib Nano + Float Printf"
+// ================= Serial =================
+// SEMENTARA: log dikirim ke Serial1 (PA9/PA10) DAN Serial2 (PA2/PA3); command diterima dari keduanya.
+// Saat boot tiap port mencetak "[PORT] ini SerialX" -> label yang muncul di terminalmu = port yang benar.
+// Setelah ketahuan, set NUM_PORTS ke 1 dan arahkan helper port* di bawah ke satu port itu saja.
+#define LINK_BAUD  9600         // default HC-05/06. Terminal PC harus diset sama.
 
 // ================= Hardware pins =================
 #define CAN_CS_PIN   PA4
@@ -19,39 +30,22 @@ MCP_CAN CAN0(CAN_CS_PIN);
 
 #define PGN_EEC1   61444UL
 
-// ================= Fix v2 =================
-// SA pengirim EEC1 yang dipercaya. 0xFFFF = terima dari SA mana pun (ANY).
-// Isi dengan SA yang terbukti di log logger / "log_to_csv.py --check" (biasanya 0x00 = engine #1).
-const uint16_t RPM_SA_FILTER = 0xFFFF;
-// J1939-71: raw >= 0xFB00 = error / not-available (nilai valid max 0xFAFF = 8031.875 rpm)
+// RPM valid menurut J1939-71: raw < 0xFB00 (0xFB00..0xFFFF = error / not-available, valid max 8031.875 rpm)
 const uint16_t RPM_RAW_INVALID_MIN = 0xFB00;
-// Print RPM ke terminal dibatasi (Bluetooth 9600 baud cuma muat ~960 byte/detik)
-const unsigned long RPM_PRINT_INTERVAL_MS = 500;
 
-// ================= Mode bus =================
-// 0 = TRUK  : LISTEN-ONLY (tidak pernah ACK / TX / error frame).
-// 1 = MEJA TEST: mode NORMAL supaya node TX simulasi mendapat ACK (listen-only tidak ACK -> pengirim bus-off).
-//     !!! JANGAN 1 di truk: chip jadi node aktif di bus truk !!!
-// Ganti angka di bawah, ATAU tanpa edit file: buat build_opt.h (satu folder dengan .ino) berisi -DBENCH_ACK_MODE=1
-#ifndef BENCH_ACK_MODE
-#define BENCH_ACK_MODE 0
-#endif
+// EEC1 di kendaraan ini ~100 Hz (tiap 10 ms). Print RPM dibatasi supaya log tidak penuh.
+const unsigned long RPM_PRINT_INTERVAL_MS = 200;
 
-#if BENCH_ACK_MODE
-  #define RUN_MODE      MCP_NORMAL
-  #define RUN_OPMOD     0
-  #define RUN_MODE_TXT  "NORMAL-ACK(BENCH)"
-#else
-  #define RUN_MODE      MCP_LISTENONLY
-  #define RUN_OPMOD     3
-  #define RUN_MODE_TXT  "LISTEN-ONLY"
-#endif
+// ================= Anti on-off cepat (hysteresis) =================
+// Naik zona: langsung begitu RPM melewati batas (1 frame cukup).
+// Turun zona: RPM harus di bawah (batas - ZONE_HYST_RPM) TERUS-MENERUS selama ZONE_EXIT_DELAY_MS.
+// Satu frame RPM yang "bergetar" di bawah batas tidak akan mematikan alarm.
+const float         ZONE_HYST_RPM      = 50.0f;   // sebelumnya 100
+const unsigned long ZONE_EXIT_DELAY_MS = 250;     // sebelumnya 500
 
-// MCP2515 register (akses langsung untuk verifikasi mode)
-#define REG_CANSTAT 0x0E
-#define REG_CNF3    0x28
-#define REG_CNF2    0x29
-#define REG_CNF1    0x2A
+// ================= Mode bus (RUNTIME, tidak disimpan) =================
+// Default setiap boot = LISTEN-ONLY. /bench 1 = NORMAL (kirim ACK) HANYA untuk meja test. JANGAN di kendaraan.
+bool benchMode = false;
 
 // ================= Config tersimpan di flash =================
 struct Config {
@@ -65,8 +59,8 @@ struct Config {
 const uint32_t CONFIG_MAGIC   = 0xC0FFEE42;
 const uint16_t CONFIG_VERSION = 1;
 const int      CONFIG_ADDR    = 0;
-const float    DEFAULT_SAFE   = 3000.0;
-const float    DEFAULT_DANGER = 5000.0;
+const float    DEFAULT_SAFE   = 2000.0;
+const float    DEFAULT_DANGER = 2500.0;
 
 Config cfg;
 
@@ -77,10 +71,12 @@ SystemState sysState = SYS_INIT;
 enum RpmZone { ZONE_SAFE, ZONE_CAUTION, ZONE_DANGER };
 RpmZone currentZone = ZONE_SAFE;
 float lastRpm = 0;
+bool zoneExiting = false;            // sedang di bawah ambang keluar zona
+unsigned long zoneExitSince = 0;     // sejak kapan
 
 bool blinkState = false;
 unsigned long lastBlinkToggle = 0;
-const unsigned long BLINK_INTERVAL_MS = 1000; // kedip CAUTION/DANGER
+// Kedip DANGER: interval dihitung dari RPM (lihat dangerBlinkInterval). CAUTION solid.
 
 bool waitBlinkState = false;
 unsigned long lastWaitBlinkToggle = 0;
@@ -90,24 +86,39 @@ unsigned long lastRxTime = 0;
 const unsigned long RX_TIMEOUT_MS = 2000;
 bool signalLost = true;
 
-// ---- counter / throttle log (fix) ----
 unsigned long lastRpmPrint = 0;
-unsigned long lastInvalidLog = 0;
 uint32_t invalidRpmFrames = 0;
+unsigned long lastStandbyMsg = 0;
 
 // ---- runtime toggle (TIDAK disimpan ke flash, reset ke default tiap boot) ----
-bool buzzerEnabled    = true; // true = ikut rules RPM, false = mati total
-bool showRpmOnTerminal = true; // true = print RPM (max 2 Hz), false = senyap (deteksi tetap jalan)
+bool buzzerEnabled     = true; // true = ikut rules RPM, false = mati total
+bool showRpmOnTerminal = true; // true = print RPM (max 5 Hz), false = senyap (deteksi tetap jalan)
 
-// buffer command Bluetooth (char array, bukan String, biar ga fragmentasi heap)
-char cmdBuffer[64];
-uint8_t cmdLen = 0;
+// ---- port serial: tiap port punya ring buffer TX sendiri + buffer command sendiri ----
+// Satu port yang macet/tidak tersambung tidak mengganggu port lain maupun loop().
+#define NUM_PORTS    2
+#define LOG_BUF_SIZE 1024
+struct PortState {
+  char     tx[LOG_BUF_SIZE];
+  uint16_t head;       // posisi tulis
+  uint16_t tail;       // posisi kirim
+  char     cmd[64];
+  uint8_t  cmdLen;
+};
+PortState ports[NUM_PORTS];
+
+// Helper port: panggilan LANGSUNG ke objek HardwareSerial (tanpa pointer/virtual).
+static int  portAvail(uint8_t i)  { return i == 0 ? Serial1.available()        : Serial2.available(); }
+static int  portRead(uint8_t i)   { return i == 0 ? Serial1.read()             : Serial2.read(); }
+static int  portTxFree(uint8_t i) { return i == 0 ? Serial1.availableForWrite() : Serial2.availableForWrite(); }
+static void portWrite(uint8_t i, uint8_t c) { if (i == 0) Serial1.write(c); else Serial2.write(c); }
+uint32_t logDropped = 0;    // baris yang dibuang karena buffer penuh
 
 // ================= Prototypes =================
 void loadConfig();
 void saveConfig();
 uint32_t calcChecksum(const Config &c);
-void pollBluetoothCommands();
+void pollCommands();
 void handleCommand(char *line);
 bool streq(const char *a, const char *b);
 void printHelp();
@@ -115,66 +126,89 @@ void printStatus();
 void handleSetBoundary(bool isSafe, const char *argStr);
 void handleSetBuzzer(const char *argStr);
 void handleShowRpm(const char *argStr);
+void handleBench(const char *argStr);
+bool applyBusMode(bool bench);
+RpmZone evalZone(RpmZone cur, float rpm);
 void applyOutputs(bool buzzerFromZone, bool ledRed, bool ledGreen);
 void allOff();
 void blinkError();
-void logBoth(const char *s);
-void logBothLossy(const char *s);
-uint8_t mcpReadReg(uint8_t reg);
-bool enterRunMode();
+void logLine(const char *s);
+static void pushLine(uint8_t i, const char *s);
+void pumpLog();
+void pollPort(uint8_t i);
+void flushLog(unsigned long maxMs);
+
+static unsigned long toUL(float v) { return (unsigned long)(v + 0.5f); }
+
+// Interval kedip DANGER: 300 ms tepat di batas Danger -> 80 ms di Danger + 500 RPM (makin tinggi makin cepat).
+// Kalau buzzer terdengar terlalu "nyambung", ganti 220.0f jadi 180.0f (minimum jadi ~120 ms).
+static unsigned long dangerBlinkInterval(float rpm) {
+  float over = rpm - cfg.rpmDangerBoundary;
+  if (over < 0) over = 0;
+  if (over > 500) over = 500;
+  return 300UL - (unsigned long)(over * 220.0f / 500.0f);
+}
 
 // ================= Setup =================
 void setup() {
-  Serial.begin(115200);
-  Serial2.begin(9600);
-  Serial1.setRx(PA10);
-  Serial1.setTx(PA9);
-
+  // Set HIGH (= mati, active-low) SEBELUM jadi output, supaya buzzer tidak "klik" saat boot
+  digitalWrite(PIN_BUZZER_EXT, HIGH);
+  digitalWrite(PIN_LED_RED, HIGH);
+  digitalWrite(PIN_LED_GREEN, HIGH);
   pinMode(PIN_BUZZER_EXT, OUTPUT);
   pinMode(PIN_LED_RED, OUTPUT);
   pinMode(PIN_LED_GREEN, OUTPUT);
   allOff();
 
+  Serial1.setRx(PA10);
+  Serial1.setTx(PA9);
+  Serial1.begin(LINK_BAUD);
+  Serial2.begin(LINK_BAUD);
+
   loadConfig();
 
   IWatchdog.begin(4000000); // 4 detik, auto-reset kalau loop() macet
 
+  // Penanda port + versi: kalau ini muncul di terminal, jalur TX sudah benar
+  pushLine(0, "[PORT] ini Serial1 (PA9/PA10)");
+  pushLine(1, "[PORT] ini Serial2 (PA2/PA3)");
+  flushLog(400);
+
   sysState = SYS_INIT;
 
   if (CAN0.begin(MCP_ANY, CAN_SPEED, CAN_CRYSTAL) == CAN_OK) {
-    logBoth("[RX] MCP2515 init OK");
+    logLine("[RX] MCP2515 init OK");
   } else {
-    logBoth("[RX] MCP2515 init GAGAL - cek wiring/crystal/power HW-184");
-    while (1) { blinkError(); }
+    logLine("[RX] MCP2515 init GAGAL - cek wiring/crystal/power HW-184");
+    while (1) { blinkError(); }   // watchdog reset -> coba init lagi
   }
+  flushLog(300);
 
-  // Truk: LISTEN-ONLY = node pasif (tidak ACK, tidak TX, tidak kirim error frame). Alat ini tidak pernah TX,
-  // jadi NORMAL tidak ada gunanya di truk dan hanya menambah risiko mengganggu bus.
-  // Meja test (BENCH_ACK_MODE=1): NORMAL supaya node TX simulasi mendapat ACK.
-  if (!enterRunMode()) {
-    logBoth("[RX] GAGAL masuk mode " RUN_MODE_TXT " -> berhenti demi keamanan bus (watchdog akan reset)");
+  // Setiap boot: LISTEN-ONLY. Kalau gagal, jangan lanjut (watchdog reset) daripada jadi node aktif di bus.
+  benchMode = false;
+  if (!applyBusMode(false)) {
+    logLine("[RX] GAGAL masuk LISTEN-ONLY -> berhenti demi keamanan bus");
     while (1) { blinkError(); }
   }
-  logBoth("[RX] Mode " RUN_MODE_TXT " aktif, nunggu frame J1939...");
-#if BENCH_ACK_MODE
-  logBoth("[RX] !!! BENCH_ACK_MODE=1: alat AKTIF di bus (memberi ACK). Hanya untuk meja test, JANGAN dipasang ke truk !!!");
-#endif
+  logLine("[RX] Mode LISTEN-ONLY aktif (bench=0), nunggu frame J1939...");
 
   allOff();
   sysState = SYS_WAITING_RPM;
   lastWaitBlinkToggle = millis();
 
   printHelp();
+  flushLog(1500);
 }
 
 // ================= Loop =================
 void loop() {
   IWatchdog.reload();
 
-  pollBluetoothCommands();
+  pumpLog();
+  pollCommands();
 
-  // ---- baca CAN ----
-  if (CAN0.checkReceive() == CAN_MSGAVAIL) {
+  // ---- baca CAN (kuras buffer MCP2515, maks 8 frame per putaran supaya loop tetap responsif) ----
+  for (uint8_t n = 0; n < 8 && CAN0.checkReceive() == CAN_MSGAVAIL; n++) {
     unsigned long rxId;
     unsigned char len = 0;
     unsigned char buf[8];
@@ -188,38 +222,29 @@ void loop() {
       unsigned long pgn = (pf < 240) ? ((unsigned long)pf << 8)
                                       : (((unsigned long)pf << 8) | ps);
 
-      if (pgn == PGN_EEC1 && len >= 5 &&
-          (RPM_SA_FILTER == 0xFFFF || sa == RPM_SA_FILTER)) {
+      if (pgn == PGN_EEC1 && len >= 5) {
         uint16_t raw = buf[3] | ((uint16_t)buf[4] << 8);
 
         if (raw < RPM_RAW_INVALID_MIN) {
-          // ---- RPM valid ----
           lastRpm = raw * 0.125f;
           lastRxTime = millis();
           signalLost = false;
 
           if (sysState == SYS_WAITING_RPM) {
             sysState = SYS_NORMAL;
-            logBoth("[RX] RPM pertama diterima -> sistem mulai normal");
+            logLine("[RX] RPM pertama diterima -> sistem mulai normal");
           }
 
-          // deteksi TETAP jalan walau showRpmOnTerminal=false; throttle cuma untuk print
+          // deteksi TETAP jalan walau showRpmOnTerminal=false; ini cuma soal print
           if (showRpmOnTerminal && (millis() - lastRpmPrint) >= RPM_PRINT_INTERVAL_MS) {
             lastRpmPrint = millis();
-            char buf2[48];
-            snprintf(buf2, sizeof(buf2), "[RX] RPM=%.1f SA=0x%02X", lastRpm, sa);
-            logBothLossy(buf2);
+            char b[40];
+            snprintf(b, sizeof(b), "[RX] RPM=%lu SA=0x%02X", toUL(lastRpm), (unsigned)sa);
+            logLine(b);
           }
         } else {
-          // ---- error / not-available: JANGAN dipakai sebagai RPM, lastRxTime tidak di-refresh ----
+          // error / not-available: JANGAN dipakai sebagai RPM, lastRxTime tidak di-refresh
           invalidRpmFrames++;
-          if (showRpmOnTerminal && (millis() - lastInvalidLog) >= 2000) {
-            lastInvalidLog = millis();
-            char buf4[64];
-            snprintf(buf4, sizeof(buf4), "[RX] EEC1 RPM tidak valid raw=0x%04X (total %lu)",
-                     (unsigned)raw, (unsigned long)invalidRpmFrames);
-            logBothLossy(buf4);
-          }
         }
       }
     }
@@ -229,9 +254,11 @@ void loop() {
   if (!signalLost && millis() - lastRxTime > RX_TIMEOUT_MS) {
     signalLost = true;
     sysState = SYS_WAITING_RPM;
+    currentZone = ZONE_SAFE;
+    zoneExiting = false;
     waitBlinkState = false;
     lastWaitBlinkToggle = millis();
-    logBoth("[RX] Sinyal J1939 hilang -> kembali ke mode standby");
+    logLine("[RX] Sinyal J1939 hilang -> kembali ke mode standby");
   }
 
   // ---- mode standby ----
@@ -241,24 +268,24 @@ void loop() {
       waitBlinkState = !waitBlinkState;
     }
     applyOutputs(false, false, waitBlinkState);
+    if (millis() - lastStandbyMsg >= 10000) {
+      lastStandbyMsg = millis();
+      logLine("[RX] standby: belum ada EEC1 valid (RPM)");
+    }
     return;
   }
 
-  // ---- SYS_NORMAL: tentuin zona RPM (deteksi selalu jalan, ga kepengaruh ShowRpm) ----
-  RpmZone newZone;
-  if (lastRpm > cfg.rpmDangerBoundary)        newZone = ZONE_DANGER;
-  else if (lastRpm >= cfg.rpmSafeBoundary)    newZone = ZONE_CAUTION;
-  else                                        newZone = ZONE_SAFE;
-
+  // ---- SYS_NORMAL: tentukan zona (pakai hysteresis) ----
+  RpmZone newZone = evalZone(currentZone, lastRpm);
   if (newZone != currentZone) {
     currentZone = newZone;
-    blinkState = false;
+    blinkState = (currentZone == ZONE_DANGER);   // masuk DANGER: beep pertama langsung bunyi
     lastBlinkToggle = millis();
     const char *zoneName = currentZone == ZONE_SAFE ? "SAFE" :
                             currentZone == ZONE_CAUTION ? "CAUTION" : "DANGER";
-    char buf3[48];
-    snprintf(buf3, sizeof(buf3), "[RX] Zona berubah -> %s", zoneName);
-    logBoth(buf3);
+    char b[40];
+    snprintf(b, sizeof(b), "[RX] Zona berubah -> %s", zoneName);
+    logLine(b);
   }
 
   switch (currentZone) {
@@ -267,47 +294,93 @@ void loop() {
       break;
 
     case ZONE_CAUTION:
-      if (millis() - lastBlinkToggle >= BLINK_INTERVAL_MS) {
+      applyOutputs(true, true, false);   // SOLID, tidak pernah berkedip
+      break;
+
+    case ZONE_DANGER:
+      if (millis() - lastBlinkToggle >= dangerBlinkInterval(lastRpm)) {
         lastBlinkToggle = millis();
         blinkState = !blinkState;
       }
       applyOutputs(blinkState, blinkState, false);
       break;
-
-    case ZONE_DANGER:
-      applyOutputs(true, true, false);
-      break;
   }
 }
 
-// ================= MCP2515: LISTEN-ONLY + verifikasi =================
-uint8_t mcpReadReg(uint8_t reg) {
-  digitalWrite(CAN_CS_PIN, LOW);
-  SPI.transfer(0x03);
-  SPI.transfer(reg);
-  uint8_t v = SPI.transfer(0x00);
-  digitalWrite(CAN_CS_PIN, HIGH);
-  return v;
+// ================= Logika zona =================
+RpmZone evalZone(RpmZone cur, float rpm) {
+  // ---- naik zona: langsung ----
+  if (rpm > cfg.rpmDangerBoundary) {
+    if (cur != ZONE_DANGER) zoneExiting = false;
+    return ZONE_DANGER;
+  }
+  if (cur == ZONE_SAFE) {
+    return (rpm >= cfg.rpmSafeBoundary) ? ZONE_CAUTION : ZONE_SAFE;
+  }
+
+  // ---- turun zona: harus stabil di bawah ambang keluar selama ZONE_EXIT_DELAY_MS ----
+  float exitLevel = (cur == ZONE_DANGER) ? cfg.rpmDangerBoundary - ZONE_HYST_RPM
+                                         : cfg.rpmSafeBoundary   - ZONE_HYST_RPM;
+  if (rpm >= exitLevel) {          // masih di zona ini (atau di zona hysteresis)
+    zoneExiting = false;
+    return cur;
+  }
+  if (!zoneExiting) {
+    zoneExiting = true;
+    zoneExitSince = millis();
+  }
+  if (millis() - zoneExitSince < ZONE_EXIT_DELAY_MS) return cur;
+
+  zoneExiting = false;
+  if (cur == ZONE_DANGER)
+    return (rpm >= cfg.rpmSafeBoundary - ZONE_HYST_RPM) ? ZONE_CAUTION : ZONE_SAFE;
+  return ZONE_SAFE;
 }
 
-// true = chip terbukti (atau tidak bisa dicek, lihat peringatan) berada di RUN_MODE.
-bool enterRunMode() {
-  if (CAN0.setMode(RUN_MODE) != CAN_OK) return false;
+// ================= MCP2515: mode bus =================
+// setMode() di library mcp_can membaca balik register CANCTRL, jadi CAN_OK = chip benar-benar di mode itu.
+// bench=false -> LISTEN-ONLY (pasif), bench=true -> NORMAL (kirim ACK).
+bool applyBusMode(bool bench) {
+  return CAN0.setMode(bench ? MCP_NORMAL : MCP_LISTENONLY) == CAN_OK;
+}
 
-  uint8_t cnf1 = mcpReadReg(REG_CNF1), cnf2 = mcpReadReg(REG_CNF2), cnf3 = mcpReadReg(REG_CNF3);
-  if (cnf1 == cnf2 && cnf2 == cnf3 && (cnf1 == 0x00 || cnf1 == 0xFF)) {
-    // jalur SPI mentah tidak cocok dengan library -> tidak bisa memverifikasi lewat register
-    logBoth("[RX] PERINGATAN: baca register langsung tidak cocok, mode tidak bisa diverifikasi");
-    return true;
+// /bench <0|1> : 0 = LISTEN-ONLY (aman kendaraan), 1 = NORMAL-ACK (HANYA meja test). Tanpa argumen = lihat status.
+void handleBench(const char *argStr) {
+  if (argStr == NULL) {
+    logLine(benchMode ? "[CMD] BENCH=1 AKTIF (NORMAL-ACK, aktif di bus). Kirim /bench 0 untuk kembali"
+                      : "[CMD] BENCH=0 (LISTEN-ONLY, aman untuk kendaraan). Default setiap boot");
+    return;
   }
-  uint8_t opmod = mcpReadReg(REG_CANSTAT) >> 5;     // 0 = NORMAL, 3 = LISTEN-ONLY
-  if (opmod != RUN_OPMOD) {
-    char b[64];
-    snprintf(b, sizeof(b), "[RX] opmod=%u (harus %u = " RUN_MODE_TXT ")", (unsigned)opmod, (unsigned)RUN_OPMOD);
-    logBoth(b);
-    return false;
+  if (strcmp(argStr, "0") != 0 && strcmp(argStr, "1") != 0) {
+    logLine("[CMD] Format salah, contoh: /bench 1  (0=LISTEN-ONLY aman, 1=NORMAL-ACK hanya meja test)");
+    return;
   }
-  return true;
+  bool want = (argStr[0] == '1');
+  if (want == benchMode) {
+    logLine(want ? "[CMD] BENCH sudah 1 (NORMAL-ACK)" : "[CMD] BENCH sudah 0 (LISTEN-ONLY)");
+    return;
+  }
+
+  if (want) {
+    if (applyBusMode(true)) {
+      benchMode = true;
+      logLine("[CMD] BENCH=1 AKTIF: chip NORMAL (kirim ACK). Hanya meja test, JANGAN di kendaraan!");
+    } else {
+      logLine("[CMD] BENCH=1 GAGAL -> kembali ke LISTEN-ONLY");
+      if (!applyBusMode(false)) {
+        logLine("[CMD] GAGAL kembali ke LISTEN-ONLY -> reset demi keamanan bus");
+        while (1) { blinkError(); }   // watchdog reset -> boot di LISTEN-ONLY
+      }
+    }
+  } else {
+    if (applyBusMode(false)) {
+      benchMode = false;
+      logLine("[CMD] BENCH=0: LISTEN-ONLY (pasif, aman untuk kendaraan)");
+    } else {
+      logLine("[CMD] BENCH=0 GAGAL masuk LISTEN-ONLY -> reset demi keamanan bus");
+      while (1) { blinkError(); }     // watchdog reset -> boot di LISTEN-ONLY
+    }
+  }
 }
 
 // ================= Output =================
@@ -323,8 +396,10 @@ void allOff() {
   applyOutputs(false, false, false);
 }
 
+// Hanya dipakai di jalur error fatal (while(1)); watchdog sengaja dibiarkan reset.
 void blinkError() {
   digitalWrite(PIN_LED_RED, !digitalRead(PIN_LED_RED));
+  pumpLog();     // supaya pesan error sempat terkirim
   delay(300);
 }
 
@@ -339,7 +414,7 @@ uint32_t calcChecksum(const Config &c) {
 void saveConfig() {
   cfg.checksum = calcChecksum(cfg);
   EEPROM.put(CONFIG_ADDR, cfg);
-  logBoth("[CFG] Disimpan ke flash");
+  logLine("[CFG] Disimpan ke flash");
 }
 
 void loadConfig() {
@@ -356,13 +431,13 @@ void loadConfig() {
     cfg.rpmSafeBoundary = DEFAULT_SAFE;
     cfg.rpmDangerBoundary = DEFAULT_DANGER;
     saveConfig();
-    logBoth("[CFG] Flash kosong/rusak -> pakai default & simpan");
+    logLine("[CFG] Flash kosong/rusak -> pakai default & simpan");
   } else {
-    logBoth("[CFG] Config dimuat dari flash");
+    logLine("[CFG] Config dimuat dari flash");
   }
 }
 
-// ================= Command Bluetooth =================
+// ================= Command =================
 bool streq(const char *a, const char *b) {
   while (*a && *b) {
     if (tolower((unsigned char)*a) != tolower((unsigned char)*b)) return false;
@@ -371,18 +446,23 @@ bool streq(const char *a, const char *b) {
   return *a == *b;
 }
 
-void pollBluetoothCommands() {
-  while (Serial2.available()) {
-    char c = Serial2.read();
+void pollCommands() {
+  for (uint8_t i = 0; i < NUM_PORTS; i++) pollPort(i);
+}
+
+void pollPort(uint8_t i) {
+  PortState &p = ports[i];
+  while (portAvail(i)) {
+    char c = portRead(i);
     if (c == '\r') continue;
     if (c == '\n') {
-      cmdBuffer[cmdLen] = '\0';
-      if (cmdLen > 0) handleCommand(cmdBuffer);
-      cmdLen = 0;
-    } else if (cmdLen < sizeof(cmdBuffer) - 1) {
-      cmdBuffer[cmdLen++] = c;
+      p.cmd[p.cmdLen] = '\0';
+      if (p.cmdLen > 0) handleCommand(p.cmd);
+      p.cmdLen = 0;
+    } else if (p.cmdLen < sizeof(p.cmd) - 1) {
+      p.cmd[p.cmdLen++] = c;
     } else {
-      cmdLen = 0; // overflow guard
+      p.cmdLen = 0; // overflow guard
     }
   }
 }
@@ -402,23 +482,25 @@ void handleCommand(char *line) {
     handleSetBuzzer(argStr);
   } else if (streq(cmd, "/ShowRpm")) {
     handleShowRpm(argStr);
+  } else if (streq(cmd, "/bench") || streq(cmd, "bench")) {
+    handleBench(argStr);
   } else if (streq(cmd, "/status")) {
     printStatus();
   } else {
-    char buf[64];
-    snprintf(buf, sizeof(buf), "[CMD] Ga dikenal: %s (ketik /help)", cmd);
-    logBoth(buf);
+    char b[64];
+    snprintf(b, sizeof(b), "[CMD] Ga dikenal: %.30s (ketik /help)", cmd);
+    logLine(b);
   }
 }
 
 void handleSetBoundary(bool isSafe, const char *argStr) {
   if (argStr == NULL) {
-    logBoth("[CMD] Format salah, contoh: /SetSafe 3000");
+    logLine("[CMD] Format salah, contoh: /SetSafe 3000");
     return;
   }
   float val = atof(argStr);
-  if (val <= 0) {
-    logBoth("[CMD] Nilai RPM harus > 0");
+  if (val <= 0 || val > 8000) {
+    logLine("[CMD] Nilai RPM harus 1 - 8000");
     return;
   }
 
@@ -426,7 +508,7 @@ void handleSetBoundary(bool isSafe, const char *argStr) {
   float newDanger = isSafe ? cfg.rpmDangerBoundary : val;
 
   if (newDanger <= newSafe) {
-    logBoth("[CMD] Ditolak: batas Danger harus lebih besar dari Safe");
+    logLine("[CMD] Ditolak: batas Danger harus lebih besar dari Safe");
     return;
   }
 
@@ -434,69 +516,92 @@ void handleSetBoundary(bool isSafe, const char *argStr) {
   cfg.rpmDangerBoundary = newDanger;
   saveConfig();
 
-  char buf[72];
-  snprintf(buf, sizeof(buf), "[CMD] OK: Safe/Caution=%.0f, Caution/Danger=%.0f",
-           cfg.rpmSafeBoundary, cfg.rpmDangerBoundary);
-  logBoth(buf);
+  char b[72];
+  snprintf(b, sizeof(b), "[CMD] OK: Safe/Caution=%lu, Caution/Danger=%lu",
+           toUL(cfg.rpmSafeBoundary), toUL(cfg.rpmDangerBoundary));
+  logLine(b);
 }
 
 void handleSetBuzzer(const char *argStr) {
   if (argStr == NULL || (strcmp(argStr, "0") != 0 && strcmp(argStr, "1") != 0)) {
-    logBoth("[CMD] Format salah, contoh: /SetBuzzerExt 1  (0=mati total, 1=ikut rules RPM)");
+    logLine("[CMD] Format salah, contoh: /SetBuzzerExt 1  (0=mati total, 1=ikut rules RPM)");
     return;
   }
   buzzerEnabled = (argStr[0] == '1');
-  char buf[64];
-  snprintf(buf, sizeof(buf), "[CMD] Buzzer %s", buzzerEnabled ? "AKTIF (ikut rules RPM)" : "MATI TOTAL");
-  logBoth(buf);
+  logLine(buzzerEnabled ? "[CMD] Buzzer AKTIF (ikut rules RPM)" : "[CMD] Buzzer MATI TOTAL");
 }
 
 void handleShowRpm(const char *argStr) {
   if (argStr == NULL || (strcmp(argStr, "0") != 0 && strcmp(argStr, "1") != 0)) {
-    logBoth("[CMD] Format salah, contoh: /ShowRpm 1  (0=senyap, 1=tampilin RPM max 2x/detik)");
+    logLine("[CMD] Format salah, contoh: /ShowRpm 1  (0=senyap, 1=tampilin RPM max 5x/detik)");
     return;
   }
   showRpmOnTerminal = (argStr[0] == '1');
-  char buf[56];
-  snprintf(buf, sizeof(buf), "[CMD] Tampilan RPM di terminal: %s", showRpmOnTerminal ? "ON" : "OFF");
-  logBoth(buf);
+  logLine(showRpmOnTerminal ? "[CMD] Tampilan RPM di terminal: ON" : "[CMD] Tampilan RPM di terminal: OFF");
 }
 
 void printHelp() {
-  logBoth("=== Daftar Command ===");
-  logBoth("/help               - tampilkan daftar command ini");
-  logBoth("/SetSafe <rpm>      - set batas Safe->Caution (alias /SetCaution)");
-  logBoth("/SetCaution <rpm>   - sama seperti /SetSafe");
-  logBoth("/SetDanger <rpm>    - set batas Caution->Danger");
-  logBoth("/SetBuzzerExt <0|1> - 0=mati total, 1=ikut rules RPM");
-  logBoth("/ShowRpm <0|1>      - 0=senyap, 1=tampilin RPM max 2x/detik (deteksi tetap jalan)");
-  logBoth("/status             - lihat config sekarang (bukan RPM live)");
+  logLine("=== Daftar Command ===");
+  logLine("/help               - tampilkan daftar command ini");
+  logLine("/SetSafe <rpm>      - set batas Safe->Caution (alias /SetCaution)");
+  logLine("/SetCaution <rpm>   - sama seperti /SetSafe");
+  logLine("/SetDanger <rpm>    - set batas Caution->Danger");
+  logLine("/SetBuzzerExt <0|1> - 0=mati total, 1=ikut rules RPM");
+  logLine("/ShowRpm <0|1>      - 0=senyap, 1=tampilin RPM max 5x/detik");
+  logLine("/bench <0|1>        - 0=LISTEN-ONLY (default tiap boot), 1=NORMAL-ACK (HANYA meja test)");
+  logLine("/status             - config + kondisi sekarang");
 }
 
 void printStatus() {
-  char saTxt[8];
-  if (RPM_SA_FILTER == 0xFFFF) strcpy(saTxt, "ANY");
-  else snprintf(saTxt, sizeof(saTxt), "0x%02X", (unsigned)RPM_SA_FILTER);
-
-  char buf[160];
-  snprintf(buf, sizeof(buf),
-    "[STATUS] Safe=%.0f Danger=%.0f BuzzerExt=%s ShowRpm=%s SA=%s EEC1invalid=%lu Mode=%s",
-    cfg.rpmSafeBoundary, cfg.rpmDangerBoundary,
+  char b[160];
+  snprintf(b, sizeof(b),
+    "[STATUS] Safe=%lu Danger=%lu BuzzerExt=%s ShowRpm=%s Mode=%s Sig=%s Rpm=%lu EEC1inv=%lu LogDrop=%lu",
+    toUL(cfg.rpmSafeBoundary), toUL(cfg.rpmDangerBoundary),
     buzzerEnabled ? "ON" : "OFF",
     showRpmOnTerminal ? "ON" : "OFF",
-    saTxt, (unsigned long)invalidRpmFrames, RUN_MODE_TXT);
-  logBoth(buf);
+    benchMode ? "NORMAL-ACK(BENCH)" : "LISTEN-ONLY",
+    signalLost ? "LOST" : "OK",
+    signalLost ? 0UL : toUL(lastRpm),
+    (unsigned long)invalidRpmFrames, (unsigned long)logDropped);
+  logLine(b);
 }
 
-// ================= Logging =================
-void logBoth(const char *s) {
-  Serial.println(s);
-  Serial2.println(s);
+// ================= Logging (non-blocking) =================
+static void pushLine(uint8_t i, const char *s) {
+  PortState &p = ports[i];
+  size_t need = strlen(s) + 2;                                         // + CR LF
+  size_t used = (p.head + LOG_BUF_SIZE - p.tail) % LOG_BUF_SIZE;
+  if (need > (size_t)(LOG_BUF_SIZE - 1) - used) { logDropped++; return; }
+  while (*s) { p.tx[p.head] = *s++; p.head = (p.head + 1) % LOG_BUF_SIZE; }
+  p.tx[p.head] = '\r'; p.head = (p.head + 1) % LOG_BUF_SIZE;
+  p.tx[p.head] = '\n'; p.head = (p.head + 1) % LOG_BUF_SIZE;
 }
 
-// Untuk log yang sering (RPM): kalau buffer TX Bluetooth belum cukup, lewati Serial2 daripada memblokir loop().
-void logBothLossy(const char *s) {
-  int need = (int)strlen(s) + 2;                       // + CR LF
-  if (Serial2.availableForWrite() >= need) Serial2.println(s);
-  Serial.println(s);
+// Kirim 1 baris ke semua port. Kalau buffer sebuah port tidak cukup, baris dibuang (dihitung di LogDrop), TIDAK menunggu.
+void logLine(const char *s) {
+  for (uint8_t i = 0; i < NUM_PORTS; i++) pushLine(i, s);
+}
+
+// Dipanggil tiap loop(): kirim ke UART hanya sebanyak yang muat di buffer TX hardware, tanpa menunggu.
+void pumpLog() {
+  for (uint8_t i = 0; i < NUM_PORTS; i++) {
+    PortState &p = ports[i];
+    while (p.tail != p.head && portTxFree(i) > 0) {
+      portWrite(i, (uint8_t)p.tx[p.tail]);
+      p.tail = (p.tail + 1) % LOG_BUF_SIZE;
+    }
+  }
+}
+
+// Hanya untuk boot: kosongkan antrean log dengan menunggu (maks maxMs) supaya teks boot pasti keluar
+// walau setup() macet/reset sesudahnya. Di loop() TIDAK dipakai (tetap non-blocking).
+void flushLog(unsigned long maxMs) {
+  unsigned long t0 = millis();
+  while (millis() - t0 < maxMs) {
+    bool pending = false;
+    for (uint8_t i = 0; i < NUM_PORTS; i++) if (ports[i].tail != ports[i].head) pending = true;
+    if (!pending) break;
+    pumpLog();
+    IWatchdog.reload();
+  }
 }
