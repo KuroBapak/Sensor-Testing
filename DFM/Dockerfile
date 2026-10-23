@@ -27,8 +27,22 @@ RUN npm ci --no-audit --no-fund
 # Copy the rest of the application
 COPY . .
 
-# Build frontend assets (Vite will run php artisan wayfinder:generate automatically)
-RUN npm run build
+# VITE_* values are compiled into the JS bundle, so they must be passed at
+# build time (--build-arg / CI), not as runtime environment variables.
+ARG VITE_APP_NAME=DFM
+ARG VITE_BROADCAST_CONNECTION=log
+ARG VITE_REVERB_APP_KEY=
+ARG VITE_REVERB_HOST=
+ARG VITE_REVERB_PORT=443
+ARG VITE_REVERB_SCHEME=https
+
+# Build frontend assets (Vite will run php artisan wayfinder:generate automatically).
+# Empty VITE_* args are unset first: an empty string would defeat the "?? default"
+# fallbacks in resources/js/lib/echo.ts.
+RUN for v in VITE_APP_NAME VITE_BROADCAST_CONNECTION VITE_REVERB_APP_KEY VITE_REVERB_HOST VITE_REVERB_PORT VITE_REVERB_SCHEME; do \
+        eval "[ -n \"\$$v\" ] || unset $v"; \
+    done; \
+    npm run build
 
 # Remove node_modules to keep the production image clean
 RUN rm -rf node_modules

@@ -1,15 +1,20 @@
 # =============================================================
 # DFM — Docker Compose (Server Kurobapak / Coolify)
 # Laravel 13 + Inertia React Application
-# Database is handled externally by Coolify.
+#
+# One immutable image, four roles: web, queue worker, Reverb, scheduler.
+# The database is external (managed by Coolify), so no DB volume here.
+# All variables are set in the Coolify dashboard (Environment Variables).
+#
+# Pin / roll back a release: set APP_IMAGE_TAG=sha-<short-commit> in Coolify
+# and redeploy. Leave it unset to follow :latest.
 # =============================================================
 
 services:
   dfm-app:
-    # build: .
-    # Use GitHub Container Registry:
-    image: ghcr.io/kurobapak/sensor-testing:latest
+    image: ghcr.io/kurobapak/sensor-testing:${APP_IMAGE_TAG:-latest}
     pull_policy: always
+    restart: unless-stopped
     expose:
       - "8000"
     networks:
@@ -17,16 +22,16 @@ services:
     env_file:
       - .env
     environment:
-      # All environment variables should be defined in the Coolify Dashboard
-      # "Environment Variables" section instead of an .env file.
-      # DO NOT hardcode APP_ENV and APP_DEBUG here - let Coolify manage them
       APP_ENV: ${APP_ENV:-production}
       APP_DEBUG: ${APP_DEBUG:-false}
+      # Publish broadcasts to Reverb over the internal network. The public
+      # host that browsers use is baked in at build time (VITE_REVERB_*).
+      REVERB_HOST: dfm-reverb
+      REVERB_PORT: "8080"
+      REVERB_SCHEME: http
     volumes:
-      # Persist Laravel storage (logs, cache, uploads) across redeployments
+      # Logs and uploads survive redeployments.
       - storage:/app/storage
-      # Persist SQLite database if using SQLite
-      - database:/app/database
     healthcheck:
       test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:8000/up || exit 1"]
       interval: 30s
@@ -34,29 +39,77 @@ services:
       retries: 3
       start_period: 40s
 
+  dfm-queue:
+    image: ghcr.io/kurobapak/sensor-testing:${APP_IMAGE_TAG:-latest}
+    pull_policy: always
+    restart: unless-stopped
+    # Must not run as root: root would create root-owned log files in the
+    # shared storage volume that php-fpm (www-data) cannot write to.
+    user: www-data
+    command: ["php", "artisan", "queue:work", "--sleep=3", "--tries=3", "--timeout=90", "--max-time=3600"]
+    stop_grace_period: 100s
+    networks:
+      - coolify
+    env_file:
+      - .env
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      REVERB_HOST: dfm-reverb
+      REVERB_PORT: "8080"
+      REVERB_SCHEME: http
+    volumes:
+      - storage:/app/storage
+
+  dfm-reverb:
+    image: ghcr.io/kurobapak/sensor-testing:${APP_IMAGE_TAG:-latest}
+    pull_policy: always
+    restart: unless-stopped
+    user: www-data
+    command: ["php", "artisan", "reverb:start", "--host=0.0.0.0", "--port=8080"]
+    # Give this service its own (sub)domain in the Coolify UI, port 8080.
+    expose:
+      - "8080"
+    networks:
+      - coolify
+    env_file:
+      - .env
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      APP_DEBUG: ${APP_DEBUG:-false}
+    volumes:
+      - storage:/app/storage
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:8080/up || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # Run exactly one scheduler. Nothing is registered with Laravel's
+  # scheduler yet (routes/console.php); it is ready for when something is.
+  dfm-scheduler:
+    image: ghcr.io/kurobapak/sensor-testing:${APP_IMAGE_TAG:-latest}
+    pull_policy: always
+    restart: unless-stopped
+    user: www-data
+    command: ["php", "artisan", "schedule:work"]
+    networks:
+      - coolify
+    env_file:
+      - .env
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      REVERB_HOST: dfm-reverb
+      REVERB_PORT: "8080"
+      REVERB_SCHEME: http
+    volumes:
+      - storage:/app/storage
+
 networks:
   coolify:
     external: true
 
 volumes:
   storage:
-  database:
-
-# =============================================================
-# CARA BUILD DAN PUSH IMAGE (MENGGUNAKAN DOCKER):
-# =============================================================
-# 1. Build image dari Dockerfile:
-#    docker build --no-cache -t ghcr.io/kurobapak/dfm-app:latest -f Dockerfile .
-#
-# 2. Setelah build selesai, push ke GitHub Container Registry:
-#    docker push ghcr.io/kurobapak/dfm-app:latest
-#
-# 3. Coolify akan otomatis pull image terbaru saat deploy
-# =============================================================
-#
-# CATATAN:
-# - Pastikan .env sudah dikonfigurasi di Coolify
-# - Database eksternal (MySQL/PostgreSQL) harus sudah tersedia
-# - Untuk migrasi otomatis, tambahkan command di Coolify:
-#   php artisan migrate --force
-# =============================================================

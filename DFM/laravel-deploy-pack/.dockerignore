@@ -1,0 +1,61 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Dependencies (installed inside the image)
+node_modules
+vendor
+
+# Secrets / environment - never bake these into an image
+.env
+.env.*
+
+# Build artifacts rebuilt inside the image
+public/hot
+public/build
+public/storage
+bootstrap/cache/*.php
+bootstrap/ssr
+
+# Runtime data (the Dockerfile recreates the empty directories)
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/app/*
+storage/pail
+*.log
+database/*.sqlite
+
+# Tests and tooling
+tests
+.phpunit.cache
+.phpunit.result.cache
+coverage
+phpunit.xml
+phpstan.neon
+
+# Editors / OS
+.idea
+.vscode
+.zed
+.DS_Store
+Thumbs.db
+*.swp
+
+# AI tooling
+.claude
+.cursor
+.agents
+.mcp.json
+AGENTS.md
+CLAUDE.md
+boost.json
+
+# CI / deploy files themselves
+.github
+Dockerfile
+docker-compose*.yaml
+docker-compose*.yml
+*.md
