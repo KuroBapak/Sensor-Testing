@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
+use Database\Factories\TankReadingFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
 /**
  * Percentages are of the tank capacity. total_pct is always fuel_pct + water_pct.
  *
  * @property int $id
  * @property int $tank_id
- * @property Carbon $read_at
+ * @property CarbonImmutable $read_at
  * @property float $total_pct
  * @property float $fuel_pct
  * @property float $water_pct
@@ -21,6 +22,7 @@ use Illuminate\Support\Carbon;
 #[Fillable(['tank_id', 'read_at', 'total_pct', 'fuel_pct', 'water_pct'])]
 class TankReading extends Model
 {
+    /** @use HasFactory<TankReadingFactory> */
     use HasFactory;
 
     public $timestamps = false;

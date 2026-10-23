@@ -4,15 +4,17 @@ namespace App\Models;
 
 use App\Enums\CardCategory;
 use App\Enums\Validity;
+use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
+use Database\Factories\QrCardFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
 
 /**
  * One identity for one physical vehicle. There is no quota column: the quota is
@@ -25,12 +27,19 @@ use Illuminate\Support\Carbon;
  * @property string $plate_number
  * @property Validity $validity
  * @property int|null $valid_days
- * @property Carbon $issued_at
- * @property Carbon|null $expires_at
+ * @property CarbonImmutable $issued_at
+ * @property CarbonImmutable|null $expires_at
  * @property bool $reset_enabled
  * @property int|null $created_by
- * @property-read float|null $quota Present on queries built by QuotaService
- * @property-read float|null $remaining Present on queries built by QuotaService
+ * @property-read string $vehicle_type_name Computed columns below exist on queries built by QuotaService::query()
+ * @property-read float $quota
+ * @property-read float $max_capacity
+ * @property-read float $used_period
+ * @property-read float $adj_period
+ * @property-read float $used_total
+ * @property-read float $adj_total
+ * @property-read float $remaining
+ * @property-read float $used_in_period Added by UsageService::cardRows()
  */
 #[Fillable([
     'token', 'category', 'vehicle_type_id', 'plate_number', 'validity',
@@ -38,6 +47,7 @@ use Illuminate\Support\Carbon;
 ])]
 class QrCard extends Model
 {
+    /** @use HasFactory<QrCardFactory> */
     use HasFactory, SoftDeletes;
 
     protected function casts(): array
@@ -96,7 +106,8 @@ class QrCard extends Model
      *
      * @param  Builder<QrCard>  $query
      */
-    public function scopeNotExpired(Builder $query, ?CarbonInterface $now = null): void
+    #[Scope]
+    protected function notExpired(Builder $query, ?CarbonInterface $now = null): void
     {
         $query->where(function (Builder $q) use ($now) {
             $q->whereNull($this->qualifyColumn('expires_at'))

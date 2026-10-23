@@ -2,19 +2,20 @@ import { Head } from '@inertiajs/react';
 import AppearanceTabs from '@/components/appearance-tabs';
 import Heading from '@/components/heading';
 import { edit as editAppearance } from '@/routes/appearance';
+import { id } from '@/lang/id';
 
 export default function Appearance() {
     return (
         <>
-            <Head title="Appearance settings" />
+            <Head title={id.account.appearanceTitle} />
 
-            <h1 className="sr-only">Appearance settings</h1>
+            <h1 className="sr-only">{id.account.appearanceTitle}</h1>
 
             <div className="space-y-6">
                 <Heading
                     variant="small"
-                    title="Appearance settings"
-                    description="Update the appearance settings for your account"
+                    title={id.account.appearanceTitle}
+                    description={id.account.appearanceDescription}
                 />
                 <AppearanceTabs />
             </div>
@@ -25,7 +26,7 @@ export default function Appearance() {
 Appearance.layout = {
     breadcrumbs: [
         {
-            title: 'Appearance settings',
+            title: id.account.appearanceTitle,
             href: editAppearance(),
         },
     ],

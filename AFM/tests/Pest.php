@@ -1,6 +1,11 @@
 <?php
 
+use App\Models\User;
+use App\Services\SettingsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Tests\TestCase;
 
 /*
@@ -22,11 +27,6 @@ pest()->extend(TestCase::class)
 |--------------------------------------------------------------------------
 | Expectations
 |--------------------------------------------------------------------------
-|
-| When you're writing tests, you often need to check that values meet certain conditions. The
-| "expect()" function gives you access to a set of "expectations" methods that you can use
-| to assert different things. Of course, you may extend the Expectation API at any time.
-|
 */
 
 expect()->extend('toBeOne', function () {
@@ -38,13 +38,43 @@ expect()->extend('toBeOne', function () {
 | Functions
 |--------------------------------------------------------------------------
 |
-| While Pest is very powerful out-of-the-box, you may have some testing code specific to your
-| project that you don't want to repeat in every file. Here you can also expose helpers as
-| global functions to help you to reduce the number of lines of code in your test files.
+| Tests use factories, not the demo seeder, so results never depend on dummy data.
 |
 */
 
-function something()
+function admin(): User
 {
-    // ..
+    return User::factory()->admin()->create();
+}
+
+function superAdmin(): User
+{
+    return User::factory()->superAdmin()->create();
+}
+
+/** Change global settings the way the settings page does. */
+function setSettings(array $values): void
+{
+    app(SettingsService::class)->update($values);
+}
+
+/**
+ * A real .xlsx upload with several sheets, e.g. ['Kendaraan' => $rows, 'Kartu QR' => $rows].
+ * The first row of every sheet is its header.
+ */
+function workbookUpload(array $sheets, string $name = 'batch-add.xlsx'): UploadedFile
+{
+    $spreadsheet = new Spreadsheet;
+    $spreadsheet->removeSheetByIndex(0);
+
+    foreach ($sheets as $title => $rows) {
+        $sheet = $spreadsheet->createSheet();
+        $sheet->setTitle($title);
+        $sheet->fromArray($rows);
+    }
+
+    $path = tempnam(sys_get_temp_dir(), 'xlsx');
+    (new Xlsx($spreadsheet))->save($path);
+
+    return new UploadedFile($path, $name, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', null, true);
 }

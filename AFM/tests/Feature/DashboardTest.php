@@ -7,10 +7,8 @@ test('guests are redirected to the login page', function () {
     $response->assertRedirect(route('login'));
 });
 
-test('authenticated users can visit the dashboard', function () {
-    $user = User::factory()->create();
-    $this->actingAs($user);
+test('the dashboard sends authenticated users to the main tank view', function () {
+    $this->actingAs(User::factory()->create());
 
-    $response = $this->get(route('dashboard'));
-    $response->assertOk();
+    $this->get(route('dashboard'))->assertRedirect(route('tank.index'));
 });

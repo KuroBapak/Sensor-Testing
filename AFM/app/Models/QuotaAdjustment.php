@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
+use Database\Factories\QuotaAdjustmentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
 /**
  * A manual top-up of a card. The top-up log.
@@ -16,11 +17,12 @@ use Illuminate\Support\Carbon;
  * @property float $liters
  * @property string|null $note
  * @property int|null $user_id
- * @property Carbon $created_at
+ * @property CarbonImmutable $created_at
  */
 #[Fillable(['qr_card_id', 'liters', 'note', 'user_id', 'created_at'])]
 class QuotaAdjustment extends Model
 {
+    /** @use HasFactory<QuotaAdjustmentFactory> */
     use HasFactory;
 
     public const UPDATED_AT = null;
