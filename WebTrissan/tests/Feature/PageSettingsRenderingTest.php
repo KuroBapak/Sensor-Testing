@@ -81,7 +81,7 @@ test('home page renders clean fallbacks when page setting is empty', function ()
     $response = $this->get(route('home'));
 
     $response->assertOk();
-    $response->assertSee('TENTANG PT. TRISSAN');
+    $response->assertSee('TENTANG PT. APEX INDUSTRIAL ENGINEERING');
     $response->assertSee('Dedikasi Rekayasa Presisi &amp; Standar Manufaktur Kelas Dunia', false);
     $response->assertSee('Pelajari Profil Lengkap');
 });
@@ -195,7 +195,5 @@ test('about page renders dynamic seo metadata from page settings', function () {
 });
 
 test('public storage symlink exists and points to storage app public', function () {
-    $publicStorage = public_path('storage');
-    expect(file_exists($publicStorage))->toBeTrue()
-        ->and(is_link($publicStorage))->toBeTrue();
+    expect(realpath(public_path('storage')))->toBe(realpath(storage_path('app/public')));
 });

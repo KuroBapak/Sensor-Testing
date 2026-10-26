@@ -20,7 +20,6 @@ test('home page returns successful response with expected data', function () {
         'serviceClusters',
         'services',
         'featuredWorks',
-        'corporateAccreditations',
     ]);
 });
 
@@ -34,7 +33,6 @@ test('works page returns successful response with expected data', function () {
         'pageSettings',
         'services',
         'works',
-        'featuredWorks',
     ]);
 });
 
@@ -48,6 +46,8 @@ test('portfolio page returns successful response with expected data', function (
         'pageSettings',
         'portfolioCategories',
         'portfolioItems',
+        'specialtyClusters',
+        'personnel',
     ]);
 });
 
@@ -74,8 +74,6 @@ test('about page returns successful response with expected data', function () {
         'globalSettings',
         'pageSettings',
         'aboutCompany',
-        'specialtyClusters',
-        'personnel',
     ]);
 });
 
@@ -104,4 +102,27 @@ test('contact form validates required fields', function () {
     $response = $this->post(route('contact.store'), []);
 
     $response->assertSessionHasErrors(['name', 'email', 'message']);
+});
+
+test('contact form silently drops submissions that fill the honeypot field', function () {
+    $response = $this->post(route('contact.store'), [
+        'name' => 'Spam Bot',
+        'email' => 'bot@example.com',
+        'message' => 'Buy cheap links',
+        'website' => 'http://spam.example.com',
+    ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success');
+    $this->assertDatabaseMissing('contact_submissions', ['email' => 'bot@example.com']);
+});
+
+test('contact form returns 429 after five submissions in a minute', function () {
+    $payload = ['name' => 'John Doe', 'email' => 'john@example.com', 'message' => 'Hello'];
+
+    foreach (range(1, 5) as $attempt) {
+        $this->post(route('contact.store'), $payload)->assertRedirect();
+    }
+
+    $this->post(route('contact.store'), $payload)->assertStatus(429);
 });

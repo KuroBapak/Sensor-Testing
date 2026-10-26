@@ -17,15 +17,15 @@ class AboutCompanySeeder extends Seeder
         $about->hero_badge = 'Rekayasa Presisi & Fabrikasi Berstandar Global';
         $about->hero_title = 'Membangun Keunggulan Industri Berkelanjutan Sejak 1998';
         $about->hero_description = "PT Apex Industrial Engineering berawal dari bengkel rekayasa presisi kecil dan kini telah berevolusi menjadi manufaktur tier-1 pilihan sektor kedirgantaraan, minyak & gas, dan otomasi skala besar.\n\nKami mengintegrasikan permesinan CNC 5-axis ultra presisi, fabrikasi bejana tekan bersertifikat ASME, serta sistem mekatronika terdistribusi untuk menghasilkan produk berkeandalan tinggi.";
-        $about->hero_image = '/images/about-hero.jpg';
+        $about->hero_image = SeedMedia::image('about-hero');
         $about->image_overlay = [
             'plant_badge' => 'PLANT 01 • JABABEKA V (12.000 m²)',
             'caption_title' => 'Apex Advanced Manufacturing Facility',
             'caption_subtitle' => 'Cikarang Industrial Estate, Bekasi',
             'tolerance_chip' => 'Toleransi ±0.002mm',
         ];
-        $about->company_profile_pdf = '/files/Apex_Company_Profile.pdf';
-        $about->partners_image = '/images/partners-banner.png';
+        $about->company_profile_pdf = SeedMedia::pdf('Apex_Company_Profile');
+        $about->partners_image = SeedMedia::image('partners-banner');
 
         $about->vision_mission_values = $this->visionMissionValues();
         $about->facilities = $this->facilities();
@@ -77,7 +77,7 @@ class AboutCompanySeeder extends Seeder
     {
         return [
             [
-                'facility_image' => '/images/facility-1.jpg',
+                'facility_image' => SeedMedia::image('facility-1'),
                 'facility_tag' => 'BAY 01 • MACHINING',
                 'facility_title' => '5-Axis CNC Precision Machining Center',
                 'facility_description' => 'Pusat permesinan 5-axis multiaxis berkapasitas tinggi untuk komponen kedirgantaraan, turbin, dan mold otomotif berakurasi mikron.',
@@ -86,7 +86,7 @@ class AboutCompanySeeder extends Seeder
                 'sort_order' => 1,
             ],
             [
-                'facility_image' => '/images/facility-2.jpg',
+                'facility_image' => SeedMedia::image('facility-2'),
                 'facility_tag' => 'BAY 02 • FABRICATION',
                 'facility_title' => 'Heavy Welding & Pressure Vessel Bay',
                 'facility_description' => 'Fasilitas fabrikasi bejana tekan tersertifikasi ASME dengan sistem pengelasan otomatis SAW, GTAW, dan cladding Inconel.',
@@ -95,7 +95,7 @@ class AboutCompanySeeder extends Seeder
                 'sort_order' => 2,
             ],
             [
-                'facility_image' => '/images/facility-3.jpg',
+                'facility_image' => SeedMedia::image('facility-3'),
                 'facility_tag' => 'BAY 03 • QUALITY QC',
                 'facility_title' => 'Temperature Controlled Metrology Lab',
                 'facility_description' => 'Laboratorium metrologi ber-AC konstan 20°C dilengkapi Zeiss CMM 3D scanning dan pengujian NDT ultrasonik level II/III.',
@@ -159,7 +159,7 @@ class AboutCompanySeeder extends Seeder
             'ceo' => [
                 'name' => 'Ir. Hendra Wijaya, M.Sc.',
                 'position' => 'Chief Executive Officer',
-                'photo' => '/images/team-ceo.jpg',
+                'photo' => SeedMedia::image('team-ceo'),
                 'experience_tag' => '28+ Thn Pengalaman Dirgantara & Manufaktur',
             ],
             'general_manager' => [

@@ -21,7 +21,7 @@
 <!-- Badge & Title -->
 <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-lg">
 <div class="">
-<h1 class="font-headline-lg text-headline-lg lg:text-[44px] text-primary uppercase tracking-tight leading-tight">{{ $pageSettings?->hero_title ?? 'DAFTAR PRODUK & HASIL PENGERJAAN (WORKS)' }}</h1>
+<h1 class="font-headline-lg text-[26px] sm:text-headline-lg lg:text-[44px] text-primary uppercase tracking-tight leading-tight">{{ $pageSettings?->hero_title ?? 'DAFTAR PRODUK & HASIL PENGERJAAN (WORKS)' }}</h1>
 <p class="font-body-lg text-body-lg text-on-surface-variant mt-space-sm leading-relaxed" data-stitch-orig-opacity="0">{{ $pageSettings?->hero_subtitle ?? 'Katalog produk rekayasa presisi dan hasil pengerjaan manufaktur permesinan CNC 5-sumbu, fabrikasi bejana tekan dan pengelasan berstandar ASME, serta sistem perakitan mekatronika industri dari PT Apex Industrial Engineering.' }}</p>
 </div>
 </div>
@@ -45,7 +45,7 @@
 </div>
 </section>
 <!-- Interactive Search, Filter Bar & Toolbar -->
-<section class="w-full bg-surface py-space-lg sticky top-20 z-30 shadow-[0_4px_12px_rgba(0,0,0,0.03)] backdrop-blur-md bg-surface/95">
+<section class="w-full bg-surface py-3 md:py-space-lg md:sticky md:top-20 z-30 shadow-[0_4px_12px_rgba(0,0,0,0.03)] backdrop-blur-md bg-surface/95">
 <div class="max-w-[1360px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop">
 <div class="flex flex-col gap-space-md">
 <!-- Top Row: Horizontal Carousel Filter Tabs with Arrow Buttons -->
@@ -55,58 +55,16 @@
 </button>
 <!-- Carousel Scrollable Container -->
 <div class="flex items-center gap-space-xs overflow-x-auto scroll-smooth py-1 scrollbar-none flex-1" id="filterTabGroup" style="-ms-overflow-style:none; scrollbar-width:none;">
-<button class="filter-tab-btn active-tab shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-primary-container text-on-primary whitespace-nowrap transition-all shadow-sm" data-filter="all">
+<button class="filter-tab-btn active-tab shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-primary-container text-on-primary whitespace-nowrap transition-all shadow-sm" data-filter="all" data-label="Semua Layanan (ALL WORKS)">
 <span class="">Semua Layanan (ALL WORKS)</span>
-<span class="tab-count px-1.5 py-0.5 text-[11px] rounded bg-on-primary/20 text-on-primary font-bold">9</span>
+<span class="tab-count px-1.5 py-0.5 text-[11px] rounded bg-on-primary/20 text-on-primary font-bold">{{ $works->count() }}</span>
 </button>
-<button class="filter-tab-btn shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all" data-filter="mechanical-electrical">
-<span class="material-symbols-outlined text-sm">precision_manufacturing</span>
-<span class="">Mechanical and Electrical</span>
+@foreach($services as $service)
+<button class="filter-tab-btn shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all" data-filter="{{ $service->slug }}" data-label="{{ $service->service_title }}">
+<span class="material-symbols-outlined text-sm">{{ $service->service_icon ?: 'category' }}</span>
+<span class="">{{ $service->service_title }}</span>
 </button>
-<button class="filter-tab-btn shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all" data-filter="digital-automation">
-<span class="material-symbols-outlined text-sm">smart_toy</span>
-<span class="">Digital Automation and Controlling</span>
-</button>
-<button class="filter-tab-btn shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all" data-filter="jigs-fixtures">
-<span class="material-symbols-outlined text-sm">architecture</span>
-<span class="">Jigs and Fixtures</span>
-</button>
-<button class="filter-tab-btn shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all" data-filter="unload-robot-chucking">
-<span class="material-symbols-outlined text-sm">hardware</span>
-<span class="">Unload Robot Chucking</span>
-</button>
-<button class="filter-tab-btn shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all" data-filter="material-handling">
-<span class="material-symbols-outlined text-sm">forklift</span>
-<span class="">Material Handling</span>
-</button>
-<button class="filter-tab-btn shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all" data-filter="distribution-panel">
-<span class="material-symbols-outlined text-sm">developer_board</span>
-<span class="">Distribution Panel Assembly, Capacitor Bank, PLC, HMI</span>
-</button>
-<button class="filter-tab-btn shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all" data-filter="electrical-installation">
-<span class="material-symbols-outlined text-sm">electrical_services</span>
-<span class="">Electrical Installation and Machine Maintenance</span>
-</button>
-<button class="filter-tab-btn shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all" data-filter="electrical-equipment-supplier">
-<span class="material-symbols-outlined text-sm">inventory_2</span>
-<span class="">Industrial Electrical Equipment Supplier</span>
-</button>
-<button class="filter-tab-btn shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all" data-filter="grease-system">
-<span class="material-symbols-outlined text-sm">oil_barrel</span>
-<span class="">Automatically Grease System For Loader Part</span>
-</button>
-<button class="filter-tab-btn shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all" data-filter="general-supplier">
-<span class="material-symbols-outlined text-sm">conveyor_belt</span>
-<span class="">General Supplier Of Industrial Machinery, Spare Parts, Accessories, Equipment, Construction Material, And Others Goods</span>
-</button>
-<button class="filter-tab-btn shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all" data-filter="special-construction">
-<span class="material-symbols-outlined text-sm">construction</span>
-<span class="">Other Special Construction (YTDL)</span>
-</button>
-<button class="filter-tab-btn shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all" data-filter="labor-provision">
-<span class="material-symbols-outlined text-sm">badge</span>
-<span class="">Selection, Placement And Provision Activities domestic Part-time Labor</span>
-</button>
+@endforeach
 </div>
 <button aria-label="Scroll Tabs Kanan" class="shrink-0 w-9 h-9 ml-2 flex items-center justify-center rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors shadow-sm focus:outline-none" id="tabScrollRightBtn" type="button">
 <span class="material-symbols-outlined text-lg">chevron_right</span>
@@ -139,7 +97,7 @@
 <span class="material-symbols-outlined text-base">tune</span>
 <span class="" id="activeFilterLabel">Kategori Aktif: Semua Layanan (ALL WORKS)</span>
 <span class="text-outline">/</span>
-<span class="font-semibold text-primary" id="resultsCountNotice">9 Proyek Aktif Terdaftar</span>
+<span class="font-semibold text-primary" id="resultsCountNotice">{{ $works->count() }} Proyek Aktif Terdaftar</span>
 </div>
 <div class="hidden sm:flex items-center gap-1 text-label-sm font-label-sm text-outline">
 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
@@ -147,7 +105,51 @@
 </div>
 </div>
 <!-- Projects Grid (3 columns on desktop) -->
-<div class="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-gutter-desktop sm:grid-cols-2" id="projectCatalogGrid"><!-- Card 1 --><article class="project-card group flex flex-col bg-surface-container-lowest rounded overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" data-application="Aero-Propulsion Gearbox Assembly" data-batch="1,200 Units / Cycle" data-category="mechanical-electrical" data-category-label="Mechanical and Electrical" data-desc="Ultra-precision 5-axis CNC milling &amp; micro-spline cutting for aviation grade titanium alloy with 0.002mm tolerance and microscopic surface finish." data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuA9QHCsPaBx7BtHu4ZFZ1xHR-uK_HhMtDwpcKl4mQ0FBhnh_9_XEBmRWTh9E4GRu97C40gpJ2Hs4IIlHtszxMbfuoW9wG92J7QY6LJoAfGxeXz2MEQ8Ty7MW4T9RVWS5eI2vn5oeAnTcLzIQqxUtUNcns53Xhs9ZcdrV9WwfUcPDmzdNqKrEldfV3cmHdcrDL1md5oVaowBpBx7kZMtYlcmqZR0R8ajiP1A6iZPN0dfNcx1vnJlzq7m" data-img-alt="Turbine Gearbox Shafts" data-inspection="Full CMM contact probe validation, automated surface roughness test Ra 0.2 µm." data-material="Ti-6Al-4V Aerospace Grade Titanium" data-scale="1200" data-sector="AEROSPACE TIER-1" data-serial="SERIES-AG-8840" data-specs="Ti-6Al-4V AS9100D titanium aerospace mechanical electrical" data-standards="AS9100D, ISO 9001:2015" data-title="Turbine Gearbox Shafts" data-tolerance="0.002mm Max Deviation"><div class="relative h-32 sm:h-44 md:h-60 w-full overflow-hidden bg-surface-container-high"><img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Turbine Gearbox Shafts" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9QHCsPaBx7BtHu4ZFZ1xHR-uK_HhMtDwpcKl4mQ0FBhnh_9_XEBmRWTh9E4GRu97C40gpJ2Hs4IIlHtszxMbfuoW9wG92J7QY6LJoAfGxeXz2MEQ8Ty7MW4T9RVWS5eI2vn5oeAnTcLzIQqxUtUNcns53Xhs9ZcdrV9WwfUcPDmzdNqKrEldfV3cmHdcrDL1md5oVaowBpBx7kZMtYlcmqZR0R8ajiP1A6iZPN0dfNcx1vnJlzq7m"><div class="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 md:px-2.5 md:py-1 bg-primary text-on-primary rounded font-label-caps text-[9px] md:text-label-caps tracking-wider shadow"><span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span><span class="">MECHANICAL</span></div><div class="absolute bottom-2 right-2 px-1.5 py-0.5 bg-surface/90 backdrop-blur-sm text-on-surface rounded font-label-caps text-[9px] md:text-[11px] font-semibold">0.002 mm</div></div><div class="p-2.5 md:p-space-lg flex-1 flex flex-col justify-between"><div><div class="flex items-center justify-between text-secondary font-label-caps text-[10px] md:text-label-caps mb-0.5 md:mb-1"><span class="">SERIES-AG-8840</span><span class="hidden sm:inline">AEROSPACE T1</span></div><h2 class="font-headline-sm text-xs sm:text-base md:text-headline-sm text-primary uppercase font-bold group-hover:text-secondary transition-colors line-clamp-1 sm:line-clamp-none">Turbine Gearbox Shafts</h2><p class="hidden sm:block font-body-sm text-body-sm text-on-surface-variant mt-space-xs line-clamp-2 leading-relaxed">Ultra-precision 5-axis CNC milling &amp; micro-spline cutting for aviation grade titanium alloy.</p></div><div class="mt-2 md:mt-space-md pt-2 md:pt-space-md border-t border-surface-container-low"><div class="flex flex-wrap gap-1 mb-1.5 md:mb-space-md"><span class="px-1.5 py-0.5 bg-surface-container-low text-secondary font-label-sm text-[10px] md:text-[12px] rounded">Batch 1.2k</span><span class="px-1.5 py-0.5 bg-primary-container/10 text-primary-container font-label-sm text-[10px] md:text-[12px] font-medium rounded">AS9100D</span></div><button class="open-modal-trigger w-full inline-flex items-center justify-center gap-1 px-2 py-1.5 md:py-2.5 bg-surface-container text-on-surface hover:bg-primary hover:text-on-primary font-label-md text-[11px] md:text-label-md rounded transition-all" type="button"><span class="">Detail</span><span class="material-symbols-outlined text-sm md:text-base">arrow_forward</span></button></div></div></article><!-- Card 2 --><article class="project-card group flex flex-col bg-surface-container-lowest rounded overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" data-application="Deepwater Offshore Production Riser" data-batch="320 Spool Units" data-category="special-construction" data-category-label="Other Special Construction (YTDL)" data-desc="Continuous automated orbital multi-pass TIG welding process specifically engineered for high-pressure subsea petrochemical transport lines, featuring zero-defect radiographic inspection (NDT 100%), full ultrasonic volumetric testing, and rigorous extreme hydrostatic qualification proofing." data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuCd6fOm9bTBEqAbXULiY0NXexyK-vWLrUZg_pdI1LgW2RRACqSUKovf17DgLsb67ItNZMBohq5D5shjhILlanvW-rlHMDAC2WPG03GrvMfVXJoS3Wr8tSAXS7vq8B2GeS5ObSdNKF9094SGdgwrsdIIsv69D5ktJOaPL0UoZnwCLj1iCCHJqujNlurC0DLy0pFjcjwVs5tsL0cPuA-fnVY0-uIqTqZb0skB4-WuncKBocUqOJ0Lvpvo" data-img-alt="High-Pressure Pipe Hubs" data-inspection="Radiographic testing Level II, Charpy impact toughness testing at -46°C, Hydrostatic proof testing to 22,500 PSI." data-material="Inconel 625 Clad + ASTM A694 F65" data-scale="800" data-sector="SUBSEA PETROCHEM" data-serial="WELD-SPEC-IX-92" data-specs="orbital tig subsea petrochemical ASME radiographic special construction" data-standards="ASME Sec IX, API 6A Spec" data-title="High-Pressure Pipe Hubs" data-tolerance="NDT Zero Porosity (0.05mm Max)"><div class="relative h-32 sm:h-44 md:h-60 w-full overflow-hidden bg-surface-container-high"><img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="High-Pressure Pipe Hubs" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCd6fOm9bTBEqAbXULiY0NXexyK-vWLrUZg_pdI1LgW2RRACqSUKovf17DgLsb67ItNZMBohq5D5shjhILlanvW-rlHMDAC2WPG03GrvMfVXJoS3Wr8tSAXS7vq8B2GeS5ObSdNKF9094SGdgwrsdIIsv69D5ktJOaPL0UoZnwCLj1iCCHJqujNlurC0DLy0pFjcjwVs5tsL0cPuA-fnVY0-uIqTqZb0skB4-WuncKBocUqOJ0Lvpvo"><div class="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 md:px-2.5 md:py-1 bg-primary text-on-primary rounded font-label-caps text-[9px] md:text-label-caps tracking-wider shadow"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span><span class="">SPECIAL CONST</span></div><div class="absolute bottom-2 right-2 px-1.5 py-0.5 bg-surface/90 backdrop-blur-sm text-on-surface rounded font-label-caps text-[9px] md:text-[11px] font-semibold">15k PSI</div></div><div class="p-2.5 md:p-space-lg flex-1 flex flex-col justify-between"><div><div class="flex items-center justify-between text-secondary font-label-caps text-[10px] md:text-label-caps mb-0.5 md:mb-1"><span class="">WELD-SPEC-IX-92</span><span class="hidden sm:inline">SUBSEA</span></div><h2 class="font-headline-sm text-xs sm:text-base md:text-headline-sm text-primary uppercase font-bold group-hover:text-secondary transition-colors line-clamp-1 sm:line-clamp-none">High-Pressure Pipe Hubs</h2><p class="hidden sm:block font-body-sm text-body-sm text-on-surface-variant mt-space-xs line-clamp-2 leading-relaxed">Continuous automated orbital TIG welding for subsea petrochemical transport with zero-defect radiographic test.</p></div><div class="mt-2 md:mt-space-md pt-2 md:pt-space-md border-t border-surface-container-low"><div class="flex flex-wrap gap-1 mb-1.5 md:mb-space-md"><span class="px-1.5 py-0.5 bg-surface-container-low text-secondary font-label-sm text-[10px] md:text-[12px] rounded">X-Ray 100%</span><span class="px-1.5 py-0.5 bg-primary-container/10 text-primary-container font-label-sm text-[10px] md:text-[12px] font-medium rounded">ASME Sec IX</span></div><button class="open-modal-trigger w-full inline-flex items-center justify-center gap-1 px-2 py-1.5 md:py-2.5 bg-surface-container text-on-surface hover:bg-primary hover:text-on-primary font-label-md text-[11px] md:text-label-md rounded transition-all" type="button"><span class="">Detail</span><span class="material-symbols-outlined text-sm md:text-base">arrow_forward</span></button></div></div></article><!-- Card 3 --><article class="project-card group flex flex-col bg-surface-container-lowest rounded overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" data-application="Automated EV Chassis Stamping Cell" data-batch="18 Turnkey Gantry Lines" data-category="digital-automation" data-category-label="Digital Automation and Controlling" data-desc="Complete turnkey electro-mechanical assembly, hydraulic piping, PLC commissioning, and dynamic load testing for automotive assembly plants." data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuBkuiwk6LorygLx2aT8XA2Q62GrtLE7s_R16Q8Z6GSnpVVCVsHJQkBTCMboNCJOBb9LVqh1ygOr5vjr8qv1bderQa1HoSsPizYKvnJP1A7hy5eGIX8Kj5qvrMYdaeS-LXIK4v-lFgMas5S_cTlErGxpMMyHg0nmFtooKzwztvQJGTXYEgi4knB11goP6zrbkj4cT_1gwbXJweUJZqidpXPxWi-yIPja1ElAnCrZwcqdLXlbmRJvLDvf" data-img-alt="Industrial Robotic Gantries" data-inspection="Full multi-axis laser interferometer calibration, ISO 13849-1 safety circuit verification." data-material="Structural Steel S355J2 + Ground Rails" data-scale="25" data-sector="FACTORY AUTOMATION" data-serial="MECHA-SYS-X40" data-specs="robotic gantry mechatronics PLC automation CE digital automation" data-standards="CE Machinery Directive, ISO 12100" data-title="Industrial Robotic Gantries" data-tolerance="Repeatability ±0.015mm"><div class="relative h-32 sm:h-44 md:h-60 w-full overflow-hidden bg-surface-container-high"><img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Industrial Robotic Gantries" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkuiwk6LorygLx2aT8XA2Q62GrtLE7s_R16Q8Z6GSnpVVCVsHJQkBTCMboNCJOBb9LVqh1ygOr5vjr8qv1bderQa1HoSsPizYKvnJP1A7hy5eGIX8Kj5qvrMYdaeS-LXIK4v-lFgMas5S_cTlErGxpMMyHg0nmFtooKzwztvQJGTXYEgi4knB11goP6zrbkj4cT_1gwbXJweUJZqidpXPxWi-yIPja1ElAnCrZwcqdLXlbmRJvLDvf"><div class="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 md:px-2.5 md:py-1 bg-primary text-on-primary rounded font-label-caps text-[9px] md:text-label-caps tracking-wider shadow"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span><span class="">AUTOMATION</span></div><div class="absolute bottom-2 right-2 px-1.5 py-0.5 bg-surface/90 backdrop-blur-sm text-on-surface rounded font-label-caps text-[9px] md:text-[11px] font-semibold">1,500 KG</div></div><div class="p-2.5 md:p-space-lg flex-1 flex flex-col justify-between"><div><div class="flex items-center justify-between text-secondary font-label-caps text-[10px] md:text-label-caps mb-0.5 md:mb-1"><span class="">MECHA-SYS-X40</span><span class="hidden sm:inline">ROBOTICS</span></div><h2 class="font-headline-sm text-xs sm:text-base md:text-headline-sm text-primary uppercase font-bold group-hover:text-secondary transition-colors line-clamp-1 sm:line-clamp-none">Industrial Robotic Gantries</h2><p class="hidden sm:block font-body-sm text-body-sm text-on-surface-variant mt-space-xs line-clamp-2 leading-relaxed">Complete turnkey electro-mechanical assembly, hydraulic piping, and PLC commissioning.</p></div><div class="mt-2 md:mt-space-md pt-2 md:pt-space-md border-t border-surface-container-low"><div class="flex flex-wrap gap-1 mb-1.5 md:mb-space-md"><span class="px-1.5 py-0.5 bg-surface-container-low text-secondary font-label-sm text-[10px] md:text-[12px] rounded">1,500 KG</span><span class="px-1.5 py-0.5 bg-primary-container/10 text-primary-container font-label-sm text-[10px] md:text-[12px] font-medium rounded">CE Norm</span></div><button class="open-modal-trigger w-full inline-flex items-center justify-center gap-1 px-2 py-1.5 md:py-2.5 bg-surface-container text-on-surface hover:bg-primary hover:text-on-primary font-label-md text-[11px] md:text-label-md rounded transition-all" type="button"><span class="">Detail</span><span class="material-symbols-outlined text-sm md:text-base">arrow_forward</span></button></div></div></article><!-- Card 4 --><article class="project-card group flex flex-col bg-surface-container-lowest rounded overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" data-application="Heavy Mining Excavator Main Valve Module" data-batch="650 Monoblocks" data-category="jigs-fixtures" data-category-label="Jigs and Fixtures" data-desc="Deep hole gun drilling and multi-plane CNC surface honing for high-pressure earthmoving mining equipment and mobile hydraulics." data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuD5Ug3w6PF7O2YlvfAxGDMn_VAbukkoIgHqLitVGiePb56S7Yumd9joKnJWRuqP6Bc3_0k1xl2C_m9U0Nf-J4veMJCRnlg_jjGaPFkImOU34F2bb1U5Ph5SBgqY7fWA1oY3Zx1twTERV1Eq6jac5E1yniklIr6_i3-2v3Th2mkRlPbuDITksTt3z5nqlPfCMhvs68Ay-fS-XF_fi--RFp_btplR00Z7EYRwJAL-UNl3ymU_CJ9QTvfx" data-img-alt="Hydraulic Manifold Blocks" data-inspection="Ultrasonic de-burring, internal boroscope galling verification, impulse cycle testing 600 Bar." data-material="Aerospace Alloy 7075-T6 Mil-Spec" data-scale="650" data-sector="HEAVY EARTHMOVING" data-serial="MANIFOLD-H9-600" data-specs="Alloy 7075-T6 deep hole drilling mining ISO 4406 jigs fixtures" data-standards="ISO 4406 Cleanliness 16/14/11, DIN EN 10204" data-title="Hydraulic Manifold Blocks" data-tolerance="0.005mm Port Perpendicularity"><div class="relative h-32 sm:h-44 md:h-60 w-full overflow-hidden bg-surface-container-high"><img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Hydraulic Manifold Blocks" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5Ug3w6PF7O2YlvfAxGDMn_VAbukkoIgHqLitVGiePb56S7Yumd9joKnJWRuqP6Bc3_0k1xl2C_m9U0Nf-J4veMJCRnlg_jjGaPFkImOU34F2bb1U5Ph5SBgqY7fWA1oY3Zx1twTERV1Eq6jac5E1yniklIr6_i3-2v3Th2mkRlPbuDITksTt3z5nqlPfCMhvs68Ay-fS-XF_fi--RFp_btplR00Z7EYRwJAL-UNl3ymU_CJ9QTvfx"><div class="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 md:px-2.5 md:py-1 bg-primary text-on-primary rounded font-label-caps text-[9px] md:text-label-caps tracking-wider shadow"><span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span><span class="">JIGS &amp; FIXTURES</span></div><div class="absolute bottom-2 right-2 px-1.5 py-0.5 bg-surface/90 backdrop-blur-sm text-on-surface rounded font-label-caps text-[9px] md:text-[11px] font-semibold">600 BAR</div></div><div class="p-2.5 md:p-space-lg flex-1 flex flex-col justify-between"><div><div class="flex items-center justify-between text-secondary font-label-caps text-[10px] md:text-label-caps mb-0.5 md:mb-1"><span class="">MANIFOLD-H9-600</span><span class="hidden sm:inline">MINING</span></div><h2 class="font-headline-sm text-xs sm:text-base md:text-headline-sm text-primary uppercase font-bold group-hover:text-secondary transition-colors line-clamp-1 sm:line-clamp-none">Hydraulic Manifold Blocks</h2><p class="hidden sm:block font-body-sm text-body-sm text-on-surface-variant mt-space-xs line-clamp-2 leading-relaxed">Deep hole gun drilling and multi-plane CNC surface honing for mobile hydraulics.</p></div><div class="mt-2 md:mt-space-md pt-2 md:pt-space-md border-t border-surface-container-low"><div class="flex flex-wrap gap-1 mb-1.5 md:mb-space-md"><span class="px-1.5 py-0.5 bg-surface-container-low text-secondary font-label-sm text-[10px] md:text-[12px] rounded">7075-T6</span><span class="px-1.5 py-0.5 bg-primary-container/10 text-primary-container font-label-sm text-[10px] md:text-[12px] font-medium rounded">ISO 4406</span></div><button class="open-modal-trigger w-full inline-flex items-center justify-center gap-1 px-2 py-1.5 md:py-2.5 bg-surface-container text-on-surface hover:bg-primary hover:text-on-primary font-label-md text-[11px] md:text-label-md rounded transition-all" type="button"><span class="">Detail</span><span class="material-symbols-outlined text-sm md:text-base">arrow_forward</span></button></div></div></article><!-- Card 5 --><article class="project-card group flex flex-col bg-surface-container-lowest rounded overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" data-application="Offshore FPSO Crane Boom Construction" data-batch="6 Lattice Segments (38m Total)" data-category="material-handling" data-category-label="Material Handling" data-desc="Full penetration multi-pass submerged arc welding for high-tonnage offshore and shipyard crane masts with certified ultrasonic NDT." data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuBKESa4Qp5PaK0qn1SltRnNWmaZjBVGQydH7K064zJupCHzMY76Wbh2GBY3gQ1B0j2Qi5aB2XfV5R791TKHgbyWesvgvL-6uGaMj79DITD40fAR3DZH59eJA0beS_gJaj4YrdwI0zfpliijgBYpp3fNVxuXrYG-_8Sd17lwS1ihe9jtWdawPAw9XlHu4UIk1As3aKUW5pNVTam1_gUIDgX_UUyYDMFQqo_ao2c6sX_b_IxI3BINc1qM" data-img-alt="Heavy Lattice Mast Booms" data-inspection="100% Phased Array Ultrasonic Testing (PAUT), magnetic particle inspection." data-material="High Strength Steel S690QL" data-scale="50" data-sector="OFFSHORE &amp; MARINE" data-serial="STRUCT-BOOM-L50" data-specs="submerged arc offshore crane shipyard DNV material handling" data-standards="DNV-OS-C401 Offshore Standard, EN 1090-2" data-title="Heavy Lattice Mast Booms" data-tolerance="Full Penetration AWS D1.1 (±0.2mm)"><div class="relative h-32 sm:h-44 md:h-60 w-full overflow-hidden bg-surface-container-high"><img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Heavy Lattice Mast Booms" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKESa4Qp5PaK0qn1SltRnNWmaZjBVGQydH7K064zJupCHzMY76Wbh2GBY3gQ1B0j2Qi5aB2XfV5R791TKHgbyWesvgvL-6uGaMj79DITD40fAR3DZH59eJA0beS_gJaj4YrdwI0zfpliijgBYpp3fNVxuXrYG-_8Sd17lwS1ihe9jtWdawPAw9XlHu4UIk1As3aKUW5pNVTam1_gUIDgX_UUyYDMFQqo_ao2c6sX_b_IxI3BINc1qM"><div class="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 md:px-2.5 md:py-1 bg-primary text-on-primary rounded font-label-caps text-[9px] md:text-label-caps tracking-wider shadow"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span><span class="">MATERIAL HANDLING</span></div><div class="absolute bottom-2 right-2 px-1.5 py-0.5 bg-surface/90 backdrop-blur-sm text-on-surface rounded font-label-caps text-[9px] md:text-[11px] font-semibold">50 TON</div></div><div class="p-2.5 md:p-space-lg flex-1 flex flex-col justify-between"><div><div class="flex items-center justify-between text-secondary font-label-caps text-[10px] md:text-label-caps mb-0.5 md:mb-1"><span class="">STRUCT-BOOM-L50</span><span class="hidden sm:inline">OFFSHORE</span></div><h2 class="font-headline-sm text-xs sm:text-base md:text-headline-sm text-primary uppercase font-bold group-hover:text-secondary transition-colors line-clamp-1 sm:line-clamp-none">Heavy Lattice Mast Booms</h2><p class="hidden sm:block font-body-sm text-body-sm text-on-surface-variant mt-space-xs line-clamp-2 leading-relaxed">Full penetration multi-pass submerged arc welding for high-tonnage offshore cranes.</p></div><div class="mt-2 md:mt-space-md pt-2 md:pt-space-md border-t border-surface-container-low"><div class="flex flex-wrap gap-1 mb-1.5 md:mb-space-md"><span class="px-1.5 py-0.5 bg-surface-container-low text-secondary font-label-sm text-[10px] md:text-[12px] rounded">Cap: 50T</span><span class="px-1.5 py-0.5 bg-primary-container/10 text-primary-container font-label-sm text-[10px] md:text-[12px] font-medium rounded">DNV</span></div><button class="open-modal-trigger w-full inline-flex items-center justify-center gap-1 px-2 py-1.5 md:py-2.5 bg-surface-container text-on-surface hover:bg-primary hover:text-on-primary font-label-md text-[11px] md:text-label-md rounded transition-all" type="button"><span class="">Detail</span><span class="material-symbols-outlined text-sm md:text-base">arrow_forward</span></button></div></div></article><!-- Card 6 --><article class="project-card group flex flex-col bg-surface-container-lowest rounded overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" data-application="Mining Turbine Shaft Safety Telemetry" data-batch="3,200 Plug-and-Play Units" data-category="distribution-panel" data-category-label="Distribution Panel Assembly, Capacitor Bank, PLC, HMI" data-desc="High-precision acoustic tachometer alert module with ATEX Zone 2 intrinsically safe casting &amp; IP69K sealing for harsh heavy industrial drivetrains." data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuCy2JJpwJf-oVGkmHLpXnbxHKnIFeiCDH13wimY9qXWxdESfHb5KCWGVXUlOvFSHDj3aPzGonqr5HDP1tjSqnIaONn2ok39jMYl_MEpoCSW_IBX0KsnrL7w2nbdyYXj-hrPEEHnpAY6ZP1RQrhgHaa-EchResXyDZCpBgLWjR-x5Jhxte1eaIgJqo2FOZR1_eUT7NN2-xyP4sf4c4lrFcLSGzRZQnygoN9pTzw7H9-zgejPmW9IAoJi" data-img-alt="RPM Buzzer Modular Sensor" data-inspection="Ingress protection vacuum submersion testing to 10 Bar, high-temperature thermal cycle endurance." data-material="316L Stainless Steel Shell + Potted PCB" data-scale="3200" data-sector="ZONE 2 INSTRUMENTATION" data-serial="SENS-PULSE-8000" data-specs="Pulse-8000 tachometer ATEX IP69K intrinsically safe sensor PLC HMI distribution panel" data-standards="ATEX II 3G Ex ec IIC T4 Gc, IECEx" data-title="RPM Buzzer Modular Sensor" data-tolerance="Response: &lt;0.5 Millisecond"><div class="relative h-32 sm:h-44 md:h-60 w-full overflow-hidden bg-surface-container-high"><img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="RPM Buzzer Modular Sensor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCy2JJpwJf-oVGkmHLpXnbxHKnIFeiCDH13wimY9qXWxdESfHb5KCWGVXUlOvFSHDj3aPzGonqr5HDP1tjSqnIaONn2ok39jMYl_MEpoCSW_IBX0KsnrL7w2nbdyYXj-hrPEEHnpAY6ZP1RQrhgHaa-EchResXyDZCpBgLWjR-x5Jhxte1eaIgJqo2FOZR1_eUT7NN2-xyP4sf4c4lrFcLSGzRZQnygoN9pTzw7H9-zgejPmW9IAoJi"><div class="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 md:px-2.5 md:py-1 bg-primary text-on-primary rounded font-label-caps text-[9px] md:text-label-caps tracking-wider shadow"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span><span class="">PANEL &amp; PLC</span></div><div class="absolute bottom-2 right-2 px-1.5 py-0.5 bg-surface/90 backdrop-blur-sm text-on-surface rounded font-label-caps text-[9px] md:text-[11px] font-semibold">IP69K</div></div><div class="p-2.5 md:p-space-lg flex-1 flex flex-col justify-between"><div><div class="flex items-center justify-between text-secondary font-label-caps text-[10px] md:text-label-caps mb-0.5 md:mb-1"><span class="">SENS-PULSE-8000</span><span class="hidden sm:inline">ATEX ZONE 2</span></div><h2 class="font-headline-sm text-xs sm:text-base md:text-headline-sm text-primary uppercase font-bold group-hover:text-secondary transition-colors line-clamp-1 sm:line-clamp-none">RPM Buzzer Modular Sensor</h2><p class="hidden sm:block font-body-sm text-body-sm text-on-surface-variant mt-space-xs line-clamp-2 leading-relaxed">High-precision acoustic tachometer alert module with ATEX Zone 2 intrinsically safe casting.</p></div><div class="mt-2 md:mt-space-md pt-2 md:pt-space-md border-t border-surface-container-low"><div class="flex flex-wrap gap-1 mb-1.5 md:mb-space-md"><span class="px-1.5 py-0.5 bg-surface-container-low text-secondary font-label-sm text-[10px] md:text-[12px] rounded">IP69K Seal</span><span class="px-1.5 py-0.5 bg-primary-container/10 text-primary-container font-label-sm text-[10px] md:text-[12px] font-medium rounded">ATEX Ex</span></div><button class="open-modal-trigger w-full inline-flex items-center justify-center gap-1 px-2 py-1.5 md:py-2.5 bg-surface-container text-on-surface hover:bg-primary hover:text-on-primary font-label-md text-[11px] md:text-label-md rounded transition-all" type="button"><span class="">Detail</span><span class="material-symbols-outlined text-sm md:text-base">arrow_forward</span></button></div></div></article><!-- Card 7 (Visible on md and larger) --><article class="project-card md:flex flex-col bg-surface-container-lowest rounded overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer flex" data-application="Wind Turbine Step-Up Epicyclic Gearbox" data-batch="450 Precision Sets" data-category="general-supplier" data-category-label="General Supplier Of Industrial Machinery, Spare Parts, Accessories, Equipment, Construction Material, And Others Goods" data-desc="Carburized case-hardened alloy steel planetary gear set with AGMA Class 12 precision tooth profile grind for severe industrial transmissions." data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuDoDXOwc1UY_1zGM0N6YSJokm4076VVsc2DYaHxrWL1AVIgeWl2OIOnq27S2wJVXf8UcJBAYnNs6gervzp_vtCSF-q2er7emIsd5kbcm9VIy-M__HSsIn9Y11WoNIUCBj28Q0af05rsuI4vH36xY_MLD6SIP0aJCCmH_WW7bEhuSbid163XpGMXr1Ckq3AxX2lMDzKjpMwz01FASvvFba8GV5UbrF9ZgUfbBLC3CmPRHr92rClcJjCs" data-img-alt="5-Axis Planetary Carrier Gears" data-inspection="Klingelnberg gear measuring center verification for lead/profile crowning." data-material="18CrNiMo7-6 Forged Carburizing Steel" data-scale="450" data-sector="HEAVY DRIVETRAINS" data-serial="GEAR-CARRIER-AGMA12" data-specs="planetary carrier AGMA Class 12 case hardened 60 HRC spare parts industrial machinery" data-standards="ISO 1328-1, DIN 3962 Standards" data-title="5-Axis Planetary Carrier Gears" data-tolerance="DIN Grade 4 / AGMA Class 12 (±0.003mm)"><div class="relative h-60 w-full overflow-hidden bg-surface-container-high"><img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="5-Axis Planetary Carrier Gears" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoDXOwc1UY_1zGM0N6YSJokm4076VVsc2DYaHxrWL1AVIgeWl2OIOnq27S2wJVXf8UcJBAYnNs6gervzp_vtCSF-q2er7emIsd5kbcm9VIy-M__HSsIn9Y11WoNIUCBj28Q0af05rsuI4vH36xY_MLD6SIP0aJCCmH_WW7bEhuSbid163XpGMXr1Ckq3AxX2lMDzKjpMwz01FASvvFba8GV5UbrF9ZgUfbBLC3CmPRHr92rClcJjCs"><div class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 bg-primary text-on-primary rounded font-label-caps text-label-caps tracking-wider shadow"><span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span><span class="">GENERAL SUPPLIER MACHINERY</span></div><div class="absolute bottom-3 right-3 px-2 py-0.5 bg-surface/90 backdrop-blur-sm text-on-surface rounded font-label-caps text-[11px] font-semibold">60-62 HRC HARDNESS</div></div><div class="p-space-lg flex-1 flex flex-col justify-between"><div><div class="flex items-center justify-between text-secondary font-label-caps text-label-caps mb-1"><span class="">GEAR-CARRIER-AGMA12</span><span class="">HEAVY DRIVETRAINS</span></div><h2 class="font-headline-sm text-headline-sm text-primary uppercase group-hover:text-secondary transition-colors">5-Axis Planetary Carrier Gears</h2><p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs line-clamp-2 leading-relaxed">Carburized case-hardened alloy steel planetary gear set with AGMA Class 12 precision tooth profile grind.</p></div><div class="mt-space-md pt-space-md border-t border-surface-container-low"><div class="flex flex-wrap gap-1.5 mb-space-md"><span class="px-2 py-1 bg-surface-container-low text-secondary font-label-sm text-[12px] rounded">60-62 HRC Hardness</span><span class="px-2 py-1 bg-surface-container-low text-secondary font-label-sm text-[12px] rounded">Batch: 450 Units</span><span class="px-2 py-1 bg-primary-container/10 text-primary-container font-label-sm text-[12px] font-medium rounded">ISO 1328-1 Spec</span></div><button class="open-modal-trigger w-full inline-flex items-center justify-center gap-space-xs px-space-md py-2.5 bg-surface-container text-on-surface hover:bg-primary hover:text-on-primary font-label-md text-label-md rounded transition-all" type="button"><span class="">Lihat Spesifikasi &amp; Detail</span><span class="material-symbols-outlined text-base">arrow_forward</span></button></div></div></article><!-- Card 8 (Visible on md and larger) --><article class="project-card md:flex flex-col bg-surface-container-lowest rounded overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer flex" data-application="LNG Terminal Bunkering Auxiliary Tanks" data-batch="16 Vessel Shells (12,000L Each)" data-category="grease-system" data-category-label="Automatically Grease System For Loader Part" data-desc="Double-walled austenitic stainless steel vessel welding for cryogenic nitrogen and LNG handling facilities with helium mass spectrometer leak check." data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuBDwpJ0gUDlxHxWIwAiVUDQBgCrBh5t6f466zaEfOIgONYrOCezszw6NR2yjRKM7fYL4BLrB8LXSzF2-ESETZDY6_vkv1PkIBe9Ulq62rsf9ZtJEZKHJ_Qq-Sx1R4lbp_-IU5nVSguOk0UryLXouvWMmFdaKtqcAgYktqoB1wsij4-ffR7p_hS73d_7MbzQqe5PxImpCM70y4fVlTIkbiU3FXq_UrRr8zpq_IV-YQ0QcbLdubDosiQY" data-img-alt="Cryogenic Gas Storage Shells" data-inspection="Helium mass spectrometer leak testing down to 1x10^-9 mbar*l/s, low-temperature Charpy V-notch impact test at -196°C." data-material="AISI 304L / 316L Dual Grade Stainless" data-scale="16" data-sector="CRYOGENIC &amp; LNG" data-serial="CRYO-VESSEL-620" data-specs="cryogenic LNG stainless vessel API 620 helium leak automatically grease system loader" data-standards="API 620 Appendix Q, ASME Boiler &amp; Pressure Vessel VIII" data-title="Cryogenic Gas Storage Shells" data-tolerance="Zero Porosity, RT 100% (±0.1mm)"><div class="relative h-60 w-full overflow-hidden bg-surface-container-high"><img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Cryogenic Gas Storage Shells" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDwpJ0gUDlxHxWIwAiVUDQBgCrBh5t6f466zaEfOIgONYrOCezszw6NR2yjRKM7fYL4BLrB8LXSzF2-ESETZDY6_vkv1PkIBe9Ulq62rsf9ZtJEZKHJ_Qq-Sx1R4lbp_-IU5nVSguOk0UryLXouvWMmFdaKtqcAgYktqoB1wsij4-ffR7p_hS73d_7MbzQqe5PxImpCM70y4fVlTIkbiU3FXq_UrRr8zpq_IV-YQ0QcbLdubDosiQY"><div class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 bg-primary text-on-primary rounded font-label-caps text-label-caps tracking-wider shadow"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span><span class="">GREASE SYSTEM FOR LOADER</span></div><div class="absolute bottom-3 right-3 px-2 py-0.5 bg-surface/90 backdrop-blur-sm text-on-surface rounded font-label-caps text-[11px] font-semibold">-196°C RATED</div></div><div class="p-space-lg flex-1 flex flex-col justify-between"><div><div class="flex items-center justify-between text-secondary font-label-caps text-label-caps mb-1"><span class="">CRYO-VESSEL-620</span><span class="">CRYOGENIC &amp; LNG</span></div><h2 class="font-headline-sm text-headline-sm text-primary uppercase group-hover:text-secondary transition-colors">Cryogenic Gas Storage Shells</h2><p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs line-clamp-2 leading-relaxed">Double-walled austenitic stainless steel vessel welding for cryogenic nitrogen and LNG handling facilities.</p></div><div class="mt-space-md pt-space-md border-t border-surface-container-low"><div class="flex flex-wrap gap-1.5 mb-space-md"><span class="px-2 py-1 bg-surface-container-low text-secondary font-label-sm text-[12px] rounded">Temp: -196°C</span><span class="px-2 py-1 bg-surface-container-low text-secondary font-label-sm text-[12px] rounded">Helium Leak Tested</span><span class="px-2 py-1 bg-primary-container/10 text-primary-container font-label-sm text-[12px] font-medium rounded">API 620 Spec</span></div><button class="open-modal-trigger w-full inline-flex items-center justify-center gap-space-xs px-space-md py-2.5 bg-surface-container text-on-surface hover:bg-primary hover:text-on-primary font-label-md text-label-md rounded transition-all" type="button"><span class="">Lihat Spesifikasi &amp; Detail</span><span class="material-symbols-outlined text-base">arrow_forward</span></button></div></div></article><!-- Card 9 (Visible on md and larger) --><article class="project-card md:flex flex-col bg-surface-container-lowest rounded overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer flex" data-application="Semiconductor Lead-Frame Feeder Lines" data-batch="12 Assembly Stations" data-category="unload-robot-chucking" data-category-label="Unload Robot Chucking" data-desc="High-speed servo-driven mechanical transfer system equipped with pneumatic vacuum grippers, machine vision alignment, and safety interlocks." data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuCncGAxbWbXHIyHGoqvkKjj8SDTtn6CnuTwQJ1FBveTto-xubcn__p3w0sV3brxKxx3ifHlBmRCE_jWGLAEXaSxOssgvSv93FBi6aphFoRO8Yef-rhnQypcPrTxN62BBQ0vCB9qqYqHBxKGOhDV4ViJWaU_ucs6fzhzUfcJVRF8aNdinuv5K0KaZyiriKP6QA3MPFoqwP0mBHPzpqJfRwTIG9Lwf3J-p1oLzZyZCln5fjEhCAmc91w1" data-img-alt="Pick-and-Place Transfer Cell" data-inspection="Integrated Cognex machine vision camera calibration, 1 million stroke accelerated reliability endurance testing." data-material="Extruded Aircraft Aluminum + Hardened Cam Track" data-scale="12" data-sector="PACKAGING &amp; ELECTRONICS" data-serial="CELL-PnP-S7" data-specs="pick and place Siemens PLC vacuum pneumatic automation unload robot chucking" data-standards="IEC 60204-1 Electrical Safety, CE Machine Norm" data-title="Pick-and-Place Transfer Cell" data-tolerance="Positional Jitter: ±0.02mm"><div class="relative h-60 w-full overflow-hidden bg-surface-container-high"><img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Pick-and-Place Transfer Cell" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCncGAxbWbXHIyHGoqvkKjj8SDTtn6CnuTwQJ1FBveTto-xubcn__p3w0sV3brxKxx3ifHlBmRCE_jWGLAEXaSxOssgvSv93FBi6aphFoRO8Yef-rhnQypcPrTxN62BBQ0vCB9qqYqHBxKGOhDV4ViJWaU_ucs6fzhzUfcJVRF8aNdinuv5K0KaZyiriKP6QA3MPFoqwP0mBHPzpqJfRwTIG9Lwf3J-p1oLzZyZCln5fjEhCAmc91w1"><div class="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 bg-primary text-on-primary rounded font-label-caps text-label-caps tracking-wider shadow"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span><span class="">UNLOAD ROBOT CHUCKING</span></div><div class="absolute bottom-3 right-3 px-2 py-0.5 bg-surface/90 backdrop-blur-sm text-on-surface rounded font-label-caps text-[11px] font-semibold">1.2s CYCLE TIME</div></div><div class="p-space-lg flex-1 flex flex-col justify-between"><div><div class="flex items-center justify-between text-secondary font-label-caps text-label-caps mb-1"><span class="">CELL-PnP-S7</span><span class="">PACKAGING &amp; ELECTRONICS</span></div><h2 class="font-headline-sm text-headline-sm text-primary uppercase group-hover:text-secondary transition-colors">Pick-and-Place Transfer Cell</h2><p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs line-clamp-2 leading-relaxed">High-speed servo-driven mechanical transfer system equipped with pneumatic vacuum grippers.</p></div><div class="mt-space-md pt-space-md border-t border-surface-container-low"><div class="flex flex-wrap gap-1.5 mb-space-md"><span class="px-2 py-1 bg-surface-container-low text-secondary font-label-sm text-[12px] rounded">Cycle: 1.2s</span><span class="px-2 py-1 bg-surface-container-low text-secondary font-label-sm text-[12px] rounded">S7-1500</span><span class="px-2 py-1 bg-primary-container/10 text-primary-container font-label-sm text-[12px] font-medium rounded">OEE 98.5%</span></div><button class="open-modal-trigger w-full inline-flex items-center justify-center gap-space-xs px-space-md py-2.5 bg-surface-container text-on-surface hover:bg-primary hover:text-on-primary font-label-md text-label-md rounded transition-all" type="button"><span class="">Lihat Spesifikasi &amp; Detail</span><span class="material-symbols-outlined text-base">arrow_forward</span></button></div></div></article></div>
+<div class="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-gutter-desktop sm:grid-cols-2" id="projectCatalogGrid">
+@forelse($works as $work)
+@php
+  $categoryLabel = $work->service?->service_title ?? 'Engineering Works';
+  $images = $work->gallery_urls;
+  $tags = array_slice(array_values(array_filter($work->highlight_tags ?? [])), 0, 3);
+  $standards = array_values(array_filter($work->quality_standards ?? []));
+  $searchBlob = \Illuminate\Support\Str::lower(implode(' ', array_filter([
+    $work->material, $work->tolerance_specs, $work->batch_scale, $work->serial_number,
+    $work->client_sector, $work->top_badge, ...$tags, ...$standards,
+  ])));
+@endphp
+<article class="project-card group flex flex-col bg-surface-container-lowest rounded overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer scroll-mt-48" data-slug="{{ $work->work_slug }}" data-title="{{ $work->work_title }}" data-category="{{ $work->service?->slug }}" data-category-label="{{ $categoryLabel }}" data-serial="{{ $work->serial_number }}" data-sector="{{ $work->client_sector }}" data-desc="{{ $work->description_plain }}" data-material="{{ $work->material }}" data-tolerance="{{ $work->tolerance_specs }}" data-tolerance-value="{{ $work->tolerance_value }}" data-batch="{{ $work->batch_scale }}" data-scale="{{ $work->scale_value }}" data-date="{{ $work->production_date?->toDateString() }}" data-date-label="{{ $work->production_date_label }}" data-gallery="{{ json_encode($images) }}" data-standards="{{ json_encode($standards) }}" data-specs="{{ $searchBlob }}">
+<div class="relative h-32 sm:h-44 md:h-60 w-full overflow-hidden bg-surface-container-high">
+@if(!empty($images))
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="{{ $work->work_title }}" loading="lazy" src="{{ $images[0] }}">
+@else
+<div class="w-full h-full flex items-center justify-center text-outline-variant"><span class="material-symbols-outlined text-5xl">precision_manufacturing</span></div>
+@endif
+@if($work->top_badge)
+<div class="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 md:px-2.5 md:py-1 bg-primary text-on-primary rounded font-label-caps text-[9px] md:text-label-caps tracking-wider shadow"><span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span><span class="">{{ $work->top_badge }}</span></div>
+@endif
+@if($work->bottom_badge)
+<div class="absolute bottom-2 right-2 px-1.5 py-0.5 bg-surface/90 backdrop-blur-sm text-on-surface rounded font-label-caps text-[9px] md:text-[11px] font-semibold">{{ $work->bottom_badge }}</div>
+@endif
+</div>
+<div class="p-2.5 md:p-space-lg flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between text-secondary font-label-caps text-[10px] md:text-label-caps mb-0.5 md:mb-1"><span class="">{{ $work->serial_number }}</span><span class="hidden sm:inline">{{ $work->client_sector }}</span></div>
+<h2 class="font-headline-sm text-xs sm:text-base md:text-headline-sm text-primary uppercase font-bold group-hover:text-secondary transition-colors line-clamp-1 sm:line-clamp-none">{{ $work->work_title }}</h2>
+<p class="hidden sm:block font-body-sm text-body-sm text-on-surface-variant mt-space-xs line-clamp-2 leading-relaxed">{{ $work->short_description }}</p>
+</div>
+<div class="mt-2 md:mt-space-md pt-2 md:pt-space-md border-t border-surface-container-low">
+<div class="flex flex-wrap gap-1 mb-1.5 md:mb-space-md">
+@foreach($tags as $tag)
+<span class="px-1.5 py-0.5 {{ $loop->first ? 'bg-surface-container-low text-secondary' : 'bg-primary-container/10 text-primary-container font-medium' }} font-label-sm text-[10px] md:text-[12px] rounded">{{ $tag }}</span>
+@endforeach
+</div>
+<button class="open-modal-trigger w-full inline-flex items-center justify-center gap-1 px-2 py-1.5 md:py-2.5 bg-surface-container text-on-surface hover:bg-primary hover:text-on-primary font-label-md text-[11px] md:text-label-md rounded transition-all" type="button"><span class="">Detail</span><span class="material-symbols-outlined text-sm md:text-base">arrow_forward</span></button>
+</div>
+</div>
+</article>
+@empty
+@endforelse
+</div>
 <!-- Empty Filter State Notice (Hidden by default) -->
 <div class="hidden flex-col items-center justify-center py-space-3xl text-center bg-surface-container-low rounded border border-surface-container-high/60 my-space-lg" id="noResultsState">
 <span class="material-symbols-outlined text-5xl text-outline mb-space-sm">filter_alt_off</span>
@@ -162,7 +164,7 @@
 <!-- Interactive Pagination & Display Configuration -->
 <div class="mt-space-2xl pt-space-lg border-t border-surface-container-high/60 flex flex-col md:flex-row items-center justify-between gap-space-md pb-6">
 <div class="flex items-center gap-space-sm text-secondary font-body-sm text-body-sm">
-<span class="" id="paginationInfo">Menampilkan 1 - 9 dari 9 Total Hasil Proyek</span>
+<span class="" id="paginationInfo">Menampilkan 1 - {{ min($works->count(), 9) }} dari {{ $works->count() }} Total Hasil Proyek</span>
 <span class="hidden sm:inline text-outline-variant">|</span>
 <div class="hidden sm:flex items-center gap-1">
 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
@@ -175,16 +177,8 @@
 <button aria-label="Previous Page" class="w-9 h-9 flex items-center justify-center rounded bg-surface-container text-on-surface hover:bg-surface-container-high disabled:opacity-40 disabled:pointer-events-none transition-colors" disabled="" id="prevPageBtn" onclick="changePage('prev')" type="button">
 <span class="material-symbols-outlined text-base">chevron_left</span>
 </button>
-<button class="page-num-btn w-9 h-9 flex items-center justify-center rounded font-label-md text-label-md bg-primary text-on-primary shadow-sm transition-colors" data-page="1" onclick="goToPage(1)" type="button">
-              1
-            </button>
-<button class="page-num-btn w-9 h-9 flex items-center justify-center rounded font-label-md text-label-md bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors" data-page="2" onclick="goToPage(2)" type="button">
-              2
-            </button>
-<button class="page-num-btn w-9 h-9 flex items-center justify-center rounded font-label-md text-label-md bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors" data-page="3" onclick="goToPage(3)" type="button">
-              3
-            </button>
-<button aria-label="Next Page" class="w-9 h-9 flex items-center justify-center rounded bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors" id="nextPageBtn" onclick="changePage('next')" type="button">
+<div class="flex items-center gap-1" id="pageNumberList"></div>
+<button aria-label="Next Page" class="w-9 h-9 flex items-center justify-center rounded bg-surface-container text-on-surface hover:bg-surface-container-high disabled:opacity-40 disabled:pointer-events-none transition-colors" id="nextPageBtn" onclick="changePage('next')" type="button">
 <span class="material-symbols-outlined text-base">chevron_right</span>
 </button>
 </div>
@@ -212,334 +206,325 @@
 <div class="overflow-y-auto flex-1">
 <div class="grid grid-cols-1 lg:grid-cols-12 min-h-full">
 <!-- Kolom Kiri: Showcase Gambar Besar Beresolusi Tinggi -->
-<div class="lg:col-span-5 bg-surface-container-low flex flex-col justify-between p-space-md sm:p-space-lg border-b lg:border-b-0 lg:border-r border-surface-container-high/80"><div class="flex flex-col gap-3 h-full justify-between"><div class="flex flex-col gap-3"><div class="relative w-full aspect-[4/3] overflow-hidden rounded-xl bg-surface-container-high shadow-md group border border-surface-container-high/80"><img alt="Industrial Robotic Gantries" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="modalShowcaseImg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkuiwk6LorygLx2aT8XA2Q62GrtLE7s_R16Q8Z6GSnpVVCVsHJQkBTCMboNCJOBb9LVqh1ygOr5vjr8qv1bderQa1HoSsPizYKvnJP1A7hy5eGIX8Kj5qvrMYdaeS-LXIK4v-lFgMas5S_cTlErGxpMMyHg0nmFtooKzwztvQJGTXYEgi4knB11goP6zrbkj4cT_1gwbXJweUJZqidpXPxWi-yIPja1ElAnCrZwcqdLXlbmRJvLDvf"><div class="absolute top-2.5 left-2.5 flex flex-col gap-1 items-start"><span class="px-2.5 py-1 bg-primary/95 text-on-primary font-label-caps text-[10px] rounded uppercase shadow backdrop-blur-xs font-semibold flex items-center gap-1.5" id="modalOverlaySerial"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>SAMPLE PRODUCT OUTPUT</span></div></div><div class="grid grid-cols-2 gap-3"><div class="gallery-thumb-item aspect-[4/3] rounded-lg overflow-hidden border border-surface-container-high cursor-pointer relative group hover:border-primary transition-all duration-300 shadow-sm" onclick="const mainImg = document.getElementById('modalShowcaseImg'); if(mainImg) { mainImg.src = 'https://lh3.googleusercontent.com/aida/AEtjO1VOxyBgfWafIuX1K_As5eX7UojcHb6KZdTdeObLckSzbpRiAF_NqGxEmURuWS-B49uprPsOeu7M_66tG-80jINLHL2zFrtPT8BSJrDpFK0wrSDjMTxot9mZtgnERFyxCP9GNOrySYSl2szE0NWL6r92a5vuiO_EFRvcmNZwU2hpcjUx8fL5osVVSmdcI8vE5rZFJsjIqTu4_D4mdVWjwv9LpGyMj35Ua2GOxloou_NvR7IlzfEmfIfd4UY'; }"><img alt="Detail Presisi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida/AEtjO1VOxyBgfWafIuX1K_As5eX7UojcHb6KZdTdeObLckSzbpRiAF_NqGxEmURuWS-B49uprPsOeu7M_66tG-80jINLHL2zFrtPT8BSJrDpFK0wrSDjMTxot9mZtgnERFyxCP9GNOrySYSl2szE0NWL6r92a5vuiO_EFRvcmNZwU2hpcjUx8fL5osVVSmdcI8vE5rZFJsjIqTu4_D4mdVWjwv9LpGyMj35Ua2GOxloou_NvR7IlzfEmfIfd4UY"></div><div class="gallery-thumb-item aspect-[4/3] rounded-lg overflow-hidden border border-surface-container-high cursor-pointer relative group hover:border-primary transition-all duration-300 shadow-sm" onclick="const mainImg = document.getElementById('modalShowcaseImg'); if(mainImg) { mainImg.src = 'https://lh3.googleusercontent.com/aida/AEtjO1UeWP7W8uxkzEc7rXdUgZxd1h1x4CSpL21VuI6ffT7dDRDD7lYd0R5KP1wa5CgZNlAM-myEyy5bkzUNjwM0asgL1vhxcy5GHkh9yzr4UwYJTJ1ViMaLeZWdt0X6-GNaXd4nyvYAPhOynCcixviTSU4uxXkuHQftpfY4mQkhcSPqmjqtsCjRywVQUOaHLTzmYxdVtuhJpDpEjxXcc5BMFpQGHCbQgWwLaF8OQkNhi26K6rPNQqPxlyCNHU0'; }"><img alt="Inspeksi QA" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida/AEtjO1UeWP7W8uxkzEc7rXdUgZxd1h1x4CSpL21VuI6ffT7dDRDD7lYd0R5KP1wa5CgZNlAM-myEyy5bkzUNjwM0asgL1vhxcy5GHkh9yzr4UwYJTJ1ViMaLeZWdt0X6-GNaXd4nyvYAPhOynCcixviTSU4uxXkuHQftpfY4mQkhcSPqmjqtsCjRywVQUOaHLTzmYxdVtuhJpDpEjxXcc5BMFpQGHCbQgWwLaF8OQkNhi26K6rPNQqPxlyCNHU0"></div></div><p class="text-xs text-on-surface-variant font-medium mt-3 leading-relaxed text-center lg:text-left bg-surface-container-lowest p-3 rounded border border-surface-container-high"><span class="font-semibold text-primary block mb-0.5 font-mono">DOKUMENTASI BENCHMARK:</span> Gambar di atas merupakan representasi sampel output produk manufaktur presisi dan hasil pengerjaan fabrikasi berstandar industri.</p></div></div></div>
+<div class="lg:col-span-5 bg-surface-container-low flex flex-col justify-between p-space-md sm:p-space-lg border-b lg:border-b-0 lg:border-r border-surface-container-high/80"><div class="flex flex-col gap-3 h-full justify-between"><div class="flex flex-col gap-3"><div class="relative w-full aspect-[4/3] overflow-hidden rounded-xl bg-surface-container-high shadow-md group border border-surface-container-high/80"><img alt="" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="modalShowcaseImg"><div class="hidden w-full h-full flex items-center justify-center text-outline-variant" id="modalImagePlaceholder"><span class="material-symbols-outlined text-6xl">precision_manufacturing</span></div><div class="absolute top-2.5 left-2.5 flex flex-col gap-1 items-start"><span class="px-2.5 py-1 bg-primary/95 text-on-primary font-label-caps text-[10px] rounded uppercase shadow backdrop-blur-xs font-semibold flex items-center gap-1.5" id="modalOverlaySerial"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>SAMPLE PRODUCT OUTPUT</span></div></div><div class="grid grid-cols-3 gap-3" id="modalGalleryThumbs"></div><p class="text-xs text-on-surface-variant font-medium mt-3 leading-relaxed text-center lg:text-left bg-surface-container-lowest p-3 rounded border border-surface-container-high"><span class="font-semibold text-primary block mb-0.5 font-mono">DOKUMENTASI BENCHMARK:</span> Gambar di atas merupakan representasi sampel output produk manufaktur presisi dan hasil pengerjaan fabrikasi berstandar industri.</p></div></div></div>
 <!-- Kolom Kanan: Detail Teks Lengkap, Spesifikasi & Prosedur QA -->
-<div class="lg:col-span-7 p-space-lg sm:p-space-xl flex flex-col justify-between space-y-space-md bg-surface-container-lowest"><div class="space-y-space-md"><div class="pr-8"><div class="flex flex-wrap items-center gap-2 mb-2"><span class="px-2.5 py-0.5 bg-primary text-on-primary font-label-caps text-[10px] rounded uppercase font-semibold" id="modalCategoryTag">Other Special Construction (YTDL)</span><span class="text-xs text-outline font-mono" id="modalSerialTag">#WELD-SPEC-IX-92</span></div><h2 class="font-headline-sm sm:font-headline-md text-headline-sm sm:text-headline-md text-primary uppercase font-bold tracking-tight leading-tight" id="modalTitle">High-Pressure Pipe Hubs</h2></div><p class="font-body-md text-body-sm sm:text-body-md text-on-surface-variant leading-relaxed" id="modalDescription">Continuous automated orbital multi-pass TIG welding process specifically engineered for high-pressure subsea petrochemical transport lines, featuring zero-defect radiographic inspection (NDT 100%), full ultrasonic volumetric testing, and rigorous extreme hydrostatic qualification proofing.</p><div class="pt-2 border-t border-surface-container-high/60"><h4 class="font-label-caps text-label-caps text-secondary uppercase mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-sm">tune</span>Spesifikasi Utama</h4><div class="flex flex-wrap gap-1.5" id="modalSpecsList"><span class="px-2.5 py-1 bg-surface-container text-on-surface rounded font-label-sm text-xs" id="modalMaterial">Inconel 625 Clad + ASTM A694 F65</span><span class="px-2.5 py-1 bg-surface-container text-on-surface rounded font-label-sm text-xs" id="modalTolerance">NDT Zero Porosity (0.05mm Max)</span><span class="px-2.5 py-1 bg-surface-container text-on-surface rounded font-label-sm text-xs" id="modalBatch">320 Spool Units</span></div></div><div class="p-3 bg-surface-container-low rounded border border-surface-container-high/60 flex items-center justify-between"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-base text-secondary">calendar_today</span><div><span class="font-label-caps text-[10px] text-secondary uppercase block">Tanggal Produksi / Delivery</span><span class="font-label-md text-xs sm:text-body-sm text-primary font-semibold" id="modalDeliveryDate">Oktober 2024</span></div></div></div><div class="pt-1"><h4 class="font-label-caps text-label-caps text-secondary uppercase mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-sm">verified</span>Sertifikasi &amp; Standar Mutu</h4><div class="flex flex-wrap gap-1.5" id="modalStandardsTags"><span class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-900 border border-emerald-200 rounded font-label-sm text-xs font-semibold" id="modalStandards">ASME Sec IX, API 6A Spec</span><span class="inline-flex items-center gap-1 px-2.5 py-1 bg-surface-container text-secondary rounded font-label-sm text-xs">AS9100D Audited</span><span class="inline-flex items-center gap-1 px-2.5 py-1 bg-surface-container text-secondary rounded font-label-sm text-xs">100% CMM Inspected</span></div></div></div><div class="pt-space-md border-t border-surface-container flex items-center justify-end"><button class="w-full sm:w-auto px-space-xl py-2 bg-primary text-on-primary hover:bg-primary-container font-label-md text-label-md rounded transition-colors text-center shadow-sm" onclick="closeProjectModal()" type="button">Tutup Detail</button></div></div>
+<div class="lg:col-span-7 p-space-lg sm:p-space-xl flex flex-col justify-between space-y-space-md bg-surface-container-lowest"><div class="space-y-space-md"><div class="pr-8"><div class="flex flex-wrap items-center gap-2 mb-2"><span class="px-2.5 py-0.5 bg-primary text-on-primary font-label-caps text-[10px] rounded uppercase font-semibold" id="modalCategoryTag"></span><span class="text-xs text-outline font-mono" id="modalSerialTag"></span></div><h2 class="font-headline-sm sm:font-headline-md text-headline-sm sm:text-headline-md text-primary uppercase font-bold tracking-tight leading-tight" id="modalTitle"></h2></div><p class="font-body-md text-body-sm sm:text-body-md text-on-surface-variant leading-relaxed" id="modalDescription"></p><div class="pt-2 border-t border-surface-container-high/60"><h4 class="font-label-caps text-label-caps text-secondary uppercase mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-sm">tune</span>Spesifikasi Utama</h4><div class="flex flex-wrap gap-1.5" id="modalSpecsList"><span class="px-2.5 py-1 bg-surface-container text-on-surface rounded font-label-sm text-xs" id="modalMaterial"></span><span class="px-2.5 py-1 bg-surface-container text-on-surface rounded font-label-sm text-xs" id="modalTolerance"></span><span class="px-2.5 py-1 bg-surface-container text-on-surface rounded font-label-sm text-xs" id="modalBatch"></span></div></div><div class="p-3 bg-surface-container-low rounded border border-surface-container-high/60 flex items-center justify-between" id="modalDeliveryDateWrap"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-base text-secondary">calendar_today</span><div><span class="font-label-caps text-[10px] text-secondary uppercase block">Tanggal Produksi / Delivery</span><span class="font-label-md text-xs sm:text-body-sm text-primary font-semibold" id="modalDeliveryDate"></span></div></div></div><div class="pt-1"><h4 class="font-label-caps text-label-caps text-secondary uppercase mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-sm">verified</span>Sertifikasi &amp; Standar Mutu</h4><div class="flex flex-wrap gap-1.5" id="modalStandardsTags"></div></div></div><div class="pt-space-md border-t border-surface-container flex items-center justify-end"><button class="w-full sm:w-auto px-space-xl py-2 bg-primary text-on-primary hover:bg-primary-container font-label-md text-label-md rounded transition-colors text-center shadow-sm" onclick="closeProjectModal()" type="button">Tutup Detail</button></div></div>
 </div>
 </div>
 </div>
 </div>
 <!-- Interactive Logic Script -->
 <script>
-    // State management for Filter, Search, Sorting, Pagination
+    // State for filter, search, sort, and pagination (all handled in the browser)
     let currentCategory = 'all';
     let searchQuery = '';
+    let sortMode = 'newest';
     let currentPage = 1;
-    const totalPages = 3;
+    let perPage = 9;
 
+    const grid = document.getElementById('projectCatalogGrid');
     const cards = Array.from(document.querySelectorAll('.project-card'));
-    const filterButtons = document.querySelectorAll('.filter-tab-btn');
+    const cardOrder = new Map(cards.map((card, index) => [card, index]));
+    const filterButtons = Array.from(document.querySelectorAll('.filter-tab-btn'));
     const searchInput = document.getElementById('projectSearchInput');
     const sortSelect = document.getElementById('projectSortSelect');
+    const perPageSelect = document.getElementById('itemsPerPageSelect');
     const noResults = document.getElementById('noResultsState');
     const activeLabel = document.getElementById('activeFilterLabel');
     const countNotice = document.getElementById('resultsCountNotice');
     const paginationInfo = document.getElementById('paginationInfo');
+    const pageNumberList = document.getElementById('pageNumberList');
+    const prevPageBtn = document.getElementById('prevPageBtn');
+    const nextPageBtn = document.getElementById('nextPageBtn');
     const tabScrollContainer = document.getElementById('filterTabGroup');
-    const tabScrollLeftBtn = document.getElementById('tabScrollLeftBtn');
-    const tabScrollRightBtn = document.getElementById('tabScrollRightBtn');
+    const activePageClasses = 'page-num-btn w-9 h-9 flex items-center justify-center rounded font-label-md text-label-md bg-primary text-on-primary shadow-sm transition-colors';
+    const idlePageClasses = 'page-num-btn w-9 h-9 flex items-center justify-center rounded font-label-md text-label-md bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors';
 
-    // Horizontal arrow buttons for tab carousel
-    if (tabScrollLeftBtn && tabScrollContainer) {
-      tabScrollLeftBtn.addEventListener('click', () => {
-        tabScrollContainer.scrollBy({ left: -260, behavior: 'smooth' });
-      });
-    }
-    if (tabScrollRightBtn && tabScrollContainer) {
-      tabScrollRightBtn.addEventListener('click', () => {
-        tabScrollContainer.scrollBy({ left: 260, behavior: 'smooth' });
-      });
-    }
-
-    function applyFilterAndSearch() {
-      let visibleCount = 0;
-
-      cards.forEach(card => {
-        const category = card.getAttribute('data-category') || '';
-        const specs = (card.getAttribute('data-specs') || '').toLowerCase();
-        const title = (card.querySelector('h2')?.textContent || '').toLowerCase();
-        const desc = (card.querySelector('p')?.textContent || '').toLowerCase();
-
-        const matchesCategory = (currentCategory === 'all' || category === currentCategory);
-        const matchesSearch = !searchQuery || 
-          title.includes(searchQuery) || 
-          desc.includes(searchQuery) || 
-          specs.includes(searchQuery) ||
-          category.includes(searchQuery);
-
-        if (matchesCategory && matchesSearch) {
-          card.classList.remove('hidden');
-          visibleCount++;
-        } else {
-          card.classList.add('hidden');
-        }
-      });
-
-      if (visibleCount === 0) {
-        noResults.classList.remove('hidden');
-        noResults.classList.add('flex');
-      } else {
-        noResults.classList.add('hidden');
-        noResults.classList.remove('flex');
-      }
-
-      if (countNotice) countNotice.textContent = `${visibleCount} Proyek Aktif Terdaftar`;
-      if (paginationInfo) paginationInfo.textContent = `Menampilkan 1 - ${visibleCount} dari ${visibleCount} Total Hasil Proyek`;
-    }
-
-    // Category Tabs click listener
-    filterButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterButtons.forEach(b => {
-          b.classList.remove('bg-primary-container', 'text-on-primary', 'shadow-sm', 'active-tab');
-          b.classList.add('bg-surface-container', 'text-on-surface-variant');
-        });
-        btn.classList.add('bg-primary-container', 'text-on-primary', 'shadow-sm', 'active-tab');
-        btn.classList.remove('bg-surface-container', 'text-on-surface-variant');
-
-        currentCategory = btn.getAttribute('data-filter') || 'all';
-        const tabTitle = btn.querySelector('span:first-child')?.textContent || btn.textContent.trim();
-        if (activeLabel) activeLabel.textContent = `Kategori Aktif: ${tabTitle}`;
-        applyFilterAndSearch();
-      });
+    document.getElementById('tabScrollLeftBtn')?.addEventListener('click', () => {
+      tabScrollContainer?.scrollBy({ left: -260, behavior: 'smooth' });
+    });
+    document.getElementById('tabScrollRightBtn')?.addEventListener('click', () => {
+      tabScrollContainer?.scrollBy({ left: 260, behavior: 'smooth' });
     });
 
-    // Auto-select category from URL parameter on page load
-    const urlParams = new URLSearchParams(window.location.search);
-    const categoryParam = urlParams.get('category');
-    if (categoryParam) {
-      const targetBtn = Array.from(filterButtons).find(btn => btn.getAttribute('data-filter') === categoryParam);
-      if (targetBtn) {
-        targetBtn.click();
-        // Scroll to filter section smoothly
-        setTimeout(() => {
-          const filterSection = document.getElementById('filterTabGroup');
-          if (filterSection) {
-            filterSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }, 100);
+    function numericAttr(card, name) {
+      const raw = card.getAttribute(name);
+      if (raw === null || raw === '') return null;
+      const value = parseFloat(raw);
+      return Number.isNaN(value) ? null : value;
+    }
+
+    // Numeric comparison where records without a value always sort last.
+    function compareNullsLast(a, b, direction) {
+      if (a === null && b === null) return 0;
+      if (a === null) return 1;
+      if (b === null) return -1;
+      return direction === 'asc' ? a - b : b - a;
+    }
+
+    function compareCards(a, b) {
+      let result = 0;
+      if (sortMode === 'scale') {
+        result = compareNullsLast(numericAttr(a, 'data-scale'), numericAttr(b, 'data-scale'), 'desc');
+      } else if (sortMode === 'tolerance') {
+        result = compareNullsLast(numericAttr(a, 'data-tolerance-value'), numericAttr(b, 'data-tolerance-value'), 'asc');
+      } else {
+        const dateA = a.getAttribute('data-date') || '';
+        const dateB = b.getAttribute('data-date') || '';
+        if (dateA !== dateB) result = dateA === '' ? 1 : dateB === '' ? -1 : (dateA < dateB ? 1 : -1);
       }
+      return result !== 0 ? result : cardOrder.get(a) - cardOrder.get(b);
     }
 
-    // Auto-open modal from URL hash on page load (for featured works from landing page)
-    const hash = window.location.hash.slice(1); // Remove '#' prefix
-    if (hash) {
-      // Find card with matching data-title (slugified)
-      const targetCard = Array.from(cards).find(card => {
-        const title = card.getAttribute('data-title') || '';
-        const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-        return slug === hash;
-      });
-      if (targetCard) {
-        // Wait for filter animation to complete if category was also selected
-        setTimeout(() => {
-          populateAndOpenModalFromCard(targetCard);
-        }, categoryParam ? 400 : 200);
+    function matchesFilters(card) {
+      const category = card.getAttribute('data-category') || '';
+      const matchesCategory = currentCategory === 'all' || category === currentCategory;
+      if (!matchesCategory) return false;
+      if (!searchQuery) return true;
+      const haystack = [
+        card.getAttribute('data-title'),
+        card.getAttribute('data-desc'),
+        card.getAttribute('data-specs'),
+        card.getAttribute('data-category-label'),
+        category,
+      ].join(' ').toLowerCase();
+      return haystack.includes(searchQuery);
+    }
+
+    function pageButton(page) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.setAttribute('data-page', String(page));
+      button.className = page === currentPage ? activePageClasses : idlePageClasses;
+      button.textContent = String(page);
+      button.addEventListener('click', () => goToPage(page));
+      return button;
+    }
+
+    function render() {
+      const matched = cards.filter(matchesFilters).sort(compareCards);
+      const total = matched.length;
+      const size = perPage === 'all' ? Math.max(total, 1) : perPage;
+      const totalPages = Math.max(1, Math.ceil(total / size));
+      currentPage = Math.min(Math.max(currentPage, 1), totalPages);
+      const start = (currentPage - 1) * size;
+      const visible = new Set(matched.slice(start, start + size));
+
+      matched.forEach((card) => grid.appendChild(card));
+      cards.forEach((card) => card.classList.toggle('hidden', !visible.has(card)));
+
+      noResults.classList.toggle('hidden', total !== 0);
+      noResults.classList.toggle('flex', total === 0);
+
+      if (countNotice) countNotice.textContent = `${total} Proyek Aktif Terdaftar`;
+      if (paginationInfo) {
+        paginationInfo.textContent = total === 0
+          ? 'Tidak ada hasil proyek'
+          : `Menampilkan ${start + 1} - ${start + visible.size} dari ${total} Total Hasil Proyek`;
       }
+
+      if (pageNumberList) {
+        pageNumberList.replaceChildren(...Array.from({ length: totalPages }, (_, i) => pageButton(i + 1)));
+      }
+      if (prevPageBtn) prevPageBtn.disabled = currentPage === 1;
+      if (nextPageBtn) nextPageBtn.disabled = currentPage === totalPages;
     }
 
-    // Real-time search filter input listener
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        searchQuery = e.target.value.trim().toLowerCase();
-        applyFilterAndSearch();
-      });
-    }
-
-    // Sorter logic
-    if (sortSelect) {
-      sortSelect.addEventListener('change', (e) => {
-        const mode = e.target.value;
-        const grid = document.getElementById('projectCatalogGrid');
-        if (!grid) return;
-
-        const sorted = [...cards].sort((a, b) => {
-          if (mode === 'scale') {
-            const scaleA = parseInt(a.getAttribute('data-scale') || '0', 10);
-            const scaleB = parseInt(b.getAttribute('data-scale') || '0', 10);
-            return scaleB - scaleA;
-          } else if (mode === 'tolerance') {
-            const tolA = parseFloat(a.getAttribute('data-tolerance') || '1');
-            const tolB = parseFloat(b.getAttribute('data-tolerance') || '1');
-            return tolA - tolB;
-          }
-          return 0; // Default: 'newest' preserving catalog default order
-        });
-
-        sorted.forEach(c => grid.appendChild(c));
-      });
-    }
-
-    // Reset helper
-    function resetFilters() {
-      if (searchInput) searchInput.value = '';
-      searchQuery = '';
-      currentCategory = 'all';
-      if (filterButtons.length > 0) filterButtons[0].click();
-      if (sortSelect) sortSelect.value = 'newest';
-    }
-
-    // Pagination Click handler
     function goToPage(page) {
       currentPage = page;
-      document.querySelectorAll('.page-num-btn').forEach(btn => {
-        if (parseInt(btn.getAttribute('data-page'), 10) === page) {
-          btn.className = "page-num-btn w-9 h-9 flex items-center justify-center rounded font-label-md text-label-md bg-primary text-on-primary shadow-sm transition-colors";
-        } else {
-          btn.className = "page-num-btn w-9 h-9 flex items-center justify-center rounded font-label-md text-label-md bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors";
-        }
-      });
-
-      const prevBtn = document.getElementById('prevPageBtn');
-      const nextBtn = document.getElementById('nextPageBtn');
-      if (prevBtn) prevBtn.disabled = (page === 1);
-      if (nextBtn) nextBtn.disabled = (page === totalPages);
-
-      if (paginationInfo) paginationInfo.textContent = `Menampilkan ${(page - 1) * 9 + 1} - ${page * 9} dari 9 Total Hasil Proyek`;
-      const anchor = document.getElementById('filterTabGroup');
-      if (anchor) window.scrollTo({ top: anchor.offsetTop - 100, behavior: 'smooth' });
+      render();
+      grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function changePage(direction) {
-      if (direction === 'prev' && currentPage > 1) {
-        goToPage(currentPage - 1);
-      } else if (direction === 'next' && currentPage < totalPages) {
-        goToPage(currentPage + 1);
+      goToPage(direction === 'prev' ? currentPage - 1 : currentPage + 1);
+    }
+
+    function activateTab(button) {
+      filterButtons.forEach((b) => {
+        b.classList.remove('bg-primary-container', 'text-on-primary', 'shadow-sm', 'active-tab');
+        b.classList.add('bg-surface-container', 'text-on-surface-variant');
+      });
+      button.classList.add('bg-primary-container', 'text-on-primary', 'shadow-sm', 'active-tab');
+      button.classList.remove('bg-surface-container', 'text-on-surface-variant');
+
+      currentCategory = button.getAttribute('data-filter') || 'all';
+      currentPage = 1;
+      if (activeLabel) activeLabel.textContent = `Kategori Aktif: ${button.getAttribute('data-label') || ''}`;
+      render();
+    }
+
+    filterButtons.forEach((button) => button.addEventListener('click', () => activateTab(button)));
+
+    searchInput?.addEventListener('input', (e) => {
+      searchQuery = e.target.value.trim().toLowerCase();
+      currentPage = 1;
+      render();
+    });
+
+    sortSelect?.addEventListener('change', (e) => {
+      sortMode = e.target.value;
+      currentPage = 1;
+      render();
+    });
+
+    perPageSelect?.addEventListener('change', (e) => {
+      perPage = e.target.value === 'all' ? 'all' : parseInt(e.target.value, 10);
+      currentPage = 1;
+      render();
+    });
+
+    function resetFilters() {
+      if (searchInput) searchInput.value = '';
+      searchQuery = '';
+      if (sortSelect) sortSelect.value = 'newest';
+      sortMode = 'newest';
+      if (filterButtons.length > 0) activateTab(filterButtons[0]);
+    }
+
+    // Modal
+    const modal = document.getElementById('projectDetailModal');
+    const modalContainer = document.getElementById('modalContentContainer');
+    const modalImage = document.getElementById('modalShowcaseImg');
+    const modalImagePlaceholder = document.getElementById('modalImagePlaceholder');
+    const modalThumbs = document.getElementById('modalGalleryThumbs');
+
+    function setText(id, value) {
+      const element = document.getElementById(id);
+      if (element) element.textContent = value;
+    }
+
+    function parseList(raw) {
+      try {
+        const parsed = JSON.parse(raw || '[]');
+        return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
+      } catch (e) {
+        return [];
       }
     }
 
-    // Interactive Showcase Modal Opening Handler
-    function populateAndOpenModalFromCard(card) {
-      const modal = document.getElementById('projectDetailModal');
-      const container = document.getElementById('modalContentContainer');
-      if (!modal) return;
-
-      const img = card.getAttribute('data-img') || card.querySelector('img')?.src || '';
-      const imgAlt = card.getAttribute('data-img-alt') || card.querySelector('img')?.getAttribute('data-alt') || 'Showcase Image';
-      const title = card.getAttribute('data-title') || card.querySelector('h2')?.textContent.trim() || 'Komponen Presisi';
-      const category = card.getAttribute('data-category-label') || 'Engineering Works';
-      const serial = card.getAttribute('data-serial') || 'SPEC-APEX';
-      const sector = card.getAttribute('data-sector') || 'INDUSTRIAL';
-      const desc = card.getAttribute('data-desc') || card.querySelector('p')?.textContent.trim() || '';
-      const material = card.getAttribute('data-material') || 'Alloy Steel';
-      const tolerance = card.getAttribute('data-tolerance') || '±0.005mm';
-      const batch = card.getAttribute('data-batch') || 'Standard Cycle';
-      const standards = card.getAttribute('data-standards') || 'ISO 9001:2015';
-      const inspection = card.getAttribute('data-inspection') || 'Inspeksi CMM dan NDT lengkap.';
-      const application = card.getAttribute('data-application') || 'Heavy Industry Plant';
-
-      // Isi elemen-elemen showcase modal
-      const showcaseImg = document.getElementById('modalShowcaseImg');
-      if (showcaseImg) {
-        showcaseImg.src = img;
-        showcaseImg.alt = imgAlt;
+    function showModalImage(url, alt) {
+      const hasImage = Boolean(url);
+      modalImage.classList.toggle('hidden', !hasImage);
+      modalImagePlaceholder.classList.toggle('hidden', hasImage);
+      if (hasImage) {
+        modalImage.src = url;
+        modalImage.alt = alt;
+      } else {
+        modalImage.removeAttribute('src');
       }
-      
-      const elOverlaySerial = document.getElementById('modalOverlaySerial');
-      if (elOverlaySerial) elOverlaySerial.textContent = serial;
+    }
 
-      const elOverlaySector = document.getElementById('modalOverlaySector');
-      if (elOverlaySector) elOverlaySector.textContent = sector;
+    function renderGallery(images, alt) {
+      modalThumbs.replaceChildren();
+      showModalImage(images[0] || '', alt);
+      if (images.length < 2) return;
 
-      const elOverlayTolerance = document.getElementById('modalOverlayTolerance');
-      if (elOverlayTolerance) elOverlayTolerance.textContent = tolerance;
+      images.forEach((url, index) => {
+        const thumb = document.createElement('button');
+        thumb.type = 'button';
+        thumb.className = 'gallery-thumb-item aspect-[4/3] rounded-lg overflow-hidden border border-surface-container-high cursor-pointer hover:border-primary transition-all duration-300 shadow-sm';
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = `${alt} ${index + 1}`;
+        img.className = 'w-full h-full object-cover';
+        thumb.appendChild(img);
+        thumb.addEventListener('click', () => showModalImage(url, alt));
+        modalThumbs.appendChild(thumb);
+      });
+    }
 
-      const elTitle = document.getElementById('modalTitle');
-      if (elTitle) elTitle.textContent = title;
+    function renderStandards(standards) {
+      const wrapper = document.getElementById('modalStandardsTags');
+      wrapper.replaceChildren(...standards.map((standard, index) => {
+        const chip = document.createElement('span');
+        chip.className = index === 0
+          ? 'inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-900 border border-emerald-200 rounded font-label-sm text-xs font-semibold'
+          : 'inline-flex items-center gap-1 px-2.5 py-1 bg-surface-container text-secondary rounded font-label-sm text-xs';
+        chip.textContent = standard;
+        return chip;
+      }));
+    }
 
-      const elCategoryTag = document.getElementById('modalCategoryTag');
-      if (elCategoryTag) elCategoryTag.textContent = category;
+    function populateAndOpenModalFromCard(card) {
+      if (!modal) return;
+      const title = card.getAttribute('data-title') || '';
+      const serial = card.getAttribute('data-serial') || '';
+      const dateLabel = card.getAttribute('data-date-label') || '';
 
-      const elSectorTag = document.getElementById('modalSectorTag');
-      if (elSectorTag) elSectorTag.textContent = sector;
+      renderGallery(parseList(card.getAttribute('data-gallery')), title);
+      setText('modalOverlaySerial', serial);
+      setText('modalTitle', title);
+      setText('modalCategoryTag', card.getAttribute('data-category-label') || '');
+      setText('modalSerialTag', serial ? `#${serial}` : '');
+      setText('modalDescription', card.getAttribute('data-desc') || '');
+      setText('modalMaterial', card.getAttribute('data-material') || '');
+      setText('modalTolerance', card.getAttribute('data-tolerance') || '');
+      setText('modalBatch', card.getAttribute('data-batch') || '');
+      setText('modalDeliveryDate', dateLabel);
+      document.getElementById('modalDeliveryDateWrap')?.classList.toggle('hidden', dateLabel === '');
+      renderStandards(parseList(card.getAttribute('data-standards')));
 
-      const elSerialTag = document.getElementById('modalSerialTag');
-      if (elSerialTag) elSerialTag.textContent = `#${serial}`;
+      ['modalMaterial', 'modalTolerance', 'modalBatch'].forEach((id) => {
+        const element = document.getElementById(id);
+        element.classList.toggle('hidden', element.textContent === '');
+      });
 
-      const elDescription = document.getElementById('modalDescription');
-      if (elDescription) elDescription.textContent = desc;
-
-      const elMaterial = document.getElementById('modalMaterial');
-      if (elMaterial) elMaterial.textContent = material;
-
-      const elTolerance = document.getElementById('modalTolerance');
-      if (elTolerance) elTolerance.textContent = tolerance;
-
-      const elBatch = document.getElementById('modalBatch');
-      if (elBatch) elBatch.textContent = batch;
-
-      const elStandards = document.getElementById('modalStandards');
-      if (elStandards) elStandards.textContent = standards;
-
-      const elLeftStandardTag = document.getElementById('modalLeftStandardTag');
-      if (elLeftStandardTag) elLeftStandardTag.textContent = standards.split(',')[0] || 'AS9100D Audited';
-
-      const elInspection = document.getElementById('modalInspection');
-      if (elInspection) elInspection.textContent = inspection;
-
-      const elApplication = document.getElementById('modalApplication');
-      if (elApplication) elApplication.textContent = application;
-
-      const elCadRef = document.getElementById('modalCadRefCode');
-      if (elCadRef) elCadRef.textContent = `CAD: DWG-${serial}`;
-
-      // Tampilkan modal dengan transisi mulus
       modal.classList.remove('opacity-0', 'pointer-events-none');
       modal.classList.add('opacity-100', 'pointer-events-auto');
-      if (container) {
-        container.classList.remove('scale-95');
-        container.classList.add('scale-100');
-      }
+      modalContainer?.classList.remove('scale-95');
+      modalContainer?.classList.add('scale-100');
       document.body.style.overflow = 'hidden';
     }
 
     function closeProjectModal() {
-      const modal = document.getElementById('projectDetailModal');
-      const container = document.getElementById('modalContentContainer');
       if (!modal) return;
       modal.classList.remove('opacity-100', 'pointer-events-auto');
       modal.classList.add('opacity-0', 'pointer-events-none');
-      if (container) {
-        container.classList.remove('scale-100');
-        container.classList.add('scale-95');
-      }
+      modalContainer?.classList.remove('scale-100');
+      modalContainer?.classList.add('scale-95');
       document.body.style.overflow = '';
     }
 
-    // Daftarkan click event listener pada setiap card di grid
-    cards.forEach(card => {
-      // Klik pada seluruh kartu
+    cards.forEach((card) => {
       card.addEventListener('click', (e) => {
-        // Jangan trigger dobel jika yang diklik sudah link RFQ
         if (e.target.closest('a[href]')) return;
         populateAndOpenModalFromCard(card);
       });
-
-      // Tombol spesifikasi di dalam kartu
-      const triggerBtn = card.querySelector('.open-modal-trigger');
-      if (triggerBtn) {
-        triggerBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          populateAndOpenModalFromCard(card);
-        });
-      }
-    });
-
-    // Close modal on Escape key
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeProjectModal();
-      }
-    });
-
-    // Close on backdrop click
-    const modalEl = document.getElementById('projectDetailModal');
-    if (modalEl) {
-      modalEl.addEventListener('click', (e) => {
-        if (e.target === modalEl) {
-          closeProjectModal();
-        }
+      card.querySelector('.open-modal-trigger')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        populateAndOpenModalFromCard(card);
       });
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeProjectModal();
+    });
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) closeProjectModal();
+    });
+
+    // Initial state: ?category={service slug} selects a tab, #{work slug} opens that work's modal.
+    const categoryParam = new URLSearchParams(window.location.search).get('category');
+    const categoryButton = categoryParam
+      ? filterButtons.find((button) => button.getAttribute('data-filter') === categoryParam)
+      : null;
+
+    if (categoryButton) {
+      activateTab(categoryButton);
+      tabScrollContainer?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      render();
+    }
+
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    if (hash) {
+      const slugify = (value) => value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const targetCard = cards.find((card) => card.getAttribute('data-slug') === hash)
+        || cards.find((card) => slugify(card.getAttribute('data-title') || '') === hash);
+      if (targetCard) {
+        setTimeout(() => populateAndOpenModalFromCard(targetCard), categoryButton ? 400 : 200);
+      }
     }
   </script>
 </div></main>

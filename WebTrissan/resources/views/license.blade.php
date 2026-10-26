@@ -1,7 +1,7 @@
 <!DOCTYPE html><html class="scroll-smooth" lang="id" style=""><head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>{{ $pageSettings?->seo_title ?? 'Apex Industrial Engineering - Modern Industrial Solutions' }}</title>
+<title>{{ $pageSettings?->seo_title ?? 'Lisensi & Sertifikasi | PT Apex Industrial Engineering' }}</title>
 @if(!empty($pageSettings?->seo_description))
 <meta name="description" content="{{ $pageSettings->seo_description }}">
 @endif
@@ -282,7 +282,83 @@
 @else
 <div class="bg-surface-container-lowest p-3 md:p-5 rounded-xl border border-outline-variant/30 flex flex-col sm:flex-row items-start gap-2.5 md:gap-4 shadow-sm"><div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0"><span class="material-symbols-outlined text-sm md:text-base">verified</span></div><div><div class="font-title-md text-sm md:text-title-md font-bold text-primary">ISO 9001:2015</div><div class="font-label-sm text-xs md:text-label-sm text-secondary font-medium">QMS Fabrikasi</div><div class="text-xs text-on-surface-variant mt-0.5 md:mt-1">TÜV SÜD · Audit 2025</div></div></div><div class="bg-surface-container-lowest p-3 md:p-5 rounded-xl border border-outline-variant/30 flex flex-col sm:flex-row items-start gap-2.5 md:gap-4 shadow-sm"><div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-secondary-container flex items-center justify-center text-on-secondary-container shrink-0"><span class="material-symbols-outlined text-sm md:text-base">flight</span></div><div><div class="font-title-md text-sm md:text-title-md font-bold text-primary">AS9100 Rev D</div><div class="font-label-sm text-xs md:text-label-sm text-secondary font-medium">Aerospace QMS</div><div class="text-xs text-on-surface-variant mt-0.5 md:mt-1">Bureau Veritas · Tier-1</div></div></div><div class="bg-surface-container-lowest p-3 md:p-5 rounded-xl border border-outline-variant/30 flex flex-col sm:flex-row items-start gap-2.5 md:gap-4 shadow-sm"><div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary shrink-0"><span class="material-symbols-outlined text-sm md:text-base">local_fire_department</span></div><div><div class="font-title-md text-sm md:text-title-md font-bold text-primary">ASME 'U' &amp; 'R'</div><div class="font-label-sm text-xs md:text-label-sm text-secondary font-medium">Pressure Vessel</div><div class="text-xs text-on-surface-variant mt-0.5 md:mt-1">ASME Sec. VIII</div></div></div><div class="bg-surface-container-lowest p-3 md:p-5 rounded-xl border border-outline-variant/30 flex flex-col sm:flex-row items-start gap-2.5 md:gap-4 shadow-sm"><div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0"><span class="material-symbols-outlined text-sm md:text-base">health_and_safety</span></div><div><div class="font-title-md text-sm md:text-title-md font-bold text-primary">ISO 14001/45001</div><div class="font-label-sm text-xs md:text-label-sm text-secondary font-medium">K3 &amp; Lingkungan</div><div class="text-xs text-on-surface-variant mt-0.5 md:mt-1">DNV GL &amp; SGS</div></div></div>
 @endif
-</div><div class="mb-4 md:mb-6 bg-surface-container-lowest p-3 md:p-6 rounded-xl shadow-md border border-outline-variant/30"><div class="flex flex-col md:flex-row gap-3 md:gap-4 items-stretch md:items-center justify-between"><div class="relative flex-1 min-w-[260px]"><span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline">search</span><input class="w-full pl-11 pr-4 py-2 md:py-2.5 bg-surface rounded text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary transition text-xs md:text-sm" id="certSearchInput" oninput="handleCertFilter()" placeholder="Cari kode lisensi, nama standar, atau badan akreditasi..." type="text"></div><div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none" id="categoryButtonsContainer"><button class="cert-category-filter px-3 md:px-4 py-1.5 md:py-2 rounded font-label-md text-xs md:text-label-md transition bg-primary text-on-primary whitespace-nowrap" id="btn-cat-all" onclick="setCertCategory('all')">Semua Kategori</button><button class="cert-category-filter px-3 md:px-4 py-1.5 md:py-2 rounded font-label-md text-xs md:text-label-md transition bg-surface-container text-on-surface-variant hover:text-primary whitespace-nowrap" id="btn-cat-qms" onclick="setCertCategory('qms')">QMS Mutu</button><button class="cert-category-filter px-3 md:px-4 py-1.5 md:py-2 rounded font-label-md text-xs md:text-label-md transition bg-surface-container text-on-surface-variant hover:text-primary whitespace-nowrap" id="btn-cat-aero" onclick="setCertCategory('aero')">Kedirgantaraan &amp; Otomotif</button><button class="cert-category-filter px-3 md:px-4 py-1.5 md:py-2 rounded font-label-md text-xs md:text-label-md transition bg-surface-container text-on-surface-variant hover:text-primary whitespace-nowrap" id="btn-cat-asme" onclick="setCertCategory('asme')">Bejana Tekan (ASME)</button><button class="cert-category-filter px-3 md:px-4 py-1.5 md:py-2 rounded font-label-md text-xs md:text-label-md transition bg-surface-container text-on-surface-variant hover:text-primary whitespace-nowrap" id="btn-cat-hse" onclick="setCertCategory('hse')">K3 &amp; Lingkungan</button></div></div></div><div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left border-collapse min-w-[620px] md:min-w-full"><thead><tr class="bg-surface-container text-on-surface-variant font-label-caps text-label-caps uppercase"><th class="py-3 md:py-4 px-4 md:px-6 text-xs">Standar Perusahaan &amp; Dokumen</th><th class="py-3 md:py-4 px-4 md:px-6 text-xs">Badan Akreditasi</th><th class="py-3 md:py-4 px-4 md:px-6 text-xs">ID / Registrasi</th><th class="py-3 md:py-4 px-4 md:px-6 text-xs">Masa Berlaku</th><th class="py-3 md:py-4 px-4 md:px-6 text-right text-xs">Gambar Sertifikasi</th></tr></thead><tbody class="divide-y divide-outline-variant/30 font-body-sm text-body-sm text-on-surface"><tr class="hover:bg-surface-container-low/60 transition"><td class="py-3 md:py-4 px-4 md:px-6"><div class="font-title-md text-sm md:text-title-md text-primary font-semibold">ISO 9001:2015</div><div class="text-xs text-on-surface-variant">Quality Management System - Machining &amp; Fabrikasi</div></td><td class="py-3 md:py-4 px-4 md:px-6 text-xs md:text-sm">TÜV SÜD · Lloyd's</td><td class="py-3 md:py-4 px-4 md:px-6 font-mono text-xs text-primary font-medium">QMS-ID-980144</td><td class="py-3 md:py-4 px-4 md:px-6 text-xs md:text-sm">24 Nov 2026</td><td class="py-3 md:py-4 px-4 md:px-6 text-right"><button class="inline-flex items-center gap-1.5 px-2.5 md:px-3 py-1 md:py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-primary font-label-sm text-xs md:text-label-sm transition shadow-sm whitespace-nowrap" onclick="openVerificationModal('ISO 9001:2015 Quality Management System', 'QMS-ID-980144', 'TÜV SÜD · Lloyd\'s', '24 Nov 2026', 'Machining &amp; Fabrikasi Logam Presisi - Standar Mutu Internasional')"><span class="material-symbols-outlined text-sm">visibility</span> Show Image</button></td></tr><tr class="hover:bg-surface-container-low/60 transition"><td class="py-3 md:py-4 px-4 md:px-6"><div class="font-title-md text-sm md:text-title-md text-primary font-semibold">AS9100 Rev D</div><div class="text-xs text-on-surface-variant">Aerospace, Aviation &amp; Defense Manufacturing QMS</div></td><td class="py-3 md:py-4 px-4 md:px-6 text-xs md:text-sm">Bureau Veritas</td><td class="py-3 md:py-4 px-4 md:px-6 font-mono text-xs text-primary font-medium">AS-AERO-2023-77</td><td class="py-3 md:py-4 px-4 md:px-6 text-xs md:text-sm">15 Mar 2026</td><td class="py-3 md:py-4 px-4 md:px-6 text-right"><button class="inline-flex items-center gap-1.5 px-2.5 md:px-3 py-1 md:py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-primary font-label-sm text-xs md:text-label-sm transition shadow-sm whitespace-nowrap" onclick="openVerificationModal('AS9100 Rev D Aerospace &amp; Defense QMS', 'AS-AERO-2023-77', 'Bureau Veritas', '15 Mar 2026', 'Aerospace, Aviation &amp; Defense Manufacturing Quality Management System')"><span class="material-symbols-outlined text-sm">visibility</span> Show Image</button></td></tr><tr class="hover:bg-surface-container-low/60 transition"><td class="py-3 md:py-4 px-4 md:px-6"><div class="font-title-md text-sm md:text-title-md text-primary font-semibold">ASME Boiler &amp; Pressure Vessel</div><div class="text-xs text-on-surface-variant">Section VIII Div. 1 &amp; 'U'/'R' Stamp Authorization</div></td><td class="py-3 md:py-4 px-4 md:px-6 text-xs md:text-sm">ASME International</td><td class="py-3 md:py-4 px-4 md:px-6 font-mono text-xs text-primary font-medium">ASME-PV-5521</td><td class="py-3 md:py-4 px-4 md:px-6 text-xs md:text-sm">10 Jan 2027</td><td class="py-3 md:py-4 px-4 md:px-6 text-right"><button class="inline-flex items-center gap-1.5 px-2.5 md:px-3 py-1 md:py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-primary font-label-sm text-xs md:text-label-sm transition shadow-sm whitespace-nowrap" onclick="openVerificationModal('ASME Boiler &amp; Pressure Vessel Certification', 'ASME-PV-5521', 'ASME International', '10 Jan 2027', 'Section VIII Div. 1 &amp; \'U\'/\'R\' Stamp Authorization')"><span class="material-symbols-outlined text-sm">visibility</span> Show Image</button></td></tr><tr class="md:table-row hover:bg-surface-container-low/60 transition"><td class="py-4 px-6"><div class="font-title-md text-title-md text-primary font-semibold">ISO 14001:2015</div><div class="text-xs text-on-surface-variant">Environmental Management System</div></td><td class="py-4 px-6">SGS International</td><td class="py-4 px-6 font-mono text-xs text-primary font-medium">EMS-2022-890</td><td class="py-4 px-6">18 Agt 2025</td><td class="py-4 px-6 text-right"><button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-primary font-label-sm text-label-sm transition shadow-sm" onclick="openVerificationModal('ISO 14001:2015 Environmental Management', 'EMS-2022-890', 'SGS International', '18 Agt 2025', 'Environmental Management System &amp; Ecological Compliance')"><span class="material-symbols-outlined text-sm">visibility</span> Show Image</button></td></tr><tr class="md:table-row hover:bg-surface-container-low/60 transition"><td class="py-4 px-6"><div class="font-title-md text-title-md text-primary font-semibold">ISO 45001:2018</div><div class="text-xs text-on-surface-variant">Occupational Health &amp; Safety Management</div></td><td class="py-4 px-6">DNV GL</td><td class="py-4 px-6 font-mono text-xs text-primary font-medium">OHS-4501-19</td><td class="py-4 px-6">04 Des 2026</td><td class="py-4 px-6 text-right"><button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-primary font-label-sm text-label-sm transition shadow-sm" onclick="openVerificationModal('ISO 45001:2018 K3 Occupational Health &amp; Safety', 'OHS-4501-19', 'DNV GL', '04 Des 2026', 'Occupational Health &amp; Safety Management System')"><span class="material-symbols-outlined text-sm">visibility</span> Show Image</button></td></tr><tr class="md:table-row hover:bg-surface-container-low/60 transition"><td class="py-4 px-6"><div class="font-title-md text-title-md text-primary font-semibold">IATF 16949:2016</div><div class="text-xs text-on-surface-variant">Automotive Quality Management System</div></td><td class="py-4 px-6">DEKRA Certification</td><td class="py-4 px-6 font-mono text-xs text-primary font-medium">AUTO-169-441</td><td class="py-4 px-6">29 Jul 2026</td><td class="py-4 px-6 text-right"><button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-primary font-label-sm text-label-sm transition shadow-sm" onclick="openVerificationModal('IATF 16949:2016 Automotive Quality Management', 'AUTO-169-441', 'DEKRA Certification', '29 Jul 2026', 'Automotive Quality Management System &amp; Tier-1 Precision Components')"><span class="material-symbols-outlined text-sm">visibility</span> Show Image</button></td></tr></tbody></table></div><div class="flex flex-col sm:flex-row items-center justify-between gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-4 border-t border-outline-variant/30 bg-surface-container-lowest"><div class="flex items-center gap-2 text-xs md:text-body-sm font-body-sm text-on-surface-variant"><span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container text-xs font-medium text-secondary">Total 6 Dokumen</span><span class="hidden sm:inline">Menampilkan <strong class="text-primary font-semibold">1 - 6</strong> dari <strong class="text-primary font-semibold">6</strong> Dokumen Akreditasi</span><span class="sm:hidden">Menampilkan <strong class="text-primary font-semibold">3</strong> Dokumen Utama</span></div><nav aria-label="Navigasi Halaman Akreditasi" class="flex items-center gap-1.5"><button class="inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-lg border border-outline-variant/30 text-on-surface-variant opacity-40 cursor-not-allowed transition" disabled="" title="Halaman Sebelumnya"><span class="material-symbols-outlined text-sm">chevron_left</span></button><button class="inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm font-semibold shadow-sm transition" aria-current="page">1</button><button class="inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-lg border border-outline-variant/30 text-on-surface-variant opacity-40 cursor-not-allowed transition" disabled="" title="Halaman Selanjutnya"><span class="material-symbols-outlined text-sm">chevron_right</span></button></nav></div></div></div></section><section id="product-certs" class="w-full scroll-mt-20 bg-surface-container-low pt-10 pb-16 md:pt-16 md:pb-28"><div class="max-w-7xl mx-auto px-margin-tablet lg:px-margin-desktop"><div class="flex flex-col md:flex-row md:items-end justify-between mb-6 md:mb-space-xl"><div><div class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Product-Level Compliance</div><h2 class="font-headline-md md:font-headline-lg text-headline-md md:text-headline-lg text-primary mt-1">Sertifikasi Khusus Produk Manufaktur</h2></div><p class="font-body-sm text-body-sm text-on-surface-variant max-w-md mt-2 md:mt-0">Dokumentasi sertifikasi uji tipe, sertifikat kepatuhan standar industri (CE, ATEX, ASME, ISO), dan uji ketahanan per komponen manufaktur.</p></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6"><article id="cert-rpm-buzzer" class="cert-card flex flex-col justify-between bg-surface-container-lowest rounded-xl p-5 md:p-8 shadow-md relative transition-all duration-300 scroll-mt-28 border border-outline-variant/30"><div class="absolute top-0 left-0 right-0 h-1.5 bg-primary"></div><div><div class="flex flex-wrap items-center justify-between gap-2 mb-4"><div class="flex items-center gap-1.5"><span class="inline-flex items-center gap-1 px-2.5 py-1 bg-surface-container text-primary rounded font-label-sm text-label-sm font-semibold"><span class="material-symbols-outlined text-xs">sensors</span> Sensor &amp; Manufaktur</span><span class="inline-flex items-center gap-1 px-2.5 py-1 bg-primary text-on-primary rounded font-label-sm text-xs font-semibold"><span class="material-symbols-outlined text-xs">stars</span> Unggulan</span></div><span class="text-xs px-2.5 py-1 rounded font-label-sm text-label-sm bg-surface-container-high text-primary font-medium">Valid s/d 2028</span></div><div class="flex items-start justify-between gap-4 mb-4"><div><h3 class="font-headline-md text-headline-md text-primary tracking-tight leading-snug">RPM Buzzer System</h3><div class="font-label-md text-label-md text-on-surface-variant mt-1 leading-normal">Acoustic Tachometer Alert Sensor &amp; Module</div><div class="font-mono text-xs text-on-surface-variant mt-1">Model: Modular Industrial Series (Apex Pulse-8000)</div></div><div class="w-12 h-12 rounded-xl bg-primary-container text-inverse-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-2xl">notifications_active</span></div></div><div class="space-y-2 py-4 my-3 border-t border-b border-outline-variant/30 text-body-sm font-body-sm"><div class="flex justify-between"><span class="text-on-surface-variant">Standar &amp; Kepatuhan:</span><span class="font-medium text-primary text-right">CE, ATEX Zone 2 &amp; IP69K</span></div><div class="flex justify-between"><span class="text-on-surface-variant">No. Sertifikat Uji:</span><span class="font-mono text-xs font-semibold text-primary">APX-RPM-88219-CE</span></div><div class="flex justify-between"><span class="text-on-surface-variant">Lembaga Kalibrasi:</span><span class="font-medium text-primary text-right">TÜV Rheinland Product Safety</span></div><div class="flex justify-between"><span class="text-on-surface-variant">Spesifikasi Respon:</span><span class="font-medium text-primary text-right">0 - 18,000 RPM (±0.05%)</span></div></div><p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed"><strong>Lingkup:</strong> Modul alarm akustik frekuensi tinggi untuk pengawasan kecepatan poros turbin industri, alat berat, dan dinamometer otomotif.</p></div><div class="pt-6 mt-4 flex flex-col sm:flex-row items-center gap-3"><button class="w-full sm:flex-1 py-2.5 px-3 bg-primary text-on-primary rounded font-label-md text-label-md hover:bg-secondary transition flex items-center justify-center gap-2 shadow-sm" onclick="openVerificationModal('RPM Buzzer System Pulse-8000', 'APX-RPM-88219-CE', 'TÜV Rheinland &amp; CE Marking', 'Desember 2028', 'Sensor Akustik Tachometer, ATEX Zone 2 &amp; IP69K Ingress Protection')"><span class="material-symbols-outlined text-sm">visibility</span> Show Gambar Sertifikasi</button><button class="w-full sm:w-auto py-2.5 px-4 bg-surface-container-low text-primary rounded font-label-md text-label-md hover:bg-surface-container-high transition flex items-center justify-center gap-1.5" onclick="simulateDownload('Apex-RPM-Buzzer-Pulse8000-Cert.pdf')"><span class="material-symbols-outlined text-sm">download</span> Download Gambar Sertifikasi</button></div></article><article id="cert-turbine-gearbox" class="cert-card flex flex-col justify-between bg-surface-container-lowest rounded-xl p-5 md:p-8 shadow-sm hover:shadow-md border border-outline-variant/30 relative transition-all duration-300 scroll-mt-28"><div class="absolute top-0 left-0 right-0 h-1.5 bg-secondary"></div><div><div class="flex flex-wrap items-center justify-between gap-2 mb-3 md:mb-4"><span class="inline-flex items-center gap-1 px-2.5 py-0.5 md:py-1 bg-surface-container text-primary rounded font-label-sm text-xs md:text-label-sm font-semibold"><span class="material-symbols-outlined text-xs">flight</span> Kedirgantaraan</span><span class="text-xs px-2 md:px-2.5 py-0.5 md:py-1 rounded font-label-sm md:text-label-sm bg-surface-container-high text-primary font-medium">Valid s/d 2027</span></div><div class="flex items-start justify-between gap-3 md:gap-4 mb-3"><div><h3 class="font-headline-md text-title-md md:text-headline-md text-primary tracking-tight leading-snug">Turbine Gearbox Shafts</h3><div class="font-label-md text-xs md:text-label-md text-on-surface-variant mt-0.5 leading-normal">Drive Axles &amp; Epicyclic Gears</div><div class="font-mono text-xs text-on-surface-variant mt-0.5 md:mt-1">Spesifikasi: AS9100 Rev D &amp; ISO 9001</div></div><div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-xl md:text-2xl">settings</span></div></div><div class="space-y-2 py-3 md:py-4 my-2 md:my-3 border-t border-b border-outline-variant/30 text-xs md:text-body-sm font-body-sm"><div class="flex justify-between"><span class="text-on-surface-variant">Standar:</span><span class="font-medium text-primary text-right">Aerospace Metallurgy &amp; 5-Axis</span></div><div class="flex justify-between"><span class="text-on-surface-variant">Uji Material:</span><span class="font-mono text-xs font-semibold text-primary">EN 10204 Type 3.1</span></div><div class="flex justify-between"><span class="text-on-surface-variant">No. Registrasi:</span><span class="font-mono text-xs font-semibold text-primary">AS-AERO-TGS-774</span></div><div class="flex justify-between"><span class="text-on-surface-variant">Lembaga:</span><span class="font-medium text-primary">Bureau Veritas Certification</span></div></div><p class="font-body-sm text-xs md:text-body-sm text-on-surface-variant leading-relaxed line-clamp-2 md:line-clamp-none"><strong>Lingkup:</strong> Kualifikasi metalurgi poros transmisi berputar tinggi, NDT Eddy Current, toleransi run-out di bawah 0.002 mm.</p></div><div class="pt-4 md:pt-6 mt-3 md:mt-4 flex flex-col sm:flex-row items-center gap-2.5 md:gap-3"><button class="w-full sm:flex-1 py-2 md:py-2.5 px-3 bg-primary text-on-primary rounded font-label-md text-xs md:text-label-md hover:bg-secondary transition flex items-center justify-center gap-1.5 md:gap-2 shadow-sm" onclick="openVerificationModal('Turbine Gearbox Shafts', 'AS-AERO-TGS-774', 'Bureau Veritas Certification', 'Maret 2027', 'Komponen Poros Transmisi Dirgantara &amp; Uji NDT Nital Etch')"><span class="material-symbols-outlined text-sm">visibility</span> Show Gambar Sertifikasi</button><button class="w-full sm:w-auto py-2 md:py-2.5 px-3 md:px-4 bg-surface-container-low text-primary rounded font-label-md text-xs md:text-label-md hover:bg-surface-container-high transition flex items-center justify-center gap-1.5" onclick="simulateDownload('Turbine-Gearbox-Shaft-Cert.pdf')"><span class="material-symbols-outlined text-sm">download</span> Download</button></div></article><article id="cert-pipe-hubs" class="md:flex cert-card flex-col justify-between bg-surface-container-lowest rounded-xl p-6 md:p-8 shadow-sm hover:shadow-md border border-outline-variant/30 relative transition-all duration-300 scroll-mt-28 flex"><div class="absolute top-0 left-0 right-0 h-1.5 bg-primary-container"></div><div><div class="flex flex-wrap items-center justify-between gap-2 mb-4"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-container text-primary rounded font-label-sm text-label-sm font-semibold"><span class="material-symbols-outlined text-xs">local_fire_department</span> Migas &amp; Bejana Tekan</span><span class="text-xs px-2.5 py-1 rounded font-label-sm text-label-sm bg-surface-container-high text-primary font-medium">Valid s/d 2027</span></div><div class="flex items-start justify-between gap-4 mb-4"><div><h3 class="font-headline-md text-headline-md text-primary tracking-tight leading-snug">High-Pressure Pipe Hubs</h3><div class="font-label-md text-label-md text-on-surface-variant mt-1 leading-normal">Clamp Connectors &amp; Subsea Manifold Hubs</div><div class="font-mono text-xs text-on-surface-variant mt-1">Standar: ASME Sec. VIII Div 1 &amp; API Spec 6A</div></div><div class="w-12 h-12 rounded-xl bg-surface-container-high text-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-2xl">plumbing</span></div></div><div class="space-y-2 py-4 my-3 border-t border-b border-outline-variant/30 text-body-sm font-body-sm"><div class="flex justify-between"><span class="text-on-surface-variant">Sertifikasi Desain:</span><span class="font-medium text-primary text-right">ASME 'U' Stamp &amp; API 6A PSL 3G</span></div><div class="flex justify-between"><span class="text-on-surface-variant">Pengujian Tekanan:</span><span class="font-medium text-primary">Hydrostatic Test s/d 15,000 PSI</span></div><div class="flex justify-between"><span class="text-on-surface-variant">No. Registrasi Produk:</span><span class="font-mono text-xs font-semibold text-primary">ASME-HUB-9921-X</span></div><div class="flex justify-between"><span class="text-on-surface-variant">Badan Penguji:</span><span class="font-medium text-primary">ASME International Inspector</span></div></div><p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed"><strong>Lingkup:</strong> Konektor pipa bejana tekanan ekstrem untuk instalasi offshore subsea, fabrikasi tempa paduan Inconel &amp; Duplex 2205.</p></div><div class="pt-6 mt-4 flex flex-col sm:flex-row items-center gap-3"><button class="w-full sm:flex-1 py-2.5 px-3 bg-primary text-on-primary rounded font-label-md text-label-md hover:bg-secondary transition flex items-center justify-center gap-2 shadow-sm" onclick="openVerificationModal('High-Pressure Pipe Hubs', 'ASME-HUB-9921-X', 'ASME International', 'Januari 2027', 'Bejana Tekan Khusus Migas, Subsea Pipe Hubs 15,000 PSI')"><span class="material-symbols-outlined text-sm">visibility</span> Show Gambar Sertifikasi</button><button class="w-full sm:w-auto py-2.5 px-4 bg-surface-container-low text-primary rounded font-label-md text-label-md hover:bg-surface-container-high transition flex items-center justify-center gap-1.5" onclick="simulateDownload('ASME-Pipe-Hubs-Certificate.pdf')"><span class="material-symbols-outlined text-sm">download</span> Download Gambar Sertifikasi</button></div></article><article id="cert-hydraulic-manifold" class="md:flex cert-card flex-col justify-between bg-surface-container-lowest rounded-xl p-6 md:p-8 shadow-sm hover:shadow-md border border-outline-variant/30 relative transition-all duration-300 scroll-mt-28 flex"><div class="absolute top-0 left-0 right-0 h-1.5 bg-secondary-container"></div><div><div class="flex flex-wrap items-center justify-between gap-2 mb-4"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-container text-primary rounded font-label-sm text-label-sm font-semibold"><span class="material-symbols-outlined text-xs">precision_manufacturing</span> Hidraulik Presisi</span><span class="text-xs px-2.5 py-1 rounded font-label-sm text-label-sm bg-surface-container-high text-primary font-medium">Valid s/d 2026</span></div><div class="flex items-start justify-between gap-4 mb-4"><div><h3 class="font-headline-md text-headline-md text-primary tracking-tight leading-snug">Hydraulic Manifold Blocks</h3><div class="font-label-md text-label-md text-on-surface-variant mt-1 leading-normal">Integrated Circuit Valve Manifolds</div><div class="font-mono text-xs text-on-surface-variant mt-1">Standar: ISO 4406 Cleanliness &amp; Hydrostatic Leak Test</div></div><div class="w-12 h-12 rounded-xl bg-surface-container text-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-2xl">view_in_ar</span></div></div><div class="space-y-2 py-4 my-3 border-t border-b border-outline-variant/30 text-body-sm font-body-sm"><div class="flex justify-between"><span class="text-on-surface-variant">Kelas Kebersihan:</span><span class="font-medium text-primary text-right">ISO 4406: 16/14/11 Flushing Certified</span></div><div class="flex justify-between"><span class="text-on-surface-variant">Kriteria Kebocoran:</span><span class="font-medium text-primary">Zero-Leakage Helium Mass Spectrometry</span></div><div class="flex justify-between"><span class="text-on-surface-variant">No. Laporan Kalibrasi:</span><span class="font-mono text-xs font-semibold text-primary">HYD-MAN-2024-41</span></div><div class="flex justify-between"><span class="text-on-surface-variant">Badan Uji Mutu:</span><span class="font-medium text-primary">DNV GL &amp; In-House QA Labs</span></div></div><p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed"><strong>Lingkup:</strong> Blok manifold paduan aluminium anodized &amp; besi ulet (ductile iron) untuk sistem hidraulik alat berat pertambangan dan otomatisasi pabrik.</p></div><div class="pt-6 mt-4 flex flex-col sm:flex-row items-center gap-3"><button class="w-full sm:flex-1 py-2.5 px-3 bg-primary text-on-primary rounded font-label-md text-label-md hover:bg-secondary transition flex items-center justify-center gap-2 shadow-sm" onclick="openVerificationModal('Hydraulic Manifold Blocks', 'HYD-MAN-2024-41', 'DNV GL &amp; Apex QA', 'November 2026', 'ISO 4406 Cleanliness &amp; Zero-Leakage Hydrostatic Pressure Test')"><span class="material-symbols-outlined text-sm">visibility</span> Show Gambar Sertifikasi</button><button class="w-full sm:w-auto py-2.5 px-4 bg-surface-container-low text-primary rounded font-label-md text-label-md hover:bg-surface-container-high transition flex items-center justify-center gap-1.5" onclick="simulateDownload('Hydraulic-Manifold-Block-Cert.pdf')"><span class="material-symbols-outlined text-sm">download</span> Download Gambar Sertifikasi</button></div></article></div><div class="flex flex-col sm:flex-row items-center justify-between gap-3 md:gap-4 mt-6 md:mt-8 p-3 md:px-6 bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm relative z-10"><div class="flex flex-wrap items-center gap-2 text-xs md:text-body-sm font-body-sm text-on-surface-variant"><span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container text-xs font-medium text-secondary">Total 4 Dokumen Produk</span><span class="hidden sm:inline">Menampilkan <strong class="text-primary font-semibold">1 - 4</strong> dari <strong class="text-primary font-semibold">4</strong> Sertifikasi Produk</span><span class="sm:hidden">Menampilkan <strong class="text-primary font-semibold">2</strong> Produk Unggulan</span></div><nav aria-label="Navigasi Halaman Produk" class="flex items-center gap-1.5"><button class="inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-lg border border-outline-variant/30 text-on-surface-variant opacity-40 cursor-not-allowed transition" disabled="" title="Halaman Sebelumnya"><span class="material-symbols-outlined text-sm">chevron_left</span></button><button class="inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm font-semibold shadow-sm transition" aria-current="page">1</button><button class="inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-lg border border-outline-variant/30 text-on-surface-variant opacity-40 cursor-not-allowed transition" disabled="" title="Halaman Selanjutnya"><span class="material-symbols-outlined text-sm">chevron_right</span></button></nav></div></div></section>
+</div><div class="mb-4 md:mb-6 bg-surface-container-lowest p-3 md:p-6 rounded-xl shadow-md border border-outline-variant/30"><div class="flex flex-col md:flex-row gap-3 md:gap-4 items-stretch md:items-center justify-between"><div class="relative flex-1 min-w-[260px]"><span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline">search</span><input class="w-full pl-11 pr-4 py-2 md:py-2.5 bg-surface rounded text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary transition text-xs md:text-sm" id="certSearchInput" oninput="handleCertFilter()" placeholder="Cari kode lisensi, nama standar, atau badan akreditasi..." type="text"></div><div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none" id="categoryButtonsContainer">
+<button class="cert-category-filter px-3 md:px-4 py-1.5 md:py-2 rounded font-label-md text-xs md:text-label-md transition bg-primary text-on-primary whitespace-nowrap" id="btn-cat-all" onclick="setCertCategory('all')" type="button">Semua Kategori</button>
+@foreach($certificationCategories as $category)
+<button class="cert-category-filter px-3 md:px-4 py-1.5 md:py-2 rounded font-label-md text-xs md:text-label-md transition bg-surface-container text-on-surface-variant hover:text-primary whitespace-nowrap" id="btn-cat-{{ $category->slug }}" data-cat="{{ $category->slug }}" onclick="setCertCategory(this.dataset.cat)" type="button">{{ $category->name }}</button>
+@endforeach
+</div></div></div><div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left border-collapse min-w-[620px] md:min-w-full"><thead><tr class="bg-surface-container text-on-surface-variant font-label-caps text-label-caps uppercase"><th class="py-3 md:py-4 px-4 md:px-6 text-xs">Standar Perusahaan &amp; Dokumen</th><th class="py-3 md:py-4 px-4 md:px-6 text-xs">Badan Akreditasi</th><th class="py-3 md:py-4 px-4 md:px-6 text-xs">ID / Registrasi</th><th class="py-3 md:py-4 px-4 md:px-6 text-xs">Masa Berlaku</th><th class="py-3 md:py-4 px-4 md:px-6 text-right text-xs">Gambar Sertifikasi</th></tr></thead><tbody class="divide-y divide-outline-variant/30 font-body-sm text-body-sm text-on-surface">
+@foreach($corporateAccreditations as $accreditation)
+@php
+  $modalTitle = $accreditation->modal_title ?: trim($accreditation->standard_name.' '.$accreditation->standard_description);
+  $searchBlob = \Illuminate\Support\Str::lower(implode(' ', array_filter([
+    $accreditation->standard_name, $accreditation->standard_description, $accreditation->accreditation_body,
+    $accreditation->registration_id, $accreditation->certificationCategory?->name,
+  ])));
+@endphp
+<tr class="cert-row hover:bg-surface-container-low/60 transition" data-category="{{ $accreditation->certificationCategory?->slug }}" data-search="{{ $searchBlob }}" data-title="{{ $modalTitle }}" data-reg="{{ $accreditation->registration_id }}" data-body="{{ $accreditation->accreditation_body }}" data-validity="{{ $accreditation->validity_label }}" data-scope="{{ $accreditation->scope_detail }}" data-image="{{ $accreditation->certificate_image_url }}">
+<td class="py-3 md:py-4 px-4 md:px-6"><div class="font-title-md text-sm md:text-title-md text-primary font-semibold">{{ $accreditation->standard_name }}</div><div class="text-xs text-on-surface-variant">{{ $accreditation->standard_description }}</div></td>
+<td class="py-3 md:py-4 px-4 md:px-6 text-xs md:text-sm">{{ $accreditation->accreditation_body }}</td>
+<td class="py-3 md:py-4 px-4 md:px-6 font-mono text-xs text-primary font-medium">{{ $accreditation->registration_id }}</td>
+<td class="py-3 md:py-4 px-4 md:px-6 text-xs md:text-sm">{{ $accreditation->validity_label ?? '-' }}</td>
+<td class="py-3 md:py-4 px-4 md:px-6 text-right"><button class="cert-detail-btn inline-flex items-center gap-1.5 px-2.5 md:px-3 py-1 md:py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-primary font-label-sm text-xs md:text-label-sm transition shadow-sm whitespace-nowrap" type="button"><span class="material-symbols-outlined text-sm">visibility</span> Show Image</button></td>
+</tr>
+@endforeach
+<tr class="hidden" id="certEmptyRow"><td class="py-8 px-6 text-center text-on-surface-variant text-sm" colspan="5">Tidak ada dokumen akreditasi yang sesuai dengan pencarian atau kategori ini.</td></tr>
+</tbody></table></div><div class="flex flex-col sm:flex-row items-center justify-between gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-4 border-t border-outline-variant/30 bg-surface-container-lowest"><div class="flex items-center gap-2 text-xs md:text-body-sm font-body-sm text-on-surface-variant"><span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container text-xs font-medium text-secondary">Total <span id="certTotal">{{ $corporateAccreditations->count() }}</span> Dokumen</span><span class="hidden sm:inline" id="certRangeInfo"></span></div><nav aria-label="Navigasi Halaman Akreditasi" class="flex items-center gap-1.5" id="certPagination"></nav></div></div></div></section><section id="product-certs" class="w-full scroll-mt-20 bg-surface-container-low pt-10 pb-16 md:pt-16 md:pb-28"><div class="max-w-7xl mx-auto px-margin-tablet lg:px-margin-desktop"><div class="flex flex-col md:flex-row md:items-end justify-between mb-6 md:mb-space-xl"><div><div class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Product-Level Compliance</div><h2 class="font-headline-md md:font-headline-lg text-headline-md md:text-headline-lg text-primary mt-1">Sertifikasi Khusus Produk Manufaktur</h2></div><p class="font-body-sm text-body-sm text-on-surface-variant max-w-md mt-2 md:mt-0">Dokumentasi sertifikasi uji tipe, sertifikat kepatuhan standar industri (CE, ATEX, ASME, ISO), dan uji ketahanan per komponen manufaktur.</p></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+@foreach($productCertifications as $certification)
+@php
+  $anchor = str_starts_with($certification->slug, 'cert-') ? $certification->slug : 'cert-'.$certification->slug;
+  $accentClasses = ['bg-primary', 'bg-secondary', 'bg-primary-container'];
+  $specRows = array_slice($certification->spec_rows ?? [], 0, 4);
+@endphp
+<article id="{{ $anchor }}" class="cert-card flex flex-col justify-between bg-surface-container-lowest rounded-xl p-5 md:p-8 shadow-sm hover:shadow-md border border-outline-variant/30 relative transition-all duration-300 scroll-mt-28" data-title="{{ $certification->product_name }}" data-reg="{{ $certification->certificate_number }}" data-body="{{ $certification->issuing_body }}" data-validity="{{ $certification->validity_label }}" data-scope="{{ $certification->scope_description }}" data-image="{{ $certification->certificate_image_url }}" data-pdf="{{ $certification->certificate_pdf_url }}">
+<div class="absolute top-0 left-0 right-0 h-1.5 {{ $accentClasses[$loop->index % 3] }}"></div>
+<div>
+<div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+<div class="flex items-center gap-1.5">
+@if($certification->category_tag)
+<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-surface-container text-primary rounded font-label-sm text-xs md:text-label-sm font-semibold"><span class="material-symbols-outlined text-xs">{{ $certification->category_icon ?: 'verified' }}</span> {{ $certification->category_tag }}</span>
+@endif
+@if($certification->is_featured)
+<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-primary text-on-primary rounded font-label-sm text-xs font-semibold"><span class="material-symbols-outlined text-xs">stars</span> Unggulan</span>
+@endif
+</div>
+@if($certification->validity_date)
+<span class="text-xs px-2.5 py-1 rounded font-label-sm text-label-sm bg-surface-container-high text-primary font-medium">Valid s/d {{ $certification->validity_date->format('Y') }}</span>
+@endif
+</div>
+<div class="flex items-start justify-between gap-4 mb-4">
+<div>
+<h3 class="font-headline-md text-title-md md:text-headline-md text-primary tracking-tight leading-snug">{{ $certification->product_name }}</h3>
+<div class="font-label-md text-xs md:text-label-md text-on-surface-variant mt-1 leading-normal">{{ $certification->subtitle }}</div>
+<div class="font-mono text-xs text-on-surface-variant mt-1">{{ $certification->model_spec_identifier }}</div>
+</div>
+<div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary-container text-inverse-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-xl md:text-2xl">{{ $certification->card_icon ?: 'verified' }}</span></div>
+</div>
+@if(!empty($specRows))
+<div class="space-y-2 py-3 md:py-4 my-2 md:my-3 border-t border-b border-outline-variant/30 text-xs md:text-body-sm font-body-sm">
+@foreach($specRows as $row)
+<div class="flex justify-between gap-4"><span class="text-on-surface-variant">{{ $row['label'] ?? '' }}:</span><span class="font-medium text-primary text-right">{{ $row['value'] ?? '' }}</span></div>
+@endforeach
+</div>
+@endif
+@if($certification->scope_description)
+<p class="font-body-sm text-xs md:text-body-sm text-on-surface-variant leading-relaxed"><strong>Lingkup:</strong> {{ $certification->scope_description }}</p>
+@endif
+</div>
+<div class="pt-4 md:pt-6 mt-3 md:mt-4 flex flex-col sm:flex-row items-center gap-2.5 md:gap-3">
+<button class="cert-detail-btn w-full sm:flex-1 py-2 md:py-2.5 px-3 bg-primary text-on-primary rounded font-label-md text-xs md:text-label-md hover:bg-secondary transition flex items-center justify-center gap-2 shadow-sm" type="button"><span class="material-symbols-outlined text-sm">visibility</span> Show Gambar Sertifikasi</button>
+@if($certification->certificate_pdf_url)
+<a class="w-full sm:w-auto py-2 md:py-2.5 px-4 bg-surface-container-low text-primary rounded font-label-md text-xs md:text-label-md hover:bg-surface-container-high transition flex items-center justify-center gap-1.5" download href="{{ $certification->certificate_pdf_url }}"><span class="material-symbols-outlined text-sm">download</span> Download</a>
+@endif
+@if($certification->work)
+<a class="w-full sm:w-auto py-2 md:py-2.5 px-4 bg-surface-container-low text-primary rounded font-label-md text-xs md:text-label-md hover:bg-surface-container-high transition flex items-center justify-center gap-1.5" href="{{ url('/works#'.$certification->work->work_slug) }}"><span class="material-symbols-outlined text-sm">arrow_outward</span> Lihat Produk</a>
+@endif
+</div>
+</article>
+@endforeach
+</div><div class="flex flex-col sm:flex-row items-center justify-between gap-3 md:gap-4 mt-6 md:mt-8 p-3 md:px-6 bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm relative z-10"><div class="flex flex-wrap items-center gap-2 text-xs md:text-body-sm font-body-sm text-on-surface-variant"><span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container text-xs font-medium text-secondary">Total 4 Dokumen Produk</span><span class="hidden sm:inline">Menampilkan <strong class="text-primary font-semibold">1 - 4</strong> dari <strong class="text-primary font-semibold">4</strong> Sertifikasi Produk</span><span class="sm:hidden">Menampilkan <strong class="text-primary font-semibold">2</strong> Produk Unggulan</span></div><nav aria-label="Navigasi Halaman Produk" class="flex items-center gap-1.5"><button class="inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-lg border border-outline-variant/30 text-on-surface-variant opacity-40 cursor-not-allowed transition" disabled="" title="Halaman Sebelumnya"><span class="material-symbols-outlined text-sm">chevron_left</span></button><button class="inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm font-semibold shadow-sm transition" aria-current="page">1</button><button class="inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-lg border border-outline-variant/30 text-on-surface-variant opacity-40 cursor-not-allowed transition" disabled="" title="Halaman Selanjutnya"><span class="material-symbols-outlined text-sm">chevron_right</span></button></nav></div></div></section>
 <!-- SECTION 3: DOCUMENT REGISTRY & VERIFICATION TABLE -->
 
 <!-- SECTION 4: ACCREDITATION BODIES & AUDIT PARTNERS -->
@@ -322,10 +398,9 @@
 <span class="font-medium text-primary leading-normal" id="modalCertScope"></span>
 </div>
 </div>
+<div class="hidden mt-4" id="modalCertImageWrap"><img alt="" class="w-full max-h-64 object-contain rounded-lg border border-outline-variant/30 bg-surface" id="modalCertImage"></div>
 <div class="mt-6 flex flex-col sm:flex-row items-center gap-3">
-<button class="w-full sm:flex-1 py-2.5 px-4 bg-primary text-on-primary hover:bg-secondary font-label-md text-label-md rounded font-semibold transition text-center" onclick="alert('Integritas Kriptografi Dokumen Terkonfirmasi: Hash SHA-256 Valid.'); closeVerificationModal();">
-          Konfirmasi Keaslian (Check SHA)
-        </button>
+<a class="hidden w-full sm:flex-1 py-2.5 px-4 bg-primary text-on-primary hover:bg-secondary font-label-md text-label-md rounded font-semibold transition text-center items-center justify-center gap-2" download href="#" id="modalCertDownload"><span class="material-symbols-outlined text-sm">download</span> Download Sertifikat</a>
 <button class="w-full sm:w-auto py-2.5 px-4 bg-surface-container hover:bg-surface-container-high text-primary font-label-md text-label-md rounded transition" onclick="closeVerificationModal()">
           Tutup
         </button>
@@ -334,12 +409,27 @@
 </div>
 <!-- SCRIPT UNTUK INTERAKTIVITAS CLIENT-SIDE -->
 <script>
+    const ROWS_PER_PAGE = 6;
     let activeCategory = 'all';
+    let currentPage = 1;
+
+    const rows = Array.from(document.querySelectorAll('.cert-row'));
+    const emptyRow = document.getElementById('certEmptyRow');
+    const searchInput = document.getElementById('certSearchInput');
+    const pagination = document.getElementById('certPagination');
+    const rangeInfo = document.getElementById('certRangeInfo');
+    const totalInfo = document.getElementById('certTotal');
+
+    const pageClasses = {
+      active: 'inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm font-semibold shadow-sm transition',
+      idle: 'inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-lg border border-outline-variant/30 text-on-surface-variant hover:bg-surface-container transition font-label-sm text-label-sm',
+      arrow: 'inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-lg border border-outline-variant/30 text-on-surface-variant transition disabled:opacity-40 disabled:cursor-not-allowed',
+    };
 
     function setCertCategory(cat) {
       activeCategory = cat;
-      const buttons = document.querySelectorAll('.cert-category-filter');
-      buttons.forEach(btn => {
+      currentPage = 1;
+      document.querySelectorAll('.cert-category-filter').forEach((btn) => {
         btn.classList.remove('bg-primary', 'text-on-primary');
         btn.classList.add('bg-surface-container', 'text-on-surface-variant');
       });
@@ -348,37 +438,95 @@
         activeBtn.classList.remove('bg-surface-container', 'text-on-surface-variant');
         activeBtn.classList.add('bg-primary', 'text-on-primary');
       }
-      handleCertFilter();
+      renderCertRows();
     }
 
     function handleCertFilter() {
-      const searchVal = document.getElementById('certSearchInput').value.toLowerCase().trim();
-      const cards = document.querySelectorAll('.cert-card');
-
-      cards.forEach(card => {
-        const cat = card.getAttribute('data-category');
-        const title = (card.getAttribute('data-title') || '').toLowerCase();
-        const body = (card.getAttribute('data-body') || '').toLowerCase();
-        const id = (card.getAttribute('data-id') || '').toLowerCase();
-
-        const matchCat = (activeCategory === 'all' || cat === activeCategory);
-        const matchSearch = (!searchVal || title.includes(searchVal) || body.includes(searchVal) || id.includes(searchVal));
-
-        if (matchCat && matchSearch) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
+      currentPage = 1;
+      renderCertRows();
     }
 
-    function openVerificationModal(title, id, body, validity, scope) {
-      document.getElementById('modalCertTitle').innerText = title;
-      document.getElementById('modalCertId').innerText = id;
-      document.getElementById('modalCertBody').innerText = body;
-      document.getElementById('modalCertValidity').innerText = validity;
-      document.getElementById('modalCertScope').innerText = scope;
-      
+    function goToCertPage(page) {
+      currentPage = page;
+      renderCertRows();
+    }
+
+    function arrowButton(icon, label, disabled, page) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = pageClasses.arrow;
+      button.title = label;
+      button.disabled = disabled;
+      const glyph = document.createElement('span');
+      glyph.className = 'material-symbols-outlined text-sm';
+      glyph.textContent = icon;
+      button.appendChild(glyph);
+      button.addEventListener('click', () => goToCertPage(page));
+      return button;
+    }
+
+    function renderCertRows() {
+      const query = (searchInput?.value || '').toLowerCase().trim();
+      const matched = rows.filter((row) => {
+        const matchesCategory = activeCategory === 'all' || row.getAttribute('data-category') === activeCategory;
+        return matchesCategory && (!query || (row.getAttribute('data-search') || '').includes(query));
+      });
+
+      const totalPages = Math.max(1, Math.ceil(matched.length / ROWS_PER_PAGE));
+      currentPage = Math.min(Math.max(currentPage, 1), totalPages);
+      const start = (currentPage - 1) * ROWS_PER_PAGE;
+      const visible = new Set(matched.slice(start, start + ROWS_PER_PAGE));
+
+      rows.forEach((row) => row.classList.toggle('hidden', !visible.has(row)));
+      emptyRow?.classList.toggle('hidden', matched.length !== 0);
+
+      if (totalInfo) totalInfo.textContent = String(matched.length);
+      if (rangeInfo) {
+        rangeInfo.textContent = matched.length === 0
+          ? 'Tidak ada dokumen yang cocok'
+          : `Menampilkan ${start + 1} - ${start + visible.size} dari ${matched.length} Dokumen Akreditasi`;
+      }
+
+      if (pagination) {
+        const numbers = Array.from({ length: totalPages }, (_, i) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = i + 1 === currentPage ? pageClasses.active : pageClasses.idle;
+          button.textContent = String(i + 1);
+          if (i + 1 === currentPage) button.setAttribute('aria-current', 'page');
+          button.addEventListener('click', () => goToCertPage(i + 1));
+          return button;
+        });
+        pagination.replaceChildren(
+          arrowButton('chevron_left', 'Halaman Sebelumnya', currentPage === 1, currentPage - 1),
+          ...numbers,
+          arrowButton('chevron_right', 'Halaman Selanjutnya', currentPage === totalPages, currentPage + 1)
+        );
+      }
+    }
+
+    function openVerificationModal(source) {
+      const data = source.dataset;
+      document.getElementById('modalCertTitle').textContent = data.title || '';
+      document.getElementById('modalCertId').textContent = data.reg || '-';
+      document.getElementById('modalCertBody').textContent = data.body || '-';
+      document.getElementById('modalCertValidity').textContent = data.validity || '-';
+      document.getElementById('modalCertScope').textContent = data.scope || '-';
+
+      const imageWrap = document.getElementById('modalCertImageWrap');
+      const image = document.getElementById('modalCertImage');
+      imageWrap.classList.toggle('hidden', !data.image);
+      if (data.image) {
+        image.src = data.image;
+        image.alt = data.title || '';
+      } else {
+        image.removeAttribute('src');
+      }
+
+      const download = document.getElementById('modalCertDownload');
+      download.classList.toggle('hidden', !data.pdf);
+      if (data.pdf) download.href = data.pdf;
+
       const modal = document.getElementById('verificationModal');
       modal.classList.remove('hidden');
       modal.classList.add('flex');
@@ -390,26 +538,18 @@
       modal.classList.remove('flex');
     }
 
-    function simulateDownload(filename) {
-      const notice = document.createElement('div');
-      notice.className = 'fixed bottom-6 right-6 bg-primary text-on-primary px-4 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 text-sm animate-bounce';
-      notice.innerHTML = '<span class="material-symbols-outlined text-sm">download_done</span> Mengunduh audit copy: <strong>' + filename + '</strong>';
-      document.body.appendChild(notice);
-      setTimeout(() => {
-        notice.remove();
-      }, 3500);
-    }
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest('.cert-detail-btn');
+      if (trigger) openVerificationModal(trigger.closest('[data-title]'));
+    });
+    document.getElementById('verificationModal')?.addEventListener('click', (e) => {
+      if (e.target.id === 'verificationModal') closeVerificationModal();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeVerificationModal();
+    });
 
-    function handleInquirySubmit(e) {
-      e.preventDefault();
-      const form = document.getElementById('auditInquiryForm');
-      const msg = document.getElementById('formSuccessMessage');
-      form.reset();
-      msg.classList.remove('hidden');
-      setTimeout(() => {
-        msg.classList.add('hidden');
-      }, 5000);
-    }
+    renderCertRows();
   </script>
 </div></main>
 @include('layouts.footer')
@@ -431,43 +571,7 @@
     }
   });
 </script>
-<!-- Interaktivitas Script: Filter Kategori Works & Scroll Transition -->
-<script>
-  lucide.createIcons();
 
-  function selectCategory(cat) {
-    filterCategory(cat);
-    const worksSection = document.getElementById('works');
-    if (worksSection) {
-      worksSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-
-  function filterCategory(category) {
-    const cards = document.querySelectorAll('.work-card');
-    const buttons = document.querySelectorAll('.category-btn');
-
-    buttons.forEach(btn => {
-      btn.classList.remove('bg-primary-container', 'text-on-primary', 'border-primary-container');
-      btn.classList.add('bg-surface-container-lowest', 'text-primary', 'border-outline-variant');
-    });
-
-    const activeBtn = document.getElementById('btn-' + category);
-    if (activeBtn) {
-      activeBtn.classList.remove('bg-surface-container-lowest', 'text-primary', 'border-outline-variant');
-      activeBtn.classList.add('bg-primary-container', 'text-on-primary', 'border-primary-container');
-    }
-
-    cards.forEach(card => {
-      if (category === 'all' || card.classList.contains(category)) {
-        card.style.display = 'block';
-        card.classList.add('animate-fadeIn');
-      } else {
-        card.style.display = 'none';
-      }
-    });
-  }
-</script>
 
 
 

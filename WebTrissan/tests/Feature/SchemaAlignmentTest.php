@@ -193,3 +193,36 @@ test('PRD seed data structure matches expectations', function () {
     expect($personnel->technical_focus)->not->toBeNull();
     expect($personnel->qualification_rank)->toBeInt();
 });
+
+test('seeded records point to placeholder media that exists on the public disk', function () {
+    $this->seed();
+
+    $paths = [
+        GlobalSetting::first()->navbar_logo,
+        GlobalSetting::first()->footer_partner_image,
+        AboutCompany::first()->hero_image,
+        AboutCompany::first()->company_profile_pdf,
+        Work::first()->work_image,
+        PortfolioItem::first()->image,
+        CorporateAccreditation::first()->certificate_image,
+        ProductCertification::first()->certificate_pdf,
+    ];
+
+    foreach ($paths as $path) {
+        expect($path)->not->toBeNull()
+            ->and(Storage::disk('public')->exists($path))->toBeTrue();
+    }
+
+    expect(Work::first()->image_url)->toBe(asset('storage/'.Work::first()->work_image));
+});
+
+test('seeded map urls use the key-less embed format that google accepts', function () {
+    $this->seed();
+
+    $global = GlobalSetting::first();
+
+    expect($global->maps_iframe_embed_url)->toStartWith('https://maps.google.com/maps?q=')
+        ->toContain('output=embed')
+        ->not->toContain('pb=')
+        ->and($global->maps_button_url)->toStartWith('https://maps.google.com/?q=');
+});

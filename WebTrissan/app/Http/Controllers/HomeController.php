@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CorporateAccreditation;
 use App\Models\GlobalSetting;
 use App\Models\PageSetting;
 use App\Models\Service;
@@ -23,16 +22,14 @@ class HomeController extends Controller
             $query->orderBy('sort_order');
         }])->orderBy('sort_order')->get();
         $services = Service::with('serviceCluster')->orderBy('sort_order')->get();
-        $featuredWorks = Work::with('service')->where('is_featured', true)->orderBy('sort_order')->take(6)->get();
-        $corporateAccreditations = CorporateAccreditation::with('certificationCategory')->orderBy('sort_order')->get();
+        $featuredWorks = Work::with('service')->where('is_featured', true)->orderBy('featured_sort_order')->orderBy('sort_order')->take(6)->get();
 
         return view('home', compact(
             'globalSettings',
             'pageSettings',
             'serviceClusters',
             'services',
-            'featuredWorks',
-            'corporateAccreditations'
+            'featuredWorks'
         ));
     }
 }

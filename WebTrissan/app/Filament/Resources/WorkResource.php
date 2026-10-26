@@ -4,14 +4,18 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\WorkResource\Pages;
 use App\Models\Work;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class WorkResource extends Resource
 {
+    public const MAX_FEATURED_WORKS = 6;
+
     protected static ?string $model = Work::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
@@ -50,6 +54,18 @@ class WorkResource extends Resource
                 Forms\Components\Section::make('Status & Badges')
                     ->schema([
                         Forms\Components\Toggle::make('is_featured')
+                            ->helperText('Maksimal '.self::MAX_FEATURED_WORKS.' work tampil di Featured Works Landing.')
+                            ->rules([
+                                fn (?Model $record): Closure => function (string $attribute, mixed $value, Closure $fail) use ($record): void {
+                                    $otherFeatured = Work::where('is_featured', true)
+                                        ->when($record, fn ($query) => $query->whereKeyNot($record->getKey()))
+                                        ->count();
+
+                                    if ($value && $otherFeatured >= self::MAX_FEATURED_WORKS) {
+                                        $fail('Maksimal '.self::MAX_FEATURED_WORKS.' work boleh ditandai Featured.');
+                                    }
+                                },
+                            ])
                             ->required(),
                         Forms\Components\TextInput::make('featured_sort_order')
                             ->numeric()

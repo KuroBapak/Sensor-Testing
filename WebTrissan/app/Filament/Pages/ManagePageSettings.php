@@ -38,7 +38,7 @@ class ManagePageSettings extends Page implements HasForms
     public function mount(): void
     {
         $data = [];
-        foreach (['landing', 'works', 'portfolio', 'licenses'] as $pageKey) {
+        foreach (['landing', 'works', 'portfolio', 'licenses', 'about'] as $pageKey) {
             $setting = PageSetting::forPage($pageKey);
             $data[$pageKey] = $setting ? $setting->attributesToArray() : [];
         }
@@ -67,6 +67,7 @@ class ManagePageSettings extends Page implements HasForms
                         $this->getWorksTab(),
                         $this->getPortfolioTab(),
                         $this->getLicensesTab(),
+                        $this->getAboutTab(),
                     ])
                     ->columnSpanFull(),
             ])
@@ -366,11 +367,27 @@ class ManagePageSettings extends Page implements HasForms
             ]);
     }
 
+    protected function getAboutTab(): Tabs\Tab
+    {
+        return Tabs\Tab::make('About Page')
+            ->statePath('about')
+            ->schema([
+                Section::make('SEO Settings')
+                    ->description('Hero and content of the About page are managed in About Company.')
+                    ->schema([
+                        TextInput::make('seo_title')
+                            ->maxLength(255),
+                        Textarea::make('seo_description')
+                            ->rows(3),
+                    ]),
+            ]);
+    }
+
     public function save(): void
     {
         $state = $this->form->getState();
 
-        foreach (['landing', 'works', 'portfolio', 'licenses'] as $pageKey) {
+        foreach (['landing', 'works', 'portfolio', 'licenses', 'about'] as $pageKey) {
             if (isset($state[$pageKey])) {
                 PageSetting::updateOrCreate(
                     ['page' => $pageKey],

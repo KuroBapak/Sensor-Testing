@@ -8,8 +8,13 @@ use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
+    private const SUCCESS_MESSAGE = 'Thank you for contacting us! We will get back to you soon.';
+
     /**
      * Store a new contact submission.
+     *
+     * The hidden `website` field is a honeypot: bots fill it, people do not. Such requests
+     * get the normal success response but are not stored.
      */
     public function store(Request $request): RedirectResponse
     {
@@ -19,7 +24,12 @@ class ContactController extends Controller
             'phone' => 'nullable|string|max:255',
             'message' => 'required|string|max:5000',
             'service_id' => 'nullable|exists:services,id',
+            'website' => 'nullable|string',
         ]);
+
+        if (filled($validated['website'] ?? null)) {
+            return back()->with('success', self::SUCCESS_MESSAGE);
+        }
 
         ContactSubmission::create([
             'name' => $validated['name'],
@@ -30,6 +40,6 @@ class ContactController extends Controller
             'status' => 'new',
         ]);
 
-        return back()->with('success', 'Thank you for contacting us! We will get back to you soon.');
+        return back()->with('success', self::SUCCESS_MESSAGE);
     }
 }

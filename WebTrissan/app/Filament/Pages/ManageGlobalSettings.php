@@ -154,6 +154,7 @@ class ManageGlobalSettings extends Page implements HasForms
                     TextInput::make('overlay_coordinate')
                         ->maxLength(255),
                     Textarea::make('maps_iframe_embed_url')
+                        ->helperText('Isi hanya URL src dari Google Maps (Share > Embed a map), atau format sederhana: https://maps.google.com/maps?q=LAT,LNG&z=15&output=embed. Harus diawali https://.')
                         ->rows(2)
                         ->columnSpanFull(),
                 ])->columns(2),

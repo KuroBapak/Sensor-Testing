@@ -18,9 +18,7 @@ class LicensesController extends Controller
     {
         $globalSettings = GlobalSetting::current();
         $pageSettings = PageSetting::forPage('licenses');
-        $certificationCategories = CertificationCategory::with(['corporateAccreditations' => function ($query) {
-            $query->orderBy('sort_order');
-        }])->orderBy('sort_order')->get();
+        $certificationCategories = CertificationCategory::orderBy('sort_order')->get();
         $corporateAccreditations = CorporateAccreditation::with('certificationCategory')->orderBy('sort_order')->get();
         $productCertifications = ProductCertification::with('work')->orderBy('sort_order')->get();
 

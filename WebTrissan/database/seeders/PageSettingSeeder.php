@@ -31,9 +31,9 @@ class PageSettingSeeder extends Seeder
                 'hero_cta_text' => 'Lihat Portofolio',
                 'hero_cta_url' => '/works',
                 'hero_slides' => [
-                    ['image' => '/images/hero-1.jpg', 'alt_text' => '5-Axis CNC Precision Machining Center'],
-                    ['image' => '/images/hero-2.jpg', 'alt_text' => 'Heavy Welding & ASME Pressure Vessel Fabrication'],
-                    ['image' => '/images/hero-3.jpg', 'alt_text' => 'Industrial Robotics & Automation System'],
+                    ['image' => SeedMedia::image('hero-1'), 'alt_text' => '5-Axis CNC Precision Machining Center'],
+                    ['image' => SeedMedia::image('hero-2'), 'alt_text' => 'Heavy Welding & ASME Pressure Vessel Fabrication'],
+                    ['image' => SeedMedia::image('hero-3'), 'alt_text' => 'Industrial Robotics & Automation System'],
                 ],
                 'trust_card' => [
                     'label' => 'TRUSTED BY 50+ LEADERS',
@@ -44,7 +44,7 @@ class PageSettingSeeder extends Seeder
                     'footer_right' => 'Global Audited',
                 ],
                 'about_teaser' => [
-                    'image' => '/images/about-teaser.jpg',
+                    'image' => SeedMedia::image('about-teaser'),
                     'image_badge' => 'EST. 1998 • 25+ THN',
                     'eyebrow' => 'TENTANG PERUSAHAAN',
                     'title' => 'Dedikasi Presisi Sejak 1998',

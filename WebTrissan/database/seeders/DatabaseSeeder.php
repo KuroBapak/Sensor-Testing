@@ -16,25 +16,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Default Admin User for Filament Panel
-        User::firstOrCreate(
-            ['email' => 'admin@trissan.com'],
-            [
-                'name' => 'Admin Trissan',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-            ]
-        );
-
-        // Also keep test user if needed
-        User::firstOrCreate(
-            ['email' => 'test@example.com'],
-            [
-                'name' => 'Test User',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-            ]
-        );
+        $this->seedUsers();
 
         // CMS Seeders
         $this->call([
@@ -47,5 +29,38 @@ class DatabaseSeeder extends Seeder
             PortfolioSeeder::class,
             PersonnelSeeder::class,
         ]);
+    }
+
+    /**
+     * Create the admin user, and a demo user outside production-like environments.
+     */
+    private function seedUsers(): void
+    {
+        $isLocal = app()->environment('local', 'testing');
+        $password = filled(config('cms.admin_password')) ? config('cms.admin_password') : ($isLocal ? 'password' : null);
+
+        if ($password === null) {
+            $this->command?->warn('CMS_ADMIN_PASSWORD is not set; skipping admin user creation.');
+        } else {
+            User::firstOrCreate(
+                ['email' => config('cms.admin_emails')[0] ?? 'admin@trissan.com'],
+                [
+                    'name' => 'Admin Trissan',
+                    'password' => Hash::make($password),
+                    'email_verified_at' => now(),
+                ]
+            );
+        }
+
+        if ($isLocal) {
+            User::firstOrCreate(
+                ['email' => 'test@example.com'],
+                [
+                    'name' => 'Test User',
+                    'password' => Hash::make('password'),
+                    'email_verified_at' => now(),
+                ]
+            );
+        }
     }
 }

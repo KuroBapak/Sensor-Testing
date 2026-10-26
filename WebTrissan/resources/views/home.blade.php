@@ -55,101 +55,12 @@
 </head>
 <body class="bg-white text-slate-800 antialiased relative overflow-x-hidden selection:bg-brand-navy selection:text-white">
 
-  <!-- 1. Bilah Navigasi (Header) -->
-  <header class="sticky top-0 z-50 backdrop-blur-md border-b shadow-sm transition-all duration-300 border-slate-200/80" style="background-color: rgba(255, 255, 255, 0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
-    <div class="max-w-7xl mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
-      <!-- Logo Perusahaan di Sebelah Kiri -->
-      <a href="#landing" class="flex items-center gap-3.5 group">
-        <div class="w-11 h-11 rounded-lg overflow-hidden border border-brand-navy/15 flex items-center justify-center bg-white shadow-sm transition group-hover:scale-105">
-          @php
-            $navLogo = !empty($globalSettings?->navbar_logo)
-              ? (str_starts_with($globalSettings->navbar_logo, 'http')
-                  ? $globalSettings->navbar_logo
-                  : (str_starts_with($globalSettings->navbar_logo, '/')
-                      ? asset(ltrim($globalSettings->navbar_logo, '/'))
-                      : asset('storage/' . $globalSettings->navbar_logo)))
-              : 'https://lh3.googleusercontent.com/aida-public/AB6AXuCiMPbIsbS-sC9J4DTxtsdSwTVeBEABqrpT_kyCq3jV6W5K1bOH8NOSdxswUhegkBvpOBQsbNnQCkpHCSZVOkGYzisKUZn9NESn9dVQlSR1cMINm9F4zGmpZ7-wcyktFR5YG7eAQVSieih4YiiLAs808ouuT9UMz-7VXekJTTRRHErI1fXIfdGZgJorwjnRKJwQvqz3_Otqvt8F9_RTYXbxS4dQWRCPCnUH4b_Nvr0rswPl2qvjwLG6';
-          @endphp
-          <img src="{{ $navLogo }}" alt="{{ $globalSettings?->company_name ?? 'PT. Trissan' }} Logo" class="w-full h-full object-cover">
-        </div>
-        <div class="flex flex-col">
-          <span class="font-heading font-extrabold text-xl text-brand-navy tracking-tight leading-none group-hover:text-brand-accent transition">{{ $globalSettings?->company_name ?? 'PT. Trissan' }}</span>
-          <span class="text-[10px] font-semibold text-brand-grayMuted tracking-widest uppercase mt-0.5">{{ $globalSettings?->company_tagline ?? 'Industrial Engineering' }}</span>
-        </div>
-      </a>
-
-      <!-- Tautan Menu di Sebelah Kanan (Hanya 5 item sesuai urutan instruksi) -->
-      <nav class="hidden md:flex items-center space-x-8"><a href="#landing" class="nav-link font-heading text-sm font-semibold tracking-wide transition relative py-1 text-brand-navy after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-brand-navy">Landing Page</a>
-
-<div class="relative group">
-  <button class="flex items-center gap-1.5 font-heading text-sm font-semibold tracking-wide transition relative py-1 text-brand-grayMuted hover:text-brand-navy focus:outline-none">
-    <span class="">Capabilities &amp; Works</span>
-    <svg class="w-4 h-4 text-slate-400 group-hover:text-brand-navy transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-    </svg>
-  </button>
-  <div class="absolute left-0 top-full pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-50">
-    <div class="bg-slate-900/95 backdrop-blur-md border border-slate-700/60 rounded-xl shadow-2xl p-2 min-w-[240px] flex flex-col gap-1 text-left">
-      <a href="#services" class="px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition flex items-center justify-between group/item">
-        <div>
-          <div class="font-heading font-bold text-slate-100 group-hover/item:text-blue-400 transition">Services</div>
-          <div class="text-[11px] text-slate-400 font-normal mt-0.5">12 Klaster &amp; Kapabilitas Rekayasa</div>
-        </div>
-        <svg class="w-3.5 h-3.5 text-slate-400 group-hover/item:translate-x-1 group-hover/item:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-      </a>
-      <a href="#works" class="px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition flex items-center justify-between group/item">
-        <div>
-          <div class="font-heading font-bold text-slate-100 group-hover/item:text-blue-400 transition">Featured Works</div>
-          <div class="text-[11px] text-slate-400 font-normal mt-0.5">Output &amp; Dokumentasi Proyek</div>
-        </div>
-        <svg class="w-3.5 h-3.5 text-slate-400 group-hover/item:translate-x-1 group-hover/item:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-      </a>
-      <a href="/works" class="px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition flex items-center justify-between group/item">
-        <div>
-          <div class="font-heading font-bold text-slate-100 group-hover/item:text-blue-400 transition">Portofolio Manpower</div>
-          <div class="text-[11px] text-slate-400 font-normal mt-0.5">Tenaga Kerja &amp; Fabrikasi Lapangan</div>
-        </div>
-        <svg class="w-3.5 h-3.5 text-slate-400 group-hover/item:translate-x-1 group-hover/item:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-      </a>
-    </div>
-  </div>
-</div>
-
-<div class="relative group">
-  <button class="flex items-center gap-1.5 font-heading text-sm font-semibold tracking-wide transition relative py-1 text-brand-grayMuted hover:text-brand-navy focus:outline-none">
-    <span class="">Company &amp; Credentials</span>
-    <svg class="w-4 h-4 text-slate-400 group-hover:text-brand-navy transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-    </svg>
-  </button>
-  <div class="absolute left-0 top-full pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-50">
-    <div class="bg-slate-900/95 backdrop-blur-md border border-slate-700/60 rounded-xl shadow-2xl p-2 min-w-[240px] flex flex-col gap-1 text-left">
-      <a href="{{ url('/about') }}" class="px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition flex items-center justify-between group/item">
-        <div>
-          <div class="font-heading font-bold text-slate-100 group-hover/item:text-blue-400 transition">About Us</div>
-          <div class="text-[11px] text-slate-400 font-normal mt-0.5">Profil Pabrik, Visi &amp; Standar Mutu</div>
-        </div>
-        <svg class="w-3.5 h-3.5 text-slate-400 group-hover/item:translate-x-1 group-hover/item:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-      </a>
-      <a href="{{ url('/license') }}" class="px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition flex items-center justify-between group/item">
-        <div>
-          <div class="font-heading font-bold text-slate-100 group-hover/item:text-blue-400 transition">License &amp; Certification</div>
-          <div class="text-[11px] text-slate-400 font-normal mt-0.5">AS9100D, ISO 9001 &amp; Legalitas Resmi</div>
-        </div>
-        <svg class="w-3.5 h-3.5 text-slate-400 group-hover/item:translate-x-1 group-hover/item:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-      </a>
-    </div>
-  </div>
-</div>
-
-<a href="#contact" class="nav-link font-heading text-sm font-semibold tracking-wide transition relative py-1 text-brand-grayMuted hover:text-brand-navy">Contact</a></nav>
-    </div>
-  </header>
+  @include('layouts.navbar')
 
   <main class="relative">
 
     <!-- 2. Bagian Landing Page (Hero) -->
-    <section id="landing" class="relative w-full h-[620px] lg:h-[680px] bg-brand-navy flex items-center overflow-hidden">
+    <section id="landing" class="relative w-full min-h-[560px] lg:min-h-[680px] bg-brand-navy flex items-center overflow-hidden">
             <!-- Background Gambar Fasilitas Pabrik Penuh dengan Overlay Gelap -->
       <div class="absolute inset-0 z-0 overflow-hidden" id="hero-carousel-container">
         @php
@@ -163,9 +74,8 @@
         @if(!empty($heroSlides) && is_array($heroSlides))
           @foreach($heroSlides as $index => $slide)
             @php
-              $slideImg = !empty($slide['image'])
-                ? (str_starts_with($slide['image'], 'http') ? $slide['image'] : asset('storage/' . $slide['image']))
-                : ($defaultSlides[$index % count($defaultSlides)]['image'] ?? $defaultSlides[0]['image']);
+              $slideImg = \App\Support\MediaUrl::resolve($slide['image'] ?? null)
+                ?? ($defaultSlides[$index % count($defaultSlides)]['image'] ?? $defaultSlides[0]['image']);
               $slideAlt = $slide['alt_text'] ?? ($slide['alt'] ?? ($slide['caption'] ?? ($defaultSlides[$index % count($defaultSlides)]['alt'] ?? 'Manufacturing Facility')));
             @endphp
             <div class="hero-slide absolute inset-0 transition-opacity duration-1000 {{ $loop->first ? 'opacity-100' : 'opacity-0' }}">
@@ -186,11 +96,11 @@
       </div>
 
       <!-- Konten Hero di Sisi Kiri -->
-      <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 w-full pb-24 pt-2">
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 w-full pt-10 pb-32 lg:pb-24 lg:pt-2">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
           <div class="max-w-2xl text-left">
-            <h1 class="font-heading font-black text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.12] mb-6 drop-shadow-md mt-1">{{ $pageSettings->hero_title ?? 'Dedikasi Presisi Manufaktur Mutakhir' }}</h1>
-            <p class="text-slate-300 text-base sm:text-lg leading-relaxed font-normal max-w-xl mb-10">{{ $pageSettings->hero_subtitle ?? 'Menghadirkan rekayasa komponen mekanikal bertoleransi tinggi serta integrasi otomasi industri berstandar mutu internasional.' }}</p>
+            <h1 class="font-heading font-black text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.12] mb-4 lg:mb-6 drop-shadow-md mt-1">{{ $pageSettings->hero_title ?? 'Dedikasi Presisi Manufaktur Mutakhir' }}</h1>
+            <p class="text-slate-300 text-sm sm:text-lg leading-relaxed font-normal max-w-xl mb-6 lg:mb-10">{{ $pageSettings->hero_subtitle ?? 'Menghadirkan rekayasa komponen mekanikal bertoleransi tinggi serta integrasi otomasi industri berstandar mutu internasional.' }}</p>
             <div class="flex items-center gap-4">
               <a href="{{ $pageSettings->hero_cta_url ?? '#works' }}" class="inline-flex items-center justify-center font-heading font-bold text-xs sm:text-sm tracking-wider text-brand-navy bg-white hover:bg-slate-100 px-8 py-4 rounded shadow-heavy hover:shadow-2xl transition duration-200 transform hover:-translate-y-0.5 active:translate-y-0 uppercase group">
                 <span>{{ $pageSettings->hero_cta_text ?? 'Lihat Portofolio' }}</span>
@@ -238,7 +148,7 @@
 
     <!-- 3. Bagian Services (Kategori Pekerjaan) -->
     <!-- Menindih bagian bawah gambar hero -->
-    <section id="services" class="relative z-20 max-w-7xl mx-auto px-6 lg:px-12 -mt-24 lg:-mt-28"><div class="relative group/carousel"><div class="flex items-center justify-between mb-4 md:hidden"><span class="text-xs font-heading font-bold text-slate-400 uppercase tracking-widest">Core Capabilities ({{ $services->count() }} Services)</span><div class="flex items-center gap-2"><button onclick="document.getElementById('services-slider').scrollBy({left: -320, behavior: 'smooth'})" aria-label="Previous" class="w-9 h-9 rounded bg-white border border-brand-grayBorder flex items-center justify-center text-brand-navy hover:bg-brand-navy hover:text-white transition shadow-sm cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button><button onclick="document.getElementById('services-slider').scrollBy({left: 320, behavior: 'smooth'})" aria-label="Next" class="w-9 h-9 rounded bg-white border border-brand-grayBorder flex items-center justify-center text-brand-navy hover:bg-brand-navy hover:text-white transition shadow-sm cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button></div></div><button onclick="document.getElementById('services-slider').scrollBy({left: -380, behavior: 'smooth'})" aria-label="Previous Slide" class="hidden md:flex absolute -left-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-lg bg-white/95 backdrop-blur-md border border-brand-grayBorder text-brand-navy hover:text-white hover:bg-brand-navy items-center justify-center shadow-heavy hover:shadow-card-hover transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button><button onclick="document.getElementById('services-slider').scrollBy({left: 380, behavior: 'smooth'})" aria-label="Next Slide" class="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-lg bg-white/95 backdrop-blur-md border border-brand-grayBorder text-brand-navy hover:text-white hover:bg-brand-navy items-center justify-center shadow-heavy hover:shadow-card-hover transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button><div id="services-slider" class="flex gap-6 lg:gap-8 overflow-x-auto scroll-smooth pb-4 pt-1 snap-x select-none">
+    <section id="services" class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 -mt-24 lg:-mt-28"><div class="relative group/carousel"><div class="flex items-center justify-between mb-4 md:hidden"><span class="text-xs font-heading font-bold text-slate-400 uppercase tracking-widest">Core Capabilities ({{ $services->count() }} Services)</span><div class="flex items-center gap-2"><button onclick="document.getElementById('services-slider').scrollBy({left: -320, behavior: 'smooth'})" aria-label="Previous" class="w-9 h-9 rounded bg-white border border-brand-grayBorder flex items-center justify-center text-brand-navy hover:bg-brand-navy hover:text-white transition shadow-sm cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button><button onclick="document.getElementById('services-slider').scrollBy({left: 320, behavior: 'smooth'})" aria-label="Next" class="w-9 h-9 rounded bg-white border border-brand-grayBorder flex items-center justify-center text-brand-navy hover:bg-brand-navy hover:text-white transition shadow-sm cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button></div></div><button onclick="document.getElementById('services-slider').scrollBy({left: -380, behavior: 'smooth'})" aria-label="Previous Slide" class="hidden md:flex absolute -left-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-lg bg-white/95 backdrop-blur-md border border-brand-grayBorder text-brand-navy hover:text-white hover:bg-brand-navy items-center justify-center shadow-heavy hover:shadow-card-hover transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button><button onclick="document.getElementById('services-slider').scrollBy({left: 380, behavior: 'smooth'})" aria-label="Next Slide" class="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-lg bg-white/95 backdrop-blur-md border border-brand-grayBorder text-brand-navy hover:text-white hover:bg-brand-navy items-center justify-center shadow-heavy hover:shadow-card-hover transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button><div id="services-slider" class="flex gap-6 lg:gap-8 overflow-x-auto scroll-smooth pb-4 pt-1 snap-x select-none">
           @forelse($services as $service)
             <div onclick="window.location.href='{{ url('/works?category=' . ($service->slug ?? '')) }}'" class="snap-start shrink-0 w-[88vw] sm:w-[360px] lg:w-[380px] group cursor-pointer bg-white rounded-lg p-8 border border-brand-grayBorder shadow-industrial hover:shadow-card-hover hover:border-brand-accent transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between relative overflow-hidden">
               <div class="absolute top-0 left-0 w-full h-1.5 bg-brand-navy group-hover:bg-brand-accent transition"></div>
@@ -272,27 +182,24 @@
       
 
       <!-- 4. Bagian Works (Hasil Pekerjaan dengan Tab Filter Interaktif) -->
-      <section id="about" class="py-20 bg-brand-grayBg border-t border-brand-grayBorder relative overflow-hidden">
+      <section id="about" class="py-12 lg:py-20 bg-brand-grayBg border-t border-brand-grayBorder relative overflow-hidden">
         @php
           $aboutTeaser = $pageSettings->about_teaser ?? [];
-          $aboutImage = !empty($aboutTeaser['image'])
-            ? (str_starts_with($aboutTeaser['image'], 'http')
-                ? $aboutTeaser['image']
-                : (str_starts_with($aboutTeaser['image'], '/')
-                    ? asset(ltrim($aboutTeaser['image'], '/'))
-                    : asset('storage/' . $aboutTeaser['image'])))
-            : 'https://lh3.googleusercontent.com/aida-public/AB6AXuC7D7HAstdKsEhQ5jP4KgjDD06L8XEAneixTri3F8rqZCOFH38u54XUTBd6kxGV-jmWQWfz2rPnnGT9jVfS1ixR2LLUonFiB_qXPn4Vj93pWlc1SvJGb7kqiYBFS-rnSB541Azad48DmqUtAnzK2dl9Ku27bRS_zSEPLk6dgs9g4l6SVWMn5l4INGfVwH5Sndf5bWVsk4qerFO0bXLeLns3x1RtkpfNhS5VPZTcLqxV1BmhvSlZZ9CL';
+          $aboutImage = \App\Support\MediaUrl::resolve($aboutTeaser['image'] ?? null) ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuC7D7HAstdKsEhQ5jP4KgjDD06L8XEAneixTri3F8rqZCOFH38u54XUTBd6kxGV-jmWQWfz2rPnnGT9jVfS1ixR2LLUonFiB_qXPn4Vj93pWlc1SvJGb7kqiYBFS-rnSB541Azad48DmqUtAnzK2dl9Ku27bRS_zSEPLk6dgs9g4l6SVWMn5l4INGfVwH5Sndf5bWVsk4qerFO0bXLeLns3x1RtkpfNhS5VPZTcLqxV1BmhvSlZZ9CL';
           $aboutBadge = $aboutTeaser['image_badge'] ?? 'EST. 1998 • 25+ THN';
-          $aboutEyebrow = $aboutTeaser['eyebrow'] ?? 'TENTANG PT. TRISSAN';
+          $aboutEyebrow = $aboutTeaser['eyebrow'] ?? 'TENTANG '.strtoupper($globalSettings?->company_name ?? 'KAMI');
           $aboutTitle = $aboutTeaser['title'] ?? 'Dedikasi Rekayasa Presisi & Standar Manufaktur Kelas Dunia';
           $aboutDescription = $aboutTeaser['description']
             ?? (isset($aboutTeaser['paragraph_1']) || isset($aboutTeaser['paragraph_2'])
                 ? trim(($aboutTeaser['paragraph_1'] ?? '') . "\n\n" . ($aboutTeaser['paragraph_2'] ?? ''))
                 : "Sebagai mitra rekayasa industri tier-1, Apex Industrial Engineering memadukan kecanggihan teknologi permesinan CNC 5-sumbu mutakhir, fabrikasi metalurgi berakurasi tinggi, dan integrasi mekatronika otomatis untuk sektor-sektor kritis seperti kedirgantaraan, pertahanan, otomotif presisi tinggi, dan infrastruktur maritim.\n\nDengan komitmen tanpa henti pada kepatuhan toleransi mikro hingga 0.002mm serta audit mutu menyeluruh, kami membantu memitigasi risiko manufaktur dan mempercepat siklus peluncuran sistem industri bagi konglomerasi global terdepan.");
           $aboutCtaText = $aboutTeaser['cta_text'] ?? 'Pelajari Profil Lengkap';
-          $aboutCtaUrl = $aboutTeaser['cta_url'] ?? '/abtus';
+          $aboutCtaUrl = $aboutTeaser['cta_url'] ?? '/about';
 
-          $stats = $pageSettings->stats ?? [
+          $companyStats = collect($globalSettings?->company_stats ?? [])
+            ->map(fn ($companyStat) => ['value' => $companyStat['value'] ?? '', 'label' => $companyStat['label_landing'] ?? ($companyStat['label_about'] ?? '')])
+            ->all();
+          $stats = $companyStats ?: $pageSettings->stats ?? [
             ['value' => '25+', 'label' => 'Tahun Pengalaman', 'color' => 'text-brand-navy'],
             ['value' => '99.98%', 'label' => 'Presisi Toleransi', 'color' => 'text-brand-accent'],
             ['value' => '150+', 'label' => 'Insinyur Ahli', 'color' => 'text-brand-navy'],
@@ -349,16 +256,10 @@
         </div>
       </section>
 
-      <section id="works" class="bg-white border-t border-b border-brand-grayBorder relative py-20"><div class="max-w-7xl mx-auto px-6 lg:px-12"><div class="max-w-xl mb-10"><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-grayBg border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3 shadow-sm"><span class="w-2 h-2 rounded-full bg-brand-accent"></span>ENGINEERED OUTPUT</div><h2 class="font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight mt-1">Featured Industrial Works</h2><p class="text-brand-grayMuted text-sm mt-3 leading-relaxed">Tinjau contoh rekam jejak presisi manufaktur dan standar mutu pabrik kami yang mematuhi standar toleransi mikro ketat.</p></div><div id="works-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <section id="works" class="bg-white border-t border-b border-brand-grayBorder relative py-12 lg:py-20"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12"><div class="max-w-xl mb-10"><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-grayBg border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3 shadow-sm"><span class="w-2 h-2 rounded-full bg-brand-accent"></span>ENGINEERED OUTPUT</div><h2 class="font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight mt-1">Featured Industrial Works</h2><p class="text-brand-grayMuted text-sm mt-3 leading-relaxed">Tinjau contoh rekam jejak presisi manufaktur dan standar mutu pabrik kami yang mematuhi standar toleransi mikro ketat.</p></div><div id="works-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         @forelse($featuredWorks as $work)
           @php
-            $workImg = !empty($work->work_image)
-              ? (str_starts_with($work->work_image, 'http')
-                  ? $work->work_image
-                  : (str_starts_with($work->work_image, '/')
-                      ? asset(ltrim($work->work_image, '/'))
-                      : asset('storage/' . $work->work_image)))
-              : 'https://lh3.googleusercontent.com/aida-public/AB6AXuCYLbne5xVfziHtl9ouQePMOql-0lVZ6W1lydOHuy1ForFKi60xT0IRaUlxALs6aHz3ToC6MEHu748HwGOXVkA-hAKvh3wB6AdWg7L_mMJuSY3bZqjtv3CNIxo0fUC2Ff0al6jKmuo8MtQL1PWpn8Zgl6YcnPcG1KA4ejAx3iciLPc_DZgSDxUXaGSzx88Dzvu2CQy4LLu_CBAQXCSZjJfIccYW_fAA59ESQoExTReRrmMIqH-c2UyA';
+            $workImg = $work->image_url ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuCYLbne5xVfziHtl9ouQePMOql-0lVZ6W1lydOHuy1ForFKi60xT0IRaUlxALs6aHz3ToC6MEHu748HwGOXVkA-hAKvh3wB6AdWg7L_mMJuSY3bZqjtv3CNIxo0fUC2Ff0al6jKmuo8MtQL1PWpn8Zgl6YcnPcG1KA4ejAx3iciLPc_DZgSDxUXaGSzx88Dzvu2CQy4LLu_CBAQXCSZjJfIccYW_fAA59ESQoExTReRrmMIqH-c2UyA';
             $categorySlug = $work->service?->slug ?? 'general';
           @endphp
           <div class="work-card {{ $categorySlug }} bg-white rounded-lg border border-brand-grayBorder overflow-hidden shadow-sm hover:shadow-card-hover transition group flex flex-col justify-between cursor-pointer" onclick="window.location.href='{{ url('/works#' . ($work->work_slug ?? '')) }}'">
@@ -406,7 +307,7 @@
     </div>
 
     <!-- 5. Bagian Portfolio (Galeri Proses Manufaktur & Peralatan dengan Tombol Biru Persegi Panjang) -->
-    <section id="services-overview" class="bg-brand-grayBg border-t border-b border-brand-grayBorder relative py-20"><div class="max-w-7xl mx-auto px-6 lg:px-12"><div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6"><div class="max-w-2xl"><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3 shadow-sm"><span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>LAYANAN &amp; SPESIALISASI TEKNIK / CAPABILITY DIRECTORY</div><h2 class="font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight mt-1">Layanan &amp; Kapabilitas Rekayasa Industri</h2><p class="text-brand-grayMuted text-sm mt-3 leading-relaxed">Direktori lengkap kapabilitas rekayasa mekanikal, automasi, kelistrikan, dan pengadaan industri terpadu. Klik setiap layanan spesialisasi untuk meninjau dokumentasi proyek pada rekam jejak pekerjaan kami.</p></div><div class="shrink-0"><a href="/works" class="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-brand-navy text-white hover:bg-brand-accent text-xs font-heading font-bold tracking-wider uppercase transition shadow-sm"><span class="">Eksplorasi Semua Services</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <section id="services-overview" class="bg-brand-grayBg border-t border-b border-brand-grayBorder relative py-12 lg:py-20"><div class="max-w-7xl mx-auto px-6 lg:px-12"><div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6"><div class="max-w-2xl"><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3 shadow-sm"><span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>LAYANAN &amp; SPESIALISASI TEKNIK / CAPABILITY DIRECTORY</div><h2 class="font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight mt-1">Layanan &amp; Kapabilitas Rekayasa Industri</h2><p class="text-brand-grayMuted text-sm mt-3 leading-relaxed">Direktori lengkap kapabilitas rekayasa mekanikal, automasi, kelistrikan, dan pengadaan industri terpadu. Klik setiap layanan spesialisasi untuk meninjau dokumentasi proyek pada rekam jejak pekerjaan kami.</p></div><div class="shrink-0"><a href="/works" class="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-brand-navy text-white hover:bg-brand-accent text-xs font-heading font-bold tracking-wider uppercase transition shadow-sm"><span class="">Eksplorasi Semua Services</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         @forelse($serviceClusters as $cluster)
           <div class="bg-white rounded-lg border border-brand-grayBorder shadow-industrial hover:shadow-card-hover transition-all duration-300 overflow-hidden flex flex-col">
             <div class="p-6 bg-slate-50 border-b border-brand-grayBorder flex items-center justify-between">
@@ -458,7 +359,12 @@
       </div></div></section>
 
     <!-- 6. Bagian Contact (Blok Biru Dongker + Area Mission/Values/Motto + Deretan Logo Klien + 3D Roda Gigi Metalik di Sudut Kanan Bawah) -->
-    <section id="contact" class="border-t border-brand-grayBorder relative overflow-hidden py-20 bg-white">
+    <section id="contact" class="border-t border-brand-grayBorder relative overflow-hidden py-12 lg:py-20 bg-white">
+      @php
+        $httpsOnly = fn (?string $url, string $fallback): string => \Illuminate\Support\Str::startsWith((string) $url, 'https://') ? $url : $fallback;
+        $mapsButtonUrl = $httpsOnly($globalSettings?->maps_button_url, 'https://maps.google.com/?q=Kawasan+Industri+Jababeka+V+Cikarang');
+        $mapsEmbedUrl = $httpsOnly($globalSettings?->maps_iframe_embed_url, 'https://maps.google.com/maps?q=-6.315024,107.151817&hl=id&z=15&output=embed');
+      @endphp
       
       <!-- GAMBAR 3D RODA GIGI (GEAR) METALIK TAJAM DI SUDUT KANAN BAWAH HALAMAN -->
       
@@ -469,11 +375,11 @@
         <div class="text-center max-w-2xl mx-auto mb-12"><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3"><span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>GET IN TOUCH</div><h2 class="font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight">Contact Us</h2><p class="text-brand-grayMuted text-sm mt-3 leading-relaxed">Hubungi tim rekayasa industri kami untuk konsultasi teknis, kemitraan proyek manufaktur, dan permintaan penawaran (RFQ).</p></div><div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch mb-12">
           
           <!-- Blok Persegi Panjang Tebal dengan Latar Belakang Biru Dongker -->
-          <div class="lg:col-span-6 bg-brand-navy text-white rounded-lg p-10 lg:p-12 shadow-heavy flex flex-col justify-between border-t-4 border-brand-accent relative overflow-hidden">
+          <div class="lg:col-span-6 bg-brand-navy text-white rounded-lg p-6 sm:p-10 lg:p-12 shadow-heavy flex flex-col justify-between border-t-4 border-brand-accent relative overflow-hidden">
             <div class="absolute -right-10 -bottom-10 w-44 h-44 bg-brand-steel/20 rounded-full blur-2xl pointer-events-none"></div>
             <div>
               <span class="text-xs font-heading font-bold text-blue-300 tracking-widest uppercase">Direct Inquiries</span>
-              <h3 class="font-heading font-extrabold text-3xl sm:text-4xl text-white tracking-tight mt-1 mb-6">
+              <h3 class="font-heading font-extrabold text-2xl sm:text-4xl text-white tracking-tight mt-1 mb-6">
                 How Can We Help?
               </h3>
               <p class="text-slate-300 text-sm leading-relaxed mb-8">
@@ -488,7 +394,11 @@
                   </div>
                   <div>
                     <span class="text-xs font-semibold text-slate-400 block uppercase tracking-wider">Telepon Hotline</span>
-                    <a href="tel:+62215508899" class="font-heading font-bold text-white text-base hover:text-blue-300 transition">+62 (21) 5508-8990 / +62 811-9870-221</a>
+                    @forelse(($globalSettings?->phones ?? []) as $phone)
+                      <a href="{{ $phone['tel_url'] ?? '#' }}" class="font-heading font-bold text-white text-base hover:text-blue-300 transition">{{ $phone['display_text'] ?? '' }}</a>@if(!$loop->last) <span class="text-slate-400">/</span> @endif
+                    @empty
+                      <span class="font-heading font-bold text-white text-base">-</span>
+                    @endforelse
                   </div>
                 </div>
 
@@ -498,193 +408,148 @@
                   </div>
                   <div>
                     <span class="text-xs font-semibold text-slate-400 block uppercase tracking-wider">Alamat Pabrik &amp; Fasilitas</span>
-                    <p class="font-medium text-slate-200 text-sm mt-0.5">Kawasan Industri Jababeka V, Blok C-18 No. 4, Cikarang, Bekasi 17530, Indonesia</p>
+                    <p class="font-medium text-slate-200 text-sm mt-0.5">{{ $globalSettings?->factory_address }}</p>
                   </div>
                 </div>
-              <div class="flex items-start gap-4"><div class="w-10 h-10 rounded bg-white/10 flex items-center justify-center text-blue-400 shrink-0 border border-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z"></path></svg></div><div><span class="text-xs font-semibold text-slate-400 block uppercase tracking-wider">SURAT ELEKTRONIK (EMAIL)</span><a href="mailto:contact@apex-engineering.co.id" class="font-heading font-bold text-white text-base hover:text-blue-300 transition block">contact@apex-engineering.co.id</a><span class="text-xs text-slate-300 font-medium block mt-0.5"><a href="mailto:corporate@apex-engineering.co.id" class="text-blue-300 hover:underline">corporate@apex-engineering.co.id</a></span></div></div></div>
+              <div class="flex items-start gap-4"><div class="w-10 h-10 rounded bg-white/10 flex items-center justify-center text-blue-400 shrink-0 border border-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z"></path></svg></div><div><span class="text-xs font-semibold text-slate-400 block uppercase tracking-wider">SURAT ELEKTRONIK (EMAIL)</span><a href="mailto:{{ $globalSettings?->primary_email }}" class="font-heading font-bold text-white text-base hover:text-blue-300 transition block">{{ $globalSettings?->primary_email }}</a>@if($globalSettings?->corporate_email)<span class="text-xs text-slate-300 font-medium block mt-0.5"><a href="mailto:{{ $globalSettings->corporate_email }}" class="text-blue-300 hover:underline">{{ $globalSettings->corporate_email }}</a></span>@endif</div></div></div>
             </div>
 
             <!-- Tombol "CONTACT FORM" -->
             <div class="mt-10 pt-8 border-t border-white/15">
-              <a href="#contact-modal" class="w-full inline-flex items-center justify-center font-heading font-bold text-xs tracking-widest text-brand-navy bg-white hover:bg-slate-100 py-4 px-8 rounded shadow-md transition duration-200 uppercase">
+              <button type="button" onclick="openContactModal()" class="w-full inline-flex items-center justify-center font-heading font-bold text-xs tracking-widest text-brand-navy bg-white hover:bg-slate-100 py-4 px-8 rounded shadow-md transition duration-200 uppercase">
                 CONTACT FORM
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="send" aria-hidden="true" class="lucide lucide-send w-4 h-4 ml-2.5"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path><path d="m21.854 2.147-10.94 10.939"></path></svg>
-              </a>
+              </button>
             </div>
           </div>
 
           <!-- Di Samping Blok Biru: Area Bersih untuk Teks "Our Mission, Values and Motto" -->
-          <div class="lg:col-span-6 bg-white rounded-lg p-10 lg:p-12 border border-brand-grayBorder shadow-sm flex flex-col justify-center"><span class="text-xs font-heading font-bold text-brand-accent tracking-widest uppercase">MEDIA SOSIAL &amp; KOMUNITAS</span><h3 class="font-heading font-extrabold text-2xl sm:text-3xl text-brand-navy tracking-tight mt-1 mb-8">Terhubung di Saluran Resmi</h3><div class="space-y-4"><div class="p-4 rounded-lg bg-brand-grayBg border border-slate-200 flex items-start justify-between gap-4 transition hover:border-brand-accent group"><div class="flex items-start gap-3.5"><div class="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-brand-navy shrink-0 shadow-sm group-hover:text-brand-accent group-hover:border-brand-accent transition"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg></div><div><div class="flex items-center gap-2"><h4 class="font-heading font-bold text-sm text-brand-navy group-hover:text-brand-accent transition">LinkedIn</h4><span class="text-xs text-slate-400 font-mono">@Apex Industrial Engineering</span></div><p class="text-xs text-brand-grayMuted leading-relaxed mt-1">Update industri, rekayasa teknologi, &amp; jejaring profesional B2B</p></div></div><a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-heading font-semibold text-brand-navy bg-white border border-slate-200 rounded hover:bg-brand-navy hover:text-white transition shrink-0 group-hover:border-brand-navy">Ikuti <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div><div class="p-4 rounded-lg bg-brand-grayBg border border-slate-200 flex items-start justify-between gap-4 transition hover:border-brand-accent group"><div class="flex items-start gap-3.5"><div class="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-brand-navy shrink-0 shadow-sm group-hover:text-brand-accent group-hover:border-brand-accent transition"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg></div><div><div class="flex items-center gap-2"><h4 class="font-heading font-bold text-sm text-brand-navy group-hover:text-brand-accent transition">Instagram</h4><span class="text-xs text-slate-400 font-mono">@apexindustrial.id</span></div><p class="text-xs text-brand-grayMuted leading-relaxed mt-1">Aktivitas pabrik, fasilitas mesin presisi, &amp; dokumentasi proyek</p></div></div><a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-heading font-semibold text-brand-navy bg-white border border-slate-200 rounded hover:bg-brand-navy hover:text-white transition shrink-0 group-hover:border-brand-navy">Lihat <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div><div class="p-4 rounded-lg bg-brand-grayBg border border-slate-200 flex items-start justify-between gap-4 transition hover:border-brand-accent group"><div class="flex items-start gap-3.5"><div class="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-brand-navy shrink-0 shadow-sm group-hover:text-brand-accent group-hover:border-brand-accent transition"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path></svg></div><div><div class="flex items-center gap-2"><h4 class="font-heading font-bold text-sm text-brand-navy group-hover:text-brand-accent transition">YouTube</h4><span class="text-xs text-slate-400 font-mono">Apex Industrial TV / Official</span></div><p class="text-xs text-brand-grayMuted leading-relaxed mt-1">Video kapabilitas mesin CNC 5-axis, proses fabrikasi, &amp; uji laboratorium presisi</p></div></div><a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-heading font-semibold text-brand-navy bg-white border border-slate-200 rounded hover:bg-brand-navy hover:text-white transition shrink-0 group-hover:border-brand-navy">Tonton <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div></div>
+          <div class="lg:col-span-6 bg-white rounded-lg p-6 sm:p-10 lg:p-12 border border-brand-grayBorder shadow-sm flex flex-col justify-center"><span class="text-xs font-heading font-bold text-brand-accent tracking-widest uppercase">MEDIA SOSIAL &amp; KOMUNITAS</span><h3 class="font-heading font-extrabold text-2xl sm:text-3xl text-brand-navy tracking-tight mt-1 mb-8">Terhubung di Saluran Resmi</h3><div class="space-y-4">
+@forelse(collect($globalSettings?->social_media ?? [])->sortBy('sort_order') as $social)
+@php
+  $socialUrl = $social['profile_url'] ?? '';
+  $socialUrl = \Illuminate\Support\Str::startsWith($socialUrl, ['http://', 'https://']) ? $socialUrl : '#';
+  $platformIcon = $social['platform_icon'] ?? '';
+@endphp
+<div class="p-4 rounded-lg bg-brand-grayBg border border-slate-200 flex items-start justify-between gap-4 transition hover:border-brand-accent group"><div class="flex items-start gap-3.5"><div class="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-brand-navy shrink-0 shadow-sm group-hover:text-brand-accent group-hover:border-brand-accent transition">
+@if($platformIcon === 'linkedin')
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
+@elseif($platformIcon === 'instagram')
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+@elseif($platformIcon === 'youtube')
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path></svg>
+@else
+<span class="material-symbols-outlined">link</span>
+@endif
+</div><div><div class="flex items-center gap-2"><h4 class="font-heading font-bold text-sm text-brand-navy group-hover:text-brand-accent transition">{{ $social['platform_name'] ?? '' }}</h4><span class="text-xs text-slate-400 font-mono">{{ $social['handle'] ?? '' }}</span></div><p class="text-xs text-brand-grayMuted leading-relaxed mt-1">{{ $social['description'] ?? '' }}</p></div></div><a href="{{ $socialUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-heading font-semibold text-brand-navy bg-white border border-slate-200 rounded hover:bg-brand-navy hover:text-white transition shrink-0 group-hover:border-brand-navy">{{ $social['action_text'] ?? 'Lihat' }} <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div>
+@empty
+<p class="text-sm text-brand-grayMuted">Kanal media sosial akan segera tersedia.</p>
+@endforelse
+</div></div>
 
         </div>
 
         <!-- Deretan Logo-Logo Klien Tepat di Bawah Area Ini Untuk Menutup Halaman -->
-        <div class="border-t border-slate-200 pt-16 bg-brand-grayBg p-8 rounded-xl border"><div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4"><div><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3"><span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>LOKASI KANTOR PUSAT &amp; FASILITAS PABRIK</div><h3 class="font-heading font-extrabold text-2xl sm:text-3xl text-brand-navy tracking-tight">Headquarters &amp; Plant Location</h3><p class="text-brand-grayMuted text-sm mt-1">Akses strategis koridor industri Cikarang dengan integrasi rantai pasok prima.</p></div><a href="https://maps.google.com/?q=Kawasan+Industri+Jababeka+V+Cikarang" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded bg-brand-navy text-white hover:bg-slate-900 font-heading font-bold text-xs tracking-wider uppercase shadow-sm transition transform hover:-translate-y-0.5"><svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Buka di Google Maps</a></div><div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch"><div class="lg:col-span-8 rounded-lg overflow-hidden border border-brand-grayBorder shadow-heavy bg-slate-900 relative h-[420px]"><iframe title="Apex Industrial Plant Location Map" class="w-full h-full border-0 grayscale hover:grayscale-0 transition duration-500" src="https://maps.google.com/maps?q=-6.315024,107.151817&amp;hl=id&amp;z=15&amp;output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe><div class="absolute bottom-4 left-4 bg-brand-navy/95 backdrop-blur-md border border-white/15 text-white p-3.5 rounded-lg shadow-heavy flex items-center gap-3 pointer-events-none max-w-sm"><div class="w-8 h-8 rounded bg-brand-accent/20 border border-brand-accent/40 flex items-center justify-center text-blue-400 shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div><div><span class="text-[11px] font-heading font-bold text-blue-300 tracking-wider uppercase block">Apex Plant Facility 01</span><span class="text-xs text-slate-200 font-medium block">6°18'54.1"S 107°09'06.5"E • Jababeka V</span></div></div></div><div class="lg:col-span-4 flex flex-col gap-4 justify-start"><div class="bg-white rounded-lg border border-brand-grayBorder p-6 shadow-sm"><div class="flex items-center gap-2 text-brand-navy font-heading font-bold text-sm uppercase tracking-wide mb-3"><svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Alamat Resmi Operasional</div><p class="text-xs text-slate-700 font-medium leading-relaxed mb-4">Kawasan Industri Jababeka V, Blok C-18 No. 4, Cikarang, Bekasi 17530, Jawa Barat, Indonesia</p><div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs"><span class="text-slate-500">Zona Fasilitas</span><span class="font-mono font-bold text-brand-navy">Heavy Industrial Zone</span></div></div></div></div></div>
+        <div class="border-t border-slate-200 pt-16 bg-brand-grayBg p-8 rounded-xl border"><div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4"><div><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3"><span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>LOKASI KANTOR PUSAT &amp; FASILITAS PABRIK</div><h3 class="font-heading font-extrabold text-2xl sm:text-3xl text-brand-navy tracking-tight">Headquarters &amp; Plant Location</h3><p class="text-brand-grayMuted text-sm mt-1">Akses strategis koridor industri Cikarang dengan integrasi rantai pasok prima.</p></div><a href="{{ $mapsButtonUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded bg-brand-navy text-white hover:bg-slate-900 font-heading font-bold text-xs tracking-wider uppercase shadow-sm transition transform hover:-translate-y-0.5"><svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Buka di Google Maps</a></div><div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch"><div class="lg:col-span-8 rounded-lg overflow-hidden border border-brand-grayBorder shadow-heavy bg-slate-900 relative h-[420px]"><iframe title="Apex Industrial Plant Location Map" class="w-full h-full border-0 grayscale hover:grayscale-0 transition duration-500" src="{{ $mapsEmbedUrl }}" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe><div class="absolute bottom-4 left-4 bg-brand-navy/95 backdrop-blur-md border border-white/15 text-white p-3.5 rounded-lg shadow-heavy flex items-center gap-3 pointer-events-none max-w-sm"><div class="w-8 h-8 rounded bg-brand-accent/20 border border-brand-accent/40 flex items-center justify-center text-blue-400 shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div><div><span class="text-[11px] font-heading font-bold text-blue-300 tracking-wider uppercase block">{{ $globalSettings?->overlay_title }}</span><span class="text-xs text-slate-200 font-medium block">{{ $globalSettings?->overlay_coordinate }}</span></div></div></div><div class="lg:col-span-4 flex flex-col gap-4 justify-start"><div class="bg-white rounded-lg border border-brand-grayBorder p-6 shadow-sm"><div class="flex items-center gap-2 text-brand-navy font-heading font-bold text-sm uppercase tracking-wide mb-3"><svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Alamat Resmi Operasional</div><p class="text-xs text-slate-700 font-medium leading-relaxed mb-4">{{ $globalSettings?->factory_address }}</p><div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs"><span class="text-slate-500">Zona Fasilitas</span><span class="font-mono font-bold text-brand-navy">{{ $globalSettings?->facility_zone }}</span></div></div></div></div></div>
 
       </div>
     </section>
 
   </main>
 
-  <!-- Footer Penutup Sederhana -->
-  <footer id="master-footer" class="w-full bg-[#040911] text-slate-200 border-t border-white/10 relative"><div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(14,165,233,0.08),rgba(255,255,255,0))] pointer-events-none"></div>
-<div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-12">
-  <div class="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-14 items-start">
-    <!-- Kolom Kiri: Logo, Deskripsi, Gambar Partner -->
-    <div class="md:col-span-5 space-y-6">
-      <a href="#landing" class="flex items-center gap-3.5 group">
-        <div class="w-11 h-11 rounded-lg overflow-hidden border border-white/20 flex items-center justify-center bg-white shadow-sm transition group-hover:scale-105 shrink-0">
-          @php
-            $footerLogo = !empty($globalSettings?->footer_logo)
-              ? (str_starts_with($globalSettings->footer_logo, 'http')
-                  ? $globalSettings->footer_logo
-                  : (str_starts_with($globalSettings->footer_logo, '/')
-                      ? asset(ltrim($globalSettings->footer_logo, '/'))
-                      : asset('storage/' . $globalSettings->footer_logo)))
-              : 'https://lh3.googleusercontent.com/aida-public/AB6AXuCiMPbIsbS-sC9J4DTxtsdSwTVeBEABqrpT_kyCq3jV6W5K1bOH8NOSdxswUhegkBvpOBQsbNnQCkpHCSZVOkGYzisKUZn9NESn9dVQlSR1cMINm9F4zGmpZ7-wcyktFR5YG7eAQVSieih4YiiLAs808ouuT9UMz-7VXekJTTRRHErI1fXIfdGZgJorwjnRKJwQvqz3_Otqvt8F9_RTYXbxS4dQWRCPCnUH4b_Nvr0rswPl2qvjwLG6';
-            $partnerImg = !empty($globalSettings?->footer_partner_image)
-              ? (str_starts_with($globalSettings->footer_partner_image, 'http')
-                  ? $globalSettings->footer_partner_image
-                  : (str_starts_with($globalSettings->footer_partner_image, '/')
-                      ? asset(ltrim($globalSettings->footer_partner_image, '/'))
-                      : asset('storage/' . $globalSettings->footer_partner_image)))
-              : 'https://lh3.googleusercontent.com/aida-public/AB6AXuDUHSxtTMgXJMPz_oY9plipZG-hSnmDiY3VnqLHppZAzpBSpDb1OAa6NWrAtzWm3ONexnhqlbgU6rimppsYKMXUkDZpoTjiFyEZUqkeujt4YCNwWS2nqCRVcnhiUYF_FDtdbC_PITQ_iwYm7GpyFZUn7GU41be-Zld71LZ63yKru8-uRgc0atTT5UeGic7lTXdyU7BlroF4YM-uzSVeoLDZNhFlcGkD1F945Ocu5otju1DquhtG967Gp0q3FWA2ZP7ryQ';
-          @endphp
-          <img src="{{ $footerLogo }}" alt="{{ $globalSettings?->company_name ?? 'PT. Trissan' }} Logo" class="w-full h-full object-cover">
-        </div>
-        <div class="flex flex-col">
-          <span class="font-heading font-extrabold text-xl text-white tracking-tight leading-none group-hover:text-blue-400 transition">{{ $globalSettings?->company_name ?? 'PT. Trissan' }}</span>
-          <span class="text-[10px] font-semibold text-slate-400 tracking-widest uppercase mt-0.5">{{ $globalSettings?->company_tagline ?? 'Industrial Engineering' }}</span>
-        </div>
-      </a>
-      <p class="text-sm text-slate-400 leading-relaxed max-w-md">
-        {{ $globalSettings?->footer_description ?? 'Mitra manufaktur presisi tier-1 berstandar global. Mengkhususkan diri pada permesinan CNC 5-sumbu, pengelasan orbital bertekanan tinggi, dan integrasi mekatronika otomatis untuk sektor kedirgantaraan, energi, dan alat berat.' }}
-      </p>
-      <div class="w-full max-w-sm rounded-lg border border-slate-700/60 bg-white/5 p-1.5 shadow-sm overflow-hidden">
-        <img src="{{ $partnerImg }}" alt="Our Partner" class="w-full h-auto object-contain rounded">
-      </div>
-    </div>
+    @php
+    $contactModalOpen = $errors->any() || session('success');
+  @endphp
+  <div aria-labelledby="contact-modal-title" aria-modal="true" class="fixed inset-0 z-[60] items-center justify-center p-4 bg-black/70 backdrop-blur-sm {{ $contactModalOpen ? 'flex' : 'hidden' }}" id="contact-modal" role="dialog">
+    <div class="relative w-full max-w-lg max-h-[92vh] overflow-y-auto bg-white rounded-xl shadow-2xl border border-brand-grayBorder p-6 sm:p-8">
+      <button aria-label="Tutup" class="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-brand-navy transition" onclick="closeContactModal()" type="button">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <span class="text-xs font-heading font-bold text-brand-accent tracking-widest uppercase">Direct Inquiries</span>
+      <h3 class="font-heading font-extrabold text-2xl text-brand-navy tracking-tight mt-1 mb-2" id="contact-modal-title">Kirim Pesan</h3>
+      <p class="text-sm text-brand-grayMuted mb-5">Tim kami akan membalas permintaan konsultasi atau penawaran Anda secepatnya.</p>
 
-    <!-- Kolom Tengah: Navigasi Utama -->
-    <div class="md:col-span-3 space-y-4">
-      <p class="text-xs font-mono font-bold tracking-widest text-blue-400 uppercase">NAVIGASI UTAMA</p>
-      <ul class="space-y-2.5 text-sm text-slate-300 font-medium"><li class=""><a href="#landing" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all text-white font-semibold"><span class="text-blue-400 font-mono text-[10px]">01.</span> Landing Page <span class="ml-2 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30">Active</span></a></li>
-<li class=""><a href="#services" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">02.</span> Layanan &amp; Kapabilitas</a></li>
-<li class=""><a href="#works" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">03.</span> Featured Industrial Works</a></li>
-<li class=""><a href="/works" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">04.</span> Portofolio Manpower</a></li>
-<li class=""><a href="{{ url('/about') }}" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">05.</span> About Us</a></li>
-<li class=""><a href="{{ url('/license') }}" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">06.</span> License &amp; Certification</a></li>
-<li class=""><a href="#contact" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">07.</span> Contact Us / Hubungi Kami</a></li></ul>
-    </div>
-
-    <!-- Kolom Kanan: Kantor Pusat & Fasilitas Manufaktur -->
-    <div class="md:col-span-4 space-y-4">
-      <p class="text-xs font-mono font-bold tracking-widest text-blue-400 uppercase">KANTOR PUSAT &amp; FASILITAS MANUFAKTUR</p>
-      <div class="p-3.5 rounded-lg bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors flex items-start gap-3.5 group">
-        <div class="w-8 h-8 rounded bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0 mt-0.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-        </div>
-        <div>
-          <span class="text-[10px] font-mono tracking-wider text-slate-500 uppercase block">ALAMAT PABRIK &amp; FASILITAS:</span>
-          <p class="text-xs text-slate-300 font-medium leading-relaxed mt-0.5">{{ $globalSettings?->factory_address ?? 'Kawasan Industri Jababeka V, Blok C-18 No. 4, Cikarang, Bekasi 17530, Jawa Barat, Indonesia' }}</p>
-        </div>
-      </div>
-      <div class="p-3.5 rounded-lg bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors flex items-start gap-3.5 group">
-        <div class="w-8 h-8 rounded bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0 mt-0.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-        </div>
-        <div>
-          <span class="text-[10px] font-mono tracking-wider text-slate-500 uppercase block">TELEPON HOTLINE &amp; WHATSAPP</span>
-          <p class="text-xs text-slate-300 font-medium leading-relaxed mt-0.5">
-            @if(!empty($globalSettings?->phones) && is_array($globalSettings->phones))
-              @foreach($globalSettings->phones as $phone)
-                <a href="{{ $phone['tel_url'] ?? '#' }}" class="text-white font-semibold hover:text-blue-300 transition">{{ $phone['display_text'] ?? '' }}</a>{{ !$loop->last ? ' / ' : '' }}
-              @endforeach
-            @else
-              <span class="text-white font-semibold">+62 (21) 5508-8990</span> / <span class="text-white font-semibold">+62 811-9870-221</span>
-            @endif
-          </p>
-        </div>
-      </div>
-      <div class="p-3.5 rounded-lg bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors flex items-start gap-3.5 group">
-        <div class="w-8 h-8 rounded bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0 mt-0.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z"></path></svg>
-        </div>
-        <div>
-          <span class="text-[10px] font-mono tracking-wider text-slate-500 uppercase block">SURAT ELEKTRONIK (EMAIL):</span>
-          <p class="text-xs text-slate-300 font-medium leading-relaxed mt-0.5">
-            <a href="mailto:{{ $globalSettings?->primary_email ?? 'contact@apex-engineering.co.id' }}" class="text-blue-400 hover:underline">{{ $globalSettings?->primary_email ?? 'contact@apex-engineering.co.id' }}</a>
-            @if(!empty($globalSettings?->corporate_email))
-              · <a href="mailto:{{ $globalSettings->corporate_email }}" class="text-blue-400 hover:underline">{{ $globalSettings->corporate_email }}</a>
-            @endif
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Sub-footer / Bottom bar: 1 baris rapi tanpa celah/gap di bawahnya -->
-  <div class="border-t border-slate-800/80 mt-12 pt-6 flex flex-col md:flex-row items-center justify-between text-xs text-slate-400 gap-4">
-    <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
-      <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
-      <span class="">{{ $globalSettings?->copyright_text ?? '© 2026 PT. Apex Industrial Engineering. All rights reserved.' }}</span>
-    </div>
-    <div class="flex flex-wrap gap-6 items-center text-[11px] font-mono">
-      @if(!empty($globalSettings?->footer_legal_links) && is_array($globalSettings->footer_legal_links))
-        @foreach($globalSettings->footer_legal_links as $legalLink)
-          <a href="{{ $legalLink['url'] ?? '#' }}" class="hover:text-white transition-colors">{{ $legalLink['label'] ?? '' }}</a>
-        @endforeach
-      @else
-        <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
-        <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
-        <a href="#" class="hover:text-white transition-colors">Quality &amp; Safety Policy</a>
-        <a href="#" class="hover:text-white transition-colors">ISO 9001 / AS9100D Compliance</a>
+      @if(session('success'))
+        <div class="mb-5 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm" role="status">{{ session('success') }}</div>
       @endif
+
+      <form action="{{ route('contact.store') }}" class="space-y-4" method="POST">
+        @csrf
+        <div aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">
+          <label for="contact-website">Website</label>
+          <input autocomplete="off" id="contact-website" name="website" tabindex="-1" type="text">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1" for="contact-name">Nama <span class="text-red-500">*</span></label>
+          <input class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" id="contact-name" maxlength="255" name="name" required type="text" value="{{ old('name') }}">
+          @error('name')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1" for="contact-email">Email <span class="text-red-500">*</span></label>
+            <input class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" id="contact-email" maxlength="255" name="email" required type="email" value="{{ old('email') }}">
+            @error('email')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1" for="contact-phone">Telepon</label>
+            <input class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" id="contact-phone" maxlength="255" name="phone" type="tel" value="{{ old('phone') }}">
+            @error('phone')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1" for="contact-service">Layanan yang diminati</label>
+          <select class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-accent" id="contact-service" name="service_id">
+            <option value="">Pilih layanan (opsional)</option>
+            @foreach($services as $serviceOption)
+              <option value="{{ $serviceOption->id }}" @selected((string) old('service_id') === (string) $serviceOption->id)>{{ $serviceOption->short_title ?? $serviceOption->service_title }}</option>
+            @endforeach
+          </select>
+          @error('service_id')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1" for="contact-message">Pesan <span class="text-red-500">*</span></label>
+          <textarea class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent" id="contact-message" maxlength="5000" name="message" required rows="4">{{ old('message') }}</textarea>
+          @error('message')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+        </div>
+        <button class="w-full inline-flex items-center justify-center font-heading font-bold text-xs tracking-widest text-white bg-brand-navy hover:bg-slate-900 py-3.5 px-8 rounded shadow-md transition uppercase" type="submit">Kirim Pesan</button>
+      </form>
     </div>
   </div>
-</div></footer>
+  <script>
+    function openContactModal() {
+      const modal = document.getElementById('contact-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
 
-  <!-- Interaktivitas Script: Filter Kategori Works & Scroll Transition -->
+    function closeContactModal() {
+      const modal = document.getElementById('contact-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('contact-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'contact-modal') closeContactModal();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeContactModal();
+    });
+    if (window.location.hash === '#contact-modal' || document.getElementById('contact-modal').classList.contains('flex')) {
+      openContactModal();
+    }
+    window.addEventListener('hashchange', () => {
+      if (window.location.hash === '#contact-modal') openContactModal();
+    });
+  </script>
+
+  @include('layouts.footer')
+
+  <!-- Inisialisasi ikon -->
   <script>
     // Inisialisasi ikon Lucide
     lucide.createIcons();
-
-    // Fungsi klik kartu Services untuk langsung menuju dan mengaktifkan filter Works
-    function selectCategory(cat) {
-      filterCategory(cat);
-      const worksSection = document.getElementById('works');
-      if (worksSection) {
-        worksSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-
-    // Fungsi Tab Filter Works
-    function filterCategory(category) {
-      const cards = document.querySelectorAll('.work-card');
-      const buttons = document.querySelectorAll('.category-btn');
-
-      // Update gaya tombol filter
-      buttons.forEach(btn => {
-        btn.classList.remove('bg-brand-navy', 'text-white', 'border-brand-navy');
-        btn.classList.add('bg-white', 'text-brand-navy', 'border-slate-300');
-      });
-
-      const activeBtn = document.getElementById('btn-' + category);
-      if (activeBtn) {
-        activeBtn.classList.remove('bg-white', 'text-brand-navy', 'border-slate-300');
-        activeBtn.classList.add('bg-brand-navy', 'text-white', 'border-brand-navy');
-      }
-
-      // Tampilkan / Sembunyikan kartu proyek
-      cards.forEach(card => {
-        if (category === 'all' || card.classList.contains(category)) {
-          card.style.display = 'block';
-          card.classList.add('animate-fadeIn');
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
   </script>
 
 
@@ -728,10 +593,10 @@
     });
 
     const sections = [
-      { id: 'landing', link: document.querySelector('header nav a[href="#landing"]') },
-      { id: 'services', link: document.querySelector('header nav a[href="#services"]') },
-      { id: 'works', link: document.querySelector('header nav a[href="#works"]') },
-      { id: 'contact', link: document.querySelector('header nav a[href="#contact"]') }
+      { id: 'landing', link: document.querySelector('header nav a.nav-link[href$="#landing"]') },
+      { id: 'services', link: document.querySelector('header nav a.nav-link[href$="#services"]') },
+      { id: 'works', link: document.querySelector('header nav a.nav-link[href$="#works"]') },
+      { id: 'contact', link: document.querySelector('header nav a.nav-link[href$="#contact"]') }
     ];
 
     window.addEventListener('scroll', () => {
@@ -774,10 +639,10 @@
     }
 
     const sections = [
-      { id: 'landing', link: document.querySelector('header nav a[href="#landing"]') },
-      { id: 'services-overview', link: document.querySelector('header nav a[href="#services-overview"]') },
-      { id: 'works', link: document.querySelector('header nav a[href="#works"]') },
-      { id: 'contact', link: document.querySelector('header nav a[href="#contact"]') }
+      { id: 'landing', link: document.querySelector('header nav a.nav-link[href$="#landing"]') },
+      { id: 'services-overview', link: document.querySelector('header nav a.nav-link[href$="#services-overview"]') },
+      { id: 'works', link: document.querySelector('header nav a.nav-link[href$="#works"]') },
+      { id: 'contact', link: document.querySelector('header nav a.nav-link[href$="#contact"]') }
     ];
 
     function updateScrollspy() {
