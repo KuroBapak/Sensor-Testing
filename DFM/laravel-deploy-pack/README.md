@@ -182,6 +182,7 @@ Build and push (section 3), then Deploy in Coolify (or let the script trigger it
 | New migrations never appear | A volume is mounted over `/app/database`. Remove it. |
 | `Permission denied` writing `storage/logs/laravel.log` | A process ran as root against the volume. Workers need `user: www-data`; `startup.sh` fixes ownership on every start. |
 | Upload fails with HTTP 413 | `client_max_body_size` in `docker/nginx.conf` is below the file size. |
+| After login nothing happens until you refresh (Inertia apps), or redirects/assets use `http://` on an HTTPS site | The container only sees plain HTTP behind the Coolify proxy, so Laravel built `http://` redirect URLs and the browser blocked them as mixed content. `docker/nginx.conf` now forwards `X-Forwarded-Proto` to PHP (the `map $http_x_forwarded_proto` block). Apps installed before this fix must copy the new `docker/nginx.conf` and rebuild. The nginx part is a safety net; the documented Laravel fix is `$middleware->trustProxies(at: '*');` in `bootstrap/app.php` (it also gives the real client IP). `init.php` warns when that call is missing. Check with `curl -sI https://your-domain/some-protected-page`: the `Location:` header must start with `https://`. |
 | Queued jobs never run | No worker service, or `QUEUE_CONNECTION` does not match. |
 | Redeploy shows old code | The push did not happen or failed, or `APP_IMAGE_TAG` is pinned to an old sha. |
 | `docker push` says denied | Not logged in to ghcr.io on the laptop, or the token lacks `write:packages`. |

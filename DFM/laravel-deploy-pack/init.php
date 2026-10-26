@@ -249,6 +249,14 @@ function detect(string $target, Report $report, ?string $dbOverride = null): arr
         $report->warn('laravel/octane is installed: this pack serves the app with nginx + php-fpm, not Octane. It will still run, without Octane.');
     }
 
+    // Behind the Coolify proxy the container only sees plain HTTP: Laravel must trust the proxy
+    // (documented: "Configuring Trusted Proxies") or it builds http:// redirects and URLs.
+    $bootstrap = readText($target.'/bootstrap/app.php');
+    $legacyMiddleware = is_file($target.'/app/Http/Middleware/TrustProxies.php');
+    if ($bootstrap !== null && ! $legacyMiddleware && ! preg_match('/trustProxies\s*\(/', stripPhpComments($bootstrap))) {
+        $report->warn('bootstrap/app.php does not call trustProxies(). Behind the Coolify proxy Laravel can build http:// redirects (the login page then looks stuck until you refresh) and see the proxy as the client IP. The nginx config of this pack forwards the scheme as a safety net; also add  $middleware->trustProxies(at: \'*\');  inside ->withMiddleware(...) in bootstrap/app.php.');
+    }
+
     // Queue / scheduler / Reverb
     $phpFiles = array_merge(walk($target.'/app', ['.php']), walk($target.'/routes', ['.php']));
     $queueEvidence = scanPhp($phpFiles, $target, [

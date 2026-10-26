@@ -235,6 +235,7 @@ Script menampilkan nama tag tiap selesai, mis. `sha-1a2b3c4`.
 | Halaman 500 | `APP_KEY` kosong/salah, atau variabel salah. Lihat Logs. |
 | Tampilan lama padahal sudah push | Lupa push, atau `APP_IMAGE_TAG` masih menunjuk versi lama. |
 | Upload file gagal (413) | Ukuran file lebih besar dari batas 100 MB di `docker/nginx.conf`. |
+| Setelah login tidak pindah halaman sampai di-refresh manual (di lokal normal) | Di belakang proxy Coolify, Laravel mengira request-nya `http`, jadi redirect-nya ke `http://...` dan diblokir browser. Perbaikannya ada di `docker/nginx.conf` versi terbaru dari pack (teruskan `X-Forwarded-Proto`). Salin file itu ke aplikasi, build ulang, push, lalu Redeploy. Perbaikan resmi dari Laravel adalah menambah `$middleware->trustProxies(at: '*');` di `bootstrap/app.php` (juga membuat IP klien terbaca benar); `init.php` memberi peringatan kalau baris itu belum ada. Cek dengan `curl -sI https://domainmu/halaman-yang-butuh-login`: baris `Location:` harus diawali `https://`. |
 | Nilai `VITE_...` kosong di produksi | Belum diisi di `.env.build`. Isi lalu build ulang image. |
 | Data hilang setelah deploy | Database SQLite tidak diletakkan di `/app/storage/...` (volume), atau ada volume yang di-mount ke `/app/database`. |
 | Job di queue tidak jalan | Script tidak mendeteksi job, atau `QUEUE_CONNECTION=sync`. Cek laporan `Queue worker` dari `init.php`. |
