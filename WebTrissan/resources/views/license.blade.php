@@ -18,7 +18,7 @@
   tailwind.config = {
     darkMode: "class",
     theme: {
-      extend: {
+      extend: { fontSize: {'lg': ['1rem', {lineHeight: '1.6'}], 'xl': ['1.125rem', {lineHeight: '1.5'}], '2xl': ['1.25rem', {lineHeight: '1.4'}], '3xl': ['1.5rem', {lineHeight: '1.3'}], '4xl': ['1.75rem', {lineHeight: '1.25'}], '5xl': ['2.125rem', {lineHeight: '1.15'}], '6xl': ['2.5rem', {lineHeight: '1.1'}]},
         "colors": {
           "on-primary": "#ffffff",
           "on-surface": "#0b1c30",
@@ -79,14 +79,14 @@
           "space-lg": "1.5rem",
           "margin": "1rem",
           "space-md": "1rem",
-          "space-2xl": "4rem",
-          "margin-desktop": "4rem",
-          "space-xl": "2.5rem",
+          "space-2xl": "3rem",
+          "margin-desktop": "3rem",
+          "space-xl": "2rem",
           "space-xs": "0.25rem",
-          "gutter-desktop": "2rem",
-          "margin-tablet": "2.5rem",
+          "gutter-desktop": "1.5rem",
+          "margin-tablet": "2rem",
           "gutter": "1.5rem",
-          "space-3xl": "6rem"
+          "space-3xl": "4rem"
         },
         "fontFamily": {
           "body-lg": [
@@ -131,9 +131,9 @@
         },
         "fontSize": {
           "body-lg": [
-            "18px",
+            "16px",
             {
-              "lineHeight": "28px",
+              "lineHeight": "26px",
               "fontWeight": "400"
             }
           ],
@@ -145,9 +145,9 @@
             }
           ],
           "headline-lg": [
-            "40px",
+            "30px",
             {
-              "lineHeight": "48px",
+              "lineHeight": "38px",
               "letterSpacing": "-0.015em",
               "fontWeight": "700"
             }
@@ -160,16 +160,16 @@
             }
           ],
           "body-md": [
-            "16px",
+            "15px",
             {
               "lineHeight": "24px",
               "fontWeight": "400"
             }
           ],
           "headline-md": [
-            "28px",
+            "22px",
             {
-              "lineHeight": "36px",
+              "lineHeight": "30px",
               "letterSpacing": "-0.01em",
               "fontWeight": "700"
             }
@@ -182,32 +182,32 @@
             }
           ],
           "display-hero-mobile": [
-            "36px",
+            "28px",
             {
-              "lineHeight": "44px",
+              "lineHeight": "36px",
               "letterSpacing": "-0.02em",
               "fontWeight": "800"
             }
           ],
           "display-hero": [
-            "56px",
+            "40px",
             {
-              "lineHeight": "64px",
+              "lineHeight": "48px",
               "letterSpacing": "-0.02em",
               "fontWeight": "800"
             }
           ],
           "title-md": [
-            "18px",
+            "16px",
             {
-              "lineHeight": "26px",
+              "lineHeight": "24px",
               "fontWeight": "600"
             }
           ],
           "headline-sm": [
-            "20px",
+            "18px",
             {
-              "lineHeight": "28px",
+              "lineHeight": "26px",
               "fontWeight": "600"
             }
           ],
@@ -220,9 +220,9 @@
             }
           ],
           "headline-lg-mobile": [
-            "28px",
+            "24px",
             {
-              "lineHeight": "36px",
+              "lineHeight": "32px",
               "letterSpacing": "-0.01em",
               "fontWeight": "700"
             }
@@ -243,6 +243,7 @@
   }
 </style>
 <meta content="web_standard" name="shell-type">
+@include('layouts.scale')
 </head>
 <body class="bg-surface text-on-surface antialiased relative selection:bg-primary-container selection:text-on-primary">
 @include('layouts.navbar')
@@ -287,7 +288,7 @@
 @foreach($certificationCategories as $category)
 <button class="cert-category-filter px-3 md:px-4 py-1.5 md:py-2 rounded font-label-md text-xs md:text-label-md transition bg-surface-container text-on-surface-variant hover:text-primary whitespace-nowrap" id="btn-cat-{{ $category->slug }}" data-cat="{{ $category->slug }}" onclick="setCertCategory(this.dataset.cat)" type="button">{{ $category->name }}</button>
 @endforeach
-</div></div></div><div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left border-collapse min-w-[620px] md:min-w-full"><thead><tr class="bg-surface-container text-on-surface-variant font-label-caps text-label-caps uppercase"><th class="py-3 md:py-4 px-4 md:px-6 text-xs">Standar Perusahaan &amp; Dokumen</th><th class="py-3 md:py-4 px-4 md:px-6 text-xs">Badan Akreditasi</th><th class="py-3 md:py-4 px-4 md:px-6 text-xs">ID / Registrasi</th><th class="py-3 md:py-4 px-4 md:px-6 text-xs">Masa Berlaku</th><th class="py-3 md:py-4 px-4 md:px-6 text-right text-xs">Gambar Sertifikasi</th></tr></thead><tbody class="divide-y divide-outline-variant/30 font-body-sm text-body-sm text-on-surface">
+</div></div></div><div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left border-collapse min-w-0 md:min-w-full"><thead><tr class="bg-surface-container text-on-surface-variant font-label-caps text-label-caps uppercase"><th class="py-3 md:py-4 px-4 md:px-6 text-xs">Standar Perusahaan &amp; Dokumen</th><th class="hidden sm:table-cell py-3 md:py-4 px-4 md:px-6 text-xs">Badan Akreditasi</th><th class="hidden sm:table-cell py-3 md:py-4 px-4 md:px-6 text-xs">ID / Registrasi</th><th class="py-3 md:py-4 px-4 md:px-6 text-xs">Masa Berlaku</th><th class="py-3 md:py-4 px-4 md:px-6 text-right text-xs">Gambar Sertifikasi</th></tr></thead><tbody class="divide-y divide-outline-variant/30 font-body-sm text-body-sm text-on-surface">
 @foreach($corporateAccreditations as $accreditation)
 @php
   $modalTitle = $accreditation->modal_title ?: trim($accreditation->standard_name.' '.$accreditation->standard_description);
@@ -297,15 +298,15 @@
   ])));
 @endphp
 <tr class="cert-row hover:bg-surface-container-low/60 transition" data-category="{{ $accreditation->certificationCategory?->slug }}" data-search="{{ $searchBlob }}" data-title="{{ $modalTitle }}" data-reg="{{ $accreditation->registration_id }}" data-body="{{ $accreditation->accreditation_body }}" data-validity="{{ $accreditation->validity_label }}" data-scope="{{ $accreditation->scope_detail }}" data-image="{{ $accreditation->certificate_image_url }}">
-<td class="py-3 md:py-4 px-4 md:px-6"><div class="font-title-md text-sm md:text-title-md text-primary font-semibold">{{ $accreditation->standard_name }}</div><div class="text-xs text-on-surface-variant">{{ $accreditation->standard_description }}</div></td>
-<td class="py-3 md:py-4 px-4 md:px-6 text-xs md:text-sm">{{ $accreditation->accreditation_body }}</td>
-<td class="py-3 md:py-4 px-4 md:px-6 font-mono text-xs text-primary font-medium">{{ $accreditation->registration_id }}</td>
+<td class="py-3 md:py-4 px-4 md:px-6"><div class="font-title-md text-sm md:text-title-md text-primary font-semibold">{{ $accreditation->standard_name }}</div><div class="text-xs text-on-surface-variant">{{ $accreditation->standard_description }}</div><div class="sm:hidden mt-1 text-[11px] text-on-surface-variant">{{ $accreditation->accreditation_body }}</div><div class="sm:hidden font-mono text-[11px] text-primary font-medium">{{ $accreditation->registration_id }}</div></td>
+<td class="hidden sm:table-cell py-3 md:py-4 px-4 md:px-6 text-xs md:text-sm">{{ $accreditation->accreditation_body }}</td>
+<td class="hidden sm:table-cell py-3 md:py-4 px-4 md:px-6 font-mono text-xs text-primary font-medium">{{ $accreditation->registration_id }}</td>
 <td class="py-3 md:py-4 px-4 md:px-6 text-xs md:text-sm">{{ $accreditation->validity_label ?? '-' }}</td>
 <td class="py-3 md:py-4 px-4 md:px-6 text-right"><button class="cert-detail-btn inline-flex items-center gap-1.5 px-2.5 md:px-3 py-1 md:py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-primary font-label-sm text-xs md:text-label-sm transition shadow-sm whitespace-nowrap" type="button"><span class="material-symbols-outlined text-sm">visibility</span> Show Image</button></td>
 </tr>
 @endforeach
 <tr class="hidden" id="certEmptyRow"><td class="py-8 px-6 text-center text-on-surface-variant text-sm" colspan="5">Tidak ada dokumen akreditasi yang sesuai dengan pencarian atau kategori ini.</td></tr>
-</tbody></table></div><div class="flex flex-col sm:flex-row items-center justify-between gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-4 border-t border-outline-variant/30 bg-surface-container-lowest"><div class="flex items-center gap-2 text-xs md:text-body-sm font-body-sm text-on-surface-variant"><span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container text-xs font-medium text-secondary">Total <span id="certTotal">{{ $corporateAccreditations->count() }}</span> Dokumen</span><span class="hidden sm:inline" id="certRangeInfo"></span></div><nav aria-label="Navigasi Halaman Akreditasi" class="flex items-center gap-1.5" id="certPagination"></nav></div></div></div></section><section id="product-certs" class="w-full scroll-mt-20 bg-surface-container-low pt-10 pb-16 md:pt-16 md:pb-28"><div class="max-w-7xl mx-auto px-margin-tablet lg:px-margin-desktop"><div class="flex flex-col md:flex-row md:items-end justify-between mb-6 md:mb-space-xl"><div><div class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Product-Level Compliance</div><h2 class="font-headline-md md:font-headline-lg text-headline-md md:text-headline-lg text-primary mt-1">Sertifikasi Khusus Produk Manufaktur</h2></div><p class="font-body-sm text-body-sm text-on-surface-variant max-w-md mt-2 md:mt-0">Dokumentasi sertifikasi uji tipe, sertifikat kepatuhan standar industri (CE, ATEX, ASME, ISO), dan uji ketahanan per komponen manufaktur.</p></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+</tbody></table></div><div class="flex flex-col sm:flex-row items-center justify-between gap-3 md:gap-4 px-4 md:px-6 py-3 md:py-4 border-t border-outline-variant/30 bg-surface-container-lowest"><div class="flex items-center gap-2 text-xs md:text-body-sm font-body-sm text-on-surface-variant"><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container text-xs font-medium text-secondary">Total <span id="certTotal">{{ $corporateAccreditations->count() }}</span> Dokumen</span><span class="hidden sm:inline" id="certRangeInfo"></span></div><nav aria-label="Navigasi Halaman Akreditasi" class="flex items-center gap-1.5" id="certPagination"></nav></div></div></div></section><section id="product-certs" class="w-full scroll-mt-20 bg-surface-container-low pt-10 pb-16 md:pt-16 md:pb-28"><div class="max-w-7xl mx-auto px-margin-tablet lg:px-margin-desktop"><div class="flex flex-col md:flex-row md:items-end justify-between mb-6 md:mb-space-xl"><div><div class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Product-Level Compliance</div><h2 class="font-headline-md md:font-headline-lg text-headline-md md:text-headline-lg text-primary mt-1">Sertifikasi Khusus Produk Manufaktur</h2></div><p class="font-body-sm text-body-sm text-on-surface-variant max-w-md mt-2 md:mt-0">Dokumentasi sertifikasi uji tipe, sertifikat kepatuhan standar industri (CE, ATEX, ASME, ISO), dan uji ketahanan per komponen manufaktur.</p></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 @foreach($productCertifications as $certification)
 @php
   $anchor = str_starts_with($certification->slug, 'cert-') ? $certification->slug : 'cert-'.$certification->slug;
@@ -347,13 +348,13 @@
 <p class="font-body-sm text-xs md:text-body-sm text-on-surface-variant leading-relaxed"><strong>Lingkup:</strong> {{ $certification->scope_description }}</p>
 @endif
 </div>
-<div class="pt-4 md:pt-6 mt-3 md:mt-4 flex flex-col sm:flex-row items-center gap-2.5 md:gap-3">
+<div class="pt-4 md:pt-6 mt-3 md:mt-4 flex flex-wrap sm:flex-nowrap items-center gap-2 md:gap-3">
 <button class="cert-detail-btn w-full sm:flex-1 py-2 md:py-2.5 px-3 bg-primary text-on-primary rounded font-label-md text-xs md:text-label-md hover:bg-secondary transition flex items-center justify-center gap-2 shadow-sm" type="button"><span class="material-symbols-outlined text-sm">visibility</span> Show Gambar Sertifikasi</button>
 @if($certification->certificate_pdf_url)
-<a class="w-full sm:w-auto py-2 md:py-2.5 px-4 bg-surface-container-low text-primary rounded font-label-md text-xs md:text-label-md hover:bg-surface-container-high transition flex items-center justify-center gap-1.5" download href="{{ $certification->certificate_pdf_url }}"><span class="material-symbols-outlined text-sm">download</span> Download</a>
+<a class="flex-1 sm:flex-none py-2 md:py-2.5 px-4 bg-surface-container-low text-primary rounded font-label-md text-xs md:text-label-md hover:bg-surface-container-high transition flex items-center justify-center gap-1.5" download href="{{ $certification->certificate_pdf_url }}"><span class="material-symbols-outlined text-sm">download</span> Download</a>
 @endif
 @if($certification->work)
-<a class="w-full sm:w-auto py-2 md:py-2.5 px-4 bg-surface-container-low text-primary rounded font-label-md text-xs md:text-label-md hover:bg-surface-container-high transition flex items-center justify-center gap-1.5" href="{{ url('/works#'.$certification->work->work_slug) }}"><span class="material-symbols-outlined text-sm">arrow_outward</span> Lihat Produk</a>
+<a class="flex-1 sm:flex-none py-2 md:py-2.5 px-4 bg-surface-container-low text-primary rounded font-label-md text-xs md:text-label-md hover:bg-surface-container-high transition flex items-center justify-center gap-1.5" href="{{ url('/works#'.$certification->work->work_slug) }}"><span class="material-symbols-outlined text-sm">arrow_outward</span> Lihat Produk</a>
 @endif
 </div>
 </article>

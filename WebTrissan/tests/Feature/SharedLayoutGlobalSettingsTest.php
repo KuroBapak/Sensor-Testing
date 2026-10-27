@@ -107,15 +107,40 @@ test('footer renders legal links without a url as plain text instead of dead anc
         ->not->toContain('href="#"');
 });
 
-test('navbar offers an accessible mobile menu with every main page', function (string $routeName) {
+test('mobile bottom navigation links every main page and marks the current one', function (string $routeName, string $activePath) {
+    $content = $this->get(route($routeName))
+        ->assertOk()
+        ->assertSee('id="bottom-nav"', false)
+        ->assertSee('aria-label="Navigasi utama"', false)
+        ->assertSee('href="'.url('/#contact').'"', false)
+        ->getContent();
+
+    foreach (['/', '/works', '/portofolio', '/about', '/license'] as $path) {
+        expect($content)->toContain('href="'.url($path).'"');
+    }
+
+    $bottomNav = substr($content, strpos($content, 'id="bottom-nav"'));
+    $bottomNav = substr($bottomNav, 0, strpos($bottomNav, '</nav>'));
+
+    expect(preg_match('/aria-current="page"[^>]*href="'.preg_quote(url($activePath), '/').'"/', $bottomNav))->toBe(1)
+        ->and(substr_count($bottomNav, 'aria-current="page"'))->toBe(1);
+})->with([
+    ['home', '/'],
+    ['works', '/works'],
+    ['portfolio', '/portofolio'],
+    ['about', '/about'],
+    ['licenses', '/license'],
+]);
+
+test('every public page includes the shared desktop scale stylesheet', function (string $routeName) {
     $this->get(route($routeName))
         ->assertOk()
-        ->assertSee('id="mobile-menu-toggle"', false)
-        ->assertSee('aria-controls="mobile-menu"', false)
-        ->assertSee('aria-expanded="false"', false)
-        ->assertSee('id="mobile-menu"', false)
-        ->assertSee('href="'.url('/portofolio').'"', false)
-        ->assertSee('href="'.url('/license').'"', false)
-        ->assertSee('href="'.url('/about').'"', false)
-        ->assertSee('href="'.url('/works').'"', false);
+        ->assertSee('--page-zoom', false)
+        ->assertSee('zoom: var(--page-zoom)', false);
 })->with(['home', 'works', 'portfolio', 'licenses', 'about']);
+
+test('scale stylesheet only compensates viewport widths below the sm breakpoint so desktop card widths are not overridden', function () {
+    $content = $this->get(route('home'))->assertOk()->getContent();
+
+    expect($content)->toContain('@media (max-width: 639px) { html .w-\[78vw\]');
+});

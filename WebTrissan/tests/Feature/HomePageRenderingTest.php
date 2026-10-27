@@ -161,3 +161,12 @@ test('landing keeps the contact modal closed on a normal visit', function () {
         ->assertSee('items-center justify-center p-4 bg-black/70 backdrop-blur-sm hidden', false)
         ->assertDontSee('Thank you for contacting us!');
 });
+
+test('landing hides the hero call to action on phones and keeps the trust card as a small box on the right', function () {
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertSee('class="hidden sm:flex items-center gap-4"', false)
+        ->assertSee('w-48 sm:w-72 lg:w-80 shrink-0 self-end', false)
+        ->assertSee('hidden sm:flex mt-3 pt-3 border-t border-white/10', false)
+        ->assertSee('grid grid-cols-2 gap-1.5 sm:gap-2', false);
+});

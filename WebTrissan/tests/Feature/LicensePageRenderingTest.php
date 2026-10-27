@@ -143,3 +143,12 @@ test('license page renders without rows or cards when there is no certification 
     expect($content)->not->toContain('class="cert-row')->not->toContain('class="cert-card')
         ->and($content)->toContain('id="certEmptyRow"');
 });
+
+test('license table hides secondary columns on phones and repeats their data under the standard name', function () {
+    $accreditation = CorporateAccreditation::first();
+
+    $this->get(route('licenses'))
+        ->assertOk()
+        ->assertSee('hidden sm:table-cell', false)
+        ->assertSee('<div class="sm:hidden font-mono text-[11px] text-primary font-medium">'.e($accreditation->registration_id).'</div>', false);
+});

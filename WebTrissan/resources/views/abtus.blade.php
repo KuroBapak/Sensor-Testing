@@ -12,7 +12,7 @@
 <script>
     tailwind.config = {
       theme: {
-        extend: {
+        extend: { fontSize: {'lg': ['1rem', {lineHeight: '1.6'}], 'xl': ['1.125rem', {lineHeight: '1.5'}], '2xl': ['1.25rem', {lineHeight: '1.4'}], '3xl': ['1.5rem', {lineHeight: '1.3'}], '4xl': ['1.75rem', {lineHeight: '1.25'}], '5xl': ['2.125rem', {lineHeight: '1.15'}], '6xl': ['2.5rem', {lineHeight: '1.1'}]},
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
             heading: ['Montserrat', 'sans-serif'],
@@ -46,11 +46,12 @@
       font-family: 'Montserrat', sans-serif;
     }
   </style>
+@include('layouts.scale')
 </head>
 <body class="bg-[#f8f9ff] min-h-screen antialiased text-slate-800 selection:bg-blue-600 selection:text-white">
 @include('layouts.navbar')
 <!-- Top Hero / Header Section: Clean & Spacious Architectural Layout -->
-<header class="bg-gradient-to-b from-[#0d2137] via-[#091829] to-[#071321] text-white py-4 md:py-12 px-4 md:px-8 relative overflow-hidden" style="background: linear-gradient(rgb(13, 33, 55) 0%, rgb(9, 24, 41) 50%, rgb(7, 19, 33) calc(100% - 150px), rgb(248, 249, 255) calc(100% - 150px), rgb(248, 249, 255) 100%);">
+<header id="about-hero" class="bg-gradient-to-b from-[#0d2137] via-[#091829] to-[#071321] text-white py-4 md:py-12 px-4 md:px-8 relative overflow-hidden" style="background: linear-gradient(rgb(13, 33, 55) 0%, rgb(9, 24, 41) 50%, rgb(7, 19, 33) calc(100% - 150px), rgb(248, 249, 255) calc(100% - 150px), rgb(248, 249, 255) 100%);">
   <div class="absolute -top-40 right-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
   <div class="absolute bottom-10 -left-20 w-[450px] h-[450px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
   <div class="max-w-7xl mx-auto relative z-10">
@@ -119,9 +120,9 @@
 <!-- Section 1: Profil Perusahaan, Visi & Misi (Spacious & Clean Cards) -->
 
 <!-- Section 2: Fasilitas & Infrastruktur Pabrik (Proportional 16:9 Aspect Ratio) -->
-<section class="py-8 md:py-20 px-4 md:px-8 lg:px-12 bg-[#f8f9ff] border-b border-slate-200" id="fasilitas">
+<section class="py-8 md:py-14 px-4 md:px-8 lg:px-12 bg-[#f8f9ff] border-b border-slate-200" id="fasilitas">
 <div class="max-w-7xl mx-auto">
-<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12">
 <div>
 <div class="inline-flex items-center gap-2.5 px-3 py-1 rounded bg-white border border-slate-200 text-brand-navy font-mono text-xs font-semibold uppercase tracking-wider mb-4">
 <span class="w-2 h-2 bg-brand-navy rounded-sm"></span>
@@ -167,7 +168,7 @@
 </div>
 </section>
 <!-- Section 3: Company Milestone Per Year (Minimalist Architectural Vertical Timeline) -->
-<section class="py-8 md:py-20 px-4 md:px-8 lg:px-12 bg-white border-b border-slate-200">
+<section class="py-8 md:py-14 px-4 md:px-8 lg:px-12 bg-white border-b border-slate-200">
 <div class="max-w-5xl mx-auto">
 <div class="text-center max-w-2xl mx-auto mb-16">
 <div class="inline-flex items-center gap-2.5 px-3 py-1 rounded bg-slate-100 border border-slate-200 text-brand-navy font-mono text-xs font-semibold uppercase tracking-wider mb-4">
@@ -185,7 +186,7 @@
 <div class="relative pl-6 md:pl-0">
 <!-- Center/Left continuous vertical guide line -->
 <div class="absolute left-6 md:left-1/2 top-4 bottom-4 w-[2px] bg-slate-200 transform md:-translate-x-1/2"></div>
-<div class="space-y-16">
+<div class="space-y-8 md:space-y-10">
 @foreach(collect($aboutCompany->milestones ?? [])->sortBy('sort_order')->values() as $milestone)
 @php
   $isCurrent = (bool) ($milestone['is_current'] ?? false);
@@ -214,7 +215,7 @@
 <!-- Section 4: Bagan Pohon Struktur Organisasi (Clean Hierarchy Tree) -->
 <section class="px-4 md:px-8 lg:px-12 bg-[#f8f9ff] pt-8 md:pt-14 pb-16 md:py-20">
 <div class="max-w-7xl mx-auto">
-<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12">
 <div>
 <div class="inline-flex items-center gap-2.5 px-3 py-1 rounded bg-white border border-slate-200 text-brand-navy font-mono text-xs font-semibold uppercase tracking-wider mb-4">
 <span class="w-2 h-2 bg-brand-navy rounded-sm"></span>

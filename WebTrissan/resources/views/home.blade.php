@@ -16,7 +16,7 @@
   <script>
     tailwind.config = {
       theme: {
-        extend: {
+        extend: { fontSize: {'lg': ['1rem', {lineHeight: '1.6'}], 'xl': ['1.125rem', {lineHeight: '1.5'}], '2xl': ['1.25rem', {lineHeight: '1.4'}], '3xl': ['1.5rem', {lineHeight: '1.3'}], '4xl': ['1.75rem', {lineHeight: '1.25'}], '5xl': ['2.125rem', {lineHeight: '1.15'}], '6xl': ['2.5rem', {lineHeight: '1.1'}]},
           colors: {
             brand: {
               navy: '#0A192F',
@@ -52,6 +52,7 @@
       font-family: 'Montserrat', sans-serif;
     }
   </style>
+@include('layouts.scale')
 </head>
 <body class="bg-white text-slate-800 antialiased relative overflow-x-hidden selection:bg-brand-navy selection:text-white">
 
@@ -60,7 +61,7 @@
   <main class="relative">
 
     <!-- 2. Bagian Landing Page (Hero) -->
-    <section id="landing" class="relative w-full min-h-[560px] lg:min-h-[680px] bg-brand-navy flex items-center overflow-hidden">
+    <section id="landing" class="relative w-full min-h-[440px] lg:min-h-[540px] bg-brand-navy flex items-center overflow-hidden">
             <!-- Background Gambar Fasilitas Pabrik Penuh dengan Overlay Gelap -->
       <div class="absolute inset-0 z-0 overflow-hidden" id="hero-carousel-container">
         @php
@@ -96,19 +97,19 @@
       </div>
 
       <!-- Konten Hero di Sisi Kiri -->
-      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 w-full pt-10 pb-32 lg:pb-24 lg:pt-2">
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 w-full pt-6 pb-28 lg:pb-24 lg:pt-2">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
           <div class="max-w-2xl text-left">
-            <h1 class="font-heading font-black text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.12] mb-4 lg:mb-6 drop-shadow-md mt-1">{{ $pageSettings->hero_title ?? 'Dedikasi Presisi Manufaktur Mutakhir' }}</h1>
-            <p class="text-slate-300 text-sm sm:text-lg leading-relaxed font-normal max-w-xl mb-6 lg:mb-10">{{ $pageSettings->hero_subtitle ?? 'Menghadirkan rekayasa komponen mekanikal bertoleransi tinggi serta integrasi otomasi industri berstandar mutu internasional.' }}</p>
-            <div class="flex items-center gap-4">
+            <h1 class="font-heading font-black text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.12] mb-4 lg:mb-6 drop-shadow-md mt-1">{{ $pageSettings->hero_title ?? 'Dedikasi Presisi Manufaktur Mutakhir' }}</h1>
+            <p class="text-slate-300 text-sm sm:text-lg leading-relaxed font-normal max-w-xl mb-2 sm:mb-6 lg:mb-10">{{ $pageSettings->hero_subtitle ?? 'Menghadirkan rekayasa komponen mekanikal bertoleransi tinggi serta integrasi otomasi industri berstandar mutu internasional.' }}</p>
+            <div class="hidden sm:flex items-center gap-4">
               <a href="{{ $pageSettings->hero_cta_url ?? '#works' }}" class="inline-flex items-center justify-center font-heading font-bold text-xs sm:text-sm tracking-wider text-brand-navy bg-white hover:bg-slate-100 px-8 py-4 rounded shadow-heavy hover:shadow-2xl transition duration-200 transform hover:-translate-y-0.5 active:translate-y-0 uppercase group">
                 <span>{{ $pageSettings->hero_cta_text ?? 'Lihat Portofolio' }}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right w-4 h-4 ml-2 group-hover:translate-x-1.5 transition"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
               </a>
             </div>
           </div>
-          <div class="w-full lg:w-80 shrink-0 self-end lg:self-center">
+          <div class="w-48 sm:w-72 lg:w-80 shrink-0 self-end lg:self-center">
             @php
               $trustCard = $pageSettings->trust_card ?? [];
               $trustBadge = $trustCard['label'] ?? ($trustCard['badge'] ?? 'TRUSTED BY 50+ LEADERS');
@@ -118,25 +119,25 @@
               $trustFooterLeft = $trustCard['footer_left'] ?? 'AS9100D & ISO 9001';
               $trustFooterRight = $trustCard['footer_right'] ?? 'Global Audited';
             @endphp
-            <div class="bg-white/10 backdrop-blur-md border border-white/15 rounded-lg p-5 shadow-heavy text-white">
-              <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-3.5">
+            <div class="bg-white/10 backdrop-blur-md border border-white/15 rounded-lg p-3 sm:p-5 shadow-heavy text-white">
+              <div class="flex items-center justify-between pb-2 sm:pb-3 border-b border-white/10 mb-2 sm:mb-3.5">
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span class="text-[10px] font-heading font-bold tracking-widest uppercase text-blue-300">{{ $trustBadge }}</span>
+                  <span class="text-[9px] sm:text-[10px] font-heading font-bold tracking-wider sm:tracking-widest uppercase text-blue-300 leading-tight">{{ $trustBadge }}</span>
                 </div>
-                <span class="text-[10px] font-semibold text-slate-300 bg-white/10 px-2 py-0.5 rounded border border-white/10">{{ $trustRating }}</span>
+                <span class="text-[9px] sm:text-[10px] font-semibold text-slate-300 bg-white/10 px-1.5 sm:px-2 py-0.5 rounded border border-white/10 whitespace-nowrap ml-1.5">{{ $trustRating }}</span>
               </div>
-              <p class="text-xs text-slate-300 mb-4 font-normal leading-relaxed">{{ $trustDescription }}</p>
-              <div class="grid grid-cols-2 gap-2 text-xs font-heading font-bold tracking-wider text-slate-200">
+              <p class="hidden sm:block text-xs text-slate-300 mb-4 font-normal leading-relaxed">{{ $trustDescription }}</p>
+              <div class="grid grid-cols-2 gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-heading font-bold tracking-wide sm:tracking-wider text-slate-200">
                 @if(is_array($trustClients))
                   @foreach($trustClients as $client)
-                    <div class="px-2.5 py-1.5 rounded bg-white/5 border border-white/10 flex items-center gap-1.5 hover:bg-white/10 transition">
+                    <div class="px-1.5 sm:px-2.5 py-1 sm:py-1.5 rounded bg-white/5 border border-white/10 flex items-center gap-1.5 hover:bg-white/10 transition">
                       <span class="text-blue-400 font-black">•</span> {{ is_array($client) ? ($client['name'] ?? ($client['client'] ?? '')) : $client }}
                     </div>
                   @endforeach
                 @endif
               </div>
-              <div class="mt-3 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-300">
+              <div class="hidden sm:flex mt-3 pt-3 border-t border-white/10 items-center justify-between text-[11px] text-slate-300">
                 <span class="text-blue-300 font-semibold">{{ $trustFooterLeft }}</span>
                 <span class="text-slate-400">{{ $trustFooterRight }}</span>
               </div>
@@ -150,20 +151,20 @@
     <!-- Menindih bagian bawah gambar hero -->
     <section id="services" class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 -mt-24 lg:-mt-28"><div class="relative group/carousel"><div class="flex items-center justify-between mb-4 md:hidden"><span class="text-xs font-heading font-bold text-slate-400 uppercase tracking-widest">Core Capabilities ({{ $services->count() }} Services)</span><div class="flex items-center gap-2"><button onclick="document.getElementById('services-slider').scrollBy({left: -320, behavior: 'smooth'})" aria-label="Previous" class="w-9 h-9 rounded bg-white border border-brand-grayBorder flex items-center justify-center text-brand-navy hover:bg-brand-navy hover:text-white transition shadow-sm cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button><button onclick="document.getElementById('services-slider').scrollBy({left: 320, behavior: 'smooth'})" aria-label="Next" class="w-9 h-9 rounded bg-white border border-brand-grayBorder flex items-center justify-center text-brand-navy hover:bg-brand-navy hover:text-white transition shadow-sm cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button></div></div><button onclick="document.getElementById('services-slider').scrollBy({left: -380, behavior: 'smooth'})" aria-label="Previous Slide" class="hidden md:flex absolute -left-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-lg bg-white/95 backdrop-blur-md border border-brand-grayBorder text-brand-navy hover:text-white hover:bg-brand-navy items-center justify-center shadow-heavy hover:shadow-card-hover transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button><button onclick="document.getElementById('services-slider').scrollBy({left: 380, behavior: 'smooth'})" aria-label="Next Slide" class="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-lg bg-white/95 backdrop-blur-md border border-brand-grayBorder text-brand-navy hover:text-white hover:bg-brand-navy items-center justify-center shadow-heavy hover:shadow-card-hover transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button><div id="services-slider" class="flex gap-6 lg:gap-8 overflow-x-auto scroll-smooth pb-4 pt-1 snap-x select-none">
           @forelse($services as $service)
-            <div onclick="window.location.href='{{ url('/works?category=' . ($service->slug ?? '')) }}'" class="snap-start shrink-0 w-[88vw] sm:w-[360px] lg:w-[380px] group cursor-pointer bg-white rounded-lg p-8 border border-brand-grayBorder shadow-industrial hover:shadow-card-hover hover:border-brand-accent transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between relative overflow-hidden">
+            <div onclick="window.location.href='{{ url('/works?category=' . ($service->slug ?? '')) }}'" class="snap-start shrink-0 w-[78vw] sm:w-[300px] lg:w-[320px] group cursor-pointer bg-white rounded-lg p-5 lg:p-6 border border-brand-grayBorder shadow-industrial hover:shadow-card-hover hover:border-brand-accent transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between relative overflow-hidden">
               <div class="absolute top-0 left-0 w-full h-1.5 bg-brand-navy group-hover:bg-brand-accent transition"></div>
               <div>
-                <div class="w-14 h-14 rounded-lg bg-brand-grayBg border border-slate-200 flex items-center justify-center text-brand-navy group-hover:bg-brand-navy group-hover:text-white transition duration-300 mb-6 shadow-sm">
+                <div class="w-11 h-11 rounded-lg bg-brand-grayBg border border-slate-200 flex items-center justify-center text-brand-navy group-hover:bg-brand-navy group-hover:text-white transition duration-300 mb-4 shadow-sm">
                   @if(!empty($service->service_icon_svg))
                     {!! $service->service_icon_svg !!}
                   @elseif(!empty($service->service_icon))
-                    <span class="material-symbols-outlined text-3xl">{{ $service->service_icon }}</span>
+                    <span class="material-symbols-outlined text-2xl">{{ $service->service_icon }}</span>
                   @else
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                   @endif
                 </div>
-                <h3 class="font-heading font-bold text-xl text-brand-navy tracking-tight mb-3 group-hover:text-brand-accent transition">{{ $service->short_title ?? $service->service_title }}</h3>
-                <p class="text-brand-grayMuted text-sm leading-relaxed mb-6 font-normal">{{ $service->service_description }}</p>
+                <h3 class="font-heading font-bold text-lg text-brand-navy tracking-tight mb-2 group-hover:text-brand-accent transition">{{ $service->short_title ?? $service->service_title }}</h3>
+                <p class="text-brand-grayMuted text-sm leading-relaxed mb-4 font-normal">{{ $service->service_description }}</p>
               </div>
               <div class="flex items-center text-xs font-heading font-bold tracking-wider text-brand-navy group-hover:text-brand-accent uppercase mt-2">
                 <span>EXPLORE WORKS</span>
@@ -182,7 +183,7 @@
       
 
       <!-- 4. Bagian Works (Hasil Pekerjaan dengan Tab Filter Interaktif) -->
-      <section id="about" class="py-12 lg:py-20 bg-brand-grayBg border-t border-brand-grayBorder relative overflow-hidden">
+      <section id="about" class="py-10 lg:py-16 bg-brand-grayBg border-t border-brand-grayBorder relative overflow-hidden">
         @php
           $aboutTeaser = $pageSettings->about_teaser ?? [];
           $aboutImage = \App\Support\MediaUrl::resolve($aboutTeaser['image'] ?? null) ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuC7D7HAstdKsEhQ5jP4KgjDD06L8XEAneixTri3F8rqZCOFH38u54XUTBd6kxGV-jmWQWfz2rPnnGT9jVfS1ixR2LLUonFiB_qXPn4Vj93pWlc1SvJGb7kqiYBFS-rnSB541Azad48DmqUtAnzK2dl9Ku27bRS_zSEPLk6dgs9g4l6SVWMn5l4INGfVwH5Sndf5bWVsk4qerFO0bXLeLns3x1RtkpfNhS5VPZTcLqxV1BmhvSlZZ9CL';
@@ -210,7 +211,7 @@
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div class="lg:col-span-6 relative">
               <div class="relative rounded-lg overflow-hidden border border-brand-grayBorder shadow-heavy bg-slate-900 group">
-                <img src="{{ $aboutImage }}" alt="{{ $aboutTitle }}" class="w-full h-[460px] lg:h-[520px] object-cover object-center group-hover:scale-105 transition duration-700">
+                <img src="{{ $aboutImage }}" alt="{{ $aboutTitle }}" class="w-full h-52 sm:h-72 lg:h-[420px] object-cover object-center group-hover:scale-105 transition duration-700">
                 <div class="absolute inset-0 bg-gradient-to-t from-brand-navyDark/85 via-transparent to-transparent"></div>
                 <div class="absolute bottom-4 left-4 inline-flex items-center gap-2 bg-brand-navy/90 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-lg text-white shadow-heavy z-10">
                   <span class="text-[11px] font-heading font-bold text-slate-200 uppercase tracking-widest">{{ $aboutBadge }}</span>
@@ -256,14 +257,14 @@
         </div>
       </section>
 
-      <section id="works" class="bg-white border-t border-b border-brand-grayBorder relative py-12 lg:py-20"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12"><div class="max-w-xl mb-10"><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-grayBg border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3 shadow-sm"><span class="w-2 h-2 rounded-full bg-brand-accent"></span>ENGINEERED OUTPUT</div><h2 class="font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight mt-1">Featured Industrial Works</h2><p class="text-brand-grayMuted text-sm mt-3 leading-relaxed">Tinjau contoh rekam jejak presisi manufaktur dan standar mutu pabrik kami yang mematuhi standar toleransi mikro ketat.</p></div><div id="works-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <section id="works" class="bg-white border-t border-b border-brand-grayBorder relative py-10 lg:py-16"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12"><div class="max-w-xl mb-10"><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-grayBg border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3 shadow-sm"><span class="w-2 h-2 rounded-full bg-brand-accent"></span>ENGINEERED OUTPUT</div><h2 class="font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight mt-1">Featured Industrial Works</h2><p class="text-brand-grayMuted text-sm mt-3 leading-relaxed">Tinjau contoh rekam jejak presisi manufaktur dan standar mutu pabrik kami yang mematuhi standar toleransi mikro ketat.</p></div><div id="works-grid" class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
         @forelse($featuredWorks as $work)
           @php
             $workImg = $work->image_url ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuCYLbne5xVfziHtl9ouQePMOql-0lVZ6W1lydOHuy1ForFKi60xT0IRaUlxALs6aHz3ToC6MEHu748HwGOXVkA-hAKvh3wB6AdWg7L_mMJuSY3bZqjtv3CNIxo0fUC2Ff0al6jKmuo8MtQL1PWpn8Zgl6YcnPcG1KA4ejAx3iciLPc_DZgSDxUXaGSzx88Dzvu2CQy4LLu_CBAQXCSZjJfIccYW_fAA59ESQoExTReRrmMIqH-c2UyA';
             $categorySlug = $work->service?->slug ?? 'general';
           @endphp
           <div class="work-card {{ $categorySlug }} bg-white rounded-lg border border-brand-grayBorder overflow-hidden shadow-sm hover:shadow-card-hover transition group flex flex-col justify-between cursor-pointer" onclick="window.location.href='{{ url('/works#' . ($work->work_slug ?? '')) }}'">
-            <div class="h-52 bg-slate-900 overflow-hidden relative">
+            <div class="h-28 sm:h-44 lg:h-52 bg-slate-900 overflow-hidden relative">
               <img src="{{ $workImg }}" alt="{{ $work->work_title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
               <div class="absolute inset-0 bg-gradient-to-t from-brand-navyDark/85 via-transparent to-transparent"></div>
               <div class="absolute top-3 left-3 px-2.5 py-1 bg-brand-navy/90 backdrop-blur-md text-white font-mono text-[10px] font-bold tracking-wider uppercase rounded border border-white/10 flex items-center gap-1.5">
@@ -273,17 +274,17 @@
                 <span class="absolute bottom-3 right-3 px-2 py-0.5 rounded bg-black/60 backdrop-blur-md text-white text-[10px] font-mono border border-white/10">{{ $work->bottom_badge }}</span>
               @endif
             </div>
-            <div class="p-6 flex-1 flex flex-col justify-between">
-              <div class="mb-4">
+            <div class="p-3 sm:p-5 lg:p-6 flex-1 flex flex-col justify-between">
+              <div class="mb-2 sm:mb-4">
                 <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
                   <span>{{ $work->serial_number ?? 'SERIES-TR-' . str_pad($work->id, 4, '0', STR_PAD_LEFT) }}</span>
                   <span class="text-brand-accent font-semibold">{{ $work->client_sector ?? 'INDUSTRIAL TIER-1' }}</span>
                 </div>
-                <h4 class="font-heading font-bold text-lg text-brand-navy group-hover:text-brand-accent transition tracking-tight">{{ $work->work_title }}</h4>
-                <p class="text-xs text-brand-grayMuted mt-2 leading-relaxed">{{ $work->short_description }}</p>
+                <h4 class="font-heading font-bold text-sm sm:text-lg text-brand-navy group-hover:text-brand-accent transition tracking-tight leading-snug">{{ $work->work_title }}</h4>
+                <p class="hidden sm:block text-xs text-brand-grayMuted mt-2 leading-relaxed">{{ $work->short_description }}</p>
               </div>
               <div>
-                <div class="flex flex-wrap gap-1.5 mb-5">
+                <div class="hidden sm:flex flex-wrap gap-1.5 mb-5">
                   @if(!empty($work->highlight_tags) && is_array($work->highlight_tags))
                     @foreach($work->highlight_tags as $idx => $tag)
                       <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium {{ $idx === 0 ? 'bg-blue-500/10 text-brand-accent border border-blue-500/20' : 'bg-slate-100 text-slate-600 border border-slate-200' }}">{{ $tag }}</span>
@@ -292,8 +293,8 @@
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-blue-500/10 text-brand-accent border border-blue-500/20">{{ $work->material }}</span>
                   @endif
                 </div>
-                <a href="{{ url('/works#' . ($work->work_slug ?? '')) }}" class="inline-flex items-center justify-between w-full px-4 py-2.5 rounded bg-blue-500/10 hover:bg-brand-navy text-brand-accent hover:text-white border border-blue-500/20 hover:border-brand-navy text-xs font-heading font-bold uppercase tracking-wider transition-all duration-200 group/btn">
-                  <span>Lihat Spesifikasi &amp; Detail</span>
+                <a href="{{ url('/works#' . ($work->work_slug ?? '')) }}" class="inline-flex items-center justify-between w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded bg-blue-500/10 hover:bg-brand-navy text-brand-accent hover:text-white border border-blue-500/20 hover:border-brand-navy text-xs font-heading font-bold uppercase tracking-wider transition-all duration-200 group/btn">
+                  <span><span class="sm:hidden">Detail</span><span class="hidden sm:inline">Lihat Spesifikasi &amp; Detail</span></span>
                   <svg class="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </a>
               </div>
@@ -307,10 +308,10 @@
     </div>
 
     <!-- 5. Bagian Portfolio (Galeri Proses Manufaktur & Peralatan dengan Tombol Biru Persegi Panjang) -->
-    <section id="services-overview" class="bg-brand-grayBg border-t border-b border-brand-grayBorder relative py-12 lg:py-20"><div class="max-w-7xl mx-auto px-6 lg:px-12"><div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6"><div class="max-w-2xl"><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3 shadow-sm"><span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>LAYANAN &amp; SPESIALISASI TEKNIK / CAPABILITY DIRECTORY</div><h2 class="font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight mt-1">Layanan &amp; Kapabilitas Rekayasa Industri</h2><p class="text-brand-grayMuted text-sm mt-3 leading-relaxed">Direktori lengkap kapabilitas rekayasa mekanikal, automasi, kelistrikan, dan pengadaan industri terpadu. Klik setiap layanan spesialisasi untuk meninjau dokumentasi proyek pada rekam jejak pekerjaan kami.</p></div><div class="shrink-0"><a href="/works" class="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-brand-navy text-white hover:bg-brand-accent text-xs font-heading font-bold tracking-wider uppercase transition shadow-sm"><span class="">Eksplorasi Semua Services</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <section id="services-overview" class="bg-brand-grayBg border-t border-b border-brand-grayBorder relative py-10 lg:py-16"><div class="max-w-7xl mx-auto px-6 lg:px-12"><div class="flex flex-col md:flex-row md:items-end justify-between mb-8 lg:mb-12 gap-4 lg:gap-6"><div class="max-w-2xl"><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3 shadow-sm"><span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>LAYANAN &amp; SPESIALISASI TEKNIK / CAPABILITY DIRECTORY</div><h2 class="font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight mt-1">Layanan &amp; Kapabilitas Rekayasa Industri</h2><p class="text-brand-grayMuted text-sm mt-3 leading-relaxed">Direktori lengkap kapabilitas rekayasa mekanikal, automasi, kelistrikan, dan pengadaan industri terpadu. Klik setiap layanan spesialisasi untuk meninjau dokumentasi proyek pada rekam jejak pekerjaan kami.</p></div><div class="shrink-0"><a href="/works" class="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-brand-navy text-white hover:bg-brand-accent text-xs font-heading font-bold tracking-wider uppercase transition shadow-sm"><span class="">Eksplorasi Semua Services</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8">
         @forelse($serviceClusters as $cluster)
           <div class="bg-white rounded-lg border border-brand-grayBorder shadow-industrial hover:shadow-card-hover transition-all duration-300 overflow-hidden flex flex-col">
-            <div class="p-6 bg-slate-50 border-b border-brand-grayBorder flex items-center justify-between">
+            <div class="p-4 lg:p-6 bg-slate-50 border-b border-brand-grayBorder flex items-center justify-between gap-3">
               <div class="flex items-center gap-3.5">
                 <div class="w-11 h-11 rounded-lg bg-brand-navy text-white flex items-center justify-center font-mono font-bold text-sm shadow-sm">
                   @if(!empty($cluster->cluster_icon_svg))
@@ -330,7 +331,7 @@
             </div>
             <div class="p-2 flex-1 flex flex-col divide-y divide-slate-100">
               @foreach($cluster->services as $svc)
-                <a href="{{ url('/works?category=' . ($svc->slug ?? '')) }}" class="group flex items-center justify-between p-3.5 rounded hover:bg-slate-50 transition">
+                <a href="{{ url('/works?category=' . ($svc->slug ?? '')) }}" class="group flex items-center justify-between p-2.5 lg:p-3.5 rounded hover:bg-slate-50 transition">
                   <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded bg-slate-100 text-brand-navy flex items-center justify-center shrink-0 group-hover:bg-brand-navy group-hover:text-white transition">
                       @if(!empty($svc->service_icon_svg))
@@ -359,7 +360,7 @@
       </div></div></section>
 
     <!-- 6. Bagian Contact (Blok Biru Dongker + Area Mission/Values/Motto + Deretan Logo Klien + 3D Roda Gigi Metalik di Sudut Kanan Bawah) -->
-    <section id="contact" class="border-t border-brand-grayBorder relative overflow-hidden py-12 lg:py-20 bg-white">
+    <section id="contact" class="border-t border-brand-grayBorder relative overflow-hidden py-10 lg:py-16 bg-white">
       @php
         $httpsOnly = fn (?string $url, string $fallback): string => \Illuminate\Support\Str::startsWith((string) $url, 'https://') ? $url : $fallback;
         $mapsButtonUrl = $httpsOnly($globalSettings?->maps_button_url, 'https://maps.google.com/?q=Kawasan+Industri+Jababeka+V+Cikarang');
@@ -569,55 +570,6 @@
 
 
 <script class="">
-  (function() {
-    const navLinks = document.querySelectorAll('header nav a.nav-link');
-    const activeClasses = ["text-brand-navy", "after:content-['']", "after:absolute", "after:bottom-0", "after:left-0", "after:w-full", "after:h-0.5", "after:bg-brand-navy"];
-    const inactiveClasses = ["text-brand-grayMuted", "hover:text-brand-navy"];
-
-    function setActiveNav(targetLink) {
-      navLinks.forEach(link => {
-        activeClasses.forEach(cls => link.classList.remove(cls));
-        inactiveClasses.forEach(cls => link.classList.add(cls));
-      });
-      inactiveClasses.forEach(cls => targetLink.classList.remove(cls));
-      activeClasses.forEach(cls => targetLink.classList.add(cls));
-    }
-
-    navLinks.forEach(link => {
-      link.addEventListener('click', function(e) {
-        const href = this.getAttribute('href');
-        if (href && href.startsWith('#')) {
-          setActiveNav(this);
-        }
-      });
-    });
-
-    const sections = [
-      { id: 'landing', link: document.querySelector('header nav a.nav-link[href$="#landing"]') },
-      { id: 'services', link: document.querySelector('header nav a.nav-link[href$="#services"]') },
-      { id: 'works', link: document.querySelector('header nav a.nav-link[href$="#works"]') },
-      { id: 'contact', link: document.querySelector('header nav a.nav-link[href$="#contact"]') }
-    ];
-
-    window.addEventListener('scroll', () => {
-      const scrollY = window.pageYOffset || document.documentElement.scrollTop;
-      let current = null;
-      sections.forEach(item => {
-        const el = document.getElementById(item.id);
-        if (el) {
-          const top = el.offsetTop - 120;
-          const height = el.offsetHeight;
-          if (scrollY >= top && scrollY < top + height) {
-            current = item.link;
-          }
-        }
-      });
-      if (current) {
-        setActiveNav(current);
-      }
-    });
-  })();
-</script><script class="">
   (function() {
     const navLinks = document.querySelectorAll('header nav a.nav-link');
     const activeClasses = ["text-brand-navy", "after:content-['']", "after:absolute", "after:bottom-0", "after:left-0", "after:w-full", "after:h-0.5", "after:bg-brand-navy"];

@@ -1,6 +1,6 @@
 <!-- Footer Penutup Sederhana -->
   <footer id="master-footer" class="w-full bg-[#040911] text-slate-200 border-t border-white/10 relative"><div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(14,165,233,0.08),rgba(255,255,255,0))] pointer-events-none"></div>
-<div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-12">
+<div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-10 lg:pt-14 pb-8 lg:pb-10">
   <div class="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-14 items-start">
     <!-- Kolom Kiri: Logo, Deskripsi, Gambar Partner -->
     <div class="md:col-span-5 space-y-6">
@@ -84,7 +84,7 @@
   </div>
 
   <!-- Sub-footer / Bottom bar: 1 baris rapi tanpa celah/gap di bawahnya -->
-  <div class="border-t border-slate-800/80 mt-12 pt-6 flex flex-col md:flex-row items-center justify-between text-xs text-slate-400 gap-4">
+  <div class="border-t border-slate-800/80 mt-8 lg:mt-10 pt-5 flex flex-col md:flex-row items-center justify-between text-xs text-slate-400 gap-4">
     <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
       <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
       <span class="">{{ $globalSettings?->copyright_text ?? '© 2026 PT. Apex Industrial Engineering. All rights reserved.' }}</span>
