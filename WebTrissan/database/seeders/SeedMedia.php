@@ -11,15 +11,18 @@ use Illuminate\Support\Facades\Storage;
 class SeedMedia
 {
     /**
-     * Create (once) a placeholder SVG image and return its path on the public disk.
+     * Create (once) a placeholder PNG image and return its path on the public disk.
+     *
+     * PNG is used instead of SVG because Filament's upload preview (FilePond) cannot read the size of SVG files
+     * and stays stuck on "Loading" for records that point at them.
      */
     public static function image(string $name): string
     {
-        $path = "seed/{$name}.svg";
+        $path = "seed/{$name}.png";
 
         if (! Storage::disk('public')->exists($path)) {
             [$width, $height] = self::dimensionsFor($name);
-            Storage::disk('public')->put($path, self::svg($name, $width, $height));
+            Storage::disk('public')->put($path, self::png($name, $width, $height));
         }
 
         return $path;
@@ -59,35 +62,86 @@ class SeedMedia
         return strtoupper(str_replace(['-', '_', '/'], ' ', $name));
     }
 
-    private static function svg(string $name, int $width, int $height): string
+    private static function png(string $name, int $width, int $height): string
     {
         $hue = 205 + (crc32($name) % 40);
-        $label = htmlspecialchars(self::label($name), ENT_XML1);
-        $fontSize = max(14, (int) (min($width, $height) / 14));
-        $captionY = (int) ($height / 2 + $fontSize * 1.6);
-        $caption = max(10, (int) ($fontSize / 2.6));
-        $isBackdrop = str_starts_with($name, 'hero') || str_starts_with($name, 'about-hero');
-        $text = $isBackdrop ? '' : <<<TEXT
-  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#ffffff" fill-opacity="0.92" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="{$fontSize}">{$label}</text>
-  <text x="50%" y="{$captionY}" text-anchor="middle" fill="#93c5fd" font-family="Arial, Helvetica, sans-serif" font-size="{$caption}">CONTOH GAMBAR - GANTI MELALUI CMS</text>
-TEXT;
+        $image = imagecreatetruecolor($width, $height);
 
-        return <<<SVG
-<svg xmlns="http://www.w3.org/2000/svg" width="{$width}" height="{$height}" viewBox="0 0 {$width} {$height}">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="hsl({$hue},55%,22%)"/>
-      <stop offset="1" stop-color="hsl({$hue},60%,10%)"/>
-    </linearGradient>
-    <pattern id="p" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M40 0H0V40" fill="none" stroke="#ffffff" stroke-opacity="0.07"/>
-    </pattern>
-  </defs>
-  <rect width="100%" height="100%" fill="url(#g)"/>
-  <rect width="100%" height="100%" fill="url(#p)"/>
-{$text}
-</svg>
-SVG;
+        [$topR, $topG, $topB] = self::hslToRgb($hue, 0.55, 0.22);
+        [$bottomR, $bottomG, $bottomB] = self::hslToRgb($hue, 0.60, 0.10);
+
+        for ($y = 0; $y < $height; $y++) {
+            $ratio = $y / max($height - 1, 1);
+            $color = imagecolorallocate(
+                $image,
+                (int) ($topR + ($bottomR - $topR) * $ratio),
+                (int) ($topG + ($bottomG - $topG) * $ratio),
+                (int) ($topB + ($bottomB - $topB) * $ratio),
+            );
+            imageline($image, 0, $y, $width, $y, $color);
+        }
+
+        imagealphablending($image, true);
+        $grid = imagecolorallocatealpha($image, 255, 255, 255, 118);
+        for ($x = 0; $x < $width; $x += 40) {
+            imageline($image, $x, 0, $x, $height, $grid);
+        }
+        for ($y = 0; $y < $height; $y += 40) {
+            imageline($image, 0, $y, $width, $y, $grid);
+        }
+
+        $isBackdrop = str_starts_with($name, 'hero') || str_starts_with($name, 'about-hero');
+        if (! $isBackdrop) {
+            self::drawCenteredText($image, self::label($name), $width, $height, 255, 255, 255, (int) ($height * 0.5) - 20, 0.55);
+            self::drawCenteredText($image, 'CONTOH GAMBAR - GANTI MELALUI CMS', $width, $height, 147, 197, 253, (int) ($height * 0.5) + 30, 0.4);
+        }
+
+        ob_start();
+        imagepng($image);
+        $contents = (string) ob_get_clean();
+        imagedestroy($image);
+
+        return $contents;
+    }
+
+    private static function drawCenteredText(\GdImage $image, string $text, int $width, int $height, int $r, int $g, int $b, int $top, float $widthRatio): void
+    {
+        $textWidth = max(strlen($text) * 9, 1);
+        $textHeight = 15;
+
+        $layer = imagecreatetruecolor($textWidth, $textHeight);
+        imagealphablending($layer, false);
+        imagefill($layer, 0, 0, imagecolorallocatealpha($layer, 0, 0, 0, 127));
+        imagesavealpha($layer, true);
+        imagestring($layer, 5, 0, 0, $text, imagecolorallocate($layer, $r, $g, $b));
+
+        $targetWidth = min((int) ($width * $widthRatio), $textWidth * 6);
+        $targetHeight = (int) ($targetWidth * $textHeight / $textWidth);
+
+        imagecopyresampled($image, $layer, (int) (($width - $targetWidth) / 2), $top, 0, 0, $targetWidth, $targetHeight, $textWidth, $textHeight);
+        imagedestroy($layer);
+    }
+
+    /**
+     * @return array{0: int, 1: int, 2: int}
+     */
+    private static function hslToRgb(float $hue, float $saturation, float $lightness): array
+    {
+        $chroma = (1 - abs(2 * $lightness - 1)) * $saturation;
+        $segment = fmod($hue / 60, 6);
+        $x = $chroma * (1 - abs(fmod($segment, 2) - 1));
+        $match = $lightness - $chroma / 2;
+
+        [$r, $g, $b] = match (true) {
+            $segment < 1 => [$chroma, $x, 0],
+            $segment < 2 => [$x, $chroma, 0],
+            $segment < 3 => [0, $chroma, $x],
+            $segment < 4 => [0, $x, $chroma],
+            $segment < 5 => [$x, 0, $chroma],
+            default => [$chroma, 0, $x],
+        };
+
+        return [(int) round(($r + $match) * 255), (int) round(($g + $match) * 255), (int) round(($b + $match) * 255)];
     }
 
     private static function pdfDocument(string $title): string

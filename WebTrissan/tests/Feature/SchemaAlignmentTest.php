@@ -226,3 +226,20 @@ test('seeded map urls use the key-less embed format that google accepts', functi
         ->not->toContain('pb=')
         ->and($global->maps_button_url)->toStartWith('https://maps.google.com/?q=');
 });
+
+test('seeded placeholder images are real raster images that the filament upload preview can read', function () {
+    $this->seed();
+
+    foreach ([Work::first()->work_image, GlobalSetting::first()->navbar_logo, AboutCompany::first()->hero_image] as $path) {
+        expect($path)->toEndWith('.png');
+
+        $size = getimagesizefromstring(Storage::disk('public')->get($path));
+
+        expect($size)->not->toBeFalse()
+            ->and($size['mime'])->toBe('image/png');
+    }
+});
+
+test('public disk urls are relative so uploaded files load from any host and port', function () {
+    expect(Storage::disk('public')->url('seed/work-1.png'))->toBe('/storage/seed/work-1.png');
+});
