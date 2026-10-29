@@ -77,7 +77,8 @@
       <a href="{{ url('/#contact') }}" class="nav-link font-heading text-sm font-semibold tracking-wide transition relative py-1 text-brand-grayMuted hover:text-brand-navy">Contact</a>
     </nav>
     <!-- Tombol kontak (mobile) -->
-    <a class="lg:hidden shrink-0 inline-flex items-center gap-1.5 px-4 min-h-11 rounded-lg bg-brand-navy text-white text-xs font-heading font-bold tracking-wide hover:bg-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent transition" href="{{ url('/#contact') }}">
+    {{-- Hex colors, not brand-*: works, portofolio and license configure a different palette, which left this button invisible. --}}
+    <a class="lg:hidden shrink-0 inline-flex items-center gap-1.5 px-4 min-h-11 rounded-lg bg-[#0A192F] text-white text-xs font-heading font-bold tracking-wide hover:bg-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0066CC] transition" href="{{ url('/#contact') }}">
       <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h2.5l1.5 4-2 1.5a11 11 0 005 5L13.5 11l4 1.5V15a2 2 0 01-2 2C8.7 17 3 11.3 3 5z"></path></svg>
       Kontak
     </a>

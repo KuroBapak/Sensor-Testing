@@ -52,6 +52,9 @@ class SeoFilesController extends Controller
 
     /**
      * Serve the XML sitemap of the public pages, using each page's CMS update time as last modified date.
+     *
+     * The XML declaration is prepended here rather than written in the Blade view: with PHP's short_open_tag
+     * enabled (the default when no php.ini sets it), a literal "<?xml" in a compiled view is a parse error.
      */
     public function sitemap(): Response
     {
@@ -59,9 +62,11 @@ class SeoFilesController extends Controller
 
         $urls = collect(self::SITEMAP_PAGES)->map(fn (string $page, string $routeName): array => [
             'loc' => route($routeName),
-            'lastmod' => $updatedAt[$page]?->toAtomString(),
+            'lastmod' => $updatedAt->get($page)?->toAtomString(),
         ]);
 
-        return response()->view('sitemap', ['urls' => $urls], 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n".view('sitemap', ['urls' => $urls])->render();
+
+        return response($xml, 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
     }
 }

@@ -8,13 +8,13 @@
   <meta name="description" content="{{ $pageSettings->seo_description }}">
   @endif
   <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <!-- Google Fonts: Montserrat & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
   <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@1.64.0/dist/umd/lucide.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -78,7 +78,7 @@
         @endphp
         @foreach($heroSlides as $slide)
           <div class="hero-slide absolute inset-0 transition-opacity duration-1000 {{ $loop->first ? 'opacity-100' : 'opacity-0' }}">
-            <img src="{{ $slide['image'] }}" alt="{{ $slide['alt'] }}" class="w-full h-full object-cover object-center transform scale-105">
+            <img src="{{ $slide['image'] }}" alt="{{ $slide['alt'] }}" @if($loop->first) fetchpriority="high" @else fetchpriority="low" loading="lazy" @endif decoding="async" class="w-full h-full object-cover object-center transform scale-105">
             <div class="absolute inset-0 bg-gradient-to-r from-brand-navyDark/95 via-brand-navy/85 to-brand-navyDark/65"></div>
             <div class="absolute inset-0 bg-brand-navy/40 mix-blend-multiply"></div>
           </div>
@@ -142,7 +142,7 @@
     <!-- Menindih bagian bawah gambar hero -->
     <section id="services" class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 -mt-24 lg:-mt-28"><div class="relative group/carousel"><div class="flex items-center justify-between mb-4 md:hidden"><span class="text-xs font-heading font-bold text-slate-400 uppercase tracking-widest">Core Capabilities ({{ $services->count() }} Services)</span><div class="flex items-center gap-2"><button onclick="document.getElementById('services-slider').scrollBy({left: -320, behavior: 'smooth'})" aria-label="Previous" class="w-9 h-9 rounded bg-white border border-brand-grayBorder flex items-center justify-center text-brand-navy hover:bg-brand-navy hover:text-white transition shadow-sm cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button><button onclick="document.getElementById('services-slider').scrollBy({left: 320, behavior: 'smooth'})" aria-label="Next" class="w-9 h-9 rounded bg-white border border-brand-grayBorder flex items-center justify-center text-brand-navy hover:bg-brand-navy hover:text-white transition shadow-sm cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button></div></div><button onclick="document.getElementById('services-slider').scrollBy({left: -380, behavior: 'smooth'})" aria-label="Previous Slide" class="hidden md:flex absolute -left-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-lg bg-white/95 backdrop-blur-md border border-brand-grayBorder text-brand-navy hover:text-white hover:bg-brand-navy items-center justify-center shadow-heavy hover:shadow-card-hover transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button><button onclick="document.getElementById('services-slider').scrollBy({left: 380, behavior: 'smooth'})" aria-label="Next Slide" class="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-lg bg-white/95 backdrop-blur-md border border-brand-grayBorder text-brand-navy hover:text-white hover:bg-brand-navy items-center justify-center shadow-heavy hover:shadow-card-hover transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button><div id="services-slider" class="flex gap-6 lg:gap-8 overflow-x-auto scroll-smooth pb-4 pt-1 snap-x select-none">
           @forelse($services as $service)
-            <div onclick="window.location.href='{{ url('/works?category=' . ($service->slug ?? '')) }}'" class="snap-start shrink-0 w-[78vw] sm:w-[300px] lg:w-[320px] group cursor-pointer bg-white rounded-lg p-5 lg:p-6 border border-brand-grayBorder shadow-industrial hover:shadow-card-hover hover:border-brand-accent transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between relative overflow-hidden">
+            <a href="{{ url('/works?category=' . ($service->slug ?? '')) }}" class="snap-start shrink-0 w-[78vw] sm:w-[300px] lg:w-[320px] group cursor-pointer bg-white rounded-lg p-5 lg:p-6 border border-brand-grayBorder shadow-industrial hover:shadow-card-hover hover:border-brand-accent transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between relative overflow-hidden">
               <div class="absolute top-0 left-0 w-full h-1.5 bg-brand-navy group-hover:bg-brand-accent transition"></div>
               <div>
                 <div class="w-11 h-11 rounded-lg bg-brand-grayBg border border-slate-200 flex items-center justify-center text-brand-navy group-hover:bg-brand-navy group-hover:text-white transition duration-300 mb-4 shadow-sm">
@@ -161,7 +161,7 @@
                 <span>EXPLORE WORKS</span>
                 <svg class="w-4 h-4 ml-1.5 transform group-hover:translate-x-1.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 18 6-6-6-6"></path></svg>
               </div>
-            </div>
+            </a>
           @empty
             <div class="text-center py-8 text-slate-500 w-full">Belum ada data layanan.</div>
           @endforelse
@@ -198,7 +198,7 @@
             <div class="lg:col-span-6 relative">
               <div class="relative rounded-lg overflow-hidden border border-brand-grayBorder shadow-heavy bg-slate-900 group">
                 @if($aboutImage)
-                  <img src="{{ $aboutImage }}" alt="{{ $aboutTitle }}" class="w-full h-52 sm:h-72 lg:h-[420px] object-cover object-center group-hover:scale-105 transition duration-700">
+                  <img src="{{ $aboutImage }}" alt="{{ $aboutTitle }}" loading="lazy" decoding="async" class="w-full h-52 sm:h-72 lg:h-[420px] object-cover object-center group-hover:scale-105 transition duration-700">
                 @else
                   <div class="w-full h-52 sm:h-72 lg:h-[420px]"></div>
                 @endif
@@ -256,7 +256,7 @@
           <div class="work-card {{ $categorySlug }} bg-white rounded-lg border border-brand-grayBorder overflow-hidden shadow-sm hover:shadow-card-hover transition group flex flex-col justify-between cursor-pointer" onclick="window.location.href='{{ url('/works#' . ($work->work_slug ?? '')) }}'">
             <div class="h-28 sm:h-44 lg:h-52 bg-slate-900 overflow-hidden relative">
               @if($workImg)
-                <img src="{{ $workImg }}" alt="{{ $work->work_title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                <img src="{{ $workImg }}" alt="{{ $work->work_title }}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
               @endif
               <div class="absolute inset-0 bg-gradient-to-t from-brand-navyDark/85 via-transparent to-transparent"></div>
               <div class="absolute top-3 left-3 px-2.5 py-1 bg-brand-navy/90 backdrop-blur-md text-white font-mono text-[10px] font-bold tracking-wider uppercase rounded border border-white/10 flex items-center gap-1.5">
