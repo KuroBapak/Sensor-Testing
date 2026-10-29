@@ -1,0 +1,592 @@
+{
+  "summary": {
+    "health_score": 48,
+    "audit_date": "2026-10-29",
+    "url": "https://trissan.mdhost.site/",
+    "pages_crawled": [
+      "/",
+      "/about",
+      "/portofolio",
+      "/license",
+      "/works"
+    ],
+    "business_type": "B2B industrial services (mechanical, electrical, automation contractor) with local/regional offices in Bekasi, Malang and Timika (hybrid local service)",
+    "top_findings": [
+      "/sitemap.xml returns HTTP 500 with the full Laravel debug (Ignition) error page: ParseError at resources/views/sitemap.blade.php:1",
+      "Production runs with APP_DEBUG enabled, exposing stack traces, file paths, PHP 8.4.27 and Laravel 13.37.0 to anyone",
+      "Live robots.txt is Cloudflare's managed file with no Sitemap line; the app's own robots route (Disallow: /admin + Sitemap) is not what crawlers see",
+      "Mobile pages are slow: LCP 4.7-22.7 s on throttled mobile (target under 2.5 s), driven by ~4-5 MB of unoptimized photos per page",
+      "Homepage and /license load Tailwind via the cdn.tailwindcss.com runtime compiler and lucide@latest, both render-blocking and not meant for production"
+    ],
+    "quick_wins": [
+      "Set APP_DEBUG=false and APP_ENV=production on the server, then php artisan config:cache",
+      "Fix /sitemap.xml and submit it in Google Search Console",
+      "Turn off Cloudflare 'Managed robots.txt' (or add a Sitemap: line to it) so the app's robots.txt is served",
+      "Add loading=\"lazy\" plus width/height to below-the-fold images; convert photos to WebP at <=1600px wide",
+      "Use a real 1200x630 og:image instead of the logo for social sharing"
+    ],
+    "measured": {
+      "mobile": {
+        "/": {
+          "ttfb": 688,
+          "fcp": 4524,
+          "lcp": 18364,
+          "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/hero-1.jpg",
+          "cls": 0.007,
+          "load": 31950,
+          "requests": 22,
+          "kb": 4876,
+          "kbByType": {
+            "script": 1,
+            "link": 2,
+            "img": 4854,
+            "xmlhttprequest": 0,
+            "other": 0
+          },
+          "blocking": [
+            "https://cdn.tailwindcss.com/",
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+            "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900",
+            "https://unpkg.com/lucide@latest"
+          ]
+        },
+        "/about": {
+          "ttfb": 165,
+          "fcp": 3228,
+          "lcp": 9628,
+          "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/about-hero.png",
+          "cls": 0.003,
+          "load": 10842,
+          "requests": 16,
+          "kb": 1873,
+          "kbByType": {
+            "script": 1,
+            "link": 2,
+            "img": 1857,
+            "xmlhttprequest": 0,
+            "other": 0
+          },
+          "blocking": [
+            "https://cdn.tailwindcss.com/?plugins=forms,container-queries",
+            "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900",
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100"
+          ]
+        },
+        "/portofolio": {
+          "ttfb": 1397,
+          "fcp": 4196,
+          "lcp": 22724,
+          "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/portfolio/auto-1.jpg",
+          "cls": 0.053,
+          "load": 29395,
+          "requests": 18,
+          "kb": 4280,
+          "kbByType": {
+            "link": 2,
+            "script": 1,
+            "img": 4263,
+            "xmlhttprequest": 0,
+            "other": 0
+          },
+          "blocking": [
+            "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monts",
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+            "https://cdn.tailwindcss.com/?plugins=forms,container-queries"
+          ]
+        },
+        "/license": {
+          "ttfb": 176,
+          "fcp": 4704,
+          "lcp": 4704,
+          "lcpEl": "P Akreditasi sistem manajemen mutu, keselamatan operasional, dan kepatuhan lingkungan. Data ",
+          "cls": 0,
+          "load": 10787,
+          "requests": 12,
+          "kb": 589,
+          "kbByType": {
+            "script": 1,
+            "link": 2,
+            "img": 570,
+            "xmlhttprequest": 0,
+            "other": 0
+          },
+          "blocking": [
+            "https://cdn.tailwindcss.com/",
+            "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900",
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+            "https://unpkg.com/lucide@latest"
+          ]
+        },
+        "/works": {
+          "ttfb": 164,
+          "fcp": 3624,
+          "lcp": 22332,
+          "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/work-3.jpg",
+          "cls": 0.001,
+          "load": 27981,
+          "requests": 19,
+          "kb": 4284,
+          "kbByType": {
+            "link": 2,
+            "script": 1,
+            "img": 4263,
+            "xmlhttprequest": 0,
+            "other": 0
+          },
+          "blocking": [
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FIL",
+            "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monts",
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+            "https://cdn.tailwindcss.com/?plugins=forms,container-queries"
+          ]
+        }
+      },
+      "desktop": {
+        "/": {
+          "ttfb": 166,
+          "fcp": 1092,
+          "lcp": 1092,
+          "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/hero-1.jpg",
+          "cls": 0.009,
+          "load": 1283,
+          "requests": 22,
+          "kb": 4876,
+          "kbByType": {
+            "script": 1,
+            "link": 2,
+            "img": 4854,
+            "xmlhttprequest": 0,
+            "other": 0
+          },
+          "blocking": [
+            "https://cdn.tailwindcss.com/",
+            "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900",
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+            "https://unpkg.com/lucide@latest"
+          ]
+        },
+        "/about": {
+          "ttfb": 164,
+          "fcp": 700,
+          "lcp": 700,
+          "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/about-hero.png",
+          "cls": 0.003,
+          "load": 821,
+          "requests": 16,
+          "kb": 1873,
+          "kbByType": {
+            "script": 1,
+            "link": 2,
+            "img": 1857,
+            "xmlhttprequest": 0,
+            "other": 0
+          },
+          "blocking": [
+            "https://cdn.tailwindcss.com/?plugins=forms,container-queries",
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+            "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900"
+          ]
+        },
+        "/portofolio": {
+          "ttfb": 1261,
+          "fcp": 1820,
+          "lcp": 2092,
+          "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/portfolio/auto-2.jpg",
+          "cls": 0.003,
+          "load": 2700,
+          "requests": 18,
+          "kb": 4280,
+          "kbByType": {
+            "link": 2,
+            "img": 4263,
+            "script": 1,
+            "xmlhttprequest": 0,
+            "other": 0
+          },
+          "blocking": [
+            "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monts",
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+            "https://cdn.tailwindcss.com/?plugins=forms,container-queries"
+          ]
+        },
+        "/license": {
+          "ttfb": 1248,
+          "fcp": 1976,
+          "lcp": 1976,
+          "lcpEl": "H1 LISENSI & AKREDITASI MUTU",
+          "cls": 0.004,
+          "load": 2218,
+          "requests": 12,
+          "kb": 589,
+          "kbByType": {
+            "script": 1,
+            "link": 2,
+            "img": 570,
+            "xmlhttprequest": 0,
+            "other": 0
+          },
+          "blocking": [
+            "https://cdn.tailwindcss.com/",
+            "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900",
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+            "https://unpkg.com/lucide@latest"
+          ]
+        },
+        "/works": {
+          "ttfb": 176,
+          "fcp": 688,
+          "lcp": 1012,
+          "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/work-1.jpg",
+          "cls": 0.006,
+          "load": 1634,
+          "requests": 19,
+          "kb": 4284,
+          "kbByType": {
+            "link": 2,
+            "img": 4263,
+            "script": 1,
+            "xmlhttprequest": 0,
+            "other": 0
+          },
+          "blocking": [
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FIL",
+            "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monts",
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+            "https://cdn.tailwindcss.com/?plugins=forms,container-queries"
+          ]
+        }
+      }
+    }
+  },
+  "categories": [
+    {
+      "name": "Technical SEO",
+      "score": 46,
+      "what_works": [
+        "HTTPS with HTTP->HTTPS redirect",
+        "All 5 pages return 200 with self-referencing canonicals",
+        "Server-rendered HTML (not a SPA); modal/pop-up content is present in the HTML so crawlers can read it",
+        "Proper 404 for unknown URLs; x-content-type-options and x-frame-options set"
+      ],
+      "findings": [
+        {
+          "title": "Sitemap returns HTTP 500",
+          "severity": "Critical",
+          "description": "GET /sitemap.xml -> 500, ParseError 'syntax error, unexpected identifier \"version\"' at resources/views/sitemap.blade.php:1 (from the XML prolog line). Search engines cannot discover pages through a sitemap.",
+          "recommendation": "Fix the XML prolog output (e.g. emit it from the controller or split the '<?' token), redeploy, clear compiled views (php artisan view:clear), then submit the sitemap in Google Search Console and Bing Webmaster Tools."
+        },
+        {
+          "title": "Debug mode enabled in production",
+          "severity": "Critical",
+          "description": "The 500 response is the full Laravel debug page (~900 KB) revealing stack trace, file paths, PHP and Laravel versions. Any error on the site leaks the same.",
+          "recommendation": "Set APP_ENV=production and APP_DEBUG=false in the server .env, run php artisan config:cache."
+        },
+        {
+          "title": "robots.txt has no Sitemap directive",
+          "severity": "High",
+          "description": "Live robots.txt is Cloudflare's managed content-signals file. The app route that adds 'Disallow: /admin' and 'Sitemap:' is not reflected in the live file.",
+          "recommendation": "In Cloudflare > Security > Bots, disable Managed robots.txt or confirm it appends the origin file; verify the live file ends with Sitemap: https://trissan.mdhost.site/sitemap.xml."
+        },
+        {
+          "title": "Duplicate URL variants return 200",
+          "severity": "Low",
+          "description": "/index.php and /about/ (trailing slash) both return 200 instead of redirecting. Canonicals mitigate it.",
+          "recommendation": "301 /index.php to / and trailing-slash URLs to the slashless version (default Laravel .htaccess does the latter)."
+        },
+        {
+          "title": "No HSTS header",
+          "severity": "Low",
+          "description": "No Strict-Transport-Security header on responses.",
+          "recommendation": "Enable HSTS in Cloudflare SSL/TLS > Edge Certificates."
+        },
+        {
+          "title": "/favicon.ico returns 404 with a meta-refresh body",
+          "severity": "Low",
+          "description": "The favicon route redirects via an HTML meta refresh with status 404.",
+          "recommendation": "Serve a real favicon.ico (or a 301 to the PNG)."
+        }
+      ]
+    },
+    {
+      "name": "Content Quality",
+      "score": 36,
+      "what_works": [
+        "Named, verifiable client projects (Astra Honda Motor, Mayora, Nihon Plast, Indofood) are strong experience/trust signals",
+        "Company profile PDF, certificates and an org chart support E-E-A-T",
+        "Full physical address and two phone numbers present"
+      ],
+      "findings": [
+        {
+          "title": "No dedicated page per service",
+          "severity": "High",
+          "description": "12 services only exist as one-line blurbs and ?category= filters on /works. There is no URL that can rank for e.g. 'jasa instalasi fire hydrant Bekasi' or 'pembuatan konveyor'.",
+          "recommendation": "Create a page per core service (300-800 words: scope, process, equipment, project photos, area served, FAQ, CTA)."
+        },
+        {
+          "title": "Mixed English and Indonesian headings",
+          "severity": "Medium",
+          "description": "Services, project titles and 'Contact Us' are English while body copy and meta are Indonesian (lang=id). Indonesian searchers will mostly query in Indonesian.",
+          "recommendation": "Use Indonesian primary headings with English terms in parentheses where the industry uses them (e.g. 'Sistem Konveyor (Material Handling)')."
+        },
+        {
+          "title": "Thin project entries",
+          "severity": "Medium",
+          "description": "Each project has one sentence. No scope, duration, challenge, result or numbers.",
+          "recommendation": "Expand top projects into short case studies (problem, solution, specs, outcome, photos)."
+        },
+        {
+          "title": "No author/people signals on content",
+          "severity": "Low",
+          "description": "Team exists on /portofolio but no named engineer credentials tied to work.",
+          "recommendation": "Add engineer names, certifications (e.g. K3 Listrik) and years of experience."
+        }
+      ]
+    },
+    {
+      "name": "On-Page SEO",
+      "score": 65,
+      "what_works": [
+        "Unique titles 26-62 chars and meta descriptions 124-155 chars on all pages",
+        "Exactly one H1 per page",
+        "Open Graph and Twitter tags present on all pages",
+        "Good internal linking between home, works and service categories"
+      ],
+      "findings": [
+        {
+          "title": "Weak keyword targeting in titles",
+          "severity": "Medium",
+          "description": "Titles lack location and high-intent service terms ('Tentang Kami | PT. Trissan').",
+          "recommendation": "e.g. 'Kontraktor Mekanikal & Elektrikal Industri di Bekasi | PT. Trissan'."
+        },
+        {
+          "title": "Heading hierarchy issues",
+          "severity": "Low",
+          "description": "Homepage has 12 H3s before the first H2; /works has an empty H2; H1s on /portofolio, /license, /works are ALL CAPS in source.",
+          "recommendation": "Wrap the service grid under an H2, remove the empty H2, write H1s in sentence case and uppercase via CSS."
+        },
+        {
+          "title": "og:image is the logo on every page",
+          "severity": "Low",
+          "description": "Shares on WhatsApp/LinkedIn/Facebook show a logo, not a project photo.",
+          "recommendation": "Use a 1200x630 image per page."
+        }
+      ]
+    },
+    {
+      "name": "Schema / Structured Data",
+      "score": 62,
+      "what_works": [
+        "Valid JSON-LD Organization + WebSite on every page, BreadcrumbList on inner pages",
+        "PostalAddress and ContactPoint included"
+      ],
+      "findings": [
+        {
+          "title": "No LocalBusiness schema",
+          "severity": "Medium",
+          "description": "Organization only; no geo, openingHours, areaServed, or the Malang/Timika branches.",
+          "recommendation": "Add LocalBusiness (or ProfessionalService) with geo, openingHoursSpecification, areaServed and department entries for each office."
+        },
+        {
+          "title": "No Service schema",
+          "severity": "Low",
+          "description": "Services are not described in structured data.",
+          "recommendation": "Add Service items (provider = Organization) on the future service pages."
+        },
+        {
+          "title": "No sameAs links",
+          "severity": "Low",
+          "description": "Facebook and Instagram links point to the generic facebook.com / instagram.com homepages, not company profiles.",
+          "recommendation": "Link the real profiles and add them to sameAs (plus LinkedIn and Google Business Profile)."
+        }
+      ]
+    },
+    {
+      "name": "Performance (CWV)",
+      "score": 34,
+      "what_works": [
+        "Desktop is fast: LCP 0.7-2.1 s on all pages",
+        "CLS is good everywhere (0.00-0.05, target under 0.1)",
+        "Cloudflare CDN in front of the origin, images cached 4h"
+      ],
+      "findings": [
+        {
+          "title": "Mobile LCP is 4.7-22.7 s (target under 2.5 s)",
+          "severity": "Critical",
+          "description": "Measured in headless Edge with slow-4G-like throttling (1.6 Mbps, 150 ms latency, 4x CPU). / LCP 18.4s / 4.8 MB; /about LCP 9.6s / 1.8 MB; /portofolio LCP 22.7s / 4.2 MB; /license LCP 4.7s / 0.6 MB; /works LCP 22.3s / 4.2 MB. The LCP element is a hero/project photo on 4 of 5 pages. Google indexes the mobile version, so this is the speed that counts.",
+          "recommendation": "Resize and convert images to WebP (target <150 KB for heroes, <80 KB for cards), add fetchpriority=\"high\" to the first hero image, lazy-load everything below the fold."
+        },
+        {
+          "title": "Tailwind CDN runtime compiler in production",
+          "severity": "High",
+          "description": "home and license (and about) load cdn.tailwindcss.com, which compiles CSS in the browser on every visit and blocks rendering. Tailwind's docs say it is not for production.",
+          "recommendation": "Use the project's Vite build (@vite) for CSS like the other pages."
+        },
+        {
+          "title": "Unpinned lucide@latest from unpkg",
+          "severity": "Medium",
+          "description": "Render-blocking script with a floating version; slower and can break without warning.",
+          "recommendation": "Bundle lucide via npm/Vite or pin an exact version with defer."
+        },
+        {
+          "title": "Heavy origin response time",
+          "severity": "Medium",
+          "description": "HTML responses 1.5-4.3 s from a test client (cfOrigin 530 ms on homepage; /license 4.3 s); Cache-Control: no-cache.",
+          "recommendation": "Cache settings queries, run php artisan optimize, and consider Cloudflare page caching for anonymous visitors."
+        },
+        {
+          "title": "Measurement method",
+          "severity": "Info",
+          "description": "Google PageSpeed Insights API was rate-limited (429) both times; numbers are from a local throttled lab run, not Google field data (no CrUX data exists for this site yet).",
+          "recommendation": "Confirm on pagespeed.web.dev after fixes."
+        }
+      ]
+    },
+    {
+      "name": "AI Search Readiness",
+      "score": 50,
+      "what_works": [
+        "Content-Signal: search=yes; search-type crawlers (Googlebot, Bingbot, OAI-SearchBot, PerplexityBot) are allowed",
+        "Content is plain server-rendered HTML with clear Q&A-able facts (address, clients, services)"
+      ],
+      "findings": [
+        {
+          "title": "Cloudflare blocks many AI bots",
+          "severity": "Medium",
+          "description": "GPTBot, ClaudeBot, Google-Extended, GoogleOther, CCBot, Applebot-Extended etc. are disallowed. This is a valid choice for training opt-out but reduces how often assistants know about the company.",
+          "recommendation": "Decide deliberately; for a B2B contractor wanting visibility, consider allowing at least GPTBot and ClaudeBot."
+        },
+        {
+          "title": "No FAQ / citable answer passages",
+          "severity": "Low",
+          "description": "No passages that directly answer questions buyers ask (lead time, area served, certifications).",
+          "recommendation": "Add short FAQ sections on service pages."
+        },
+        {
+          "title": "No llms.txt",
+          "severity": "Info",
+          "description": "Optional; ignored by Google Search.",
+          "recommendation": "Optional low-priority addition."
+        }
+      ]
+    },
+    {
+      "name": "Images",
+      "score": 40,
+      "what_works": [
+        "Most images have descriptive Indonesian alt text"
+      ],
+      "findings": [
+        {
+          "title": "Very large image files",
+          "severity": "High",
+          "description": "Sampled 18 images = 7.1 MB. work-7.jpg 785 KB, work-5.jpg 623 KB, logo.png 336 KB, about-hero/teaser PNG 388 KB each.",
+          "recommendation": "Resize to display size (max ~1600px), convert to WebP/AVIF, logo to SVG or a <20 KB PNG."
+        },
+        {
+          "title": "No width/height attributes",
+          "severity": "Low",
+          "description": "0 of 47 img tags have width/height. Measured CLS is still good (max 0.053 on /portofolio) because containers have fixed sizes, so this is a safeguard rather than an active problem.",
+          "recommendation": "Add width and height (or aspect-ratio CSS) to every img."
+        },
+        {
+          "title": "No lazy loading on homepage",
+          "severity": "Medium",
+          "description": "All 13 homepage images load eagerly, including footer images.",
+          "recommendation": "loading=\"lazy\" on below-the-fold images; fetchpriority=\"high\" on the first hero image."
+        },
+        {
+          "title": "Missing alt text",
+          "severity": "Low",
+          "description": "One image without alt on each of /portofolio, /license and /works.",
+          "recommendation": "Add alt text (or alt=\"\" if decorative)."
+        }
+      ]
+    },
+    {
+      "name": "Mobile & Visual (not weighted)",
+      "score": 80,
+      "what_works": [
+        "Responsive layout on all 5 pages at 412 px; no horizontal overflow seen",
+        "Clear H1 and value proposition above the fold on the homepage",
+        "Bottom tab navigation (Home, Works, Portofolio, About, Lisensi) is thumb-friendly",
+        "Hero trust badge names recognisable clients (Yamaha, Yaskawa, Daikin, Freeport)"
+      ],
+      "findings": [
+        {
+          "title": "Header 'Kontak' button nearly invisible on /works",
+          "severity": "Medium",
+          "description": "On the /works mobile screenshot the top-right contact button renders light-on-light and is barely visible, hiding the main call to action.",
+          "recommendation": "Give the button the same dark style it has on the homepage."
+        },
+        {
+          "title": "Off-topic placeholder text in the works search box",
+          "severity": "Low",
+          "description": "Search placeholder mentions 'Ti-6Al-4V, 7075-T6', aerospace alloys unrelated to the listed projects; looks like template leftover.",
+          "recommendation": "Use examples from your own work, e.g. 'konveyor, fire hydrant, panel PLC'."
+        },
+        {
+          "title": "Client names in hero not linked to proof",
+          "severity": "Low",
+          "description": "Yamaha, Yaskawa, Daikin and Freeport appear only as badges; none has a matching project on /works.",
+          "recommendation": "Add at least one documented project per named client, or a client logo wall with project links."
+        }
+      ]
+    }
+  ],
+  "action_plan": {
+    "phases": [
+      {
+        "name": "Phase 1: Critical Fixes",
+        "timeframe": "Week 1",
+        "items": [
+          "APP_DEBUG=false / APP_ENV=production on server",
+          "Fix /sitemap.xml 500",
+          "Serve robots.txt with Sitemap line (Cloudflare managed robots)",
+          "Submit sitemap to Google Search Console and Bing Webmaster Tools"
+        ]
+      },
+      {
+        "name": "Phase 2: High-Impact Improvements",
+        "timeframe": "Weeks 2-3",
+        "items": [
+          "Replace Tailwind CDN with Vite build on home/about/license",
+          "Compress and resize images to WebP, add width/height and lazy loading",
+          "Fix real Facebook/Instagram links",
+          "Per-page 1200x630 og:image"
+        ]
+      },
+      {
+        "name": "Phase 3: Content & Authority",
+        "timeframe": "Month 2",
+        "items": [
+          "One page per core service (Indonesian, with location)",
+          "Expand projects into case studies",
+          "LocalBusiness + Service schema, branch offices",
+          "Create/verify Google Business Profile for Bekasi (and branches)"
+        ]
+      },
+      {
+        "name": "Phase 4: Monitoring & Iteration",
+        "timeframe": "Ongoing",
+        "items": [
+          "Watch GSC coverage and queries monthly",
+          "Re-run this audit after fixes",
+          "Run PageSpeed Insights mobile after deploy"
+        ]
+      }
+    ]
+  },
+  "artifacts": {
+    "findings_dir": "findings/",
+    "screenshots_dir": "screenshots/",
+    "screenshots": [
+      "screenshots/mobile_home.png",
+      "screenshots/mobile_about.png",
+      "screenshots/mobile_portofolio.png",
+      "screenshots/mobile_license.png",
+      "screenshots/mobile_works.png",
+      "screenshots/trissan_mdhost_site_desktop.png",
+      "screenshots/trissan_mdhost_site_tablet.png"
+    ]
+  }
+}

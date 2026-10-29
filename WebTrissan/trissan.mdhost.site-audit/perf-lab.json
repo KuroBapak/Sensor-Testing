@@ -1,0 +1,232 @@
+{
+ "mobile": {
+  "/": {
+   "ttfb": 688,
+   "fcp": 4524,
+   "lcp": 18364,
+   "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/hero-1.jpg",
+   "cls": 0.007,
+   "load": 31950,
+   "requests": 22,
+   "kb": 4876,
+   "kbByType": {
+    "script": 1,
+    "link": 2,
+    "img": 4854,
+    "xmlhttprequest": 0,
+    "other": 0
+   },
+   "blocking": [
+    "https://cdn.tailwindcss.com/",
+    "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+    "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900",
+    "https://unpkg.com/lucide@latest"
+   ]
+  },
+  "/about": {
+   "ttfb": 165,
+   "fcp": 3228,
+   "lcp": 9628,
+   "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/about-hero.png",
+   "cls": 0.003,
+   "load": 10842,
+   "requests": 16,
+   "kb": 1873,
+   "kbByType": {
+    "script": 1,
+    "link": 2,
+    "img": 1857,
+    "xmlhttprequest": 0,
+    "other": 0
+   },
+   "blocking": [
+    "https://cdn.tailwindcss.com/?plugins=forms,container-queries",
+    "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900",
+    "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100"
+   ]
+  },
+  "/portofolio": {
+   "ttfb": 1397,
+   "fcp": 4196,
+   "lcp": 22724,
+   "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/portfolio/auto-1.jpg",
+   "cls": 0.053,
+   "load": 29395,
+   "requests": 18,
+   "kb": 4280,
+   "kbByType": {
+    "link": 2,
+    "script": 1,
+    "img": 4263,
+    "xmlhttprequest": 0,
+    "other": 0
+   },
+   "blocking": [
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monts",
+    "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+    "https://cdn.tailwindcss.com/?plugins=forms,container-queries"
+   ]
+  },
+  "/license": {
+   "ttfb": 176,
+   "fcp": 4704,
+   "lcp": 4704,
+   "lcpEl": "P Akreditasi sistem manajemen mutu, keselamatan operasional, dan kepatuhan lingkungan. Data ",
+   "cls": 0,
+   "load": 10787,
+   "requests": 12,
+   "kb": 589,
+   "kbByType": {
+    "script": 1,
+    "link": 2,
+    "img": 570,
+    "xmlhttprequest": 0,
+    "other": 0
+   },
+   "blocking": [
+    "https://cdn.tailwindcss.com/",
+    "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900",
+    "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+    "https://unpkg.com/lucide@latest"
+   ]
+  },
+  "/works": {
+   "ttfb": 164,
+   "fcp": 3624,
+   "lcp": 22332,
+   "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/work-3.jpg",
+   "cls": 0.001,
+   "load": 27981,
+   "requests": 19,
+   "kb": 4284,
+   "kbByType": {
+    "link": 2,
+    "script": 1,
+    "img": 4263,
+    "xmlhttprequest": 0,
+    "other": 0
+   },
+   "blocking": [
+    "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FIL",
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monts",
+    "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+    "https://cdn.tailwindcss.com/?plugins=forms,container-queries"
+   ]
+  }
+ },
+ "desktop": {
+  "/": {
+   "ttfb": 166,
+   "fcp": 1092,
+   "lcp": 1092,
+   "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/hero-1.jpg",
+   "cls": 0.009,
+   "load": 1283,
+   "requests": 22,
+   "kb": 4876,
+   "kbByType": {
+    "script": 1,
+    "link": 2,
+    "img": 4854,
+    "xmlhttprequest": 0,
+    "other": 0
+   },
+   "blocking": [
+    "https://cdn.tailwindcss.com/",
+    "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900",
+    "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+    "https://unpkg.com/lucide@latest"
+   ]
+  },
+  "/about": {
+   "ttfb": 164,
+   "fcp": 700,
+   "lcp": 700,
+   "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/about-hero.png",
+   "cls": 0.003,
+   "load": 821,
+   "requests": 16,
+   "kb": 1873,
+   "kbByType": {
+    "script": 1,
+    "link": 2,
+    "img": 1857,
+    "xmlhttprequest": 0,
+    "other": 0
+   },
+   "blocking": [
+    "https://cdn.tailwindcss.com/?plugins=forms,container-queries",
+    "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+    "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900"
+   ]
+  },
+  "/portofolio": {
+   "ttfb": 1261,
+   "fcp": 1820,
+   "lcp": 2092,
+   "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/portfolio/auto-2.jpg",
+   "cls": 0.003,
+   "load": 2700,
+   "requests": 18,
+   "kb": 4280,
+   "kbByType": {
+    "link": 2,
+    "img": 4263,
+    "script": 1,
+    "xmlhttprequest": 0,
+    "other": 0
+   },
+   "blocking": [
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monts",
+    "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+    "https://cdn.tailwindcss.com/?plugins=forms,container-queries"
+   ]
+  },
+  "/license": {
+   "ttfb": 1248,
+   "fcp": 1976,
+   "lcp": 1976,
+   "lcpEl": "H1 LISENSI & AKREDITASI MUTU",
+   "cls": 0.004,
+   "load": 2218,
+   "requests": 12,
+   "kb": 589,
+   "kbByType": {
+    "script": 1,
+    "link": 2,
+    "img": 570,
+    "xmlhttprequest": 0,
+    "other": 0
+   },
+   "blocking": [
+    "https://cdn.tailwindcss.com/",
+    "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900",
+    "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+    "https://unpkg.com/lucide@latest"
+   ]
+  },
+  "/works": {
+   "ttfb": 176,
+   "fcp": 688,
+   "lcp": 1012,
+   "lcpEl": "IMG https://trissan.mdhost.site/storage/seed/work-1.jpg",
+   "cls": 0.006,
+   "load": 1634,
+   "requests": 19,
+   "kb": 4284,
+   "kbByType": {
+    "link": 2,
+    "img": 4263,
+    "script": 1,
+    "xmlhttprequest": 0,
+    "other": 0
+   },
+   "blocking": [
+    "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FIL",
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monts",
+    "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100",
+    "https://cdn.tailwindcss.com/?plugins=forms,container-queries"
+   ]
+  }
+ }
+}
