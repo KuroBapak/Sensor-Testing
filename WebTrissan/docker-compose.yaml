@@ -1,0 +1,128 @@
+# =============================================================
+# Laravel — Docker Compose for Coolify (prebuilt image from GHCR)
+#
+# Paste this into Coolify (Docker Compose Empty) or point Coolify at it
+# in Git. Coolify only pulls the image; you build and push it from your
+# machine with build-push.sh / build-push.ps1. Forgetting the push means
+# Coolify redeploys the OLD image.
+#
+# `php init.php` fills in the image name and switches on the optional
+# services below that your app needs. To do it by hand: change the
+# image name ("your-github-user/your-app") and uncomment what you use.
+#
+# Pin / roll back a release: set APP_IMAGE_TAG=sha-<short-commit> in the
+# Coolify environment and redeploy. Leave it unset to follow :latest.
+#
+# Variables come from the Coolify "Environment Variables" tab via
+# env_file. See .env.coolify.example for the list.
+# =============================================================
+
+services:
+  app:
+    image: ghcr.io/kurobapak/webtrissan:${APP_IMAGE_TAG:-latest}
+    pull_policy: always
+    restart: unless-stopped
+    expose:
+      - "8000"
+    networks:
+      - coolify
+    env_file:
+      - .env
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      APP_DEBUG: ${APP_DEBUG:-false}
+    volumes:
+      # Logs, uploads, file sessions/cache and (optionally) SQLite survive
+      # redeploys. NEVER mount a volume on /app/database: it hides the
+      # migrations that ship in newer images.
+      - storage:/app/storage
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:8000/up || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # -----------------------------------------------------------
+  # OPTIONAL SERVICES. Each one runs the SAME image with a different
+  # command, and needs `user: www-data`: root would create root-owned
+  # files in the shared storage volume that php-fpm cannot write to.
+  # init.php uncomments the ones your app uses.
+  # -----------------------------------------------------------
+
+  # Queue worker: needed when the app has jobs, queued mail/notifications,
+  # queued Excel exports or broadcast events (QUEUE_CONNECTION is not sync).
+  # queue:
+  #   image: ghcr.io/kurobapak/webtrissan:${APP_IMAGE_TAG:-latest}
+  #   pull_policy: always
+  #   restart: unless-stopped
+  #   user: www-data
+  #   command: ["php", "artisan", "queue:work", "--sleep=3", "--tries=3", "--timeout=90", "--max-time=3600"]
+  #   stop_grace_period: 100s
+  #   networks:
+  #     - coolify
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     APP_ENV: ${APP_ENV:-production}
+  #     APP_DEBUG: ${APP_DEBUG:-false}
+  #     # @reverb-env
+  #   volumes:
+  #     - storage:/app/storage
+
+  # Scheduler: needed when the app registers scheduled tasks
+  # (Schedule::command(...) in routes/console.php). Run exactly ONE.
+  # scheduler:
+  #   image: ghcr.io/kurobapak/webtrissan:${APP_IMAGE_TAG:-latest}
+  #   pull_policy: always
+  #   restart: unless-stopped
+  #   user: www-data
+  #   command: ["php", "artisan", "schedule:work"]
+  #   networks:
+  #     - coolify
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     APP_ENV: ${APP_ENV:-production}
+  #     APP_DEBUG: ${APP_DEBUG:-false}
+  #     # @reverb-env
+  #   volumes:
+  #     - storage:/app/storage
+
+  # Reverb (WebSockets): needed with laravel/reverb. In Coolify, give this
+  # service its own (sub)domain on port 8080 (the same host as
+  # VITE_REVERB_HOST in .env.build). The other services publish to it
+  # internally through the REVERB_HOST/PORT/SCHEME lines set above.
+  # reverb:
+  #   image: ghcr.io/kurobapak/webtrissan:${APP_IMAGE_TAG:-latest}
+  #   pull_policy: always
+  #   restart: unless-stopped
+  #   user: www-data
+  #   command: ["php", "artisan", "reverb:start", "--host=0.0.0.0", "--port=8080"]
+  #   expose:
+  #     - "8080"
+  #   networks:
+  #     - coolify
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     APP_ENV: ${APP_ENV:-production}
+  #     APP_DEBUG: ${APP_DEBUG:-false}
+  #   volumes:
+  #     - storage:/app/storage
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:8080/up || exit 1"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 20s
+
+networks:
+  # Keep this when the database is a Coolify-managed resource (it lives on
+  # the "coolify" network). Remove the network if the DB is reachable by
+  # public hostname only.
+  coolify:
+    external: true
+
+volumes:
+  storage:

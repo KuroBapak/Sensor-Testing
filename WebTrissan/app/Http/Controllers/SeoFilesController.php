@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GlobalSetting;
 use App\Models\PageSetting;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 
 class SeoFilesController extends Controller
@@ -19,6 +21,18 @@ class SeoFilesController extends Controller
         'portfolio' => 'portfolio',
         'licenses' => 'licenses',
     ];
+
+    /**
+     * Send browsers and crawlers that ask for /favicon.ico to the CMS favicon (or the navbar logo), 404 when neither is set.
+     */
+    public function favicon(): RedirectResponse
+    {
+        $url = GlobalSetting::query()->first()?->favicon_url;
+
+        abort_if($url === null, 404);
+
+        return redirect($url);
+    }
 
     /**
      * Serve robots.txt with an absolute sitemap URL, which a static file cannot know.

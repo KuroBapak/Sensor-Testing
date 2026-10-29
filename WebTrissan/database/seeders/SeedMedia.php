@@ -72,6 +72,14 @@ class SeedMedia
     }
 
     /**
+     * Whether a real file exists for this seed name, for slots that should stay empty instead of using a placeholder.
+     */
+    public static function hasPhoto(string $name): bool
+    {
+        return self::photoPath($name) !== null;
+    }
+
+    /**
      * The real photo for a seed name: the mapped file, else a file following the naming convention.
      */
     private static function photoPath(string $name): ?string

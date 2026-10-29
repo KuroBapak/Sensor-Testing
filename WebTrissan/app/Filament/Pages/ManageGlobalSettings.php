@@ -68,6 +68,11 @@ class ManageGlobalSettings extends Page implements HasForms
                         ->disk('public')
                         ->image()
                         ->directory('branding'),
+                    FileUpload::make('favicon')
+                        ->disk('public')
+                        ->image()
+                        ->directory('branding')
+                        ->helperText('The small icon in the browser tab. Use a square PNG of at least 192x192 px. Leave empty to use the navbar logo.'),
                     FileUpload::make('footer_partner_image')
                         ->disk('public')
                         ->image()

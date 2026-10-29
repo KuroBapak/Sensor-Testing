@@ -21,6 +21,7 @@ class GlobalSettingSeeder extends Seeder
                 'company_tagline' => 'Always Present Better',
                 'navbar_logo' => SeedMedia::image('logo'),
                 'footer_logo' => SeedMedia::image('logo-footer'),
+                'favicon' => SeedMedia::hasPhoto('favicon') ? SeedMedia::image('favicon') : null,
                 'footer_description' => 'PT. Trissan didirikan dengan tujuan memberi solusi dalam pemenuhan kebutuhan pelanggan. Kami menawarkan beragam produk kelistrikan dan mekanikal dengan dukungan dan keahlian yang lebih baik, serta berkomitmen memberikan pelayanan purna jual yang maksimal untuk produk dan layanan berkualitas.',
                 'footer_partner_image' => SeedMedia::image('footer-partners'),
                 'copyright_text' => '© '.date('Y').' PT. Trissan. All rights reserved.',

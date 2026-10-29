@@ -14,6 +14,7 @@ Route::get('/license', [LicensesController::class, 'index'])->name('licenses');
 Route::get('/works', [WorksController::class, 'index'])->name('works');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/portofolio', [PortfolioController::class, 'index'])->name('portfolio');
+Route::get('/favicon.ico', [SeoFilesController::class, 'favicon'])->name('favicon');
 Route::get('/robots.txt', [SeoFilesController::class, 'robots'])->name('robots');
 Route::get('/sitemap.xml', [SeoFilesController::class, 'sitemap'])->name('sitemap');
 Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');

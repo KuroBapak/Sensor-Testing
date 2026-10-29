@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Models\GlobalSetting;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -27,6 +28,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName(fn (): string => GlobalSetting::query()->value('company_name') ?: config('app.name'))
+            ->favicon(fn (): ?string => GlobalSetting::query()->first()?->favicon_url)
             ->colors([
                 'primary' => Color::Amber,
             ])

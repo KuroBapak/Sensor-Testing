@@ -19,5 +19,5 @@ test('media url ignores leading-slash files that are missing from the public dir
 });
 
 test('media url resolves leading-slash files that exist in the public directory', function () {
-    expect(MediaUrl::resolve('/favicon.ico'))->toBe(asset('favicon.ico'));
+    expect(MediaUrl::resolve('/index.php'))->toBe(asset('index.php'));
 });

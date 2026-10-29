@@ -2,7 +2,16 @@
   $seoUrl = url()->current();
   $seoImage = ($globalSettings ?? null)?->navbar_logo_url;
   $seoSiteName = ($globalSettings ?? null)?->company_name;
+  $faviconUrl = ($globalSettings ?? null)?->favicon_url;
+  $faviconType = [
+    'png' => 'image/png', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg',
+    'webp' => 'image/webp', 'ico' => 'image/x-icon', 'svg' => 'image/svg+xml',
+  ][strtolower(pathinfo((string) parse_url((string) $faviconUrl, PHP_URL_PATH), PATHINFO_EXTENSION))] ?? null;
 @endphp
+@if($faviconUrl)
+<link rel="icon" href="{{ $faviconUrl }}"@if($faviconType) type="{{ $faviconType }}"@endif>
+<link rel="apple-touch-icon" href="{{ $faviconUrl }}">
+@endif
 <link rel="canonical" href="{{ $seoUrl }}">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="id_ID">

@@ -49,6 +49,16 @@ class GlobalSetting extends Model
     }
 
     /**
+     * Get the resolved public URL of the browser tab icon: the favicon, or the navbar logo when no favicon is set.
+     *
+     * @return Attribute<string|null, never>
+     */
+    protected function faviconUrl(): Attribute
+    {
+        return Attribute::get(fn (): ?string => MediaUrl::resolve($this->favicon) ?? $this->navbar_logo_url);
+    }
+
+    /**
      * Get the resolved public URL of the footer partner banner, or null when unset or missing.
      *
      * @return Attribute<string|null, never>
