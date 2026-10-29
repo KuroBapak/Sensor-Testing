@@ -68,7 +68,7 @@ test('home page renders about teaser with single description field', function ()
     $response->assertSee('Didukung oleh lebih dari 150 insinyur berkualifikasi tinggi dan fasilitas modern seluas 12.000 m² di Kawasan Industri Jababeka.');
 });
 
-test('home page renders clean fallbacks when page setting is empty', function () {
+test('home page renders no hard-coded text when the page setting is empty', function () {
     PageSetting::where('page', 'landing')->update([
         'hero_title' => null,
         'hero_subtitle' => null,
@@ -81,9 +81,12 @@ test('home page renders clean fallbacks when page setting is empty', function ()
     $response = $this->get(route('home'));
 
     $response->assertOk();
-    $response->assertSee('TENTANG PT. APEX INDUSTRIAL ENGINEERING');
-    $response->assertSee('Dedikasi Rekayasa Presisi &amp; Standar Manufaktur Kelas Dunia', false);
-    $response->assertSee('Pelajari Profil Lengkap');
+    $response->assertDontSee('Dedikasi Presisi Manufaktur Mutakhir');
+    $response->assertDontSee('Lihat Portofolio');
+    $response->assertDontSee('TRUSTED BY 50+ LEADERS');
+    $response->assertDontSee('Dedikasi Rekayasa Presisi');
+    $response->assertDontSee('Pelajari Profil Lengkap');
+    $response->assertDontSee('lh3.googleusercontent.com', false);
 });
 
 test('works page renders dynamic hero and stats from page settings', function () {

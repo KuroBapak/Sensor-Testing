@@ -3,6 +3,17 @@
 Dibuat 28 Oktober 2026 dari pemindaian seluruh view (`resources/views`), seeder, konfigurasi, dan `.env`.
 Nomor baris mengacu pada kondisi kode saat laporan dibuat, jadi bisa bergeser kalau file diedit. Cari teksnya dengan pencarian di editor bila baris tidak cocok.
 
+## Status keputusan (28 Oktober 2026)
+
+Keputusan dari checklist sudah diterapkan di kode:
+
+- **Jadikan CMS (19 baris):** badge, judul, dan deskripsi section kini field di **Page Settings** (disimpan di `page_settings.extra_data`), plus pesan sukses form kontak. Seeder mengisinya dengan teks lama.
+- **Hapus:** teks bawaan/cadangan dihapus dari semua view, termasuk footer, navbar, gambar cadangan, URL peta bawaan, dan angka statistik cadangan. Bar bawah License dihapus. Label footer "Portofolio Manpower" menjadi "Portofolio".
+- **Biarkan:** tidak diubah (judul/deskripsi cadangan hero Works dan License tetap).
+- **Aturan field kosong:** teks tidak tampil, tetapi elemen dan jarak tetap ada seperti saat berisi. Badge dan tombol memakai `invisible`, teks biasa memakai spasi tak terputus. Kartu "Trusted by" disembunyikan seluruhnya bila semua isinya kosong.
+
+Tabel di bawah mencatat kondisi sebelum keputusan itu diterapkan.
+
 ## Cara membaca laporan
 
 | Kode | Arti | Cara mengubah |

@@ -5,6 +5,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LicensesController;
 use App\Http\Controllers\PortfolioController;
+use App\Http\Controllers\SeoFilesController;
 use App\Http\Controllers\WorksController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,4 +14,6 @@ Route::get('/license', [LicensesController::class, 'index'])->name('licenses');
 Route::get('/works', [WorksController::class, 'index'])->name('works');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/portofolio', [PortfolioController::class, 'index'])->name('portfolio');
+Route::get('/robots.txt', [SeoFilesController::class, 'robots'])->name('robots');
+Route::get('/sitemap.xml', [SeoFilesController::class, 'sitemap'])->name('sitemap');
 Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');

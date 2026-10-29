@@ -80,7 +80,7 @@ class ManageGlobalSettings extends Page implements HasForms
                     Repeater::make('footer_legal_links')
                         ->schema([
                             TextInput::make('label')->required(),
-                            TextInput::make('url')->required(),
+                            TextInput::make('url')->helperText('Optional. Without a URL the link is shown as plain text.'),
                         ])
                         ->columns(2)
                         ->columnSpanFull(),
@@ -125,6 +125,13 @@ class ManageGlobalSettings extends Page implements HasForms
                         ->columns(3)
                         ->minItems(1)
                         ->maxItems(2)
+                        ->columnSpanFull(),
+                    TextInput::make('whatsapp_number')
+                        ->label('WhatsApp number')
+                        ->tel()
+                        ->placeholder('+62 812-3456-7890')
+                        ->helperText('The contact form sends visitors to WhatsApp with their message prefilled, to this number. Leave empty to only save the message.')
+                        ->maxLength(30)
                         ->columnSpanFull(),
                     TextInput::make('primary_email')
                         ->email()

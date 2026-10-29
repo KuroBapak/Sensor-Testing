@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\GlobalSetting;
-use App\Models\ServiceCluster;
+use App\Models\PageSetting;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -70,18 +70,26 @@ test('footer links portofolio to its own page and legal links come from the cms'
         ->assertSee('href="/kebijakan-uji"', false);
 });
 
-test('navbar service summary reflects the number of services and clusters', function () {
+test('navbar dropdown items carry no hard-coded sub-descriptions', function () {
     $this->get(route('about'))
         ->assertOk()
-        ->assertSee('12 Layanan dalam 4 Klaster')
-        ->assertDontSee('12 Klaster');
-
-    ServiceCluster::query()->first()->services()->first()->delete();
-
-    $this->get(route('about'))->assertSee('11 Layanan dalam 4 Klaster');
+        ->assertDontSee('Layanan dalam')
+        ->assertDontSee('Output & Dokumentasi Proyek', false)
+        ->assertDontSee('Profil Pabrik, Visi');
 });
 
 test('landing page uses the shared navbar and footer with in-page anchors', function () {
+    GlobalSetting::current()->update(['copyright_text' => '© Uji CMS', 'overlay_title' => 'Overlay Uji']);
+    PageSetting::query()->update([
+        'seo_title' => 'Judul Uji',
+        'seo_description' => 'Deskripsi uji',
+        'hero_title' => 'Hero Uji',
+        'hero_subtitle' => 'Subjudul Uji',
+        'about_teaser' => null,
+        'trust_card' => null,
+        'extra_data' => null,
+    ]);
+
     $this->get(route('home'))
         ->assertOk()
         ->assertSee('href="'.url('/#contact').'"', false)

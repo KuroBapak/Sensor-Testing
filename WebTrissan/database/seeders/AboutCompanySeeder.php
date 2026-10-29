@@ -9,23 +9,25 @@ class AboutCompanySeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * Content is taken from the company's previous website (trissan.co.id).
      */
     public function run(): void
     {
         $about = AboutCompany::firstOrNew(['id' => 1]);
 
-        $about->hero_badge = 'Rekayasa Presisi & Fabrikasi Berstandar Global';
-        $about->hero_title = 'Membangun Keunggulan Industri Berkelanjutan Sejak 1998';
-        $about->hero_description = "PT Apex Industrial Engineering berawal dari bengkel rekayasa presisi kecil dan kini telah berevolusi menjadi manufaktur tier-1 pilihan sektor kedirgantaraan, minyak & gas, dan otomasi skala besar.\n\nKami mengintegrasikan permesinan CNC 5-axis ultra presisi, fabrikasi bejana tekan bersertifikat ASME, serta sistem mekatronika terdistribusi untuk menghasilkan produk berkeandalan tinggi.";
+        $about->hero_badge = 'Always Present Better';
+        $about->hero_title = 'PT. Trissan: Solusi untuk Memenuhi Kebutuhan Pelanggan';
+        $about->hero_description = "PT. Trissan didirikan dengan tujuan memberi solusi dalam pemenuhan kebutuhan pelanggan. Kami menawarkan beragam produk kelistrikan dan mekanikal dengan dukungan dan keahlian yang lebih baik.\n\nKomitmen kami adalah memberikan pelayanan purna jual yang maksimal untuk produk dan layanan yang berkualitas. PT. Trissan adalah perusahaan dengan integritas tinggi, berpengalaman, dinamis, dan berpikiran terbuka.";
         $about->hero_image = SeedMedia::image('about-hero');
         $about->image_overlay = [
-            'plant_badge' => 'PLANT 01 • JABABEKA V (12.000 m²)',
-            'caption_title' => 'Apex Advanced Manufacturing Facility',
-            'caption_subtitle' => 'Cikarang Industrial Estate, Bekasi',
-            'tolerance_chip' => 'Toleransi ±0.002mm',
+            'plant_badge' => 'KANTOR PUSAT • BEKASI',
+            'caption_title' => 'PT. Trissan',
+            'caption_subtitle' => 'Ruko Metland Tambun, Tambun Selatan, Bekasi',
+            'tolerance_chip' => '3 Cabang • 145 Karyawan',
         ];
-        $about->company_profile_pdf = SeedMedia::pdf('Apex_Company_Profile');
-        $about->partners_image = SeedMedia::image('partners-banner');
+        $about->company_profile_pdf = SeedMedia::pdf('Trissan_Company_Profile');
+        $about->partners_image = SeedMedia::image('about-clients');
 
         $about->vision_mission_values = $this->visionMissionValues();
         $about->facilities = $this->facilities();
@@ -40,162 +42,142 @@ class AboutCompanySeeder extends Seeder
         return [
             [
                 'card_type' => 'vision',
-                'badge' => 'Visi 2030',
-                'title' => 'Visi Perusahaan',
-                'body' => 'Menjadi tolok ukur manufaktur presisi dan rekayasa fabrikasi tier-1 di Asia Tenggara dengan keunggulan teknologi tanpa kompromi.',
-                'footer_label' => 'Target',
-                'footer_value' => 'Tier-1 Regional Leader',
+                'badge' => 'Slogan',
+                'title' => 'Komitmen Perusahaan',
+                'body' => 'PT. Trissan selalu hadir lebih baik: menyediakan solusi untuk memenuhi kebutuhan pelanggan dengan produk dan layanan yang berkualitas serta dukungan purna jual yang maksimal.',
+                'footer_label' => 'Slogan',
+                'footer_value' => 'Always Present Better',
             ],
             [
                 'card_type' => 'mission',
                 'badge' => 'Operasional',
                 'title' => 'Misi Strategis',
                 'body' => [
-                    'Menyediakan komponen berpresisi tinggi dengan toleransi mikron sesuai standar keselamatan global.',
-                    'Mengembangkan kapabilitas rekayasa otomasi untuk meningkatkan efisiensi manufaktur klien.',
-                    'Membangun ekosistem tenaga kerja teknik bersertifikat dan berintegritas tinggi.',
+                    'Memberi solusi dalam pemenuhan kebutuhan pelanggan.',
+                    'Menawarkan beragam produk kelistrikan dan mekanikal dengan dukungan dan keahlian yang lebih baik.',
+                    'Memberikan pelayanan purna jual yang maksimal untuk produk dan layanan yang berkualitas.',
                 ],
-                'footer_label' => 'Metode',
-                'footer_value' => 'Continuous Kaizen',
+                'footer_label' => 'Fokus',
+                'footer_value' => 'Kelistrikan & Mekanikal',
             ],
             [
                 'card_type' => 'values',
-                'badge' => 'Standar Kualitas',
-                'title' => 'Nilai Pokok Mutu',
+                'badge' => 'Prioritas Kerja',
+                'title' => 'Nilai Pokok Perusahaan',
                 'body' => [
-                    ['name' => 'Precision First', 'value' => 'Toleransi s/d 0.002 mm'],
-                    ['name' => 'Zero Defect', 'value' => 'Inspeksi CMM 100%'],
-                    ['name' => 'Traceability', 'value' => 'MTC bersertifikat material'],
+                    ['name' => 'Kepuasan Pelanggan', 'value' => 'Tolok ukur keberhasilan proyek'],
+                    ['name' => 'Mutu & Kualitas Produk', 'value' => 'Hasil nyata yang maksimal'],
+                    ['name' => 'Profesionalisme', 'value' => 'Membangun kepercayaan konsumen'],
+                    ['name' => 'Integritas', 'value' => 'Konsisten secara internal & eksternal'],
                 ],
-                'footer_label' => 'Integritas',
-                'footer_value' => '100% Traceable',
+                'footer_label' => 'Prinsip',
+                'footer_value' => '4 Prioritas Kerja',
             ],
         ];
     }
 
+    /**
+     * Machines in the PT. Trissan Bekasi workshop (milling, cutting and CNC machine).
+     */
     private function facilities(): array
     {
         return [
             [
                 'facility_image' => SeedMedia::image('facility-1'),
-                'facility_tag' => 'BAY 01 • MACHINING',
-                'facility_title' => '5-Axis CNC Precision Machining Center',
-                'facility_description' => 'Pusat permesinan 5-axis multiaxis berkapasitas tinggi untuk komponen kedirgantaraan, turbin, dan mold otomotif berakurasi mikron.',
-                'spec_tag_1' => 'DMG MORI 5-Axis Center',
-                'spec_tag_2' => 'Volume Kerja: 2.000 x 1.500 mm',
+                'facility_tag' => 'MESIN 01 • MILLING',
+                'facility_title' => 'Mesin Milling',
+                'facility_description' => 'Mesin milling di workshop PT. Trissan Bekasi, digunakan untuk membuat dan menyesuaikan komponen mekanikal sesuai kebutuhan proyek.',
+                'spec_tag_1' => 'Workshop PT. Trissan Bekasi',
+                'spec_tag_2' => 'Pemesinan komponen',
                 'sort_order' => 1,
             ],
             [
                 'facility_image' => SeedMedia::image('facility-2'),
-                'facility_tag' => 'BAY 02 • FABRICATION',
-                'facility_title' => 'Heavy Welding & Pressure Vessel Bay',
-                'facility_description' => 'Fasilitas fabrikasi bejana tekan tersertifikasi ASME dengan sistem pengelasan otomatis SAW, GTAW, dan cladding Inconel.',
-                'spec_tag_1' => 'Kapasitas Crane: 50 Ton',
-                'spec_tag_2' => 'ASME U & S Stamp Compliant',
+                'facility_tag' => 'MESIN 02 • CUTTING',
+                'facility_title' => 'Mesin Cutting',
+                'facility_description' => 'Mesin potong di workshop PT. Trissan Bekasi, digunakan untuk memotong material sesuai ukuran yang dibutuhkan proyek.',
+                'spec_tag_1' => 'Workshop PT. Trissan Bekasi',
+                'spec_tag_2' => 'Pemotongan material',
                 'sort_order' => 2,
             ],
             [
                 'facility_image' => SeedMedia::image('facility-3'),
-                'facility_tag' => 'BAY 03 • QUALITY QC',
-                'facility_title' => 'Temperature Controlled Metrology Lab',
-                'facility_description' => 'Laboratorium metrologi ber-AC konstan 20°C dilengkapi Zeiss CMM 3D scanning dan pengujian NDT ultrasonik level II/III.',
-                'spec_tag_1' => 'Zeiss Accura CMM',
-                'spec_tag_2' => 'Akurasi 0.9 µm + L/350',
+                'facility_tag' => 'MESIN 03 • CNC',
+                'facility_title' => 'Mesin CNC',
+                'facility_description' => 'Mesin CNC di workshop PT. Trissan Bekasi, digunakan untuk pemesinan komponen yang dikendalikan komputer sesuai gambar kerja.',
+                'spec_tag_1' => 'Workshop PT. Trissan Bekasi',
+                'spec_tag_2' => 'Pemesinan terkomputerisasi',
                 'sort_order' => 3,
             ],
         ];
     }
 
+    /**
+     * Company milestones by year. Only dated facts from the previous website are used; add the real company
+     * history (founding year, new branches, certifications) in the CMS.
+     */
     private function milestones(): array
     {
         return [
             [
-                'year' => '1998',
-                'title' => 'Pendirian Bengkel Mekanikal',
-                'description' => 'Didirikan di Jakarta Timur sebagai penyedia jasa perbaikan mesin perkakas dan fabrikasi komponen suku cadang pabrik.',
-                'highlights' => ['Workshop 300 m²', '3 Mesin Bubut Konvensional'],
-                'is_current' => false,
-                'sort_order' => 1,
-            ],
-            [
-                'year' => '2005',
-                'title' => 'Adopsi CNC & Sertifikasi ISO 9001',
-                'description' => "Investasi pertama pada pusat pemesinan CNC 3-axis serta meraih akreditasi ISO 9001 dari Lloyd's Register.",
-                'highlights' => ['Sertifikasi ISO 9001:2000', 'Ekspansi Workshop ke Bekasi'],
-                'is_current' => false,
-                'sort_order' => 2,
-            ],
-            [
-                'year' => '2012',
-                'title' => 'Relokasi Pabrik ke Kawasan Jababeka',
-                'description' => 'Pembangunan pabrik terpadu seluas 12.000 m² di Kawasan Industri Jababeka V untuk memenuhi permintaan manufaktur alat berat.',
-                'highlights' => ['Lahan 12.000 m²', 'Sertifikasi Bejana Tekan ASME'],
-                'is_current' => false,
-                'sort_order' => 3,
-            ],
-            [
-                'year' => '2019',
-                'title' => 'Akreditasi Kedirgantaraan AS9100D',
-                'description' => 'Lolos audit kualifikasi dirgantara AS9100D dan mulai menyuplai komponen turbin serta aerospace structural part ke tier-1 global.',
-                'highlights' => ['AS9100D Rev B Nadcap', 'Mesin 5-Axis Hermle & DMG'],
-                'is_current' => false,
-                'sort_order' => 4,
-            ],
-            [
-                'year' => '2024 - SEKARANG',
-                'title' => 'Transformasi Otomasi & Smart Manufacturing',
-                'description' => 'Implementasi sistem monitoring IoT pada lini permesinan dan robot chucking terintegrasi untuk produksi zero-defect.',
-                'highlights' => ['Integrasi SCADA & Robotika', 'Ekspor Regional ASEAN & Jepang'],
+                'year' => '2023',
+                'title' => 'Proyek Instalasi, Konveyor, dan Perawatan Industri',
+                'description' => 'Dokumentasi proyek PT. Trissan pada November 2023: fire hydrant system untuk PT Mayora Indah, instalasi water meter dan chiller duct bypass untuk PT Astra Honda Motor, serta konveyor material handling untuk PT Nihon Plast, PT Mikuni, PT Indofood CBP, dan PT Yaskawa Electrical.',
+                'highlights' => ['7 proyek terdokumentasi', 'Instalasi, konveyor & maintenance'],
                 'is_current' => true,
-                'sort_order' => 5,
+                'sort_order' => 1,
             ],
         ];
     }
 
+    /**
+     * Organization chart provided by the company: everyone with who they report to (`parent`), and
+     * `side` for a staff function shown beside its manager (Finance & Accounting beside the COO).
+     */
     private function orgChart(): array
     {
+        $people = [
+            // id, name, position, reports to, placement
+            ['komisaris', 'Dr. M. Rina Ujianti, MARS', 'Commissioner', null, 'below'],
+            ['direktur', 'Adikus Pringadi, S.T., S.H.', 'Director', 'komisaris', 'below'],
+            ['coo', 'Herman Setiawan', 'Chief Operating Officer', 'direktur', 'below'],
+            ['keuangan', 'Khansa Wijayanti', 'Finance & Accounting', 'coo', 'side'],
+
+            ['timika', 'Moh. Arifin Tris Hidayanto', 'Head Of Representative Office Timika', 'coo', 'below'],
+            ['sales', 'Tazam Wibowo', 'Sales Engineering', 'coo', 'below'],
+            ['project-engineering', 'Eko Haryanto', 'Project Engineering Manager', 'coo', 'below'],
+            ['back-office', 'Setyo Yanuar Prayitno', 'Back Office Manager', 'coo', 'below'],
+
+            ['koirul', 'Koirul Anam', 'Design Engineer', 'timika', 'below'],
+            ['budiarto', 'Budiarto', 'Project Leader', 'timika', 'below'],
+            ['laode', 'Laode Iqmal Aztamar', 'Administrator', 'timika', 'below'],
+            ['eko-nur', 'M. Eko Nur Utomo', 'Project Coordinator', 'budiarto', 'below'],
+            ['randy', 'Randy', 'Project Coordinator', 'budiarto', 'below'],
+            ['rio', 'Rio Sandi', 'Engineer', 'eko-nur', 'below'],
+            ['oki', 'Oki Lukman', 'Engineer', 'eko-nur', 'below'],
+            ['darma', 'Darma', 'Engineer', 'randy', 'below'],
+
+            ['nurul', 'Nurul Amin', 'Research And Development', 'project-engineering', 'below'],
+            ['fuad', 'Fuad Hamdhan Arbyanto', 'Production', 'project-engineering', 'below'],
+            ['windy', 'Windy Adinda Putri', 'Project Engineer', 'project-engineering', 'below'],
+            ['fathurian', 'Fathurian Zaen', 'Project Admin', 'project-engineering', 'below'],
+            ['raka', 'Muhammad Raka Saputra', 'Research And Development', 'nurul', 'below'],
+            ['purwadi', 'Purwadi', 'Production', 'fuad', 'below'],
+
+            ['hendi', 'Hendi', 'General Affair', 'back-office', 'below'],
+        ];
+
         return [
-            'chart_revision_tag' => 'REV-2024.10',
-            'ceo' => [
-                'name' => 'Ir. Hendra Wijaya, M.Sc.',
-                'position' => 'Chief Executive Officer',
-                'photo' => SeedMedia::image('team-ceo'),
-                'experience_tag' => '28+ Thn Pengalaman Dirgantara & Manufaktur',
-            ],
-            'general_manager' => [
-                'name' => 'Bambang Kusuma, S.T., MBA',
-                'position' => 'General Manager & Chief Operations Officer',
-            ],
-            'division_heads' => [
-                [
-                    'division_tag' => 'DIVISI 01',
-                    'head_name' => 'Rian Hidayat, S.T.',
-                    'head_position' => 'Head of Precision Machining',
-                    'teams' => ['5-Axis Machining Team', 'Tooling & CAM Engineering', 'High Precision Turning'],
-                    'sort_order' => 1,
-                ],
-                [
-                    'division_tag' => 'DIVISI 02',
-                    'head_name' => 'Agus Santoso, IWE',
-                    'head_position' => 'Head of Welding & Pressure Vessel',
-                    'teams' => ['ASME Code Fabrication', 'Specialty Alloy Cladding', 'Structural Assembly'],
-                    'sort_order' => 2,
-                ],
-                [
-                    'division_tag' => 'DIVISI 03',
-                    'head_name' => 'Dimas Pratama, S.T.',
-                    'head_position' => 'Head of Automation & SCADA',
-                    'teams' => ['PLC & DCS Architecture', 'Robotic Chucking Systems', 'Smart Panel Assembly'],
-                    'sort_order' => 3,
-                ],
-                [
-                    'division_tag' => 'DIVISI 04',
-                    'head_name' => 'Dr. Maya Surtikanti',
-                    'head_position' => 'Head of Quality Assurance & Metrology',
-                    'teams' => ['CMM Laser Inspection', 'NDT Testing Lab', 'ISO/AS9100 Compliance'],
-                    'sort_order' => 4,
-                ],
-            ],
+            'chart_revision_tag' => 'STRUKTUR ORGANISASI',
+            'nodes' => collect($people)->map(fn (array $person, int $index): array => [
+                'id' => $person[0],
+                'name' => $person[1],
+                'position' => $person[2],
+                'parent_id' => $person[3],
+                'placement' => $person[4],
+                'sort_order' => $index + 1,
+                'photo' => null,
+            ])->all(),
         ];
     }
 }

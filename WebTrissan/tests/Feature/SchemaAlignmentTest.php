@@ -47,13 +47,13 @@ test('seeders populate database correctly', function () {
     expect(PageSetting::count())->toBe(5);
     expect(ServiceCluster::count())->toBe(4);
     expect(Service::count())->toBe(12);
-    expect(Work::count())->toBe(9);
+    expect(Work::count())->toBe(7);
     expect(Work::where('is_featured', true)->count())->toBe(6);
     expect(CertificationCategory::count())->toBe(4);
     expect(CorporateAccreditation::count())->toBe(6);
     expect(ProductCertification::count())->toBe(3);
-    expect(PortfolioCategory::count())->toBe(4);
-    expect(PortfolioItem::count())->toBe(8);
+    expect(PortfolioCategory::count())->toBe(3);
+    expect(PortfolioItem::count())->toBe(7);
     expect(SpecialtyCluster::count())->toBe(4);
     expect(Skill::count())->toBe(8);
     expect(Personnel::count())->toBe(5);
@@ -75,7 +75,8 @@ test('model relationships work correctly', function () {
     expect($accreditation->certificationCategory)->toBeInstanceOf(CertificationCategory::class);
 
     $productCert = ProductCertification::first();
-    expect($productCert->work)->toBeInstanceOf(Work::class);
+    $productCert->update(['work_id' => $work->id]);
+    expect($productCert->fresh()->work)->toBeInstanceOf(Work::class);
 
     $portfolioItem = PortfolioItem::first();
     expect($portfolioItem->portfolioCategory)->toBeInstanceOf(PortfolioCategory::class);
@@ -118,6 +119,8 @@ test('model casts work correctly', function () {
     expect($about->org_chart)->toBeArray();
 
     $work = Work::first();
+    $work->update(['quality_standards' => ['ISO 9001:2015'], 'tolerance_value' => 0.002, 'scale_value' => 10]);
+    $work = $work->fresh();
     expect($work->is_featured)->toBeBool();
     expect($work->gallery_images)->toBeArray();
     expect($work->highlight_tags)->toBeArray();
@@ -168,17 +171,15 @@ test('PRD seed data structure matches expectations', function () {
     $milestone = $about->milestones[0];
     expect($milestone)->toHaveKeys(['year', 'title', 'description', 'highlights', 'is_current']);
 
-    expect($about->org_chart)->toHaveKeys(['chart_revision_tag', 'ceo', 'general_manager', 'division_heads']);
-    $divHead = $about->org_chart['division_heads'][0];
-    expect($divHead)->toHaveKeys(['division_tag', 'head_name', 'head_position', 'teams']);
+    expect($about->org_chart)->toHaveKeys(['chart_revision_tag', 'nodes']);
+    $orgNode = $about->org_chart['nodes'][0];
+    expect($orgNode)->toHaveKeys(['id', 'name', 'position', 'parent_id', 'placement', 'sort_order']);
 
     $work = Work::first();
     expect($work->work_slug)->not->toBeNull();
     expect($work->top_badge)->not->toBeNull();
     expect($work->serial_number)->not->toBeNull();
     expect($work->client_sector)->not->toBeNull();
-    expect($work->tolerance_value)->toBeFloat();
-    expect($work->scale_value)->toBeInt();
 
     $cert = ProductCertification::first();
     $specRow = $cert->spec_rows[0];
@@ -231,12 +232,12 @@ test('seeded placeholder images are real raster images that the filament upload 
     $this->seed();
 
     foreach ([Work::first()->work_image, GlobalSetting::first()->navbar_logo, AboutCompany::first()->hero_image] as $path) {
-        expect($path)->toEndWith('.png');
+        expect($path)->toMatch('/\.(png|jpe?g|webp)$/');
 
         $size = getimagesizefromstring(Storage::disk('public')->get($path));
 
         expect($size)->not->toBeFalse()
-            ->and($size['mime'])->toBe('image/png');
+            ->and($size['mime'])->toBeIn(['image/png', 'image/jpeg', 'image/webp']);
     }
 });
 

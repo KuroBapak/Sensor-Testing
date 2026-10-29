@@ -59,13 +59,39 @@ class GlobalSetting extends Model
     }
 
     /**
+     * Get the WhatsApp number in international digits (e.g. 6281234567890), or null when none is set.
+     *
+     * Uses the dedicated WhatsApp number field, falling back to the first phone marked as WhatsApp.
+     */
+    public function whatsappNumber(): ?string
+    {
+        $candidates = [$this->whatsapp_number];
+
+        foreach ($this->phones ?? [] as $phone) {
+            if ($phone['is_whatsapp'] ?? false) {
+                $candidates[] = $phone['tel_url'] ?: ($phone['display_text'] ?? '');
+            }
+        }
+
+        foreach ($candidates as $candidate) {
+            $digits = preg_replace('/\D+/', '', (string) $candidate);
+
+            if (filled($digits)) {
+                return str_starts_with($digits, '0') ? '62'.substr($digits, 1) : $digits;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Get the singleton instance.
      */
     public static function current(): self
     {
         return static::firstOrCreate([], [
-            'company_name' => 'PT. Apex Industrial Engineering',
-            'company_tagline' => 'Industrial Engineering',
+            'company_name' => 'PT. Trissan',
+            'company_tagline' => 'Always Present Better',
         ]);
     }
 }

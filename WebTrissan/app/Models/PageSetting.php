@@ -30,6 +30,15 @@ class PageSetting extends Model
     }
 
     /**
+     * Read an editable text from `extra_data` (section badges, titles, descriptions).
+     * Returns an empty string when the CMS field is blank so views can leave the text out.
+     */
+    public function extra(string $key): string
+    {
+        return (string) data_get($this->extra_data, $key, '');
+    }
+
+    /**
      * Retrieve page settings for a specific page slug.
      */
     public static function forPage(string $page): ?self

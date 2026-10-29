@@ -3,12 +3,14 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 h-14 lg:h-[72px] flex items-center justify-between gap-3">
     <!-- Logo Perusahaan di Sebelah Kiri -->
     <a href="{{ url('/') }}" class="flex items-center gap-2.5 lg:gap-3.5 group min-w-0">
-      <div class="w-10 h-10 lg:w-11 lg:h-11 shrink-0 rounded-lg overflow-hidden border border-brand-navy/15 flex items-center justify-center bg-white shadow-sm transition group-hover:scale-105">
-        <img src="{{ $globalSettings?->navbar_logo_url ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuCiMPbIsbS-sC9J4DTxtsdSwTVeBEABqrpT_kyCq3jV6W5K1bOH8NOSdxswUhegkBvpOBQsbNnQCkpHCSZVOkGYzisKUZn9NESn9dVQlSR1cMINm9F4zGmpZ7-wcyktFR5YG7eAQVSieih4YiiLAs808ouuT9UMz-7VXekJTTRRHErI1fXIfdGZgJorwjnRKJwQvqz3_Otqvt8F9_RTYXbxS4dQWRCPCnUH4b_Nvr0rswPl2qvjwLG6' }}" alt="{{ $globalSettings?->company_name ?? 'Apex Industrial Logo' }}" class="w-full h-full object-cover">
+      <div class="w-10 h-10 lg:w-11 lg:h-11 shrink-0 flex items-center justify-center transition group-hover:scale-105">
+        @if($globalSettings?->navbar_logo_url)
+          <img src="{{ $globalSettings->navbar_logo_url }}" alt="{{ $globalSettings->company_name }}" class="w-full h-full object-contain">
+        @endif
       </div>
       <div class="flex flex-col min-w-0">
-        <span class="font-heading font-extrabold text-sm sm:text-base lg:text-base xl:text-lg lg:whitespace-nowrap text-brand-navy tracking-tight leading-tight lg:leading-none group-hover:text-brand-accent transition">{{ $globalSettings?->company_name ?? 'PT. Apex Industrial Engineering' }}</span>
-        <span class="hidden sm:block text-[10px] font-semibold text-brand-grayMuted tracking-widest uppercase mt-0.5">{{ $globalSettings?->company_tagline ?? 'Industrial Engineering' }}</span>
+        <span class="font-heading font-extrabold text-sm sm:text-base lg:text-base xl:text-lg lg:whitespace-nowrap text-brand-navy tracking-tight leading-tight lg:leading-none group-hover:text-brand-accent transition">{{ $globalSettings?->company_name }}</span>
+        <span class="hidden sm:block text-[10px] font-semibold text-brand-grayMuted tracking-widest uppercase mt-0.5">{{ $globalSettings?->company_tagline }}</span>
       </div>
     </a>
 
@@ -28,21 +30,18 @@
             <a href="{{ url('/#services-overview') }}" class="px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition flex items-center justify-between group/item">
               <div>
                 <div class="font-heading font-bold text-slate-100 group-hover/item:text-blue-400 transition">Services</div>
-                <div class="text-[11px] text-slate-400 font-normal mt-0.5">{{ $navServiceCount ?? 12 }} Layanan dalam {{ $navClusterCount ?? 4 }} Klaster</div>
               </div>
               <svg class="w-3.5 h-3.5 text-slate-400 group-hover/item:translate-x-1 group-hover/item:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </a>
             <a href="{{ url('/works') }}" class="px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition flex items-center justify-between group/item">
               <div>
                 <div class="font-heading font-bold text-slate-100 group-hover/item:text-blue-400 transition">Featured Works</div>
-                <div class="text-[11px] text-slate-400 font-normal mt-0.5">Output & Dokumentasi Proyek</div>
               </div>
               <svg class="w-3.5 h-3.5 text-slate-400 group-hover/item:translate-x-1 group-hover/item:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </a>
             <a href="{{ url('/portofolio') }}" class="px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition flex items-center justify-between group/item">
               <div>
                 <div class="font-heading font-bold text-slate-100 group-hover/item:text-blue-400 transition">Portofolio</div>
-                <div class="text-[11px] text-slate-400 font-normal mt-0.5">Tenaga Kerja & Fabrikasi Lapangan</div>
               </div>
               <svg class="w-3.5 h-3.5 text-slate-400 group-hover/item:translate-x-1 group-hover/item:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </a>
@@ -62,14 +61,12 @@
             <a href="{{ url('/about') }}" class="px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition flex items-center justify-between group/item">
               <div>
                 <div class="font-heading font-bold text-slate-100 group-hover/item:text-blue-400 transition">About Us</div>
-                <div class="text-[11px] text-slate-400 font-normal mt-0.5">Profil Pabrik, Visi & Standar Mutu</div>
               </div>
               <svg class="w-3.5 h-3.5 text-slate-400 group-hover/item:translate-x-1 group-hover/item:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </a>
             <a href="{{ url('/license') }}" class="px-3.5 py-2.5 rounded-lg text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition flex items-center justify-between group/item">
               <div>
                 <div class="font-heading font-bold text-slate-100 group-hover/item:text-blue-400 transition">License & Certification</div>
-                <div class="text-[11px] text-slate-400 font-normal mt-0.5">AS9100D, ISO 9001 & Legalitas Resmi</div>
               </div>
               <svg class="w-3.5 h-3.5 text-slate-400 group-hover/item:translate-x-1 group-hover/item:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </a>

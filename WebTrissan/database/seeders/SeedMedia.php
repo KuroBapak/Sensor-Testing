@@ -7,17 +7,60 @@ use Illuminate\Support\Facades\Storage;
 /**
  * Generates placeholder media on the public disk so seeded CMS records render with visible images
  * and downloadable files, exactly like files uploaded through Filament (paths relative to the disk).
+ *
+ * Real files in database/seeders/images are used instead of placeholders: either a name listed in PHOTOS, or a file
+ * named after the seed name with "/" written as "-" (e.g. "hero-1.jpg", "portfolio-auto-1.webp", "certs-lrqa.png";
+ * PDFs likewise, e.g. "Trissan_Company_Profile.pdf").
  */
 class SeedMedia
 {
     /**
-     * Create (once) a placeholder PNG image and return its path on the public disk.
+     * Image extensions recognized by the naming convention, in order of preference.
+     *
+     * @var array<int, string>
+     */
+    private const EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
+
+    /**
+     * Seed image name => file in database/seeders/images.
+     *
+     * @var array<string, string>
+     */
+    private const PHOTOS = [
+        'work-1' => 'water-meter-bypass-chiller.jpg',
+        'work-2' => 'fire-hydrant-system.jpg',
+        'work-3' => 'chiller-duct-bypass.jpg',
+        'work-4' => 'drying-conveyor.jpg',
+        'work-5' => 'conveyor-maintenance.jpg',
+        'work-6' => 'conveyor-feeding-packaging.jpg',
+        'work-7' => 'conveyor-tending-auto-cutting.jpg',
+        'portfolio/auto-1' => 'water-meter-bypass-chiller.jpg',
+        'portfolio/auto-2' => 'chiller-duct-bypass.jpg',
+        'portfolio/auto-3' => 'conveyor-tending-auto-cutting.jpg',
+        'portfolio/food-1' => 'fire-hydrant-system.jpg',
+        'portfolio/food-2' => 'conveyor-feeding-packaging.jpg',
+        'portfolio/plastic-1' => 'drying-conveyor.jpg',
+        'portfolio/plastic-2' => 'conveyor-maintenance.jpg',
+    ];
+
+    /**
+     * Copy the real photo for this name to the public disk and return its path; with no real photo, create (once)
+     * a generated placeholder PNG instead.
      *
      * PNG is used instead of SVG because Filament's upload preview (FilePond) cannot read the size of SVG files
      * and stays stuck on "Loading" for records that point at them.
      */
     public static function image(string $name): string
     {
+        $photo = self::photoPath($name);
+
+        if ($photo !== null) {
+            $path = 'seed/'.$name.'.'.strtolower(pathinfo($photo, PATHINFO_EXTENSION));
+            Storage::disk('public')->put($path, (string) file_get_contents($photo));
+
+            return $path;
+        }
+
         $path = "seed/{$name}.png";
 
         if (! Storage::disk('public')->exists($path)) {
@@ -29,13 +72,44 @@ class SeedMedia
     }
 
     /**
-     * Create (once) a minimal one-page placeholder PDF and return its path on the public disk.
+     * The real photo for a seed name: the mapped file, else a file following the naming convention.
+     */
+    private static function photoPath(string $name): ?string
+    {
+        $mapped = isset(self::PHOTOS[$name]) ? self::imagesPath(self::PHOTOS[$name]) : null;
+
+        if ($mapped !== null && is_file($mapped)) {
+            return $mapped;
+        }
+
+        foreach (self::EXTENSIONS as $extension) {
+            $candidate = self::imagesPath(str_replace('/', '-', $name).'.'.$extension);
+
+            if (is_file($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private static function imagesPath(string $file): string
+    {
+        return __DIR__.'/images/'.$file;
+    }
+
+    /**
+     * Copy the real PDF for this name to the public disk and return its path; with no real PDF, create (once)
+     * a minimal one-page placeholder PDF instead.
      */
     public static function pdf(string $name): string
     {
         $path = "seed/{$name}.pdf";
+        $source = self::imagesPath(str_replace('/', '-', $name).'.pdf');
 
-        if (! Storage::disk('public')->exists($path)) {
+        if (is_file($source)) {
+            Storage::disk('public')->put($path, (string) file_get_contents($source));
+        } elseif (! Storage::disk('public')->exists($path)) {
             Storage::disk('public')->put($path, self::pdfDocument(self::label($name)));
         }
 

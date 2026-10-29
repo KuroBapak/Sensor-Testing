@@ -9,73 +9,65 @@ class GlobalSettingSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * Content is taken from the company's previous website (trissan.co.id).
      */
     public function run(): void
     {
         GlobalSetting::updateOrCreate(
             ['id' => 1],
             [
-                'company_name' => 'PT. Apex Industrial Engineering',
-                'company_tagline' => 'Industrial Engineering',
+                'company_name' => 'PT. Trissan',
+                'company_tagline' => 'Always Present Better',
                 'navbar_logo' => SeedMedia::image('logo'),
                 'footer_logo' => SeedMedia::image('logo-footer'),
-                'footer_description' => 'PT Apex Industrial Engineering adalah mitra terpercaya untuk solusi rekayasa presisi dan fabrikasi berstandar global. Kami melayani industri kedirgantaraan, otomotif, minyak & gas, dan manufaktur berat dengan komitmen pada kualitas, inovasi, dan kepuasan pelanggan.',
-                'footer_partner_image' => SeedMedia::image('partners-banner'),
-                'copyright_text' => '© '.date('Y').' PT. Apex Industrial Engineering. All rights reserved.',
+                'footer_description' => 'PT. Trissan didirikan dengan tujuan memberi solusi dalam pemenuhan kebutuhan pelanggan. Kami menawarkan beragam produk kelistrikan dan mekanikal dengan dukungan dan keahlian yang lebih baik, serta berkomitmen memberikan pelayanan purna jual yang maksimal untuk produk dan layanan berkualitas.',
+                'footer_partner_image' => SeedMedia::image('footer-partners'),
+                'copyright_text' => '© '.date('Y').' PT. Trissan. All rights reserved.',
                 'footer_legal_links' => [
                     ['label' => 'Privacy Policy', 'url' => null],
                     ['label' => 'Terms of Service', 'url' => null],
-                    ['label' => 'Quality & Safety Policy', 'url' => null],
-                    ['label' => 'ISO 9001 / AS9100D Compliance', 'url' => null],
                 ],
                 'company_stats' => [
-                    ['value' => '25+', 'label_landing' => 'Tahun Pengalaman', 'label_about' => 'Tahun Dedikasi'],
-                    ['value' => '99.98%', 'label_landing' => 'Presisi Toleransi', 'label_about' => 'Toleransi Presisi'],
-                    ['value' => '150+', 'label_landing' => 'Insinyur Ahli', 'label_about' => 'Insinyur & Ahli'],
-                    ['value' => '500+', 'label_landing' => 'Proyek Global', 'label_about' => 'Proyek Selesai'],
+                    ['value' => '3', 'label_landing' => 'Kantor Cabang', 'label_about' => 'Kantor Cabang'],
+                    ['value' => '145', 'label_landing' => 'Karyawan', 'label_about' => 'Tim Profesional'],
+                    ['value' => '12', 'label_landing' => 'Bidang Layanan', 'label_about' => 'Layanan Utama'],
+                    ['value' => '7', 'label_landing' => 'Proyek Terdokumentasi', 'label_about' => 'Proyek Terdokumentasi'],
                 ],
                 'phones' => [
-                    ['display_text' => '+62 (21) 5508-8990', 'tel_url' => 'tel:+62215508899', 'is_whatsapp' => false],
-                    ['display_text' => '+62 812-3456-7890', 'tel_url' => 'tel:+6281234567890', 'is_whatsapp' => true],
+                    ['display_text' => '(021) 88373107', 'tel_url' => 'tel:+622188373107', 'is_whatsapp' => false],
+                    ['display_text' => '(021) 88321576', 'tel_url' => 'tel:+622188321576', 'is_whatsapp' => false],
                 ],
-                'primary_email' => 'contact@apex-engineering.co.id',
-                'corporate_email' => 'corporate@apex-engineering.co.id',
-                'factory_address' => 'Jl. Jababeka Raya Blok V No. 1-2, Jababeka V Industrial Estate, Cikarang Timur, Bekasi, Jawa Barat 17550, Indonesia',
-                'facility_zone' => 'Heavy Industrial Zone',
-                'maps_button_url' => 'https://maps.google.com/?q=-6.315024,107.151817',
-                'maps_iframe_embed_url' => 'https://maps.google.com/maps?q=-6.315024,107.151817&hl=id&z=15&output=embed',
-                'overlay_title' => 'Apex Plant Facility 01',
-                'overlay_coordinate' => '6°18\'54.1"S 107°09\'06.5"E • Jababeka V',
+                'primary_email' => 'marketing@trissan.co.id',
+                'corporate_email' => null,
+                'whatsapp_number' => null,
+                'factory_address' => 'Ruko Metland Tambun Blok A2 No.24, Tambun Selatan, Bekasi, Jawa Barat 17510, Indonesia',
+                'facility_zone' => 'Kantor Pusat Bekasi',
+                'maps_button_url' => 'https://maps.google.com/?q=Ruko+Metland+Tambun+Blok+A2+No.24+Tambun+Selatan+Bekasi',
+                'maps_iframe_embed_url' => 'https://maps.google.com/maps?q=Ruko+Metland+Tambun+Blok+A2+No.24+Tambun+Selatan+Bekasi&hl=id&z=15&output=embed',
+                'overlay_title' => 'PT. Trissan - Kantor Pusat',
+                'overlay_coordinate' => 'Ruko Metland Tambun • Bekasi, Jawa Barat',
                 'social_media' => [
                     [
-                        'platform_name' => 'LinkedIn',
-                        'platform_icon' => 'linkedin',
-                        'handle' => '@apexindustrial',
-                        'description' => 'Ikuti update profesional kami di LinkedIn',
-                        'profile_url' => 'https://linkedin.com/company/apexindustrial',
+                        'platform_name' => 'Facebook',
+                        'platform_icon' => 'facebook',
+                        'handle' => null,
+                        'description' => 'Ikuti kabar terbaru kami di Facebook',
+                        'profile_url' => 'https://www.facebook.com/',
                         'action_text' => 'Ikuti',
                         'sort_order' => 1,
                     ],
                     [
                         'platform_name' => 'Instagram',
                         'platform_icon' => 'instagram',
-                        'handle' => '@apexindustrial.id',
-                        'description' => 'Lihat portofolio visual kami',
-                        'profile_url' => 'https://instagram.com/apexindustrial.id',
+                        'handle' => null,
+                        'description' => 'Lihat dokumentasi proyek kami di Instagram',
+                        'profile_url' => 'https://www.instagram.com/',
                         'action_text' => 'Lihat',
                         'sort_order' => 2,
                     ],
-                    [
-                        'platform_name' => 'YouTube',
-                        'platform_icon' => 'youtube',
-                        'handle' => '@ApexIndustrial',
-                        'description' => 'Tonton proses produksi dan testimoni',
-                        'profile_url' => 'https://youtube.com/@ApexIndustrial',
-                        'action_text' => 'Tonton',
-                        'sort_order' => 3,
-                    ],
                 ],
-                'notification_email' => 'notifications@apex-engineering.co.id',
+                'notification_email' => 'marketing@trissan.co.id',
             ]
         );
     }

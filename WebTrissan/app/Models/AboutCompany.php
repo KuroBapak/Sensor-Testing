@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Support\MediaUrl;
+use App\Support\OrgChart;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -62,6 +63,16 @@ class AboutCompany extends Model
     }
 
     /**
+     * Get the organization chart as a nested tree of root nodes, ready for display.
+     *
+     * @return Attribute<array<int, array<string, mixed>>, never>
+     */
+    protected function orgTree(): Attribute
+    {
+        return Attribute::get(fn (): array => OrgChart::tree($this->org_chart));
+    }
+
+    /**
      * Get the hero description as plain-text paragraphs, since the CMS may store it as rich text.
      *
      * @return Attribute<array<int, string>, never>
@@ -82,7 +93,7 @@ class AboutCompany extends Model
     public static function current(): self
     {
         return static::firstOrCreate([], [
-            'hero_title' => 'PT Apex Industrial Engineering',
+            'hero_title' => 'PT. Trissan',
         ]);
     }
 }

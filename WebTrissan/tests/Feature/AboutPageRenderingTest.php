@@ -78,9 +78,9 @@ test('about page renders vision mission and values cards by type', function () {
     }
 
     expect($content)
-        ->toContain('Precision First:')
-        ->toContain('Toleransi s/d 0.002 mm')
-        ->toContain('Menyediakan komponen berpresisi tinggi');
+        ->toContain('Kepuasan Pelanggan:')
+        ->toContain('Tolok ukur keberhasilan proyek')
+        ->toContain('Memberi solusi dalam pemenuhan kebutuhan pelanggan');
 });
 
 test('about page renders facilities ordered by sort order and with a placeholder for missing images', function () {
@@ -101,8 +101,13 @@ test('about page renders facilities ordered by sort order and with a placeholder
 });
 
 test('about page renders milestones in order and marks the current one', function () {
+    $about = AboutCompany::current();
+    $milestones = $about->milestones;
+    $milestones[array_key_last($milestones)]['is_current'] = true;
+    $milestones[array_key_last($milestones)]['year'] = '2024 - SEKARANG';
+    $about->update(['milestones' => $milestones]);
+
     $content = $this->get(route('about'))->assertOk()->getContent();
-    $milestones = AboutCompany::current()->milestones;
 
     $positions = collect($milestones)->map(fn (array $milestone) => strpos($content, e($milestone['title'])));
 
@@ -113,21 +118,19 @@ test('about page renders milestones in order and marks the current one', functio
         ->not->toContain('Pendirian PT Apex Industrial');
 });
 
-test('about page renders the organization chart with at most four divisions', function () {
+test('about page renders every person of the organization chart as nested levels', function () {
     $about = AboutCompany::current();
     $chart = $about->org_chart;
-    $chart['division_heads'][] = ['division_tag' => 'DIVISI 05', 'head_name' => 'Kepala Kelima', 'head_position' => 'Tidak Tampil', 'teams' => ['A'], 'sort_order' => 5];
     $chart['chart_revision_tag'] = 'REV-UJI-1';
     $about->update(['org_chart' => $chart]);
 
-    $this->get(route('about'))
-        ->assertOk()
-        ->assertSee('REV-UJI-1')
-        ->assertSee(e($chart['ceo']['name']), false)
-        ->assertSee(e($chart['general_manager']['name']), false)
-        ->assertSee(e($chart['division_heads'][3]['head_name']), false)
-        ->assertDontSee('Kepala Kelima')
-        ->assertDontSee('REV-2024.10');
+    $response = $this->get(route('about'))->assertOk()->assertSee('REV-UJI-1');
+
+    foreach ($chart['nodes'] as $node) {
+        $response->assertSee(e($node['name']), false)->assertSee(e($node['position']), false);
+    }
+
+    expect($response->getContent())->toContain('id="org-tree"')->toContain('class="org-side"');
 });
 
 test('about page renders without optional sections when the record is empty', function () {

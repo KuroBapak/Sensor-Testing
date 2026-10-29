@@ -24,33 +24,53 @@ class PageSettingSeeder extends Seeder
         PageSetting::updateOrCreate(
             ['page' => 'landing'],
             [
-                'seo_title' => 'PT Apex Industrial Engineering | Precision Machining & Global Standard Fabrication',
-                'seo_description' => 'Solusi rekayasa presisi dan fabrikasi berstandar global untuk sektor kedirgantaraan, otomotif, bejana tekan, dan permesinan presisi 5-axis.',
-                'hero_title' => 'Rekayasa Presisi & Fabrikasi Berstandar Global',
-                'hero_subtitle' => 'Menghadirkan solusi permesinan multi-axis CNC, fabrikasi bejana tekan bersertifikasi ASME, dan otomasi industri dengan toleransi mikron.',
+                'seo_title' => 'PT. Trissan | Solusi Kelistrikan, Mekanikal & Otomasi Industri',
+                'seo_description' => 'PT. Trissan menyediakan produk dan layanan kelistrikan serta mekanikal industri: material handling, otomasi, panel distribusi, hingga perawatan mesin.',
+                'hero_title' => 'Solusi Kelistrikan & Mekanikal untuk Industri Anda',
+                'hero_subtitle' => 'Dari material handling, otomasi, hingga instalasi dan perawatan mesin. PT. Trissan selalu hadir lebih baik dengan dukungan, keahlian, dan layanan purna jual yang maksimal.',
                 'hero_cta_text' => 'Lihat Portofolio',
                 'hero_cta_url' => '/works',
                 'hero_slides' => [
-                    ['image' => SeedMedia::image('hero-1'), 'alt_text' => '5-Axis CNC Precision Machining Center'],
-                    ['image' => SeedMedia::image('hero-2'), 'alt_text' => 'Heavy Welding & ASME Pressure Vessel Fabrication'],
-                    ['image' => SeedMedia::image('hero-3'), 'alt_text' => 'Industrial Robotics & Automation System'],
+                    ['image' => SeedMedia::image('hero-1'), 'alt_text' => 'Robot industri pada lini perakitan otomatis'],
+                    ['image' => SeedMedia::image('hero-2'), 'alt_text' => 'Teknisi menguji panel listrik dan kontaktor'],
+                    ['image' => SeedMedia::image('hero-3'), 'alt_text' => 'Pengerjaan fabrikasi dan pemotongan logam'],
                 ],
                 'trust_card' => [
-                    'label' => 'TRUSTED BY 50+ LEADERS',
-                    'rating' => '★ 4.9/5.0',
-                    'description' => 'Dipercaya oleh prinsipal industri multinasional tier-1 untuk komponen kritis dan sistem manufaktur kompleks.',
-                    'clients' => ['SIEMENS', 'BOEING', 'CAT', 'KOMATSU'],
-                    'footer_left' => 'AS9100D & ISO 9001',
-                    'footer_right' => 'Global Audited',
+                    'label' => 'DIPERCAYA PERUSAHAAN TERKEMUKA',
+                    'rating' => '',
+                    'description' => 'Dipercaya oleh perusahaan manufaktur dan industri terkemuka di Indonesia untuk instalasi, otomasi, dan perawatan fasilitas produksi.',
+                    'clients' => ['YAMAHA', 'YASKAWA', 'DAIKIN', 'FREEPORT'],
+                    'footer_left' => '3 Cabang Nasional',
+                    'footer_right' => 'Bekasi • Malang • Timika',
                 ],
                 'about_teaser' => [
                     'image' => SeedMedia::image('about-teaser'),
-                    'image_badge' => 'EST. 1998 • 25+ THN',
+                    'image_badge' => 'ALWAYS PRESENT BETTER',
                     'eyebrow' => 'TENTANG PERUSAHAAN',
-                    'title' => 'Dedikasi Presisi Sejak 1998',
-                    'description' => "Apex Industrial Engineering berdiri dengan komitmen memberikan solusi teknik presisi dengan toleransi ekstrem bagi industri kritis.\n\nDidukung oleh lebih dari 150 insinyur berkualifikasi tinggi dan fasilitas modern seluas 12.000 m² di Kawasan Industri Jababeka.",
+                    'title' => 'Solusi Terbaik untuk Kebutuhan Pelanggan',
+                    'description' => "PT. Trissan didirikan dengan tujuan memberi solusi dalam pemenuhan kebutuhan pelanggan. Kami menawarkan beragam produk kelistrikan dan mekanikal dengan dukungan dan keahlian yang lebih baik.\n\nKomitmen kami adalah memberikan pelayanan purna jual yang maksimal untuk produk dan layanan yang berkualitas. Hari ini tim kami melayani pelanggan dari tiga kantor di Bekasi, Malang, dan Timika.",
                     'cta_text' => 'Pelajari Profil Lengkap',
                     'cta_url' => '/about',
+                ],
+                'extra_data' => [
+                    'featured_works_badge' => 'PROYEK TERBARU',
+                    'featured_works_title' => 'Proyek Pilihan Kami',
+                    'featured_works_description' => 'Beberapa pekerjaan terbaru kami untuk pelanggan industri, mulai dari instalasi fire hydrant dan chiller hingga konveyor material handling.',
+                    'services_directory_badge' => 'LAYANAN & SPESIALISASI / CAPABILITY DIRECTORY',
+                    'services_directory_title' => 'Layanan & Kapabilitas Kami',
+                    'services_directory_description' => 'Dua belas bidang layanan mekanikal, elektrikal, otomasi, dan pengadaan industri. Klik setiap layanan untuk melihat dokumentasi proyek pada rekam jejak pekerjaan kami.',
+                    'contact_badge' => 'HUBUNGI KAMI',
+                    'contact_title' => 'Contact Us',
+                    'contact_description' => 'Hubungi tim PT. Trissan untuk konsultasi kebutuhan kelistrikan dan mekanikal, kemitraan proyek, dan permintaan penawaran.',
+                    'contact_card_label' => 'Direct Inquiries',
+                    'contact_card_title' => 'Ada yang Bisa Kami Bantu?',
+                    'contact_card_text' => 'Sampaikan kebutuhan instalasi, otomasi, material handling, atau perawatan mesin Anda kepada tim kami.',
+                    'social_label' => 'MEDIA SOSIAL & KOMUNITAS',
+                    'social_title' => 'Terhubung di Saluran Resmi',
+                    'map_badge' => 'LOKASI KANTOR PUSAT',
+                    'map_title' => 'Kantor Pusat Bekasi',
+                    'map_description' => 'Ruko Metland Tambun, Tambun Selatan, Bekasi, Jawa Barat.',
+                    'contact_success_message' => 'Terima kasih! Pesan Anda sudah kami terima dan tim kami akan segera menghubungi Anda.',
                 ],
             ]
         );
@@ -61,15 +81,15 @@ class PageSettingSeeder extends Seeder
         PageSetting::updateOrCreate(
             ['page' => 'works'],
             [
-                'seo_title' => 'Daftar Produk & Hasil Pengerjaan (Works) | PT Apex Industrial Engineering',
-                'seo_description' => 'Katalog lengkap hasil manufaktur komponen presisi, sub-assembly berstandar ASME, dan sistem rekayasa kritis.',
-                'hero_title' => 'DAFTAR PRODUK & HASIL PENGERJAAN (WORKS)',
-                'hero_subtitle' => 'Katalog komponen presisi, sub-assembly berstandar ASME, dan sistem rekayasa kritis dengan toleransi mikron dan sertifikasi internasional.',
+                'seo_title' => 'Daftar Proyek & Hasil Pengerjaan (Works) | PT. Trissan',
+                'seo_description' => 'Dokumentasi proyek PT. Trissan: instalasi fire hydrant, water meter, chiller duct bypass, serta konveyor material handling untuk pelanggan industri.',
+                'hero_title' => 'DAFTAR PROYEK & HASIL PENGERJAAN (WORKS)',
+                'hero_subtitle' => 'Rekam jejak proyek instalasi, konveyor material handling, dan perawatan mesin yang kami kerjakan untuk pelanggan industri.',
                 'stats' => [
-                    ['value' => '120+', 'label' => 'Total Deliveries', 'icon' => 'local_shipping', 'caption' => 'Pengiriman On-Time 99.4%'],
-                    ['value' => '±0.002mm', 'label' => 'Micron Gauge', 'icon' => 'straighten', 'caption' => 'Akurasi Zeiss CMM Laser'],
-                    ['value' => '100%', 'label' => 'Quality Assurance', 'icon' => 'verified', 'caption' => 'Zero Defect Delivery'],
-                    ['value' => 'AS9100D', 'label' => 'Compliance', 'icon' => 'flight_takeoff', 'caption' => 'Aerospace Certified'],
+                    ['value' => '7', 'label' => 'Proyek Terdokumentasi', 'icon' => 'task_alt', 'caption' => 'Instalasi, Konveyor & Maintenance'],
+                    ['value' => '12', 'label' => 'Bidang Layanan', 'icon' => 'build', 'caption' => 'Mekanikal, Elektrikal & Otomasi'],
+                    ['value' => '6', 'label' => 'Klien Proyek', 'icon' => 'apartment', 'caption' => 'Astra Honda, Mayora, Indofood CBP, dll.'],
+                    ['value' => '4', 'label' => 'Prinsip Kerja', 'icon' => 'verified', 'caption' => 'Kepuasan, Mutu, Profesional, Integritas'],
                 ],
             ]
         );
@@ -80,47 +100,64 @@ class PageSettingSeeder extends Seeder
         PageSetting::updateOrCreate(
             ['page' => 'portfolio'],
             [
-                'seo_title' => 'Direktori Personil & Hasil Kerja Portofolio | PT Apex Industrial Engineering',
-                'seo_description' => 'Profil insinyur ahli berlisensi internasional dan rekam jejak deliverable industri berpresisi tinggi.',
-                'hero_title' => 'DIREKTORI REKAYASA & PORTOFOLIO TEKNIK',
-                'hero_subtitle' => 'Menghubungkan kapabilitas 15 insinyur ahli bersertifikasi internasional dengan rekam jejak deliverable industri berpresisi tinggi.',
-                'registry_revision_tag' => 'APEX REGISTRY: REV-2024.Q2-ACTIVE',
+                'seo_title' => 'Portofolio & Tim Profesional | PT. Trissan',
+                'seo_description' => 'Portofolio proyek PT. Trissan: instalasi fire hydrant, chiller, dan konveyor untuk pelanggan industri, serta tim profesional di Bekasi, Malang, dan Timika.',
+                'hero_title' => 'PORTOFOLIO PROYEK & TIM PROFESIONAL',
+                'hero_subtitle' => 'Kebutuhan pelanggan adalah faktor terpenting dalam pekerjaan kami, mulai dari desain hingga finishing assembly, dikerjakan secara terukur, terencana, dan terpadu.',
+                'registry_revision_tag' => 'TRISSAN REGISTRY',
                 'stats' => [
-                    ['value' => '15', 'label' => 'Tenaga Ahli', 'caption' => 'Lead Engineers'],
-                    ['value' => '100%', 'label' => 'Audit Kualifikasi', 'caption' => 'Verified Skills'],
-                    ['value' => '4', 'label' => 'Disiplin Rekayasa', 'caption' => 'Specialty Clusters'],
-                    ['value' => '28+', 'label' => 'Lisensi Valid', 'caption' => 'Active Licenses'],
-                    ['value' => '40', 'label' => 'Deliverables', 'caption' => 'Documented Projects'],
+                    ['value' => '3', 'label' => 'Kantor Cabang', 'caption' => 'Bekasi, Malang, Timika'],
+                    ['value' => '145', 'label' => 'Karyawan', 'caption' => 'Seluruh cabang'],
+                    ['value' => '20+', 'label' => 'Klien Industri', 'caption' => 'Otomotif, Pertambangan, Manufaktur'],
+                    ['value' => '12', 'label' => 'Bidang Layanan', 'caption' => 'Specialty Clusters'],
+                    ['value' => '7', 'label' => 'Deliverables', 'caption' => 'Documented Projects'],
+                ],
+                'extra_data' => [
+                    'catalog_badge' => 'Katalog Hasil Kerja',
+                    'catalog_title' => 'Proyek yang Telah Kami Kerjakan',
+                    'catalog_description' => 'Kepuasan pelanggan adalah tolok ukur keberhasilan proyek yang kami kerjakan, dengan kualitas produk sebagai tujuan kami.',
+                    'personnel_badge' => 'Database Registrasi Resmi',
                 ],
             ]
         );
     }
 
+    /**
+     * The previous website lists no licences or certifications, so this page keeps sample content.
+     */
     private function seedLicenses(): void
     {
         PageSetting::updateOrCreate(
             ['page' => 'licenses'],
             [
-                'seo_title' => 'Lisensi & Akreditasi Mutu Internasional | PT Apex Industrial Engineering',
-                'seo_description' => 'Sertifikasi ISO 9001, AS9100D, ASME, dan akreditasi pengujian mutu PT Apex Industrial Engineering.',
-                'hero_title' => 'LISENSI & AKREDITASI MUTU INTERNASIONAL',
-                'hero_subtitle' => 'Komitmen tak kenal kompromi terhadap keselamatan kerja, ketertelusuran material, dan standar industri global.',
+                'seo_title' => 'Lisensi & Akreditasi Mutu | PT. Trissan',
+                'seo_description' => 'Lisensi, sertifikasi, dan akreditasi mutu PT. Trissan sebagai bukti komitmen pada kualitas produk, keselamatan kerja, dan standar industri.',
+                'hero_title' => 'LISENSI & AKREDITASI MUTU',
+                'hero_subtitle' => 'Komitmen terhadap mutu, keselamatan kerja, dan standar industri.',
                 'hero_badge_card' => [
-                    'eyebrow' => 'Integritas Mutu Pabrik',
-                    'title' => 'Fasilitas Terakreditasi Penuh',
-                    'caption' => 'Standar Internasional ISO & ASME',
+                    'eyebrow' => 'Integritas Mutu',
+                    'title' => 'Mutu & Kualitas Produk',
+                    'caption' => 'Salah satu prioritas kerja PT. Trissan',
                 ],
                 'stats' => [
-                    ['value' => '4+', 'label' => 'Sertifikasi Produk', 'caption' => 'Tervalidasi uji lab independen'],
-                    ['value' => '6', 'label' => 'QMS & Aerospace', 'caption' => 'Sertifikat sistem mutu aktif'],
-                    ['value' => '100%', 'label' => 'Bejana Tekan & Offshore', 'caption' => 'Kepatuhan ASME Sec VIII & IX'],
-                    ['value' => '7', 'label' => 'K3 Lingkungan & Otomotif', 'caption' => 'Akreditasi ISO 14001 & 45001'],
+                    ['value' => '4+', 'label' => 'Sertifikasi Produk', 'caption' => 'Data contoh'],
+                    ['value' => '6', 'label' => 'QMS & Aerospace', 'caption' => 'Data contoh'],
+                    ['value' => '100%', 'label' => 'Bejana Tekan & Offshore', 'caption' => 'Data contoh'],
+                    ['value' => '7', 'label' => 'K3 Lingkungan & Otomotif', 'caption' => 'Data contoh'],
                 ],
                 'corporate_highlight_cards' => [
-                    ['icon' => 'verified_user', 'title' => 'ISO 9001:2015', 'subtitle' => 'QMS Fabrikasi', 'caption' => 'TÜV SÜD · Audit 2025'],
-                    ['icon' => 'flight', 'title' => 'AS9100D Rev B', 'subtitle' => 'Aerospace & Defense', 'caption' => 'PRI / Nadcap Audited'],
-                    ['icon' => 'speed', 'title' => 'ASME Boiler & PV', 'subtitle' => 'U & S Stamp Certified', 'caption' => 'Hartford Steam Boiler'],
-                    ['icon' => 'eco', 'title' => 'ISO 14001 & 45001', 'subtitle' => 'HSE & Keselamatan', 'caption' => "Lloyd's Register Valid"],
+                    ['icon' => 'verified_user', 'title' => 'ISO 9001:2015', 'subtitle' => 'QMS (data contoh)', 'caption' => 'Ganti melalui CMS'],
+                    ['icon' => 'flight', 'title' => 'AS9100D Rev B', 'subtitle' => 'Aerospace (data contoh)', 'caption' => 'Ganti melalui CMS'],
+                    ['icon' => 'speed', 'title' => 'ASME Boiler & PV', 'subtitle' => 'Bejana tekan (data contoh)', 'caption' => 'Ganti melalui CMS'],
+                    ['icon' => 'eco', 'title' => 'ISO 14001 & 45001', 'subtitle' => 'HSE (data contoh)', 'caption' => 'Ganti melalui CMS'],
+                ],
+                'extra_data' => [
+                    'corporate_badge' => 'Corporate & Facility Accreditation',
+                    'corporate_title' => 'Sertifikasi Perusahaan',
+                    'corporate_description' => 'Akreditasi sistem manajemen mutu, keselamatan operasional, dan kepatuhan lingkungan. Data pada halaman ini adalah contoh dan perlu diganti dengan dokumen resmi.',
+                    'product_badge' => 'Product-Level Compliance',
+                    'product_title' => 'Sertifikasi Khusus Produk',
+                    'product_description' => 'Dokumentasi sertifikasi uji tipe dan sertifikat kepatuhan standar industri per produk. Data contoh.',
                 ],
             ]
         );
@@ -131,8 +168,21 @@ class PageSettingSeeder extends Seeder
         PageSetting::updateOrCreate(
             ['page' => 'about'],
             [
-                'seo_title' => 'Tentang Kami | PT Apex Industrial Engineering',
-                'seo_description' => 'Sejarah, visi, misi, fasilitas permesinan modern, dan struktur kepemimpinan PT Apex Industrial Engineering.',
+                'seo_title' => 'Tentang Kami | PT. Trissan',
+                'seo_description' => 'Profil PT. Trissan: komitmen, prinsip kerja, jaringan kantor di Bekasi, Malang, dan Timika, serta bidang layanan perusahaan.',
+                'extra_data' => [
+                    'values_badge' => 'Komitmen & Prinsip Kerja',
+                    'values_subtitle' => 'Prioritas PT. Trissan dalam Setiap Pekerjaan',
+                    'facilities_badge' => 'Fasilitas Workshop',
+                    'facilities_title' => 'Mesin Produksi di PT. Trissan Bekasi',
+                    'facilities_description' => 'Workshop kami di Bekasi dilengkapi mesin milling, mesin cutting, dan mesin CNC untuk mendukung pembuatan komponen dan perakitan proyek.',
+                    'milestones_badge' => 'Perjalanan Sejarah',
+                    'milestones_title' => 'Milestone Perkembangan PT. Trissan',
+                    'milestones_description' => 'Perjalanan dan pencapaian PT. Trissan dari tahun ke tahun.',
+                    'structure_badge' => 'Tata Kelola & Kepemimpinan',
+                    'structure_title' => 'Bagan Struktur Organisasi Perusahaan',
+                    'structure_description' => 'Struktur kepemimpinan dan tim PT. Trissan, dari jajaran direksi hingga tim proyek di kantor pusat dan kantor perwakilan Timika.',
+                ],
             ]
         );
     }

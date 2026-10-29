@@ -1,7 +1,9 @@
 <!DOCTYPE html><html lang="id" class="scroll-smooth" style=""><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ $pageSettings->seo_title ?? 'Apex Industrial Engineering - Modern Industrial Solutions' }}</title>
+  @php $seoTitle = $pageSettings?->seo_title ?? $globalSettings?->company_name ?? config('app.name'); @endphp
+  <title>{{ $seoTitle }}</title>
+  @include('layouts.seo-head', ['seoTitle' => $seoTitle, 'seoDescription' => $pageSettings?->seo_description])
   @if(!empty($pageSettings->seo_description))
   <meta name="description" content="{{ $pageSettings->seo_description }}">
   @endif
@@ -55,6 +57,7 @@
 @include('layouts.scale')
 </head>
 <body class="bg-white text-slate-800 antialiased relative overflow-x-hidden selection:bg-brand-navy selection:text-white">
+  @php $cms = fn (string $key): string => (string) $pageSettings?->extra($key); @endphp
 
   @include('layouts.navbar')
 
@@ -65,84 +68,72 @@
             <!-- Background Gambar Fasilitas Pabrik Penuh dengan Overlay Gelap -->
       <div class="absolute inset-0 z-0 overflow-hidden" id="hero-carousel-container">
         @php
-          $heroSlides = $pageSettings->hero_slides ?? [];
-          $defaultSlides = [
-            ['image' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuDahTpOLFtiP0cjbaka1P0zz7EoMcQwxrIYK0EtOoGRIqIsgUXFV562tq74x2BhW2fRn3L5ex-Gwgm-opu9oWfcSKaclPyHG-r5UGWy6qS0nIFvSG8RaO_RUJw0IL4pXc2jfdr-KBNvRPv5kEdvw_V0WYsJWUxtqj-ScoWtJ72OZzUVMLOC6xVVbZGMYNQsW994_YDN1mWd5qJaV2lhAAg-0TcFJIria7iBoCcfrAAgBioboS22Xgew', 'alt' => 'Manufacturing Facility'],
-            ['image' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuCYLbne5xVfziHtl9ouQePMOql-0lVZ6W1lydOHuy1ForFKi60xT0IRaUlxALs6aHz3ToC6MEHu748HwGOXVkA-hAKvh3wB6AdWg7L_mMJuSY3bZqjtv3CNIxo0fUC2Ff0al6jKmuo8MtQL1PWpn8Zgl6YcnPcG1KA4ejAx3iciLPc_DZgSDxUXaGSzx88Dzvu2CQy4LLu_CBAQXCSZjJfIccYW_fAA59ESQoExTReRrmMIqH-c2UyA', 'alt' => 'Precision Machining'],
-            ['image' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuDw3qQEbwvTdSrL1ZkQB2F1D4CGu5VYgB1wZn3FFKzpigBSfbCBbONLBu5smdG5LgESwEDldsFLO0EWzndddNRHSj7S9RVNLKw0NN67q8pAFcnYLT37BAFuGp7hZuSMvoq8vdsv2FhNYotT-l117pLCGmDf6YZlngeDZuVrGZmRLYQAaxBaY9p9lNfJzuwqdHbyqMvlQUEwyE0CW5-RlYAu4P1YLjFp7RotaMbG2SHQspbMGcxAxxJq', 'alt' => 'Automation Assembly'],
-          ];
+          $heroSlides = collect($pageSettings?->hero_slides ?? [])
+            ->map(fn ($slide) => [
+              'image' => \App\Support\MediaUrl::resolve($slide['image'] ?? null),
+              'alt' => $slide['alt_text'] ?? ($slide['alt'] ?? ($slide['caption'] ?? '')),
+            ])
+            ->filter(fn ($slide) => $slide['image'])
+            ->values();
         @endphp
-        @if(!empty($heroSlides) && is_array($heroSlides))
-          @foreach($heroSlides as $index => $slide)
-            @php
-              $slideImg = \App\Support\MediaUrl::resolve($slide['image'] ?? null)
-                ?? ($defaultSlides[$index % count($defaultSlides)]['image'] ?? $defaultSlides[0]['image']);
-              $slideAlt = $slide['alt_text'] ?? ($slide['alt'] ?? ($slide['caption'] ?? ($defaultSlides[$index % count($defaultSlides)]['alt'] ?? 'Manufacturing Facility')));
-            @endphp
-            <div class="hero-slide absolute inset-0 transition-opacity duration-1000 {{ $loop->first ? 'opacity-100' : 'opacity-0' }}">
-              <img src="{{ $slideImg }}" alt="{{ $slideAlt }}" class="w-full h-full object-cover object-center transform scale-105">
-              <div class="absolute inset-0 bg-gradient-to-r from-brand-navyDark/95 via-brand-navy/85 to-brand-navyDark/65"></div>
-              <div class="absolute inset-0 bg-brand-navy/40 mix-blend-multiply"></div>
-            </div>
-          @endforeach
-        @else
-          @foreach($defaultSlides as $index => $slide)
-            <div class="hero-slide absolute inset-0 transition-opacity duration-1000 {{ $loop->first ? 'opacity-100' : 'opacity-0' }}">
-              <img src="{{ $slide['image'] }}" alt="{{ $slide['alt'] }}" class="w-full h-full object-cover object-center transform scale-105">
-              <div class="absolute inset-0 bg-gradient-to-r from-brand-navyDark/95 via-brand-navy/85 to-brand-navyDark/65"></div>
-              <div class="absolute inset-0 bg-brand-navy/40 mix-blend-multiply"></div>
-            </div>
-          @endforeach
-        @endif
+        @foreach($heroSlides as $slide)
+          <div class="hero-slide absolute inset-0 transition-opacity duration-1000 {{ $loop->first ? 'opacity-100' : 'opacity-0' }}">
+            <img src="{{ $slide['image'] }}" alt="{{ $slide['alt'] }}" class="w-full h-full object-cover object-center transform scale-105">
+            <div class="absolute inset-0 bg-gradient-to-r from-brand-navyDark/95 via-brand-navy/85 to-brand-navyDark/65"></div>
+            <div class="absolute inset-0 bg-brand-navy/40 mix-blend-multiply"></div>
+          </div>
+        @endforeach
       </div>
 
       <!-- Konten Hero di Sisi Kiri -->
       <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 w-full pt-6 pb-28 lg:pb-24 lg:pt-2">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
           <div class="max-w-2xl text-left">
-            <h1 class="font-heading font-black text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.12] mb-4 lg:mb-6 drop-shadow-md mt-1">{{ $pageSettings->hero_title ?? 'Dedikasi Presisi Manufaktur Mutakhir' }}</h1>
-            <p class="text-slate-300 text-sm sm:text-lg leading-relaxed font-normal max-w-xl mb-2 sm:mb-6 lg:mb-10">{{ $pageSettings->hero_subtitle ?? 'Menghadirkan rekayasa komponen mekanikal bertoleransi tinggi serta integrasi otomasi industri berstandar mutu internasional.' }}</p>
+            <x-cms-text tag="h1" :value="$pageSettings?->hero_title" class="block font-heading font-black text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.12] mb-4 lg:mb-6 drop-shadow-md mt-1" />
+            <x-cms-text tag="p" :value="$pageSettings?->hero_subtitle" class="block text-slate-300 text-sm sm:text-lg leading-relaxed font-normal max-w-xl mb-2 sm:mb-6 lg:mb-10" />
             <div class="hidden sm:flex items-center gap-4">
-              <a href="{{ $pageSettings->hero_cta_url ?? '#works' }}" class="inline-flex items-center justify-center font-heading font-bold text-xs sm:text-sm tracking-wider text-brand-navy bg-white hover:bg-slate-100 px-8 py-4 rounded shadow-heavy hover:shadow-2xl transition duration-200 transform hover:-translate-y-0.5 active:translate-y-0 uppercase group">
-                <span>{{ $pageSettings->hero_cta_text ?? 'Lihat Portofolio' }}</span>
+              <a href="{{ $pageSettings?->hero_cta_url ?: '#works' }}" class="inline-flex items-center justify-center font-heading font-bold text-xs sm:text-sm tracking-wider text-brand-navy bg-white hover:bg-slate-100 px-8 py-4 rounded shadow-heavy hover:shadow-2xl transition duration-200 transform hover:-translate-y-0.5 active:translate-y-0 uppercase group {{ blank($pageSettings?->hero_cta_text) ? 'invisible' : '' }}">
+                <x-cms-text :value="$pageSettings?->hero_cta_text" />
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right w-4 h-4 ml-2 group-hover:translate-x-1.5 transition"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
               </a>
             </div>
           </div>
+          @php
+            $trustCard = $pageSettings?->trust_card ?? [];
+            $trustBadge = $trustCard['label'] ?? ($trustCard['badge'] ?? '');
+            $trustRating = $trustCard['rating'] ?? '';
+            $trustDescription = $trustCard['description'] ?? '';
+            $trustClients = array_values(array_filter((array) ($trustCard['clients'] ?? [])));
+            $trustFooterLeft = $trustCard['footer_left'] ?? '';
+            $trustFooterRight = $trustCard['footer_right'] ?? '';
+            $showTrustCard = filled($trustBadge) || filled($trustRating) || filled($trustDescription)
+              || ! empty($trustClients) || filled($trustFooterLeft) || filled($trustFooterRight);
+          @endphp
+          @if($showTrustCard)
           <div class="w-48 sm:w-72 lg:w-80 shrink-0 self-end lg:self-center">
-            @php
-              $trustCard = $pageSettings->trust_card ?? [];
-              $trustBadge = $trustCard['label'] ?? ($trustCard['badge'] ?? 'TRUSTED BY 50+ LEADERS');
-              $trustRating = $trustCard['rating'] ?? '★ 4.9/5.0';
-              $trustDescription = $trustCard['description'] ?? 'Global tier-1 original equipment manufacturers & defense contractors trust our precision standards.';
-              $trustClients = $trustCard['clients'] ?? ['SIEMENS', 'BOEING', 'CAT', 'KOMATSU'];
-              $trustFooterLeft = $trustCard['footer_left'] ?? 'AS9100D & ISO 9001';
-              $trustFooterRight = $trustCard['footer_right'] ?? 'Global Audited';
-            @endphp
             <div class="bg-white/10 backdrop-blur-md border border-white/15 rounded-lg p-3 sm:p-5 shadow-heavy text-white">
               <div class="flex items-center justify-between pb-2 sm:pb-3 border-b border-white/10 mb-2 sm:mb-3.5">
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span class="text-[9px] sm:text-[10px] font-heading font-bold tracking-wider sm:tracking-widest uppercase text-blue-300 leading-tight">{{ $trustBadge }}</span>
+                  <x-cms-text :value="$trustBadge" class="text-[9px] sm:text-[10px] font-heading font-bold tracking-wider sm:tracking-widest uppercase text-blue-300 leading-tight" />
                 </div>
-                <span class="text-[9px] sm:text-[10px] font-semibold text-slate-300 bg-white/10 px-1.5 sm:px-2 py-0.5 rounded border border-white/10 whitespace-nowrap ml-1.5">{{ $trustRating }}</span>
+                <x-cms-text :value="$trustRating" class="text-[9px] sm:text-[10px] font-semibold text-slate-300 bg-white/10 px-1.5 sm:px-2 py-0.5 rounded border border-white/10 whitespace-nowrap ml-1.5 {{ blank($trustRating) ? 'invisible' : '' }}" />
               </div>
-              <p class="hidden sm:block text-xs text-slate-300 mb-4 font-normal leading-relaxed">{{ $trustDescription }}</p>
+              <x-cms-text tag="p" :value="$trustDescription" class="hidden sm:block text-xs text-slate-300 mb-4 font-normal leading-relaxed" />
               <div class="grid grid-cols-2 gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-heading font-bold tracking-wide sm:tracking-wider text-slate-200">
-                @if(is_array($trustClients))
-                  @foreach($trustClients as $client)
-                    <div class="px-1.5 sm:px-2.5 py-1 sm:py-1.5 rounded bg-white/5 border border-white/10 flex items-center gap-1.5 hover:bg-white/10 transition">
-                      <span class="text-blue-400 font-black">•</span> {{ is_array($client) ? ($client['name'] ?? ($client['client'] ?? '')) : $client }}
-                    </div>
-                  @endforeach
-                @endif
+                @foreach($trustClients as $client)
+                  <div class="px-1.5 sm:px-2.5 py-1 sm:py-1.5 rounded bg-white/5 border border-white/10 flex items-center gap-1.5 hover:bg-white/10 transition">
+                    <span class="text-blue-400 font-black">•</span> {{ is_array($client) ? ($client['name'] ?? ($client['client'] ?? '')) : $client }}
+                  </div>
+                @endforeach
               </div>
               <div class="hidden sm:flex mt-3 pt-3 border-t border-white/10 items-center justify-between text-[11px] text-slate-300">
-                <span class="text-blue-300 font-semibold">{{ $trustFooterLeft }}</span>
-                <span class="text-slate-400">{{ $trustFooterRight }}</span>
+                <x-cms-text :value="$trustFooterLeft" class="text-blue-300 font-semibold" />
+                <x-cms-text :value="$trustFooterRight" class="text-slate-400" />
               </div>
             </div>
           </div>
+          @endif
         </div>
       </div>
     </section>
@@ -158,7 +149,7 @@
                   @if(!empty($service->service_icon_svg))
                     {!! $service->service_icon_svg !!}
                   @elseif(!empty($service->service_icon))
-                    <span class="material-symbols-outlined text-2xl">{{ $service->service_icon }}</span>
+                    <span aria-hidden="true" class="material-symbols-outlined text-2xl">{{ $service->service_icon }}</span>
                   @else
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                   @endif
@@ -185,54 +176,53 @@
       <!-- 4. Bagian Works (Hasil Pekerjaan dengan Tab Filter Interaktif) -->
       <section id="about" class="py-10 lg:py-16 bg-brand-grayBg border-t border-brand-grayBorder relative overflow-hidden">
         @php
-          $aboutTeaser = $pageSettings->about_teaser ?? [];
-          $aboutImage = \App\Support\MediaUrl::resolve($aboutTeaser['image'] ?? null) ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuC7D7HAstdKsEhQ5jP4KgjDD06L8XEAneixTri3F8rqZCOFH38u54XUTBd6kxGV-jmWQWfz2rPnnGT9jVfS1ixR2LLUonFiB_qXPn4Vj93pWlc1SvJGb7kqiYBFS-rnSB541Azad48DmqUtAnzK2dl9Ku27bRS_zSEPLk6dgs9g4l6SVWMn5l4INGfVwH5Sndf5bWVsk4qerFO0bXLeLns3x1RtkpfNhS5VPZTcLqxV1BmhvSlZZ9CL';
-          $aboutBadge = $aboutTeaser['image_badge'] ?? 'EST. 1998 • 25+ THN';
-          $aboutEyebrow = $aboutTeaser['eyebrow'] ?? 'TENTANG '.strtoupper($globalSettings?->company_name ?? 'KAMI');
-          $aboutTitle = $aboutTeaser['title'] ?? 'Dedikasi Rekayasa Presisi & Standar Manufaktur Kelas Dunia';
+          $aboutTeaser = $pageSettings?->about_teaser ?? [];
+          $aboutImage = \App\Support\MediaUrl::resolve($aboutTeaser['image'] ?? null);
+          $aboutBadge = $aboutTeaser['image_badge'] ?? '';
+          $aboutEyebrow = $aboutTeaser['eyebrow'] ?? '';
+          $aboutTitle = $aboutTeaser['title'] ?? '';
           $aboutDescription = $aboutTeaser['description']
             ?? (isset($aboutTeaser['paragraph_1']) || isset($aboutTeaser['paragraph_2'])
                 ? trim(($aboutTeaser['paragraph_1'] ?? '') . "\n\n" . ($aboutTeaser['paragraph_2'] ?? ''))
-                : "Sebagai mitra rekayasa industri tier-1, Apex Industrial Engineering memadukan kecanggihan teknologi permesinan CNC 5-sumbu mutakhir, fabrikasi metalurgi berakurasi tinggi, dan integrasi mekatronika otomatis untuk sektor-sektor kritis seperti kedirgantaraan, pertahanan, otomotif presisi tinggi, dan infrastruktur maritim.\n\nDengan komitmen tanpa henti pada kepatuhan toleransi mikro hingga 0.002mm serta audit mutu menyeluruh, kami membantu memitigasi risiko manufaktur dan mempercepat siklus peluncuran sistem industri bagi konglomerasi global terdepan.");
-          $aboutCtaText = $aboutTeaser['cta_text'] ?? 'Pelajari Profil Lengkap';
+                : '');
+          $aboutCtaText = $aboutTeaser['cta_text'] ?? '';
           $aboutCtaUrl = $aboutTeaser['cta_url'] ?? '/about';
 
           $companyStats = collect($globalSettings?->company_stats ?? [])
             ->map(fn ($companyStat) => ['value' => $companyStat['value'] ?? '', 'label' => $companyStat['label_landing'] ?? ($companyStat['label_about'] ?? '')])
             ->all();
-          $stats = $companyStats ?: $pageSettings->stats ?? [
-            ['value' => '25+', 'label' => 'Tahun Pengalaman', 'color' => 'text-brand-navy'],
-            ['value' => '99.98%', 'label' => 'Presisi Toleransi', 'color' => 'text-brand-accent'],
-            ['value' => '150+', 'label' => 'Insinyur Ahli', 'color' => 'text-brand-navy'],
-            ['value' => '500+', 'label' => 'Proyek Global', 'color' => 'text-brand-navy'],
-          ];
+          $stats = $companyStats ?: ($pageSettings?->stats ?? []);
         @endphp
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div class="lg:col-span-6 relative">
               <div class="relative rounded-lg overflow-hidden border border-brand-grayBorder shadow-heavy bg-slate-900 group">
-                <img src="{{ $aboutImage }}" alt="{{ $aboutTitle }}" class="w-full h-52 sm:h-72 lg:h-[420px] object-cover object-center group-hover:scale-105 transition duration-700">
+                @if($aboutImage)
+                  <img src="{{ $aboutImage }}" alt="{{ $aboutTitle }}" class="w-full h-52 sm:h-72 lg:h-[420px] object-cover object-center group-hover:scale-105 transition duration-700">
+                @else
+                  <div class="w-full h-52 sm:h-72 lg:h-[420px]"></div>
+                @endif
                 <div class="absolute inset-0 bg-gradient-to-t from-brand-navyDark/85 via-transparent to-transparent"></div>
-                <div class="absolute bottom-4 left-4 inline-flex items-center gap-2 bg-brand-navy/90 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-lg text-white shadow-heavy z-10">
-                  <span class="text-[11px] font-heading font-bold text-slate-200 uppercase tracking-widest">{{ $aboutBadge }}</span>
-                </div>
+                @if(filled($aboutBadge))
+                  <div class="absolute bottom-4 left-4 inline-flex items-center gap-2 bg-brand-navy/90 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-lg text-white shadow-heavy z-10">
+                    <span class="text-[11px] font-heading font-bold text-slate-200 uppercase tracking-widest">{{ $aboutBadge }}</span>
+                  </div>
+                @endif
               </div>
             </div>
             <div class="lg:col-span-6 flex flex-col justify-center">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-4 self-start shadow-sm">
-                <span class="w-2 h-2 rounded-full bg-brand-accent"></span>{{ $aboutEyebrow }}
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-4 self-start shadow-sm {{ blank($aboutEyebrow) ? 'invisible' : '' }}">
+                <span class="w-2 h-2 rounded-full bg-brand-accent"></span><x-cms-text :value="$aboutEyebrow" />
               </div>
-              <h2 class="font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight leading-tight mb-6">{{ $aboutTitle }}</h2>
+              <x-cms-text tag="h2" :value="$aboutTitle" class="block font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight leading-tight mb-6" />
               @php
                 $aboutParagraphs = array_values(array_filter(array_map('trim', explode("\n", (string) $aboutDescription))));
               @endphp
-              @if(!empty($aboutParagraphs))
-                <div class="space-y-4 mb-8">
-                  @foreach($aboutParagraphs as $paragraph)
-                    <p class="text-brand-grayMuted text-sm leading-relaxed font-normal">{{ $paragraph }}</p>
-                  @endforeach
-                </div>
-              @endif
+              <div class="space-y-4 mb-8">
+                @foreach($aboutParagraphs ?: [''] as $paragraph)
+                  <x-cms-text tag="p" :value="$paragraph" class="block text-brand-grayMuted text-sm leading-relaxed font-normal" />
+                @endforeach
+              </div>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 pt-6 border-t border-slate-200/80">
                 @foreach($stats as $index => $stat)
                   @php
@@ -247,8 +237,8 @@
                 @endforeach
               </div>
               <div class="flex items-center gap-4">
-                <a href="{{ $aboutCtaUrl }}" class="inline-flex items-center font-heading font-bold text-xs tracking-wider text-brand-navy hover:text-brand-accent uppercase transition group">
-                  <span>{{ $aboutCtaText }}</span>
+                <a href="{{ $aboutCtaUrl }}" class="inline-flex items-center font-heading font-bold text-xs tracking-wider text-brand-navy hover:text-brand-accent uppercase transition group {{ blank($aboutCtaText) ? 'invisible' : '' }}">
+                  <x-cms-text :value="$aboutCtaText" />
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right w-4 h-4 ml-2 transform group-hover:translate-x-1.5 transition"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                 </a>
               </div>
@@ -257,18 +247,20 @@
         </div>
       </section>
 
-      <section id="works" class="bg-white border-t border-b border-brand-grayBorder relative py-10 lg:py-16"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12"><div class="max-w-xl mb-10"><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-grayBg border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3 shadow-sm"><span class="w-2 h-2 rounded-full bg-brand-accent"></span>ENGINEERED OUTPUT</div><h2 class="font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight mt-1">Featured Industrial Works</h2><p class="text-brand-grayMuted text-sm mt-3 leading-relaxed">Tinjau contoh rekam jejak presisi manufaktur dan standar mutu pabrik kami yang mematuhi standar toleransi mikro ketat.</p></div><div id="works-grid" class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
+      <section id="works" class="bg-white border-t border-b border-brand-grayBorder relative py-10 lg:py-16"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12"><div class="max-w-xl mb-10"><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-grayBg border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3 shadow-sm {{ blank($cms('featured_works_badge')) ? 'invisible' : '' }}"><span class="w-2 h-2 rounded-full bg-brand-accent"></span><x-cms-text :value="$cms('featured_works_badge')" /></div><x-cms-text tag="h2" :value="$cms('featured_works_title')" class="block font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight mt-1" /><x-cms-text tag="p" :value="$cms('featured_works_description')" class="block text-brand-grayMuted text-sm mt-3 leading-relaxed" /></div><div id="works-grid" class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
         @forelse($featuredWorks as $work)
           @php
-            $workImg = $work->image_url ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuCYLbne5xVfziHtl9ouQePMOql-0lVZ6W1lydOHuy1ForFKi60xT0IRaUlxALs6aHz3ToC6MEHu748HwGOXVkA-hAKvh3wB6AdWg7L_mMJuSY3bZqjtv3CNIxo0fUC2Ff0al6jKmuo8MtQL1PWpn8Zgl6YcnPcG1KA4ejAx3iciLPc_DZgSDxUXaGSzx88Dzvu2CQy4LLu_CBAQXCSZjJfIccYW_fAA59ESQoExTReRrmMIqH-c2UyA';
+            $workImg = $work->image_url;
             $categorySlug = $work->service?->slug ?? 'general';
           @endphp
           <div class="work-card {{ $categorySlug }} bg-white rounded-lg border border-brand-grayBorder overflow-hidden shadow-sm hover:shadow-card-hover transition group flex flex-col justify-between cursor-pointer" onclick="window.location.href='{{ url('/works#' . ($work->work_slug ?? '')) }}'">
             <div class="h-28 sm:h-44 lg:h-52 bg-slate-900 overflow-hidden relative">
-              <img src="{{ $workImg }}" alt="{{ $work->work_title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              @if($workImg)
+                <img src="{{ $workImg }}" alt="{{ $work->work_title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              @endif
               <div class="absolute inset-0 bg-gradient-to-t from-brand-navyDark/85 via-transparent to-transparent"></div>
               <div class="absolute top-3 left-3 px-2.5 py-1 bg-brand-navy/90 backdrop-blur-md text-white font-mono text-[10px] font-bold tracking-wider uppercase rounded border border-white/10 flex items-center gap-1.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> {{ $work->top_badge ?? ($work->service?->short_title ?? $work->service?->service_title ?? 'INDUSTRIAL WORK') }}
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> {{ $work->top_badge ?? ($work->service?->short_title ?? $work->service?->service_title) }}
               </div>
               @if(!empty($work->bottom_badge))
                 <span class="absolute bottom-3 right-3 px-2 py-0.5 rounded bg-black/60 backdrop-blur-md text-white text-[10px] font-mono border border-white/10">{{ $work->bottom_badge }}</span>
@@ -277,8 +269,8 @@
             <div class="p-3 sm:p-5 lg:p-6 flex-1 flex flex-col justify-between">
               <div class="mb-2 sm:mb-4">
                 <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
-                  <span>{{ $work->serial_number ?? 'SERIES-TR-' . str_pad($work->id, 4, '0', STR_PAD_LEFT) }}</span>
-                  <span class="text-brand-accent font-semibold">{{ $work->client_sector ?? 'INDUSTRIAL TIER-1' }}</span>
+                  <span>{{ $work->serial_number }}</span>
+                  <span class="text-brand-accent font-semibold">{{ $work->client_sector }}</span>
                 </div>
                 <h4 class="font-heading font-bold text-sm sm:text-lg text-brand-navy group-hover:text-brand-accent transition tracking-tight leading-snug">{{ $work->work_title }}</h4>
                 <p class="hidden sm:block text-xs text-brand-grayMuted mt-2 leading-relaxed">{{ $work->short_description }}</p>
@@ -308,7 +300,7 @@
     </div>
 
     <!-- 5. Bagian Portfolio (Galeri Proses Manufaktur & Peralatan dengan Tombol Biru Persegi Panjang) -->
-    <section id="services-overview" class="bg-brand-grayBg border-t border-b border-brand-grayBorder relative py-10 lg:py-16"><div class="max-w-7xl mx-auto px-6 lg:px-12"><div class="flex flex-col md:flex-row md:items-end justify-between mb-8 lg:mb-12 gap-4 lg:gap-6"><div class="max-w-2xl"><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3 shadow-sm"><span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>LAYANAN &amp; SPESIALISASI TEKNIK / CAPABILITY DIRECTORY</div><h2 class="font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight mt-1">Layanan &amp; Kapabilitas Rekayasa Industri</h2><p class="text-brand-grayMuted text-sm mt-3 leading-relaxed">Direktori lengkap kapabilitas rekayasa mekanikal, automasi, kelistrikan, dan pengadaan industri terpadu. Klik setiap layanan spesialisasi untuk meninjau dokumentasi proyek pada rekam jejak pekerjaan kami.</p></div><div class="shrink-0"><a href="/works" class="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-brand-navy text-white hover:bg-brand-accent text-xs font-heading font-bold tracking-wider uppercase transition shadow-sm"><span class="">Eksplorasi Semua Services</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8">
+    <section id="services-overview" class="bg-brand-grayBg border-t border-b border-brand-grayBorder relative py-10 lg:py-16"><div class="max-w-7xl mx-auto px-6 lg:px-12"><div class="flex flex-col md:flex-row md:items-end justify-between mb-8 lg:mb-12 gap-4 lg:gap-6"><div class="max-w-2xl"><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3 shadow-sm {{ blank($cms('services_directory_badge')) ? 'invisible' : '' }}"><span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span><x-cms-text :value="$cms('services_directory_badge')" /></div><x-cms-text tag="h2" :value="$cms('services_directory_title')" class="block font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight mt-1" /><x-cms-text tag="p" :value="$cms('services_directory_description')" class="block text-brand-grayMuted text-sm mt-3 leading-relaxed" /></div><div class="shrink-0"><a href="/works" class="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-brand-navy text-white hover:bg-brand-accent text-xs font-heading font-bold tracking-wider uppercase transition shadow-sm"><span class="">Eksplorasi Semua Services</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8">
         @forelse($serviceClusters as $cluster)
           <div class="bg-white rounded-lg border border-brand-grayBorder shadow-industrial hover:shadow-card-hover transition-all duration-300 overflow-hidden flex flex-col">
             <div class="p-4 lg:p-6 bg-slate-50 border-b border-brand-grayBorder flex items-center justify-between gap-3">
@@ -317,9 +309,9 @@
                   @if(!empty($cluster->cluster_icon_svg))
                     {!! $cluster->cluster_icon_svg !!}
                   @elseif(!empty($cluster->cluster_icon))
-                    <span class="material-symbols-outlined text-xl text-blue-300">{{ $cluster->cluster_icon }}</span>
+                    <span aria-hidden="true" class="material-symbols-outlined text-xl text-blue-300">{{ $cluster->cluster_icon }}</span>
                   @else
-                    <span class="material-symbols-outlined text-xl text-blue-300">precision_manufacturing</span>
+                    <span aria-hidden="true" class="material-symbols-outlined text-xl text-blue-300">precision_manufacturing</span>
                   @endif
                 </div>
                 <div>
@@ -337,9 +329,9 @@
                       @if(!empty($svc->service_icon_svg))
                         {!! $svc->service_icon_svg !!}
                       @elseif(!empty($svc->service_icon))
-                        <span class="material-symbols-outlined text-base">{{ $svc->service_icon }}</span>
+                        <span aria-hidden="true" class="material-symbols-outlined text-base">{{ $svc->service_icon }}</span>
                       @else
-                        <span class="material-symbols-outlined text-base">arrow_forward</span>
+                        <span aria-hidden="true" class="material-symbols-outlined text-base">arrow_forward</span>
                       @endif
                     </div>
                     <div>
@@ -363,8 +355,8 @@
     <section id="contact" class="border-t border-brand-grayBorder relative overflow-hidden py-10 lg:py-16 bg-white">
       @php
         $httpsOnly = fn (?string $url, string $fallback): string => \Illuminate\Support\Str::startsWith((string) $url, 'https://') ? $url : $fallback;
-        $mapsButtonUrl = $httpsOnly($globalSettings?->maps_button_url, 'https://maps.google.com/?q=Kawasan+Industri+Jababeka+V+Cikarang');
-        $mapsEmbedUrl = $httpsOnly($globalSettings?->maps_iframe_embed_url, 'https://maps.google.com/maps?q=-6.315024,107.151817&hl=id&z=15&output=embed');
+        $mapsButtonUrl = $httpsOnly($globalSettings?->maps_button_url, '');
+        $mapsEmbedUrl = $httpsOnly($globalSettings?->maps_iframe_embed_url, '');
       @endphp
       
       <!-- GAMBAR 3D RODA GIGI (GEAR) METALIK TAJAM DI SUDUT KANAN BAWAH HALAMAN -->
@@ -373,19 +365,15 @@
       <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-20">
         
         <!-- Grid: Blok Persegi Panjang Tebal Biru Dongker & Area Bersih Mission, Values and Motto -->
-        <div class="text-center max-w-2xl mx-auto mb-12"><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3"><span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>GET IN TOUCH</div><h2 class="font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight">Contact Us</h2><p class="text-brand-grayMuted text-sm mt-3 leading-relaxed">Hubungi tim rekayasa industri kami untuk konsultasi teknis, kemitraan proyek manufaktur, dan permintaan penawaran (RFQ).</p></div><div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch mb-12">
+        <div class="text-center max-w-2xl mx-auto mb-12"><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3 {{ blank($cms('contact_badge')) ? 'invisible' : '' }}"><span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span><x-cms-text :value="$cms('contact_badge')" /></div><x-cms-text tag="h2" :value="$cms('contact_title')" class="block font-heading font-extrabold text-3xl sm:text-4xl text-brand-navy tracking-tight" /><x-cms-text tag="p" :value="$cms('contact_description')" class="block text-brand-grayMuted text-sm mt-3 leading-relaxed" /></div><div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch mb-12">
           
           <!-- Blok Persegi Panjang Tebal dengan Latar Belakang Biru Dongker -->
           <div class="lg:col-span-6 bg-brand-navy text-white rounded-lg p-6 sm:p-10 lg:p-12 shadow-heavy flex flex-col justify-between border-t-4 border-brand-accent relative overflow-hidden">
             <div class="absolute -right-10 -bottom-10 w-44 h-44 bg-brand-steel/20 rounded-full blur-2xl pointer-events-none"></div>
             <div>
-              <span class="text-xs font-heading font-bold text-blue-300 tracking-widest uppercase">Direct Inquiries</span>
-              <h3 class="font-heading font-extrabold text-2xl sm:text-4xl text-white tracking-tight mt-1 mb-6">
-                How Can We Help?
-              </h3>
-              <p class="text-slate-300 text-sm leading-relaxed mb-8">
-                Konsultasikan kebutuhan permesinan, fabrikasi pengelasan bersertifikat, atau proyek integrasi mekanikal Anda dengan tim insinyur senior kami.
-              </p>
+              <x-cms-text :value="$cms('contact_card_label')" class="block text-xs font-heading font-bold text-blue-300 tracking-widest uppercase" />
+              <x-cms-text tag="h3" :value="$cms('contact_card_title')" class="block font-heading font-extrabold text-2xl sm:text-4xl text-white tracking-tight mt-1 mb-6" />
+              <x-cms-text tag="p" :value="$cms('contact_card_text')" class="block text-slate-300 text-sm leading-relaxed mb-8" />
 
               <!-- Detail Nomor Telepon & Alamat -->
               <div class="space-y-5 text-sm">
@@ -425,7 +413,7 @@
           </div>
 
           <!-- Di Samping Blok Biru: Area Bersih untuk Teks "Our Mission, Values and Motto" -->
-          <div class="lg:col-span-6 bg-white rounded-lg p-6 sm:p-10 lg:p-12 border border-brand-grayBorder shadow-sm flex flex-col justify-center"><span class="text-xs font-heading font-bold text-brand-accent tracking-widest uppercase">MEDIA SOSIAL &amp; KOMUNITAS</span><h3 class="font-heading font-extrabold text-2xl sm:text-3xl text-brand-navy tracking-tight mt-1 mb-8">Terhubung di Saluran Resmi</h3><div class="space-y-4">
+          <div class="lg:col-span-6 bg-white rounded-lg p-6 sm:p-10 lg:p-12 border border-brand-grayBorder shadow-sm flex flex-col justify-center"><x-cms-text :value="$cms('social_label')" class="block text-xs font-heading font-bold text-brand-accent tracking-widest uppercase" /><x-cms-text tag="h3" :value="$cms('social_title')" class="block font-heading font-extrabold text-2xl sm:text-3xl text-brand-navy tracking-tight mt-1 mb-8" /><div class="space-y-4">
 @forelse(collect($globalSettings?->social_media ?? [])->sortBy('sort_order') as $social)
 @php
   $socialUrl = $social['profile_url'] ?? '';
@@ -440,7 +428,7 @@
 @elseif($platformIcon === 'youtube')
 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path></svg>
 @else
-<span class="material-symbols-outlined">link</span>
+<span aria-hidden="true" class="material-symbols-outlined">link</span>
 @endif
 </div><div><div class="flex items-center gap-2"><h4 class="font-heading font-bold text-sm text-brand-navy group-hover:text-brand-accent transition">{{ $social['platform_name'] ?? '' }}</h4><span class="text-xs text-slate-400 font-mono">{{ $social['handle'] ?? '' }}</span></div><p class="text-xs text-brand-grayMuted leading-relaxed mt-1">{{ $social['description'] ?? '' }}</p></div></div><a href="{{ $socialUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-heading font-semibold text-brand-navy bg-white border border-slate-200 rounded hover:bg-brand-navy hover:text-white transition shrink-0 group-hover:border-brand-navy">{{ $social['action_text'] ?? 'Lihat' }} <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div>
 @empty
@@ -451,7 +439,7 @@
         </div>
 
         <!-- Deretan Logo-Logo Klien Tepat di Bawah Area Ini Untuk Menutup Halaman -->
-        <div class="border-t border-slate-200 pt-16 bg-brand-grayBg p-8 rounded-xl border"><div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4"><div><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3"><span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>LOKASI KANTOR PUSAT &amp; FASILITAS PABRIK</div><h3 class="font-heading font-extrabold text-2xl sm:text-3xl text-brand-navy tracking-tight">Headquarters &amp; Plant Location</h3><p class="text-brand-grayMuted text-sm mt-1">Akses strategis koridor industri Cikarang dengan integrasi rantai pasok prima.</p></div><a href="{{ $mapsButtonUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded bg-brand-navy text-white hover:bg-slate-900 font-heading font-bold text-xs tracking-wider uppercase shadow-sm transition transform hover:-translate-y-0.5"><svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Buka di Google Maps</a></div><div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch"><div class="lg:col-span-8 rounded-lg overflow-hidden border border-brand-grayBorder shadow-heavy bg-slate-900 relative h-[420px]"><iframe title="Apex Industrial Plant Location Map" class="w-full h-full border-0 grayscale hover:grayscale-0 transition duration-500" src="{{ $mapsEmbedUrl }}" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe><div class="absolute bottom-4 left-4 bg-brand-navy/95 backdrop-blur-md border border-white/15 text-white p-3.5 rounded-lg shadow-heavy flex items-center gap-3 pointer-events-none max-w-sm"><div class="w-8 h-8 rounded bg-brand-accent/20 border border-brand-accent/40 flex items-center justify-center text-blue-400 shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div><div><span class="text-[11px] font-heading font-bold text-blue-300 tracking-wider uppercase block">{{ $globalSettings?->overlay_title }}</span><span class="text-xs text-slate-200 font-medium block">{{ $globalSettings?->overlay_coordinate }}</span></div></div></div><div class="lg:col-span-4 flex flex-col gap-4 justify-start"><div class="bg-white rounded-lg border border-brand-grayBorder p-6 shadow-sm"><div class="flex items-center gap-2 text-brand-navy font-heading font-bold text-sm uppercase tracking-wide mb-3"><svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Alamat Resmi Operasional</div><p class="text-xs text-slate-700 font-medium leading-relaxed mb-4">{{ $globalSettings?->factory_address }}</p><div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs"><span class="text-slate-500">Zona Fasilitas</span><span class="font-mono font-bold text-brand-navy">{{ $globalSettings?->facility_zone }}</span></div></div></div></div></div>
+        <div class="border-t border-slate-200 pt-16 bg-brand-grayBg p-8 rounded-xl border"><div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4"><div><div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-white border border-brand-grayBorder text-brand-navy text-xs font-semibold tracking-wider uppercase mb-3 {{ blank($cms('map_badge')) ? 'invisible' : '' }}"><span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span><x-cms-text :value="$cms('map_badge')" /></div><x-cms-text tag="h3" :value="$cms('map_title')" class="block font-heading font-extrabold text-2xl sm:text-3xl text-brand-navy tracking-tight" /><x-cms-text tag="p" :value="$cms('map_description')" class="block text-brand-grayMuted text-sm mt-1" /></div><a href="{{ $mapsButtonUrl ?: '#' }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded bg-brand-navy text-white hover:bg-slate-900 font-heading font-bold text-xs tracking-wider uppercase shadow-sm transition transform hover:-translate-y-0.5 {{ blank($mapsButtonUrl) ? 'invisible' : '' }}"><svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Buka di Google Maps</a></div><div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch"><div class="lg:col-span-8 rounded-lg overflow-hidden border border-brand-grayBorder shadow-heavy bg-slate-900 relative h-[420px]">@if($mapsEmbedUrl)<iframe title="{{ $globalSettings?->company_name }}" class="w-full h-full border-0 grayscale hover:grayscale-0 transition duration-500" src="{{ $mapsEmbedUrl }}" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>@endif<div class="absolute bottom-4 left-4 bg-brand-navy/95 backdrop-blur-md border border-white/15 text-white p-3.5 rounded-lg shadow-heavy flex items-center gap-3 pointer-events-none max-w-sm"><div class="w-8 h-8 rounded bg-brand-accent/20 border border-brand-accent/40 flex items-center justify-center text-blue-400 shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div><div><span class="text-[11px] font-heading font-bold text-blue-300 tracking-wider uppercase block">{{ $globalSettings?->overlay_title }}</span><span class="text-xs text-slate-200 font-medium block">{{ $globalSettings?->overlay_coordinate }}</span></div></div></div><div class="lg:col-span-4 flex flex-col gap-4 justify-start"><div class="bg-white rounded-lg border border-brand-grayBorder p-6 shadow-sm"><div class="flex items-center gap-2 text-brand-navy font-heading font-bold text-sm uppercase tracking-wide mb-3"><svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Alamat Resmi Operasional</div><p class="text-xs text-slate-700 font-medium leading-relaxed mb-4">{{ $globalSettings?->factory_address }}</p><div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs"><span class="text-slate-500">Zona Fasilitas</span><span class="font-mono font-bold text-brand-navy">{{ $globalSettings?->facility_zone }}</span></div></div></div></div></div>
 
       </div>
     </section>
@@ -459,22 +447,25 @@
   </main>
 
     @php
-    $contactModalOpen = $errors->any() || session('success');
+    $contactModalOpen = $errors->any() || session()->has('success');
   @endphp
   <div aria-labelledby="contact-modal-title" aria-modal="true" class="fixed inset-0 z-[60] items-center justify-center p-4 bg-black/70 backdrop-blur-sm {{ $contactModalOpen ? 'flex' : 'hidden' }}" id="contact-modal" role="dialog">
     <div class="relative w-full max-w-lg max-h-[92vh] overflow-y-auto bg-white rounded-xl shadow-2xl border border-brand-grayBorder p-6 sm:p-8">
       <button aria-label="Tutup" class="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-brand-navy transition" onclick="closeContactModal()" type="button">
-        <span class="material-symbols-outlined">close</span>
+        <span aria-hidden="true" class="material-symbols-outlined">close</span>
       </button>
       <span class="text-xs font-heading font-bold text-brand-accent tracking-widest uppercase">Direct Inquiries</span>
       <h3 class="font-heading font-extrabold text-2xl text-brand-navy tracking-tight mt-1 mb-2" id="contact-modal-title">Kirim Pesan</h3>
       <p class="text-sm text-brand-grayMuted mb-5">Tim kami akan membalas permintaan konsultasi atau penawaran Anda secepatnya.</p>
 
-      @if(session('success'))
+      @if(filled(session('success')))
         <div class="mb-5 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm" role="status">{{ session('success') }}</div>
       @endif
 
-      <form action="{{ route('contact.store') }}" class="space-y-4" method="POST">
+      @php
+        $opensWhatsapp = filled($globalSettings?->whatsappNumber());
+      @endphp
+      <form action="{{ route('contact.store') }}" class="space-y-4" method="POST" @if($opensWhatsapp) target="_blank" data-opens-whatsapp @endif>
         @csrf
         <div aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">
           <label for="contact-website">Website</label>
@@ -536,6 +527,14 @@
     });
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeContactModal();
+    });
+    document.querySelectorAll('#contact-modal form[data-opens-whatsapp]').forEach((form) => {
+      form.addEventListener('submit', () => {
+        setTimeout(() => {
+          form.reset();
+          closeContactModal();
+        }, 300);
+      });
     });
     if (window.location.hash === '#contact-modal' || document.getElementById('contact-modal').classList.contains('flex')) {
       openContactModal();

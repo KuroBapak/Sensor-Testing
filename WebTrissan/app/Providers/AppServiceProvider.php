@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\Service;
-use App\Models\ServiceCluster;
+use App\Support\StructuredData;
+use Illuminate\Contracts\View\View as ViewContract;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,11 +22,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('layouts.navbar', function ($view): void {
-            $view->with([
-                'navServiceCount' => Service::count(),
-                'navClusterCount' => ServiceCluster::count(),
-            ]);
+        View::composer('layouts.seo-head', function (ViewContract $view): void {
+            $view->with('structuredData', StructuredData::json(
+                $view->getData()['globalSettings'] ?? null,
+                request()->route()?->getName(),
+            ));
         });
     }
 }

@@ -67,7 +67,7 @@ test('landing map uses the cms embed and button urls when they are https', funct
         ->assertSee('Overlay Uji');
 });
 
-test('landing map rejects non-https cms urls and falls back to the default map', function () {
+test('landing map rejects non-https cms urls and renders no map instead', function () {
     GlobalSetting::current()->update([
         'maps_button_url' => 'javascript:alert(1)',
         'maps_iframe_embed_url' => 'http://insecure.example.com/embed',
@@ -77,7 +77,7 @@ test('landing map rejects non-https cms urls and falls back to the default map',
         ->assertOk()
         ->assertDontSee('javascript:alert(1)', false)
         ->assertDontSee('insecure.example.com', false)
-        ->assertSee('output=embed', false);
+        ->assertDontSee('<iframe', false);
 });
 
 test('landing about teaser stats come from the global company stats with landing labels', function () {
@@ -121,6 +121,18 @@ test('landing exposes a contact form modal that posts to the contact route', fun
         ->assertDontSee('href="#contact-modal"', false);
 });
 
+test('landing contact form opens in a new tab only when a whatsapp number is configured', function () {
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertDontSee('target="_blank" data-opens-whatsapp', false);
+
+    GlobalSetting::current()->update(['whatsapp_number' => '0812-3456-7890']);
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertSee('target="_blank" data-opens-whatsapp', false);
+});
+
 test('landing contact form lists services as optional interest', function () {
     $response = $this->get(route('home'))->assertOk();
 
@@ -142,17 +154,34 @@ test('landing reopens the contact modal with errors and old input after a failed
         ->assertSee('items-center justify-center p-4 bg-black/70 backdrop-blur-sm flex', false);
 });
 
-test('landing shows the success message after a contact submission', function () {
+test('landing shows the cms success message after a contact submission', function () {
+    $setting = PageSetting::forPage('landing');
+    $setting->update(['extra_data' => [...$setting->extra_data, 'contact_success_message' => 'Pesan uji sudah kami terima.']]);
+
     $this->from(route('home'))
         ->post(route('contact.store'), ['name' => 'Siti Uji', 'email' => 'siti@uji.test', 'message' => 'Mohon penawaran.'])
         ->assertRedirect(route('home'))
-        ->assertSessionHas('success');
+        ->assertSessionHas('success', 'Pesan uji sudah kami terima.');
 
     $this->get(route('home'))
         ->assertOk()
-        ->assertSee('Thank you for contacting us!');
+        ->assertSee('Pesan uji sudah kami terima.');
 
     expect(ContactSubmission::where('email', 'siti@uji.test')->value('status'))->toBe('new');
+});
+
+test('landing opens the contact modal without a message box when the cms success message is empty', function () {
+    $setting = PageSetting::forPage('landing');
+    $setting->update(['extra_data' => [...$setting->extra_data, 'contact_success_message' => null]]);
+
+    $this->from(route('home'))
+        ->post(route('contact.store'), ['name' => 'Siti Uji', 'email' => 'siti@uji.test', 'message' => 'Mohon penawaran.'])
+        ->assertSessionHas('success', '');
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertSee('id="contact-modal"', false)
+        ->assertDontSee('role="status"', false);
 });
 
 test('landing keeps the contact modal closed on a normal visit', function () {

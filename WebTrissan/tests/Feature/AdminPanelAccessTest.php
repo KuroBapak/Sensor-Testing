@@ -70,7 +70,7 @@ test('admin can edit the about page seo from page settings', function () {
 
     Livewire\Livewire::actingAs($admin)
         ->test(ManagePageSettings::class)
-        ->assertFormSet(['about.seo_title' => 'Tentang Kami | PT Apex Industrial Engineering'])
+        ->assertFormSet(['about.seo_title' => 'Tentang Kami | PT. Trissan'])
         ->set('data.about.seo_title', 'Profil Perusahaan Baru')
         ->call('save')
         ->assertHasNoErrors();

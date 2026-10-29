@@ -32,6 +32,8 @@ function countQueriesFor(string $routeName): int
 }
 
 test('public pages issue the same number of queries regardless of how many records exist', function (string $routeName) {
+    ProductCertification::first()->update(['work_id' => Work::first()->id]);
+
     countQueriesFor($routeName); // warm up so one-off queries do not skew the comparison
     $before = countQueriesFor($routeName);
 

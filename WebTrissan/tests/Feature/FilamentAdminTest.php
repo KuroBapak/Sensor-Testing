@@ -1,6 +1,8 @@
 <?php
 
+use App\Filament\Pages\ManageGlobalSettings;
 use App\Filament\Pages\ManagePageSettings;
+use App\Models\GlobalSetting;
 use App\Models\PageSetting;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
@@ -10,6 +12,19 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->seed(DatabaseSeeder::class);
+});
+
+test('admin can set the whatsapp number through the global settings form', function () {
+    $admin = User::factory()->create(['email' => 'admin_whatsapp@example.com']);
+
+    Livewire\Livewire::actingAs($admin)
+        ->test(ManageGlobalSettings::class)
+        ->assertSuccessful()
+        ->set('data.whatsapp_number', '+62 812-3456-7890')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect(GlobalSetting::current()->whatsappNumber())->toBe('6281234567890');
 });
 
 test('unauthenticated users are redirected from filament admin dashboard to login', function () {

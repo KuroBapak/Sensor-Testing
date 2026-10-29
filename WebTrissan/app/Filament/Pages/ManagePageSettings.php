@@ -172,6 +172,39 @@ class ManagePageSettings extends Page implements HasForms
                             ->placeholder('/about'),
                     ])
                     ->columns(2),
+
+                Section::make('Featured Works Heading')
+                    ->description('Leave a field empty to show no text there; the spacing of the section is kept.')
+                    ->schema($this->headingFields('featured_works')),
+
+                Section::make('Services Directory Heading')
+                    ->description('Leave a field empty to show no text there; the spacing of the section is kept.')
+                    ->schema($this->headingFields('services_directory')),
+
+                Section::make('Contact Section Heading')
+                    ->description('Leave a field empty to show no text there; the spacing of the section is kept.')
+                    ->schema($this->headingFields('contact')),
+
+                Section::make('Contact Card (blue card)')
+                    ->description('Leave a field empty to show no text there; the spacing of the section is kept.')
+                    ->schema($this->headingFields('contact_card', ['label', 'title', 'text'])),
+
+                Section::make('Social Media Heading')
+                    ->description('Leave a field empty to show no text there; the spacing of the section is kept.')
+                    ->schema($this->headingFields('social', ['label', 'title'])),
+
+                Section::make('Map Heading')
+                    ->description('Leave a field empty to show no text there; the spacing of the section is kept.')
+                    ->schema($this->headingFields('map')),
+
+                Section::make('Contact Form Confirmation')
+                    ->description('Shown after a visitor sends the contact form. Leave empty to show no confirmation text.')
+                    ->schema([
+                        Textarea::make('extra_data.contact_success_message')
+                            ->label('Success message')
+                            ->rows(2)
+                            ->maxLength(255),
+                    ]),
             ]);
     }
 
@@ -243,7 +276,7 @@ class ManagePageSettings extends Page implements HasForms
                             ->required()
                             ->maxLength(255),
                         TextInput::make('registry_revision_tag')
-                            ->placeholder('e.g. APEX REGISTRY: REV-2024.Q2-ACTIVE')
+                            ->placeholder('e.g. TRISSAN REGISTRY: REV-2024.Q2-ACTIVE')
                             ->maxLength(255),
                         Textarea::make('hero_subtitle')
                             ->label('Hero Description')
@@ -274,6 +307,14 @@ class ManagePageSettings extends Page implements HasForms
                             ->maxItems(5)
                             ->columnSpanFull(),
                     ]),
+
+                Section::make('Work Catalog Heading')
+                    ->description('Leave a field empty to show no text there; the spacing of the section is kept.')
+                    ->schema($this->headingFields('catalog')),
+
+                Section::make('Personnel Directory Heading')
+                    ->description('Leave a field empty to show no text there; the spacing of the section is kept.')
+                    ->schema($this->headingFields('personnel', ['badge'])),
             ]);
     }
 
@@ -364,6 +405,14 @@ class ManagePageSettings extends Page implements HasForms
                             ->maxItems(4)
                             ->columnSpanFull(),
                     ]),
+
+                Section::make('Corporate Accreditation Heading')
+                    ->description('Leave a field empty to show no text there; the spacing of the section is kept.')
+                    ->schema($this->headingFields('corporate')),
+
+                Section::make('Product Certification Heading')
+                    ->description('Leave a field empty to show no text there; the spacing of the section is kept.')
+                    ->schema($this->headingFields('product')),
             ]);
     }
 
@@ -380,7 +429,44 @@ class ManagePageSettings extends Page implements HasForms
                         Textarea::make('seo_description')
                             ->rows(3),
                     ]),
+
+                Section::make('Vision, Mission & Values Heading')
+                    ->description('Leave a field empty to show no text there; the spacing of the section is kept.')
+                    ->schema($this->headingFields('values', ['badge', 'subtitle'])),
+
+                Section::make('Facilities Heading')
+                    ->description('Leave a field empty to show no text there; the spacing of the section is kept.')
+                    ->schema($this->headingFields('facilities')),
+
+                Section::make('Milestones Heading')
+                    ->description('Leave a field empty to show no text there; the spacing of the section is kept.')
+                    ->schema($this->headingFields('milestones')),
+
+                Section::make('Organization Structure Heading')
+                    ->description('Leave a field empty to show no text there; the spacing of the section is kept.')
+                    ->schema($this->headingFields('structure')),
             ]);
+    }
+
+    /**
+     * Text fields for a section heading stored in `extra_data` as `{prefix}_{part}`.
+     *
+     * @param  array<int, string>  $parts
+     * @return array<int, TextInput|Textarea>
+     */
+    protected function headingFields(string $prefix, array $parts = ['badge', 'title', 'description']): array
+    {
+        return array_map(function (string $part) use ($prefix): TextInput|Textarea {
+            $name = "extra_data.{$prefix}_{$part}";
+            $label = match ($part) {
+                'text' => 'Paragraph',
+                default => ucfirst($part),
+            };
+
+            return in_array($part, ['description', 'text'], true)
+                ? Textarea::make($name)->label($label)->rows(2)->columnSpanFull()
+                : TextInput::make($name)->label($label)->maxLength(255);
+        }, $parts);
     }
 
     public function save(): void

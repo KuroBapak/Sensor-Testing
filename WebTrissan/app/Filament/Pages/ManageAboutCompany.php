@@ -3,8 +3,10 @@
 namespace App\Filament\Pages;
 
 use App\Models\AboutCompany;
+use App\Support\OrgChart;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -14,8 +16,10 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Illuminate\Support\Str;
 
 class ManageAboutCompany extends Page implements HasForms
 {
@@ -206,40 +210,63 @@ class ManageAboutCompany extends Page implements HasForms
     protected function getOrgChartSection(): Section
     {
         return Section::make('Organization Structure')
-            ->description('Executive leadership and engineering division heads.')
+            ->description('Everyone in the organization chart. Choose who each person reports to; leave "Reports to" empty for the top of the chart.')
             ->schema([
                 TextInput::make('org_chart.chart_revision_tag')
                     ->label('Revision Tag')
                     ->required(),
 
-                Section::make('Chief Executive Officer')
+                Repeater::make('org_chart.nodes')
+                    ->label('People')
+                    ->itemLabel(fn (array $state): ?string => filled($state['name'] ?? null)
+                        ? $state['name'].(filled($state['position'] ?? null) ? ' - '.$state['position'] : '')
+                        : null)
+                    ->collapsible()
+                    ->collapsed()
                     ->schema([
-                        TextInput::make('org_chart.ceo.name')->label('Name')->required(),
-                        TextInput::make('org_chart.ceo.position')->label('Position')->required(),
-                        TextInput::make('org_chart.ceo.experience_tag')->label('Experience Tag'),
-                        FileUpload::make('org_chart.ceo.photo')->disk('public')->image()->directory('team'),
-                    ])->columns(2),
-
-                Section::make('General Manager / COO')
-                    ->schema([
-                        TextInput::make('org_chart.general_manager.name')->label('Name')->required(),
-                        TextInput::make('org_chart.general_manager.position')->label('Position')->required(),
-                    ])->columns(2),
-
-                Repeater::make('org_chart.division_heads')
-                    ->label('Engineering Division Heads')
-                    ->schema([
-                        TextInput::make('division_tag')->required(),
-                        TextInput::make('head_name')->required(),
-                        TextInput::make('head_position')->required(),
-                        TextInput::make('sort_order')->numeric()->default(0),
-                        Repeater::make('teams')
-                            ->simple(TextInput::make('team_name')->required())
-                            ->columnSpanFull(),
+                        Hidden::make('id')->default(fn (): string => (string) Str::uuid()),
+                        TextInput::make('name')->required()->live(onBlur: true),
+                        TextInput::make('position')->required(),
+                        Select::make('parent_id')
+                            ->label('Reports to')
+                            ->placeholder('Nobody (top of the chart)')
+                            ->options(fn (Get $get): array => $this->orgChartParentOptions($get('../../nodes') ?? [], $get('id'))),
+                        Select::make('placement')
+                            ->label('Shown')
+                            ->options([
+                                OrgChart::PLACEMENT_BELOW => 'Below the person they report to',
+                                OrgChart::PLACEMENT_SIDE => 'Beside the person they report to (staff function)',
+                            ])
+                            ->default(OrgChart::PLACEMENT_BELOW)
+                            ->required()
+                            ->helperText('People shown beside someone cannot have anyone reporting to them.'),
+                        TextInput::make('sort_order')
+                            ->label('Order')
+                            ->numeric()
+                            ->default(0)
+                            ->helperText('Lower numbers appear first among people with the same manager.'),
+                        FileUpload::make('photo')->disk('public')->image()->directory('team'),
                     ])
                     ->columns(2)
                     ->columnSpanFull(),
             ]);
+    }
+
+    /**
+     * People a node can report to: everyone else who has a name and is not shown beside their own manager.
+     *
+     * @param  array<string, array<string, mixed>>  $nodes
+     * @return array<string, string>
+     */
+    private function orgChartParentOptions(array $nodes, ?string $currentId): array
+    {
+        return collect($nodes)
+            ->filter(fn (array $node): bool => filled($node['id'] ?? null)
+                && filled($node['name'] ?? null)
+                && $node['id'] !== $currentId
+                && ($node['placement'] ?? OrgChart::PLACEMENT_BELOW) !== OrgChart::PLACEMENT_SIDE)
+            ->mapWithKeys(fn (array $node): array => [$node['id'] => $node['name']])
+            ->all();
     }
 
     public function save(): void

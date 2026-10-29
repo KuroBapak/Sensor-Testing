@@ -1,7 +1,9 @@
 <!DOCTYPE html><html lang="id" style=""><head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>{{ $pageSettings?->seo_title ?? 'About Us — PT Apex Industrial Engineering' }}</title>
+@php $seoTitle = $pageSettings?->seo_title ?? $globalSettings?->company_name ?? config('app.name'); @endphp
+<title>{{ $seoTitle }}</title>
+@include('layouts.seo-head', ['seoTitle' => $seoTitle, 'seoDescription' => $pageSettings?->seo_description])
 @if(!empty($pageSettings?->seo_description))
 <meta name="description" content="{{ $pageSettings->seo_description }}">
 @endif
@@ -9,6 +11,7 @@
 <link href="https://fonts.googleapis.com" rel="preconnect">
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
 <script>
     tailwind.config = {
       theme: {
@@ -49,6 +52,7 @@
 @include('layouts.scale')
 </head>
 <body class="bg-[#f8f9ff] min-h-screen antialiased text-slate-800 selection:bg-blue-600 selection:text-white">
+@php $cms = fn (string $key): string => (string) $pageSettings?->extra($key); @endphp
 @include('layouts.navbar')
 <!-- Top Hero / Header Section: Clean & Spacious Architectural Layout -->
 <header id="about-hero" class="bg-gradient-to-b from-[#0d2137] via-[#091829] to-[#071321] text-white py-4 md:py-12 px-4 md:px-8 relative overflow-hidden" style="background: linear-gradient(rgb(13, 33, 55) 0%, rgb(9, 24, 41) 50%, rgb(7, 19, 33) calc(100% - 150px), rgb(248, 249, 255) calc(100% - 150px), rgb(248, 249, 255) 100%);">
@@ -56,19 +60,19 @@
   <div class="absolute bottom-10 -left-20 w-[450px] h-[450px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
   <div class="max-w-7xl mx-auto relative z-10">
     <!-- Main Hero Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center mb-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start mb-6">
       <!-- Left Column -->
-      <div class="lg:col-span-6 flex flex-col justify-center"><nav class="flex items-center gap-2 text-xs font-medium text-slate-300 mb-3 md:mb-6" aria-label="Breadcrumb"><a href="{{ url('/') }}" class="flex items-center gap-1.5 hover:text-white transition-colors"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg><span class="">Beranda</span></a><span class="text-slate-400">/</span><span class="text-white font-semibold">About Us</span></nav><div class="inline-flex items-center gap-2 px-2.5 py-1 md:px-3 rounded bg-blue-500/10 border border-blue-400/20 text-blue-300 font-mono text-[11px] md:text-xs font-semibold tracking-wider uppercase mb-3 md:mb-6 w-fit">{{ $aboutCompany->hero_badge }}</div><h1 class="text-xl sm:text-3xl md:text-5xl font-extrabold font-heading tracking-tight text-white leading-tight uppercase mb-3 md:mb-7">{{ $aboutCompany->hero_title }}</h1><div class="space-y-2 md:space-y-4 text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed mb-4 md:mb-10 max-w-xl font-normal">@foreach($aboutCompany->hero_paragraphs as $paragraph)<p class="{{ $loop->first ? '' : 'text-slate-400 text-xs sm:text-sm' }}">{{ $paragraph }}</p>@endforeach</div><div class="flex flex-wrap items-center gap-4">@if($aboutCompany->company_profile_pdf_url)<a class="inline-flex items-center gap-2.5 px-5 py-2.5 md:px-6 md:py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-mono font-bold uppercase tracking-wider transition-all duration-200 shadow-lg shadow-blue-900/30 hover:-translate-y-0.5 flex-shrink-0" download href="{{ $aboutCompany->company_profile_pdf_url }}"><span class="">Unduh Company Profile (PDF)</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>@endif</div></div>
+      <div class="lg:col-span-6 flex flex-col justify-center lg:pt-20"><nav class="flex items-center gap-2 text-xs font-medium text-slate-300 mb-3 md:mb-6" aria-label="Breadcrumb"><a href="{{ url('/') }}" class="flex items-center gap-1.5 hover:text-white transition-colors"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg><span class="">Beranda</span></a><span class="text-slate-400">/</span><span class="text-white font-semibold">About Us</span></nav><div class="inline-flex items-center gap-2 px-2.5 py-1 md:px-3 rounded bg-blue-500/10 border border-blue-400/20 text-blue-300 font-mono text-[11px] md:text-xs font-semibold tracking-wider uppercase mb-3 md:mb-6 w-fit">{{ $aboutCompany->hero_badge }}</div><h1 class="text-xl sm:text-3xl md:text-5xl font-extrabold font-heading tracking-tight text-white leading-tight uppercase mb-3 md:mb-7">{{ $aboutCompany->hero_title }}</h1><div class="space-y-2 md:space-y-4 text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed mb-4 md:mb-10 max-w-xl font-normal">@foreach($aboutCompany->hero_paragraphs as $paragraph)<p class="{{ $loop->first ? '' : 'text-slate-400 text-xs sm:text-sm' }}">{{ $paragraph }}</p>@endforeach</div><div class="flex flex-wrap items-center gap-4">@if($aboutCompany->company_profile_pdf_url)<a class="inline-flex items-center gap-2.5 px-5 py-2.5 md:px-6 md:py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-mono font-bold uppercase tracking-wider transition-all duration-200 shadow-lg shadow-blue-900/30 hover:-translate-y-0.5 flex-shrink-0" download href="{{ $aboutCompany->company_profile_pdf_url }}"><span class="">Unduh Company Profile (PDF)</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>@endif</div></div>
       <!-- Right Column -->
-      <div class="lg:col-span-6 relative pt-6"><div class="relative rounded-2xl p-1.5 md:p-2 bg-gradient-to-b from-slate-700/40 via-slate-800/20 to-slate-800/60 border border-slate-700/70 shadow-2xl backdrop-blur-sm"><div class="relative rounded-xl overflow-hidden aspect-[16/10] bg-slate-900">@if($aboutCompany->hero_image_url)<img alt="{{ $aboutCompany->hero_title }}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" src="{{ $aboutCompany->hero_image_url }}">@else<div class="w-full h-full flex items-center justify-center text-slate-600"><span class="material-symbols-outlined text-7xl">precision_manufacturing</span></div>@endif<div class="absolute inset-0 bg-gradient-to-t from-[#071321]/90 via-transparent to-black/20 pointer-events-none"></div><div class="absolute top-3 left-3 md:top-4 md:left-4 z-10"><span class="inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-md bg-[#0d2137]/90 backdrop-blur-md border border-slate-600/60 text-white font-mono text-[10px] md:text-[11px] font-medium tracking-wide"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> {{ $aboutCompany->image_overlay['plant_badge'] ?? '' }}</span></div><div class="absolute bottom-3 left-3 right-3 md:bottom-4 md:left-4 md:right-4 z-10 flex flex-wrap items-center justify-between gap-2 md:gap-3 p-2.5 md:p-3.5 rounded-lg bg-[#071321]/90 backdrop-blur-md border border-slate-700/80"><div><div class="text-[11px] md:text-xs font-bold font-heading text-white tracking-wide">{{ $aboutCompany->image_overlay['caption_title'] ?? '' }}</div><div class="text-[10px] md:text-[11px] font-mono text-slate-400 mt-0.5">{{ $aboutCompany->image_overlay['caption_subtitle'] ?? '' }}</div></div><div class="inline-flex items-center gap-2 px-2 py-0.5 md:px-2.5 md:py-1 rounded bg-blue-600/30 border border-blue-400/40 text-blue-300 font-mono text-[10px] font-bold">{{ $aboutCompany->image_overlay['tolerance_chip'] ?? '' }}</div></div></div></div><div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mt-3 md:mt-4">@foreach(($globalSettings->company_stats ?? []) as $stat)<div class="p-2.5 md:p-3.5 rounded-xl bg-slate-900/60 border border-slate-700/70 backdrop-blur-md"><div class="text-lg md:text-xl font-extrabold font-heading {{ $loop->odd ? 'text-blue-400' : 'text-white' }} tracking-tight leading-tight">{{ $stat['value'] ?? '' }}</div><div class="text-[10px] md:text-[11px] text-slate-300 font-mono uppercase tracking-wider font-medium mt-0.5 md:mt-1">{{ $stat['label_about'] ?? ($stat['label_landing'] ?? '') }}</div></div>@endforeach</div><div class="w-full flex justify-center items-center mt-3 md:mt-4">@if($aboutCompany->partners_image_url)<img src="{{ $aboutCompany->partners_image_url }}" alt="Our Partners" class="w-full max-w-[280px] sm:max-w-xs md:max-w-md h-auto object-contain rounded-xl transition-transform duration-500 hover:scale-105 shadow-sm mx-auto">@endif</div></div>
+      <div class="lg:col-span-6 relative pt-6"><div class="relative rounded-2xl p-1.5 md:p-2 bg-gradient-to-b from-slate-700/40 via-slate-800/20 to-slate-800/60 border border-slate-700/70 shadow-2xl backdrop-blur-sm"><div class="relative rounded-xl overflow-hidden aspect-[16/10] bg-slate-900">@if($aboutCompany->hero_image_url)<img alt="{{ $aboutCompany->hero_title }}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" src="{{ $aboutCompany->hero_image_url }}">@else<div class="w-full h-full flex items-center justify-center text-slate-600"><span aria-hidden="true" class="material-symbols-outlined text-7xl">precision_manufacturing</span></div>@endif<div class="absolute inset-0 bg-gradient-to-t from-[#071321]/90 via-transparent to-black/20 pointer-events-none"></div><div class="absolute top-3 left-3 md:top-4 md:left-4 z-10"><span class="inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-md bg-[#0d2137]/90 backdrop-blur-md border border-slate-600/60 text-white font-mono text-[10px] md:text-[11px] font-medium tracking-wide"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> {{ $aboutCompany->image_overlay['plant_badge'] ?? '' }}</span></div><div class="absolute bottom-3 left-3 right-3 md:bottom-4 md:left-4 md:right-4 z-10 flex flex-wrap items-center justify-between gap-2 md:gap-3 p-2.5 md:p-3.5 rounded-lg bg-[#071321]/90 backdrop-blur-md border border-slate-700/80"><div><div class="text-[11px] md:text-xs font-bold font-heading text-white tracking-wide">{{ $aboutCompany->image_overlay['caption_title'] ?? '' }}</div><div class="text-[10px] md:text-[11px] font-mono text-slate-400 mt-0.5">{{ $aboutCompany->image_overlay['caption_subtitle'] ?? '' }}</div></div><div class="inline-flex items-center gap-2 px-2 py-0.5 md:px-2.5 md:py-1 rounded bg-blue-600/30 border border-blue-400/40 text-blue-300 font-mono text-[10px] font-bold">{{ $aboutCompany->image_overlay['tolerance_chip'] ?? '' }}</div></div></div></div><div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mt-3 md:mt-4">@foreach(($globalSettings->company_stats ?? []) as $stat)<div class="p-2.5 md:p-3.5 rounded-xl bg-slate-900/60 border border-slate-700/70 backdrop-blur-md"><div class="text-lg md:text-xl font-extrabold font-heading {{ $loop->odd ? 'text-blue-400' : 'text-white' }} tracking-tight leading-tight">{{ $stat['value'] ?? '' }}</div><div class="text-[10px] md:text-[11px] text-slate-300 font-mono uppercase tracking-wider font-medium mt-0.5 md:mt-1">{{ $stat['label_about'] ?? ($stat['label_landing'] ?? '') }}</div></div>@endforeach</div><div class="w-full flex justify-center items-center mt-3 md:mt-4">@if($aboutCompany->partners_image_url)<img src="{{ $aboutCompany->partners_image_url }}" alt="Logo klien perusahaan" class="w-full max-w-[280px] sm:max-w-xs md:max-w-md h-auto object-contain rounded-xl transition-transform duration-500 hover:scale-105 shadow-sm mx-auto">@endif</div></div>
     </div>
     <!-- Clean Integrated Visi & Misi Section without redundant wrappers -->
     <div class="border-t border-slate-800/60 pt-4">
       <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-        <div class="inline-flex items-center gap-2.5 px-3 py-1.5 rounded bg-blue-500/10 border border-blue-400/30 text-blue-300 font-mono text-xs font-semibold uppercase tracking-wider">
-          <span class="w-2 h-2 rounded-full bg-blue-400"></span> Fondasi Korporasi &amp; Integritas Rekayasa
+        <div class="inline-flex items-center gap-2.5 px-3 py-1.5 rounded bg-blue-500/10 border border-blue-400/30 text-blue-300 font-mono text-xs font-semibold uppercase tracking-wider {{ blank($cms('values_badge')) ? 'invisible' : '' }}">
+          <span class="w-2 h-2 rounded-full bg-blue-400"></span> <x-cms-text :value="$cms('values_badge')" />
         </div>
-        <span class="text-xs font-mono text-slate-400 font-medium">Prinsip Kepatuhan &amp; Standar Mutu Berkelanjutan</span>
+        <x-cms-text :value="$cms('values_subtitle')" class="text-xs font-mono text-slate-400 font-medium" />
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
 @foreach($aboutCompany->vision_mission_values ?? [] as $card)
@@ -124,18 +128,14 @@
 <div class="max-w-7xl mx-auto">
 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12">
 <div>
-<div class="inline-flex items-center gap-2.5 px-3 py-1 rounded bg-white border border-slate-200 text-brand-navy font-mono text-xs font-semibold uppercase tracking-wider mb-4">
+<div class="inline-flex items-center gap-2.5 px-3 py-1 rounded bg-white border border-slate-200 text-brand-navy font-mono text-xs font-semibold uppercase tracking-wider mb-4 {{ blank($cms('facilities_badge')) ? 'invisible' : '' }}">
 <span class="w-2 h-2 bg-brand-navy rounded-sm"></span>
-            Infrastruktur &amp; Galeri Pabrik
-          </div>
-<h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy font-heading tracking-tight leading-tight">
-            Fasilitas Manufaktur &amp; Laboratorium Uji
-          </h2>
-<p class="text-slate-600 text-sm md:text-base mt-2 max-w-2xl">
-            Workshop terpadu seluas 12.000 m² berstandar industri dirgantara di Kawasan Industri Jababeka V Cikarang.
-          </p>
+<x-cms-text :value="$cms('facilities_badge')" />
 </div>
-<div class="flex items-center gap-3"><span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 font-mono text-xs font-semibold"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 100% Operational Capacity</span><div class="flex items-center gap-1.5"><button type="button" onclick="document.getElementById('facility-carousel').scrollBy({left: -380, behavior: 'smooth'})" aria-label="Previous Facility" class="w-8 h-8 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 text-slate-700 flex items-center justify-center transition-all shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button><button type="button" onclick="document.getElementById('facility-carousel').scrollBy({left: 380, behavior: 'smooth'})" aria-label="Next Facility" class="w-8 h-8 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 text-slate-700 flex items-center justify-center transition-all shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button></div></div>
+<x-cms-text tag="h2" :value="$cms('facilities_title')" class="block text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy font-heading tracking-tight leading-tight" />
+<x-cms-text tag="p" :value="$cms('facilities_description')" class="block text-slate-600 text-sm md:text-base mt-2 max-w-2xl" />
+</div>
+<div class="flex items-center gap-3"><div class="flex items-center gap-1.5"><button type="button" onclick="document.getElementById('facility-carousel').scrollBy({left: -380, behavior: 'smooth'})" aria-label="Previous Facility" class="w-8 h-8 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 text-slate-700 flex items-center justify-center transition-all shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button><button type="button" onclick="document.getElementById('facility-carousel').scrollBy({left: 380, behavior: 'smooth'})" aria-label="Next Facility" class="w-8 h-8 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 text-slate-700 flex items-center justify-center transition-all shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button></div></div>
 </div>
 <div id="facility-carousel" class="flex overflow-x-auto snap-x snap-mandatory md:grid gap-4 md:gap-6 pb-3 md:grid-cols-3 pb-12">
 @foreach(collect($aboutCompany->facilities ?? [])->sortBy('sort_order') as $facility)
@@ -147,7 +147,7 @@
 @if($facilityImage)
 <img alt="{{ $facility['facility_title'] ?? '' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" src="{{ $facilityImage }}">
 @else
-<div class="w-full h-full flex items-center justify-center text-slate-600"><span class="material-symbols-outlined text-6xl">factory</span></div>
+<div class="w-full h-full flex items-center justify-center text-slate-600"><span aria-hidden="true" class="material-symbols-outlined text-6xl">factory</span></div>
 @endif
 <span class="absolute top-2.5 left-2.5 md:top-3.5 md:left-3.5 bg-brand-navy/90 backdrop-blur-sm text-white font-mono text-[9px] md:text-[10px] px-2 py-0.5 md:px-2.5 md:py-1 rounded font-semibold tracking-wide border border-slate-700">{{ $facility['facility_tag'] ?? '' }}</span>
 </div>
@@ -171,16 +171,12 @@
 <section class="py-8 md:py-14 px-4 md:px-8 lg:px-12 bg-white border-b border-slate-200">
 <div class="max-w-5xl mx-auto">
 <div class="text-center max-w-2xl mx-auto mb-16">
-<div class="inline-flex items-center gap-2.5 px-3 py-1 rounded bg-slate-100 border border-slate-200 text-brand-navy font-mono text-xs font-semibold uppercase tracking-wider mb-4">
+<div class="inline-flex items-center gap-2.5 px-3 py-1 rounded bg-slate-100 border border-slate-200 text-brand-navy font-mono text-xs font-semibold uppercase tracking-wider mb-4 {{ blank($cms('milestones_badge')) ? 'invisible' : '' }}">
 <span class="w-2 h-2 bg-brand-navy rounded-sm"></span>
-          Perjalanan Sejarah
-        </div>
-<h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy font-heading tracking-tight leading-tight">
-          Milestone Perkembangan &amp; Rekayasa Presisi
-        </h2>
-<p class="text-slate-600 text-sm md:text-base mt-3 leading-relaxed">
-          Transformasi konsisten lebih dari seperempat abad dari workshop mekanikal menjadi manufaktur kedirgantaraan modern.
-        </p>
+<x-cms-text :value="$cms('milestones_badge')" />
+</div>
+<x-cms-text tag="h2" :value="$cms('milestones_title')" class="block text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy font-heading tracking-tight leading-tight" />
+<x-cms-text tag="p" :value="$cms('milestones_description')" class="block text-slate-600 text-sm md:text-base mt-3 leading-relaxed" />
 </div>
 <!-- Clean Minimal Timeline with generous vertical breathing room -->
 <div class="relative pl-6 md:pl-0">
@@ -217,79 +213,81 @@
 <div class="max-w-7xl mx-auto">
 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12">
 <div>
-<div class="inline-flex items-center gap-2.5 px-3 py-1 rounded bg-white border border-slate-200 text-brand-navy font-mono text-xs font-semibold uppercase tracking-wider mb-4">
+<div class="inline-flex items-center gap-2.5 px-3 py-1 rounded bg-white border border-slate-200 text-brand-navy font-mono text-xs font-semibold uppercase tracking-wider mb-4 {{ blank($cms('structure_badge')) ? 'invisible' : '' }}">
 <span class="w-2 h-2 bg-brand-navy rounded-sm"></span>
-            Tata Kelola &amp; Kepemimpinan
-          </div>
-<h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy font-heading tracking-tight leading-tight">
-            Bagan Struktur Organisasi Perusahaan
-          </h2>
-<p class="text-slate-600 text-sm md:text-base mt-2 max-w-2xl">
-            Struktur kepemimpinan teknis dan manajemen yang akuntabel, terintegrasi, dan berorientasi presisi tinggi.
-          </p>
+<x-cms-text :value="$cms('structure_badge')" />
+</div>
+<x-cms-text tag="h2" :value="$cms('structure_title')" class="block text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy font-heading tracking-tight leading-tight" />
+<x-cms-text tag="p" :value="$cms('structure_description')" class="block text-slate-600 text-sm md:text-base mt-2 max-w-2xl" />
 </div>
 <div class="text-xs font-mono text-slate-500 bg-white px-3.5 py-1.5 rounded-lg border border-slate-200 w-fit">
           Dokumen Resmi: <strong class="text-slate-800">{{ $aboutCompany->org_chart['chart_revision_tag'] ?? '-' }}</strong>
 </div>
 </div>
-<!-- Org Tree Diagram Container: Spacious, no colliding lines -->
-<div class="bg-white p-8 md:p-14 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto pb-12">
-<div class="min-w-[860px] flex flex-col items-center">
-@php
-  $orgChart = $aboutCompany->org_chart ?? [];
-  $ceo = $orgChart['ceo'] ?? null;
-  $generalManager = $orgChart['general_manager'] ?? null;
-  $divisions = collect($orgChart['division_heads'] ?? [])->sortBy('sort_order')->take(4)->values();
-  $ceoPhoto = \App\Support\MediaUrl::resolve($ceo['photo'] ?? null);
-@endphp
-@if(!empty($ceo['name']))
-<div class="flex flex-col items-center">
-<div class="w-72 p-4 bg-[#0d2137] text-white rounded-xl shadow-lg border border-slate-700 text-center"><div class="flex flex-col items-center text-center"><div class="relative mb-2.5">
-@if($ceoPhoto)
-<img alt="{{ $ceo['name'] }}" class="w-14 h-14 rounded-full object-cover border-2 border-blue-400 shadow-md" src="{{ $ceoPhoto }}">
-@else
-<div class="w-14 h-14 rounded-full border-2 border-blue-400 shadow-md bg-slate-800 flex items-center justify-center text-blue-300"><span class="material-symbols-outlined text-3xl">person</span></div>
-@endif
-<span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[#0d2137]"></span></div><h4 class="font-bold text-sm sm:text-base text-white font-heading leading-tight tracking-tight">{{ $ceo['name'] }}</h4><p class="text-xs font-mono text-blue-300 font-semibold tracking-wider uppercase mt-1">{{ $ceo['position'] ?? '' }}</p>
-@if(!empty($ceo['experience_tag']))
-<div class="w-full mt-3 pt-2.5 border-t border-slate-700/80"><span class="inline-block px-2.5 py-1 rounded bg-blue-500/10 border border-blue-400/20 text-[10px] font-mono text-slate-300 tracking-wide">{{ $ceo['experience_tag'] }}</span></div>
-@endif
-</div></div>
-<div class="w-0.5 h-10 bg-slate-300"></div>
-</div>
-@endif
-@if(!empty($generalManager['name']))
-<div class="flex flex-col items-center">
-<div class="w-72 p-4 bg-slate-900 text-white rounded-xl shadow border border-slate-700 text-center">
-<div class="font-bold text-xs sm:text-sm text-white font-heading">{{ $generalManager['name'] }}</div>
-<div class="text-[11px] font-mono text-blue-400 mt-0.5">{{ $generalManager['position'] ?? '' }}</div>
-</div>
-<div class="w-0.5 h-10 bg-slate-300"></div>
-</div>
-@endif
-@if($divisions->isNotEmpty())
-<div class="w-full max-w-5xl relative">
-<div class="h-0.5 bg-slate-300 absolute top-0 left-12 right-12"></div>
-<div class="grid grid-cols-4 gap-6 pt-8">
-@foreach($divisions as $division)
-<div class="flex flex-col items-center text-center">
-<div class="w-0.5 h-8 bg-slate-300 -mt-8"></div>
-<div class="w-full p-5 bg-[#f8f9ff] border border-slate-200 rounded-xl hover:border-blue-400 hover:shadow-md transition-all shadow-sm">
-<span class="inline-block px-2.5 py-0.5 rounded bg-blue-100 text-blue-800 font-mono text-[10px] font-bold uppercase mb-2">{{ $division['division_tag'] ?? '' }}</span>
-<div class="font-bold text-xs sm:text-sm text-brand-navy font-heading">{{ $division['head_name'] ?? '' }}</div>
-<div class="text-[11px] text-slate-500 font-medium mb-3">{{ $division['head_position'] ?? '' }}</div>
-<div class="pt-3 border-t border-slate-200 text-[11px] text-slate-600 space-y-1.5 text-left font-mono">
-@foreach(array_slice((array) ($division['teams'] ?? []), 0, 3) as $team)
-<div class="">• {{ $team }}</div>
+<!-- Org Tree Diagram: nested levels joined by connector lines, built from the CMS organization nodes -->
+@php $orgTree = $aboutCompany->org_tree; @endphp
+@if(count($orgTree) > 0)
+<style>
+#org-chart{--org-line:#1e4e8c;--org-fill:#0b57d0;--org-border:#08306b}
+#org-chart .org-tree{display:table;margin:0 auto;padding:4px 8px}
+#org-chart ul{display:flex;justify-content:center;margin:0;padding:0;position:relative;list-style:none}
+#org-chart li{list-style:none;position:relative;display:flex;flex-direction:column;align-items:center;padding:24px 4px 0}
+#org-chart .org-tree>ul>li{padding-top:0}
+#org-chart li ul{padding-top:24px}
+#org-chart li ul::before{content:'';position:absolute;top:0;left:50%;margin-left:-1px;height:24px;border-left:2px solid var(--org-line)}
+#org-chart li li::before,#org-chart li li::after{content:'';position:absolute;top:0;right:50%;width:50%;height:24px;border-top:2px solid var(--org-line)}
+#org-chart li li::after{right:auto;left:50%;margin-left:-1px;border-left:2px solid var(--org-line)}
+#org-chart li li:only-child{padding-top:0}
+#org-chart li li:only-child::before,#org-chart li li:only-child::after{display:none}
+#org-chart li li:first-child::before,#org-chart li li:last-child::after{border:0 none}
+#org-chart li li:last-child::before{margin-right:-1px;border-right:2px solid var(--org-line)}
+#org-chart .org-wrap{position:relative;display:inline-block}
+#org-chart .org-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-align:center;color:#fff;background:var(--org-fill);border:2px solid var(--org-border);border-radius:10px;box-shadow:0 4px 10px rgba(8,48,107,.25);padding:8px 10px}
+#org-chart .org-name{font-weight:700;line-height:1.25}
+#org-chart .org-position{color:#dbeafe;line-height:1.25}
+#org-chart .org-d0,#org-chart .org-d1,#org-chart .org-d2{min-width:240px}
+#org-chart .org-d0 .org-name,#org-chart .org-d1 .org-name,#org-chart .org-d2 .org-name{font-size:15px}
+#org-chart .org-d0 .org-position,#org-chart .org-d1 .org-position,#org-chart .org-d2 .org-position{font-size:12px}
+#org-chart .org-d3{min-width:150px}
+#org-chart .org-d3 .org-name{font-size:13px}
+#org-chart .org-d3 .org-position{font-size:11px}
+#org-chart .org-d4{width:116px;padding:6px 5px}
+#org-chart .org-d4 .org-name{font-size:12px}
+#org-chart .org-d4 .org-position{font-size:10.5px}
+#org-chart .org-photo{width:36px;height:36px;border-radius:9999px;object-fit:cover;border:2px solid #bfdbfe;margin-bottom:2px}
+#org-chart .org-side{position:absolute;left:100%;top:50%;transform:translateY(-50%);display:flex;align-items:center;width:max-content}
+#org-chart .org-side-line{display:block;flex:0 0 36px;height:2px;background:var(--org-line)}
+</style>
+<div class="bg-white p-4 md:p-8 rounded-2xl border border-slate-200 shadow-sm">
+<p class="lg:hidden text-xs text-slate-500 mb-3">Geser ke samping untuk melihat seluruh bagan.</p>
+<div id="org-chart" class="overflow-x-auto pb-2">
+<div id="org-tree" class="org-tree" aria-label="Bagan struktur organisasi">
+<ul>
+@foreach($orgTree as $rootNode)
+<x-org-node :node="$rootNode" />
 @endforeach
+</ul>
 </div>
 </div>
 </div>
-@endforeach
-</div>
-</div>
+<script>
+(function () {
+  const box = document.getElementById('org-chart');
+  const tree = document.getElementById('org-tree');
+  if (!box || !tree) return;
+  function fit() {
+    tree.style.zoom = '';
+    if (window.innerWidth >= 1024 && tree.scrollWidth > box.clientWidth) {
+      tree.style.zoom = Math.max(box.clientWidth / tree.scrollWidth, 0.75);
+    }
+  }
+  window.addEventListener('load', fit);
+  window.addEventListener('resize', fit);
+  fit();
+})();
+</script>
 @endif
-</div></div></div></section>
+</div></section>
 <!-- CTA Section: Balanced & Spacious Architectural Finish -->
 
 @include('layouts.footer')
