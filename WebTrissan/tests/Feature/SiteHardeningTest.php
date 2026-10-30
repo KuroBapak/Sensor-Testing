@@ -113,7 +113,7 @@ test('homepage service cards are real links crawlers can follow', function () {
 });
 
 test('only the first hero image is fetched with priority and the others are deferred', function () {
-    preg_match_all('#<div class="hero-slide[^>]*>\s*<img ([^>]*)>#', $this->get(route('home'))->assertOk()->getContent(), $matches);
+    preg_match_all('#<div class="hero-slide[^>]*>\s*(?:<picture[^>]*>\s*<source[^>]*>\s*)?<img ([^>]*)>#', $this->get(route('home'))->assertOk()->getContent(), $matches);
 
     expect(count($matches[1]))->toBeGreaterThan(1)
         ->and($matches[1][0])->toContain('fetchpriority="high"')->not->toContain('loading="lazy"')
@@ -248,7 +248,7 @@ test('the hero upload field rejects oversized files and resizes photos before up
     $source = file_get_contents(app_path('Filament/Pages/ManagePageSettings.php'));
 
     expect($source)
-        ->toContain('->maxSize(1024)')
-        ->toContain("->imageResizeTargetWidth('1920')")
+        ->toContain('->maxSize(2048)')
+        ->toContain("->imageResizeTargetWidth('2560')")
         ->toContain('->maxItems(3)');
 });

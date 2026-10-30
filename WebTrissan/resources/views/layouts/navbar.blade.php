@@ -5,7 +5,7 @@
     <a href="{{ url('/') }}" class="flex items-center gap-2.5 lg:gap-3.5 group min-w-0">
       <div class="w-10 h-10 lg:w-11 lg:h-11 shrink-0 flex items-center justify-center transition group-hover:scale-105">
         @if($globalSettings?->navbar_logo_url)
-          <img src="{{ $globalSettings->navbar_logo_url }}" alt="{{ $globalSettings->company_name }}" class="w-full h-full object-contain">
+          <x-responsive-image :src="$globalSettings->navbar_logo_url" :alt="$globalSettings->company_name" sizes="48px" class="w-full h-full object-contain" />
         @endif
       </div>
       <div class="flex flex-col min-w-0">

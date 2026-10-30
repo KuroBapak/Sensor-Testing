@@ -107,11 +107,11 @@ class ManagePageSettings extends Page implements HasForms
                                     ->disk('public')
                                     ->image()
                                     ->directory('hero')
-                                    ->maxSize(1024)
+                                    ->maxSize(2048)
                                     ->imageResizeMode('contain')
-                                    ->imageResizeTargetWidth('1920')
-                                    ->imageResizeTargetHeight('1080')
-                                    ->helperText('Foto lebar, maksimal 1 MB (JPG atau WebP disarankan); otomatis diperkecil ke 1920×1080. Jangan unggah logo.'),
+                                    ->imageResizeTargetWidth('2560')
+                                    ->imageResizeTargetHeight('1440')
+                                    ->helperText('Foto lebar, maksimal 2 MB (JPG atau WebP disarankan); otomatis diperkecil ke 2560×1440. Salinan WebP yang lebih kecil dibuat otomatis untuk ponsel dan laptop. Jangan unggah logo.'),
                                 TextInput::make('alt_text')
                                     ->required(),
                             ])

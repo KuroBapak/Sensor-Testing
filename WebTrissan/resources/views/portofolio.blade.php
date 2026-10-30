@@ -30,7 +30,7 @@
 <div class="deliverable-card group relative bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/30 shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col justify-between" data-category="{{ $item->portfolio_category_id }}" data-title="{{ $item->title }}" data-desc="{{ $item->description }}" data-image="{{ $item->image_url }}">
 <div class="relative h-24 md:h-40 w-full overflow-hidden bg-surface-container">
 @if($item->image_url)
-<img alt="{{ $item->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" @if($loop->first) fetchpriority="high" @elseif($loop->index < 4) loading="eager" @else loading="lazy" @endif decoding="async" src="{{ $item->image_url }}">
+<x-responsive-image :src="$item->image_url" :alt="$item->title" sizes="(min-width: 1024px) 25vw, 50vw" :fetchpriority="$loop->first ? 'high' : null" :loading="$loop->index < 4 ? 'eager' : 'lazy'" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
 @else
 <div class="w-full h-full flex items-center justify-center text-outline-variant"><span aria-hidden="true" class="material-symbols-outlined text-5xl">precision_manufacturing</span></div>
 @endif

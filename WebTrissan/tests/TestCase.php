@@ -2,7 +2,9 @@
 
 namespace Tests;
 
+use App\Jobs\GenerateImageVariants;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Bus;
 use RuntimeException;
 
 abstract class TestCase extends BaseTestCase
@@ -13,6 +15,9 @@ abstract class TestCase extends BaseTestCase
 
         // The compiled assets are not committed, so pages must render without a Vite build.
         $this->withoutVite();
+
+        // Page views would otherwise write WebP copies of the seeded images into the real public disk.
+        Bus::fake([GenerateImageVariants::class]);
     }
 
     /**

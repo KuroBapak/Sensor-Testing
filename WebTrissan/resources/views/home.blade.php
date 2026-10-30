@@ -49,7 +49,7 @@
         @endphp
         @foreach($heroSlides as $slide)
           <div class="hero-slide absolute inset-0 transition-opacity duration-1000 {{ $loop->first ? 'opacity-100' : 'opacity-0' }}">
-            <img @if($loop->first) src="{{ $slide['image'] }}" fetchpriority="high" @else data-src="{{ $slide['image'] }}" @endif alt="{{ $slide['alt'] }}" decoding="async" class="w-full h-full object-cover object-center transform scale-105">
+            <x-responsive-image :src="$slide['image']" :alt="$slide['alt']" sizes="100vw" :defer="! $loop->first" :fetchpriority="$loop->first ? 'high' : null" decoding="async" class="w-full h-full object-cover object-center transform scale-105" />
             <div class="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-brand-navyDark/75 via-brand-navy/55 to-brand-navy/45 lg:from-brand-navyDark/80 lg:via-brand-navy/45 lg:to-brand-navyDark/25"></div>
           </div>
         @endforeach
@@ -168,7 +168,7 @@
             <div class="lg:col-span-6 relative">
               <div class="relative rounded-lg overflow-hidden border border-brand-grayBorder shadow-heavy bg-slate-900 group">
                 @if($aboutImage)
-                  <img src="{{ $aboutImage }}" alt="{{ $aboutTitle }}" loading="lazy" decoding="async" class="w-full h-52 sm:h-72 lg:h-[420px] object-cover object-center group-hover:scale-105 transition duration-700">
+                  <x-responsive-image :src="$aboutImage" :alt="$aboutTitle" sizes="(min-width: 1024px) 40vw, 100vw" loading="lazy" decoding="async" class="w-full h-52 sm:h-72 lg:h-[420px] object-cover object-center group-hover:scale-105 transition duration-700" />
                 @else
                   <div class="w-full h-52 sm:h-72 lg:h-[420px]"></div>
                 @endif
@@ -226,7 +226,7 @@
           <div class="work-card {{ $categorySlug }} bg-white rounded-lg border border-brand-grayBorder overflow-hidden shadow-sm hover:shadow-card-hover transition group flex flex-col justify-between cursor-pointer" onclick="window.location.href='{{ url('/works#' . ($work->work_slug ?? '')) }}'">
             <div class="h-28 sm:h-44 lg:h-52 bg-slate-900 overflow-hidden relative">
               @if($workImg)
-                <img src="{{ $workImg }}" alt="{{ $work->work_title }}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                <x-responsive-image :src="$workImg" :alt="$work->work_title" sizes="(min-width: 1024px) 25vw, 50vw" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
               @endif
               <div class="absolute inset-0 bg-gradient-to-t from-brand-navyDark/85 via-transparent to-transparent"></div>
               <div class="absolute top-3 left-3 px-2.5 py-1 bg-brand-navy/90 backdrop-blur-md text-white font-mono text-[10px] font-bold tracking-wider uppercase rounded border border-white/10 flex items-center gap-1.5">
@@ -540,6 +540,10 @@
 
       // Slides 2 and 3 are fetched only after the page has loaded, so they never compete with the first image.
       const loadLaterSlides = () => setTimeout(() => {
+        document.querySelectorAll('#hero-carousel-container [data-srcset]').forEach((source) => {
+          source.srcset = source.dataset.srcset;
+          source.removeAttribute('data-srcset');
+        });
         document.querySelectorAll('#hero-carousel-container img[data-src]').forEach((image) => {
           image.src = image.dataset.src;
           image.removeAttribute('data-src');

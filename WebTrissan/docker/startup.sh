@@ -24,6 +24,10 @@ php artisan optimize || echo "⚠️  Optimize failed - check APP_KEY"
 # Public disk uploads (public/storage -> storage/app/public)
 php artisan storage:link --force || true
 
+# Smaller WebP copies of every uploaded image. Only missing copies are made, so this is quick after the first start;
+# it runs here (as root, before the chown below) so the files end up owned by php-fpm like everything else.
+php artisan media:variants || echo "⚠️  Image variants failed - pages keep serving the original images"
+
 # Informational only: does not stop the container
 echo "🔍 Testing database connection..."
 php artisan tinker --execute="DB::connection()->getPdo(); echo 'Database: Connected ✅';" || echo "⚠️  Database connection failed"

@@ -11,7 +11,7 @@
             $partnerImg = $globalSettings?->footer_partner_image_url;
           @endphp
           @if($footerLogo)
-            <img src="{{ $footerLogo }}" alt="{{ $globalSettings?->company_name }}" loading="lazy" decoding="async" class="w-full h-full object-contain">
+            <x-responsive-image :src="$footerLogo" :alt="$globalSettings?->company_name" sizes="64px" loading="lazy" decoding="async" class="w-full h-full object-contain" />
           @endif
         </div>
         <div class="flex flex-col">
@@ -24,7 +24,7 @@
       </p>
       @if($partnerImg)
         <div class="w-full max-w-sm rounded-lg border border-slate-700/60 bg-white/5 p-1.5 shadow-sm overflow-hidden">
-          <img src="{{ $partnerImg }}" alt="Logo mitra perusahaan" loading="lazy" decoding="async" class="w-full h-auto object-contain rounded">
+          <x-responsive-image :src="$partnerImg" alt="Logo mitra perusahaan" sizes="(min-width: 1024px) 400px, 90vw" loading="lazy" decoding="async" class="w-full h-auto object-contain rounded" />
         </div>
       @endif
     </div>

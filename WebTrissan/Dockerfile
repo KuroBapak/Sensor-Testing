@@ -23,13 +23,14 @@ FROM php:${PHP_VERSION}-fpm-alpine AS php-base
 RUN apk add --no-cache \
         libpng-dev \
         libjpeg-turbo-dev \
+        libwebp-dev \
         freetype-dev \
         libzip-dev \
         oniguruma-dev \
         icu-dev \
         postgresql-dev \
         sqlite-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j"$(nproc)" \
         pdo \
         pdo_mysql \
