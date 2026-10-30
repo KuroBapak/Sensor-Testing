@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\GlobalSetting;
 use App\Models\PageSetting;
+use App\Models\Service;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 
@@ -51,7 +52,8 @@ class SeoFilesController extends Controller
     }
 
     /**
-     * Serve the XML sitemap of the public pages, using each page's CMS update time as last modified date.
+     * Serve the XML sitemap of the public pages and the service landing pages that have enough content to be indexed,
+     * using each page's CMS update time as last modified date.
      *
      * The XML declaration is prepended here rather than written in the Blade view: with PHP's short_open_tag
      * enabled (the default when no php.ini sets it), a literal "<?xml" in a compiled view is a parse error.
@@ -64,6 +66,15 @@ class SeoFilesController extends Controller
             'loc' => route($routeName),
             'lastmod' => $updatedAt->get($page)?->toAtomString(),
         ]);
+
+        $serviceUrls = Service::query()->orderBy('sort_order')->get()
+            ->filter(fn (Service $service): bool => $service->hasLandingContent())
+            ->map(fn (Service $service): array => [
+                'loc' => route('services.show', $service),
+                'lastmod' => $service->updated_at?->toAtomString(),
+            ]);
+
+        $urls = $urls->concat($serviceUrls)->values();
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n".view('sitemap', ['urls' => $urls])->render();
 

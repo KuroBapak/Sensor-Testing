@@ -112,6 +112,8 @@ class ManagePageSettings extends Page implements HasForms
                             ])
                             ->columns(2)
                             ->minItems(1)
+                            ->maxItems(3)
+                            ->helperText('Maksimal 3 gambar; berganti otomatis di latar hero.')
                             ->columnSpanFull(),
                     ])
                     ->columns(2),

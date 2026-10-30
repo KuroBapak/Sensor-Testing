@@ -26,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
             $view->with('structuredData', StructuredData::json(
                 $view->getData()['globalSettings'] ?? null,
                 request()->route()?->getName(),
+                $view->getData()['service'] ?? null,
             ));
         });
     }

@@ -1,0 +1,11 @@
+@import 'tailwindcss/theme.css';
+@import 'tailwindcss/preflight.css';
+@import './compat.css';
+@import './typography-brand.css';
+@import 'tailwindcss/utilities.css' source(none);
+
+@config './about.config.js';
+
+@source '../../views/abtus.blade.php';
+@source '../../views/layouts';
+@source '../../views/components';

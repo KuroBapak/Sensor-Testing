@@ -18,3 +18,31 @@
   #services-slider { scrollbar-width: none; -ms-overflow-style: none; }
   #services-slider::-webkit-scrollbar { display: none; }
 </style>
+
+<script>
+  /*
+   * Layar acuan adalah laptop selebar 1280px (skala 0.75). Di layar yang lebih lebar, skala naik sebanding dengan
+   * lebarnya sehingga komposisi halaman persis sama dengan di laptop, hanya lebih besar, dan tidak melebar ke samping.
+   * Dibatasi 1.5 (layar 2560px); di atas itu isi tetap di tengah dengan lebar maksimum yang sama.
+   */
+  (function () {
+    var root = document.documentElement;
+    var update = function () {
+      var width = window.innerWidth;
+
+      if (width >= 1280) {
+        root.style.setProperty('--page-zoom', Math.min(width * 0.75 / 1280, 1.5).toFixed(4));
+      } else {
+        root.style.removeProperty('--page-zoom');
+      }
+    };
+    var queued = false;
+
+    update();
+    window.addEventListener('resize', function () {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () { queued = false; update(); });
+    });
+  })();
+</script>

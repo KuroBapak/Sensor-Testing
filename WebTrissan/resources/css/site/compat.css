@@ -1,0 +1,82 @@
+@import './palette.css';
+
+/*
+ * The public pages were written against Tailwind v3 (Play CDN). These rules keep the v3 defaults that
+ * Tailwind v4 changed, so the compiled output renders the same as before.
+ */
+
+/*
+ * v4 only applies hover: and group-hover: where the browser reports (hover: hover). Embedded browsers, some
+ * touch-screen laptops and DevTools device mode report none, which left the navbar dropdowns permanently closed.
+ * v3 used a plain :hover, so restore that.
+ */
+@custom-variant hover (&:hover);
+
+@theme default {
+    --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --radius-sm: 0.125rem;
+    --radius: 0.25rem;
+    --blur-sm: 4px;
+    --blur: 8px;
+
+}
+
+*,
+::after,
+::before,
+::backdrop,
+::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+}
+
+input:where(:not([type='button'], [type='reset'], [type='submit'])),
+select,
+textarea {
+    background-color: Field;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--color-gray-400);
+    opacity: 1;
+}
+
+button:not(:disabled),
+[role='button']:not(:disabled) {
+    cursor: pointer;
+}
+
+option {
+    padding: 0 2px 1px;
+}
+
+/* v3 drew dividers as a top border on every visible sibling after the first; v4 puts a bottom border on every child but the last. */
+.divide-y > :not(:last-child) {
+    border-bottom-width: 0;
+}
+
+.divide-y > :not([hidden]) ~ :not([hidden]) {
+    border-top-width: 1px;
+}
+
+@utility outline-none {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+}
+
+@utility drop-shadow-md {
+    --tw-drop-shadow: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,)
+        var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
+}
+
+@utility shadow-inner {
+    --tw-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+    box-shadow:
+        var(--tw-inset-shadow, 0 0 #0000), var(--tw-inset-ring-shadow, 0 0 #0000),
+        var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}

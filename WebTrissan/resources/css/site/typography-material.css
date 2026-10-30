@@ -1,0 +1,201 @@
+/*
+ * Font-size tokens of the license, works and portofolio pages (the Tailwind v3 scale plus the named Material tokens).
+ * Tailwind v3 resolved text-* against leading-*, font-* and tracking-* by cascade order, so a responsive
+ * md:text-title-md overrode a base font-bold. Tailwind v4 lets the explicit utilities always win over the defaults
+ * baked into a text-* token. Each token below also sets the variables those utilities use, which restores the v3
+ * order. Keep the sizes in sync with the matching *.config.js.
+ */
+
+@utility text-xs {
+    font-size: 0.75rem;
+    --tw-leading: 1rem;
+    line-height: var(--tw-leading);
+}
+
+@utility text-sm {
+    font-size: 0.875rem;
+    --tw-leading: 1.25rem;
+    line-height: var(--tw-leading);
+}
+
+@utility text-base {
+    font-size: 1rem;
+    --tw-leading: 1.5rem;
+    line-height: var(--tw-leading);
+}
+
+@utility text-lg {
+    font-size: 1.125rem;
+    --tw-leading: 1.75rem;
+    line-height: var(--tw-leading);
+}
+
+@utility text-xl {
+    font-size: 1.25rem;
+    --tw-leading: 1.75rem;
+    line-height: var(--tw-leading);
+}
+
+@utility text-2xl {
+    font-size: 1.5rem;
+    --tw-leading: 2rem;
+    line-height: var(--tw-leading);
+}
+
+@utility text-3xl {
+    font-size: 1.875rem;
+    --tw-leading: 2.25rem;
+    line-height: var(--tw-leading);
+}
+
+@utility text-4xl {
+    font-size: 2.25rem;
+    --tw-leading: 2.5rem;
+    line-height: var(--tw-leading);
+}
+
+@utility text-5xl {
+    font-size: 3rem;
+    --tw-leading: 1;
+    line-height: var(--tw-leading);
+}
+
+@utility text-6xl {
+    font-size: 3.75rem;
+    --tw-leading: 1;
+    line-height: var(--tw-leading);
+}
+
+@utility text-7xl {
+    font-size: 4.5rem;
+    --tw-leading: 1;
+    line-height: var(--tw-leading);
+}
+
+@utility text-8xl {
+    font-size: 6rem;
+    --tw-leading: 1;
+    line-height: var(--tw-leading);
+}
+
+@utility text-9xl {
+    font-size: 8rem;
+    --tw-leading: 1;
+    line-height: var(--tw-leading);
+}
+
+@utility text-body-lg {
+    font-size: 16px;
+    --tw-leading: 26px;
+    line-height: var(--tw-leading);
+    --tw-font-weight: 400;
+    font-weight: var(--tw-font-weight);
+}
+
+@utility text-label-sm {
+    font-size: 12px;
+    --tw-leading: 16px;
+    line-height: var(--tw-leading);
+    --tw-font-weight: 500;
+    font-weight: var(--tw-font-weight);
+}
+
+@utility text-headline-lg {
+    font-size: 30px;
+    --tw-leading: 38px;
+    line-height: var(--tw-leading);
+    --tw-font-weight: 700;
+    font-weight: var(--tw-font-weight);
+    --tw-tracking: -0.015em;
+    letter-spacing: var(--tw-tracking);
+}
+
+@utility text-label-md {
+    font-size: 14px;
+    --tw-leading: 20px;
+    line-height: var(--tw-leading);
+    --tw-font-weight: 500;
+    font-weight: var(--tw-font-weight);
+}
+
+@utility text-body-md {
+    font-size: 15px;
+    --tw-leading: 24px;
+    line-height: var(--tw-leading);
+    --tw-font-weight: 400;
+    font-weight: var(--tw-font-weight);
+}
+
+@utility text-headline-md {
+    font-size: 22px;
+    --tw-leading: 30px;
+    line-height: var(--tw-leading);
+    --tw-font-weight: 700;
+    font-weight: var(--tw-font-weight);
+    --tw-tracking: -0.01em;
+    letter-spacing: var(--tw-tracking);
+}
+
+@utility text-body-sm {
+    font-size: 14px;
+    --tw-leading: 20px;
+    line-height: var(--tw-leading);
+    --tw-font-weight: 400;
+    font-weight: var(--tw-font-weight);
+}
+
+@utility text-display-hero-mobile {
+    font-size: 28px;
+    --tw-leading: 36px;
+    line-height: var(--tw-leading);
+    --tw-font-weight: 800;
+    font-weight: var(--tw-font-weight);
+    --tw-tracking: -0.02em;
+    letter-spacing: var(--tw-tracking);
+}
+
+@utility text-display-hero {
+    font-size: 40px;
+    --tw-leading: 48px;
+    line-height: var(--tw-leading);
+    --tw-font-weight: 800;
+    font-weight: var(--tw-font-weight);
+    --tw-tracking: -0.02em;
+    letter-spacing: var(--tw-tracking);
+}
+
+@utility text-title-md {
+    font-size: 16px;
+    --tw-leading: 24px;
+    line-height: var(--tw-leading);
+    --tw-font-weight: 600;
+    font-weight: var(--tw-font-weight);
+}
+
+@utility text-headline-sm {
+    font-size: 18px;
+    --tw-leading: 26px;
+    line-height: var(--tw-leading);
+    --tw-font-weight: 600;
+    font-weight: var(--tw-font-weight);
+}
+
+@utility text-label-caps {
+    font-size: 12px;
+    --tw-leading: 16px;
+    line-height: var(--tw-leading);
+    --tw-font-weight: 700;
+    font-weight: var(--tw-font-weight);
+    --tw-tracking: 0.08em;
+    letter-spacing: var(--tw-tracking);
+}
+
+@utility text-headline-lg-mobile {
+    font-size: 24px;
+    --tw-leading: 32px;
+    line-height: var(--tw-leading);
+    --tw-font-weight: 700;
+    font-weight: var(--tw-font-weight);
+    --tw-tracking: -0.01em;
+    letter-spacing: var(--tw-tracking);
+}

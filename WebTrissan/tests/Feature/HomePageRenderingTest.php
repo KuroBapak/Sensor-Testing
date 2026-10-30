@@ -110,6 +110,37 @@ test('landing hero slides and featured works only use images that exist', functi
         ->not->toContain('work-tidak-ada.jpg');
 });
 
+test('the hero shows at most three background slides, with only the first visible at the start', function () {
+    PageSetting::forPage('landing')->update(['hero_slides' => collect(range(1, 5))
+        ->map(fn (int $number): array => ['image' => "landing/hero-{$number}.jpg", 'alt_text' => "Hero {$number}"])
+        ->all()]);
+
+    $content = $this->get(route('home'))->assertOk()->getContent();
+
+    expect(substr_count($content, 'class="hero-slide'))->toBe(3)
+        ->and(substr_count($content, 'hero-slide absolute inset-0 transition-opacity duration-1000 opacity-100'))->toBe(1)
+        ->and($content)->toContain('landing/hero-3.jpg')->not->toContain('landing/hero-4.jpg');
+});
+
+test('the hero slides rotate automatically and stop for hidden tabs and reduced motion', function () {
+    $content = $this->get(route('home'))->assertOk()->getContent();
+
+    expect($content)
+        ->toContain('#hero-carousel-container .hero-slide')
+        ->toContain('setInterval(() => show((current + 1) % slides.length), 5000)')
+        ->toContain('document.hidden')
+        ->toContain('prefers-reduced-motion: reduce');
+});
+
+test('the hero overlay is light enough for the slide photos to show through', function () {
+    $content = $this->get(route('home'))->assertOk()->getContent();
+
+    expect($content)
+        ->not->toContain('from-brand-navyDark/95')
+        ->not->toContain('mix-blend-multiply')
+        ->toContain('lg:to-brand-navyDark/25');
+});
+
 test('landing exposes a contact form modal that posts to the contact route', function () {
     $this->get(route('home'))
         ->assertOk()

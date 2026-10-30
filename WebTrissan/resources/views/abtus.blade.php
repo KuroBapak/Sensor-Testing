@@ -7,36 +7,10 @@
 @if(!empty($pageSettings?->seo_description))
 <meta name="description" content="{{ $pageSettings->seo_description }}">
 @endif
-<script src="https://cdn.tailwindcss.com/3.4.17?plugins=forms@0.5.10,container-queries@0.1.1"></script>
 <link href="https://fonts.googleapis.com" rel="preconnect">
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<script>
-    tailwind.config = {
-      theme: {
-        extend: { fontSize: {'lg': ['1rem', {lineHeight: '1.6'}], 'xl': ['1.125rem', {lineHeight: '1.5'}], '2xl': ['1.25rem', {lineHeight: '1.4'}], '3xl': ['1.5rem', {lineHeight: '1.3'}], '4xl': ['1.75rem', {lineHeight: '1.25'}], '5xl': ['2.125rem', {lineHeight: '1.15'}], '6xl': ['2.5rem', {lineHeight: '1.1'}]},
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            heading: ['Montserrat', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
-          colors: {
-            brand: {
-              navy: '#0d2137',
-              navyDark: '#071321',
-              blue: '#1e40af',
-              accent: '#2563eb',
-              lightBlue: '#eff4ff',
-              surface: '#f8f9ff',
-              border: '#dbeafe',
-              grayMuted: '#64748b',
-            }
-          }
-        }
-      }
-    }
-  </script>
 <style>
     body {
       background-color: #f8f9ff;
@@ -50,6 +24,7 @@
     }
   </style>
 @include('layouts.scale')
+@vite('resources/css/site/about.css')
 </head>
 <body class="bg-[#f8f9ff] min-h-screen antialiased text-slate-800 selection:bg-blue-600 selection:text-white">
 @php $cms = fn (string $key): string => (string) $pageSettings?->extra($key); @endphp
@@ -137,7 +112,7 @@
 </div>
 <div class="flex items-center gap-3"><div class="flex items-center gap-1.5"><button type="button" onclick="document.getElementById('facility-carousel').scrollBy({left: -380, behavior: 'smooth'})" aria-label="Previous Facility" class="w-8 h-8 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 text-slate-700 flex items-center justify-center transition-all shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button><button type="button" onclick="document.getElementById('facility-carousel').scrollBy({left: 380, behavior: 'smooth'})" aria-label="Next Facility" class="w-8 h-8 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 text-slate-700 flex items-center justify-center transition-all shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button></div></div>
 </div>
-<div id="facility-carousel" class="flex overflow-x-auto snap-x snap-mandatory md:grid gap-4 md:gap-6 pb-3 md:grid-cols-3 pb-12">
+<div id="facility-carousel" class="flex overflow-x-auto snap-x snap-mandatory md:grid gap-4 md:gap-6 pb-3 md:grid-cols-3">
 @foreach(collect($aboutCompany->facilities ?? [])->sortBy('sort_order') as $facility)
 @php
   $facilityImage = \App\Support\MediaUrl::resolve($facility['facility_image'] ?? null);

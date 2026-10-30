@@ -3,9 +3,10 @@
 namespace App\Support;
 
 use App\Models\GlobalSetting;
+use App\Models\Service;
 
 /**
- * Builds the schema.org JSON-LD graph (Organization, WebSite and BreadcrumbList) from CMS data.
+ * Builds the schema.org JSON-LD graph (Organization, WebSite, BreadcrumbList and Service) from CMS data.
  */
 class StructuredData
 {
@@ -24,9 +25,9 @@ class StructuredData
     /**
      * The JSON-LD payload safe to print inside a script tag, or null when there is no company name to describe.
      */
-    public static function json(?GlobalSetting $global, ?string $routeName): ?string
+    public static function json(?GlobalSetting $global, ?string $routeName, ?Service $service = null): ?string
     {
-        $graph = self::graph($global, $routeName);
+        $graph = self::graph($global, $routeName, $service);
 
         if ($graph === []) {
             return null;
@@ -41,7 +42,7 @@ class StructuredData
     /**
      * @return array<int, array<string, mixed>>
      */
-    public static function graph(?GlobalSetting $global, ?string $routeName): array
+    public static function graph(?GlobalSetting $global, ?string $routeName, ?Service $service = null): array
     {
         if ($global === null || blank($global->company_name)) {
             return [];
@@ -49,10 +50,14 @@ class StructuredData
 
         $graph = [self::organization($global), self::website($global)];
 
-        $breadcrumb = self::breadcrumb($routeName);
+        $breadcrumb = self::breadcrumb($routeName, $service);
 
         if ($breadcrumb !== null) {
             $graph[] = $breadcrumb;
+        }
+
+        if ($routeName === 'services.show' && $service?->hasLandingContent()) {
+            $graph[] = self::service($service);
         }
 
         return $graph;
@@ -109,9 +114,11 @@ class StructuredData
     /**
      * @return array<string, mixed>|null
      */
-    private static function breadcrumb(?string $routeName): ?array
+    private static function breadcrumb(?string $routeName, ?Service $service): ?array
     {
-        $label = self::BREADCRUMB_LABELS[$routeName] ?? null;
+        $label = $routeName === 'services.show'
+            ? ($service?->short_title ?? $service?->service_title)
+            : (self::BREADCRUMB_LABELS[$routeName] ?? null);
 
         if ($label === null) {
             return null;
@@ -123,6 +130,26 @@ class StructuredData
                 ['@type' => 'ListItem', 'position' => 1, 'name' => 'Beranda', 'item' => url('/')],
                 ['@type' => 'ListItem', 'position' => 2, 'name' => $label, 'item' => url()->current()],
             ],
+        ];
+    }
+
+    /**
+     * The service described on its landing page, offered by the organization.
+     *
+     * @return array<string, mixed>
+     */
+    private static function service(Service $service): array
+    {
+        return [
+            '@type' => 'Service',
+            '@id' => url()->current().'#service',
+            'name' => $service->service_title,
+            'description' => $service->metaDescription(),
+            'url' => url()->current(),
+            'serviceType' => $service->short_title,
+            'areaServed' => 'ID',
+            'inLanguage' => 'id',
+            'provider' => ['@id' => self::organizationId()],
         ];
     }
 

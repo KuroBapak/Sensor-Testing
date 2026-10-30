@@ -42,6 +42,40 @@ class ServiceResource extends Resource
                     ->maxLength(255),
                 Forms\Components\Textarea::make('service_description')
                     ->columnSpanFull(),
+                Forms\Components\Textarea::make('landing_body')
+                    ->label('Landing page body')
+                    ->helperText('Penjelasan lengkap layanan untuk halaman /layanan/slug. Pisahkan paragraf dengan baris kosong. Halaman baru diindeks setelah isi, langkah proses, dan FAQ memenuhi batas minimum.')
+                    ->rows(12)
+                    ->columnSpanFull(),
+                Forms\Components\Repeater::make('process_steps')
+                    ->label('Process steps')
+                    ->helperText('Minimal '.Service::MIN_PROCESS_STEPS.' langkah.')
+                    ->schema([
+                        Forms\Components\TextInput::make('title')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\Textarea::make('description')
+                            ->rows(2),
+                    ])
+                    ->reorderableWithButtons()
+                    ->collapsible()
+                    ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)
+                    ->columnSpanFull(),
+                Forms\Components\Repeater::make('faqs')
+                    ->label('FAQ')
+                    ->helperText('Minimal '.Service::MIN_FAQS.' pertanyaan beserta jawabannya.')
+                    ->schema([
+                        Forms\Components\TextInput::make('question')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\Textarea::make('answer')
+                            ->required()
+                            ->rows(3),
+                    ])
+                    ->reorderableWithButtons()
+                    ->collapsible()
+                    ->itemLabel(fn (array $state): ?string => $state['question'] ?? null)
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('service_icon')
                     ->maxLength(255),
                 Forms\Components\Textarea::make('service_icon_svg')
@@ -67,6 +101,10 @@ class ServiceResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
+                Tables\Columns\IconColumn::make('has_landing_content')
+                    ->label('Landing page live')
+                    ->boolean()
+                    ->state(fn (Service $record): bool => $record->hasLandingContent()),
                 Tables\Columns\TextColumn::make('service_icon')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('sort_order')

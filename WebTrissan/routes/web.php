@@ -6,12 +6,14 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LicensesController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\SeoFilesController;
+use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\WorksController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/license', [LicensesController::class, 'index'])->name('licenses');
 Route::get('/works', [WorksController::class, 'index'])->name('works');
+Route::get('/layanan/{service:slug}', [ServicesController::class, 'show'])->name('services.show');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/portofolio', [PortfolioController::class, 'index'])->name('portfolio');
 Route::get('/favicon.ico', [SeoFilesController::class, 'favicon'])->name('favicon');

@@ -7,43 +7,12 @@
   @if(!empty($pageSettings->seo_description))
   <meta name="description" content="{{ $pageSettings->seo_description }}">
   @endif
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <!-- Google Fonts: Montserrat & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@1.64.0/dist/umd/lucide.min.js"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: { fontSize: {'lg': ['1rem', {lineHeight: '1.6'}], 'xl': ['1.125rem', {lineHeight: '1.5'}], '2xl': ['1.25rem', {lineHeight: '1.4'}], '3xl': ['1.5rem', {lineHeight: '1.3'}], '4xl': ['1.75rem', {lineHeight: '1.25'}], '5xl': ['2.125rem', {lineHeight: '1.15'}], '6xl': ['2.5rem', {lineHeight: '1.1'}]},
-          colors: {
-            brand: {
-              navy: '#0A192F',
-              navyDark: '#060D17',
-              navyLight: '#132845',
-              steel: '#25446B',
-              accent: '#0066CC',
-              grayBg: '#F8FAFC',
-              grayBorder: '#E2E8F0',
-              grayMuted: '#64748B'
-            }
-          },
-          fontFamily: {
-            heading: ['Montserrat', 'sans-serif'],
-            body: ['Inter', 'sans-serif']
-          },
-          boxShadow: {
-            'industrial': '0 20px 40px -15px rgba(10, 25, 47, 0.08), 0 0 1px 1px rgba(10, 25, 47, 0.05)',
-            'card-hover': '0 25px 50px -12px rgba(10, 25, 47, 0.18)',
-            'heavy': '0 30px 60px -20px rgba(6, 13, 23, 0.35)'
-          }
-        }
-      }
-    }
-  </script>
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -55,6 +24,7 @@
     }
   </style>
 @include('layouts.scale')
+@vite('resources/css/site/home.css')
 </head>
 <body class="bg-white text-slate-800 antialiased relative overflow-x-hidden selection:bg-brand-navy selection:text-white">
   @php $cms = fn (string $key): string => (string) $pageSettings?->extra($key); @endphp
@@ -74,13 +44,13 @@
               'alt' => $slide['alt_text'] ?? ($slide['alt'] ?? ($slide['caption'] ?? '')),
             ])
             ->filter(fn ($slide) => $slide['image'])
+            ->take(3)
             ->values();
         @endphp
         @foreach($heroSlides as $slide)
           <div class="hero-slide absolute inset-0 transition-opacity duration-1000 {{ $loop->first ? 'opacity-100' : 'opacity-0' }}">
             <img src="{{ $slide['image'] }}" alt="{{ $slide['alt'] }}" @if($loop->first) fetchpriority="high" @else fetchpriority="low" loading="lazy" @endif decoding="async" class="w-full h-full object-cover object-center transform scale-105">
-            <div class="absolute inset-0 bg-gradient-to-r from-brand-navyDark/95 via-brand-navy/85 to-brand-navyDark/65"></div>
-            <div class="absolute inset-0 bg-brand-navy/40 mix-blend-multiply"></div>
+            <div class="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-brand-navyDark/75 via-brand-navy/55 to-brand-navy/45 lg:from-brand-navyDark/80 lg:via-brand-navy/45 lg:to-brand-navyDark/25"></div>
           </div>
         @endforeach
       </div>
@@ -111,7 +81,7 @@
           @endphp
           @if($showTrustCard)
           <div class="w-48 sm:w-72 lg:w-80 shrink-0 self-end lg:self-center">
-            <div class="bg-white/10 backdrop-blur-md border border-white/15 rounded-lg p-3 sm:p-5 shadow-heavy text-white">
+            <div class="bg-brand-navyDark/45 backdrop-blur-md border border-white/15 rounded-lg p-3 sm:p-5 shadow-heavy text-white">
               <div class="flex items-center justify-between pb-2 sm:pb-3 border-b border-white/10 mb-2 sm:mb-3.5">
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -140,9 +110,9 @@
 
     <!-- 3. Bagian Services (Kategori Pekerjaan) -->
     <!-- Menindih bagian bawah gambar hero -->
-    <section id="services" class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 -mt-24 lg:-mt-28"><div class="relative group/carousel"><div class="flex items-center justify-between mb-4 md:hidden"><span class="text-xs font-heading font-bold text-slate-400 uppercase tracking-widest">Core Capabilities ({{ $services->count() }} Services)</span><div class="flex items-center gap-2"><button onclick="document.getElementById('services-slider').scrollBy({left: -320, behavior: 'smooth'})" aria-label="Previous" class="w-9 h-9 rounded bg-white border border-brand-grayBorder flex items-center justify-center text-brand-navy hover:bg-brand-navy hover:text-white transition shadow-sm cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button><button onclick="document.getElementById('services-slider').scrollBy({left: 320, behavior: 'smooth'})" aria-label="Next" class="w-9 h-9 rounded bg-white border border-brand-grayBorder flex items-center justify-center text-brand-navy hover:bg-brand-navy hover:text-white transition shadow-sm cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button></div></div><button onclick="document.getElementById('services-slider').scrollBy({left: -380, behavior: 'smooth'})" aria-label="Previous Slide" class="hidden md:flex absolute -left-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-lg bg-white/95 backdrop-blur-md border border-brand-grayBorder text-brand-navy hover:text-white hover:bg-brand-navy items-center justify-center shadow-heavy hover:shadow-card-hover transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button><button onclick="document.getElementById('services-slider').scrollBy({left: 380, behavior: 'smooth'})" aria-label="Next Slide" class="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-lg bg-white/95 backdrop-blur-md border border-brand-grayBorder text-brand-navy hover:text-white hover:bg-brand-navy items-center justify-center shadow-heavy hover:shadow-card-hover transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button><div id="services-slider" class="flex gap-6 lg:gap-8 overflow-x-auto scroll-smooth pb-4 pt-1 snap-x select-none">
+    <section id="services" class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 -mt-24 lg:-mt-28"><div class="relative group/carousel"><div class="flex items-center justify-between mb-4 md:hidden"><span class="text-xs font-heading font-bold text-slate-200 drop-shadow uppercase tracking-widest">Core Capabilities ({{ $services->count() }} Services)</span><div class="flex items-center gap-2"><button onclick="document.getElementById('services-slider').scrollBy({left: -320, behavior: 'smooth'})" aria-label="Previous" class="w-9 h-9 rounded bg-white border border-brand-grayBorder flex items-center justify-center text-brand-navy hover:bg-brand-navy hover:text-white transition shadow-sm cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button><button onclick="document.getElementById('services-slider').scrollBy({left: 320, behavior: 'smooth'})" aria-label="Next" class="w-9 h-9 rounded bg-white border border-brand-grayBorder flex items-center justify-center text-brand-navy hover:bg-brand-navy hover:text-white transition shadow-sm cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button></div></div><button onclick="document.getElementById('services-slider').scrollBy({left: -380, behavior: 'smooth'})" aria-label="Previous Slide" class="hidden md:flex absolute -left-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-lg bg-white/95 backdrop-blur-md border border-brand-grayBorder text-brand-navy hover:text-white hover:bg-brand-navy items-center justify-center shadow-heavy hover:shadow-card-hover transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button><button onclick="document.getElementById('services-slider').scrollBy({left: 380, behavior: 'smooth'})" aria-label="Next Slide" class="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-lg bg-white/95 backdrop-blur-md border border-brand-grayBorder text-brand-navy hover:text-white hover:bg-brand-navy items-center justify-center shadow-heavy hover:shadow-card-hover transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></button><div id="services-slider" class="flex gap-6 lg:gap-8 overflow-x-auto scroll-smooth pb-4 pt-1 snap-x select-none">
           @forelse($services as $service)
-            <a href="{{ url('/works?category=' . ($service->slug ?? '')) }}" class="snap-start shrink-0 w-[78vw] sm:w-[300px] lg:w-[320px] group cursor-pointer bg-white rounded-lg p-5 lg:p-6 border border-brand-grayBorder shadow-industrial hover:shadow-card-hover hover:border-brand-accent transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between relative overflow-hidden">
+            <a href="{{ $service->publicUrl() }}" class="snap-start shrink-0 w-[78vw] sm:w-[300px] lg:w-[320px] group cursor-pointer bg-white rounded-lg p-5 lg:p-6 border border-brand-grayBorder shadow-industrial hover:shadow-card-hover hover:border-brand-accent transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between relative overflow-hidden">
               <div class="absolute top-0 left-0 w-full h-1.5 bg-brand-navy group-hover:bg-brand-accent transition"></div>
               <div>
                 <div class="w-11 h-11 rounded-lg bg-brand-grayBg border border-slate-200 flex items-center justify-center text-brand-navy group-hover:bg-brand-navy group-hover:text-white transition duration-300 mb-4 shadow-sm">
@@ -323,7 +293,7 @@
             </div>
             <div class="p-2 flex-1 flex flex-col divide-y divide-slate-100">
               @foreach($cluster->services as $svc)
-                <a href="{{ url('/works?category=' . ($svc->slug ?? '')) }}" class="group flex items-center justify-between p-2.5 lg:p-3.5 rounded hover:bg-slate-50 transition">
+                <a href="{{ $svc->publicUrl() }}" class="group flex items-center justify-between p-2.5 lg:p-3.5 rounded hover:bg-slate-50 transition">
                   <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded bg-slate-100 text-brand-navy flex items-center justify-center shrink-0 group-hover:bg-brand-navy group-hover:text-white transition">
                       @if(!empty($svc->service_icon_svg))
@@ -551,6 +521,30 @@
     // Inisialisasi ikon Lucide
     lucide.createIcons();
   </script>
+
+  @if($heroSlides->count() > 1)
+  <!-- Hero: gambar latar berganti otomatis (maks. 3), berhenti saat tab tidak aktif atau pengguna meminta gerak dikurangi -->
+  <script>
+    (function () {
+      const slides = document.querySelectorAll('#hero-carousel-container .hero-slide');
+      if (slides.length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      let current = 0;
+      let timer = null;
+
+      const show = (next) => {
+        slides[current].classList.replace('opacity-100', 'opacity-0');
+        slides[next].classList.replace('opacity-0', 'opacity-100');
+        current = next;
+      };
+      const start = () => { timer = setInterval(() => show((current + 1) % slides.length), 5000); };
+      const stop = () => { clearInterval(timer); timer = null; };
+
+      document.addEventListener('visibilitychange', () => (document.hidden ? stop() : timer || start()));
+      start();
+    })();
+  </script>
+  @endif
 
 
 

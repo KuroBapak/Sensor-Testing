@@ -13,6 +13,9 @@
 <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
 @endif
 <link rel="canonical" href="{{ $seoUrl }}">
+@if($seoNoindex ?? false)
+<meta name="robots" content="noindex, follow">
+@endif
 <meta property="og:type" content="website">
 <meta property="og:locale" content="id_ID">
 @if(filled($seoSiteName))

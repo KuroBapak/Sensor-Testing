@@ -1,0 +1,13 @@
+@import 'tailwindcss/theme.css';
+@import 'tailwindcss/preflight.css';
+@import './compat.css';
+@import './forms.css';
+@import './typography-material.css';
+@import 'tailwindcss/utilities.css' source(none);
+
+@config './material.config.js';
+
+@source '../../views/works.blade.php';
+@source '../../views/portofolio.blade.php';
+@source '../../views/layouts';
+@source '../../views/components';

@@ -1,0 +1,16 @@
+@import 'tailwindcss/theme.css';
+@import 'tailwindcss/preflight.css';
+@import './compat.css';
+@import './typography-brand.css';
+@import 'tailwindcss/utilities.css' source(none);
+
+@config './home.config.js';
+
+@source '../../views/home.blade.php';
+@source '../../views/service.blade.php';
+@source '../../views/layouts';
+@source '../../views/components';
+
+.divide-slate-100 > :last-child {
+    border-color: var(--color-slate-100);
+}

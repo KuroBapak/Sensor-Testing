@@ -7,6 +7,14 @@ use RuntimeException;
 
 abstract class TestCase extends BaseTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // The compiled assets are not committed, so pages must render without a Vite build.
+        $this->withoutVite();
+    }
+
     /**
      * Refuse to run against a non-test database.
      *

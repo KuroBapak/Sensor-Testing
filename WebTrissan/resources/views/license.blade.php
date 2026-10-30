@@ -7,8 +7,6 @@
 @if(!empty($pageSettings?->seo_description))
 <meta name="description" content="{{ $pageSettings->seo_description }}">
 @endif
-<!-- Tailwind CSS CDN -->
-<script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <!-- Google Fonts: Montserrat & Inter -->
 <link href="https://fonts.googleapis.com" rel="preconnect">
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
@@ -16,224 +14,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
 <!-- Lucide Icons -->
 <script src="https://unpkg.com/lucide@1.64.0/dist/umd/lucide.min.js"></script>
-<script id="tailwind-config">
-  tailwind.config = {
-    darkMode: "class",
-    theme: {
-      extend: { fontSize: {'lg': ['1rem', {lineHeight: '1.6'}], 'xl': ['1.125rem', {lineHeight: '1.5'}], '2xl': ['1.25rem', {lineHeight: '1.4'}], '3xl': ['1.5rem', {lineHeight: '1.3'}], '4xl': ['1.75rem', {lineHeight: '1.25'}], '5xl': ['2.125rem', {lineHeight: '1.15'}], '6xl': ['2.5rem', {lineHeight: '1.1'}]},
-        "colors": {
-          "on-primary": "#ffffff",
-          "on-surface": "#0b1c30",
-          "on-primary-container": "#7689a4",
-          "on-error-container": "#93000a",
-          "outline": "#74777d",
-          "outline-variant": "#c4c6cd",
-          "surface-tint": "#4d6079",
-          "secondary": "#416279",
-          "inverse-on-surface": "#eaf1ff",
-          "error-container": "#ffdad6",
-          "background": "#f8f9ff",
-          "surface-dim": "#cbdbf5",
-          "on-secondary-fixed-variant": "#284a60",
-          "inverse-primary": "#b5c8e5",
-          "surface-container-lowest": "#ffffff",
-          "primary-fixed-dim": "#b5c8e5",
-          "on-primary-fixed": "#081c32",
-          "surface": "#f8f9ff",
-          "on-tertiary-fixed-variant": "#39485a",
-          "on-primary-fixed-variant": "#364860",
-          "tertiary": "#000916",
-          "inverse-surface": "#213145",
-          "surface-variant": "#d3e4fe",
-          "tertiary-fixed": "#d4e4fa",
-          "primary": "#000917",
-          "surface-container-low": "#eff4ff",
-          "surface-bright": "#f8f9ff",
-          "on-tertiary-fixed": "#0d1c2d",
-          "primary-fixed": "#d2e4ff",
-          "primary-container": "#0d2137",
-          "secondary-container": "#c2e4ff",
-          "on-secondary-container": "#45667d",
-          "surface-container-high": "#dce9ff",
-          "on-tertiary-container": "#7a899d",
-          "tertiary-container": "#122131",
-          "on-background": "#0b1c30",
-          "secondary-fixed-dim": "#a9cbe5",
-          "on-error": "#ffffff",
-          "on-tertiary": "#ffffff",
-          "tertiary-fixed-dim": "#b9c8de",
-          "secondary-fixed": "#c8e6ff",
-          "on-surface-variant": "#44474d",
-          "surface-container-highest": "#d3e4fe",
-          "surface-container": "#e5eeff",
-          "error": "#ba1a1a",
-          "on-secondary": "#ffffff",
-          "on-secondary-fixed": "#001e2e"
-        },
-        "borderRadius": {
-          "DEFAULT": "0.125rem",
-          "lg": "0.25rem",
-          "xl": "0.5rem",
-          "full": "0.75rem"
-        },
-        "spacing": {
-          "space-sm": "0.5rem",
-          "space-lg": "1.5rem",
-          "margin": "1rem",
-          "space-md": "1rem",
-          "space-2xl": "3rem",
-          "margin-desktop": "3rem",
-          "space-xl": "2rem",
-          "space-xs": "0.25rem",
-          "gutter-desktop": "1.5rem",
-          "margin-tablet": "2rem",
-          "gutter": "1.5rem",
-          "space-3xl": "4rem"
-        },
-        "fontFamily": {
-          "body-lg": [
-            "Inter"
-          ],
-          "label-sm": [
-            "Inter"
-          ],
-          "headline-lg": [
-            "Montserrat"
-          ],
-          "label-md": [
-            "Inter"
-          ],
-          "body-md": [
-            "Inter"
-          ],
-          "headline-md": [
-            "Montserrat"
-          ],
-          "body-sm": [
-            "Inter"
-          ],
-          "display-hero-mobile": [
-            "Montserrat"
-          ],
-          "display-hero": [
-            "Montserrat"
-          ],
-          "title-md": [
-            "Inter"
-          ],
-          "headline-sm": [
-            "Montserrat"
-          ],
-          "label-caps": [
-            "Montserrat"
-          ],
-          "headline-lg-mobile": [
-            "Montserrat"
-          ]
-        },
-        "fontSize": {
-          "body-lg": [
-            "16px",
-            {
-              "lineHeight": "26px",
-              "fontWeight": "400"
-            }
-          ],
-          "label-sm": [
-            "12px",
-            {
-              "lineHeight": "16px",
-              "fontWeight": "500"
-            }
-          ],
-          "headline-lg": [
-            "30px",
-            {
-              "lineHeight": "38px",
-              "letterSpacing": "-0.015em",
-              "fontWeight": "700"
-            }
-          ],
-          "label-md": [
-            "14px",
-            {
-              "lineHeight": "20px",
-              "fontWeight": "500"
-            }
-          ],
-          "body-md": [
-            "15px",
-            {
-              "lineHeight": "24px",
-              "fontWeight": "400"
-            }
-          ],
-          "headline-md": [
-            "22px",
-            {
-              "lineHeight": "30px",
-              "letterSpacing": "-0.01em",
-              "fontWeight": "700"
-            }
-          ],
-          "body-sm": [
-            "14px",
-            {
-              "lineHeight": "20px",
-              "fontWeight": "400"
-            }
-          ],
-          "display-hero-mobile": [
-            "28px",
-            {
-              "lineHeight": "36px",
-              "letterSpacing": "-0.02em",
-              "fontWeight": "800"
-            }
-          ],
-          "display-hero": [
-            "40px",
-            {
-              "lineHeight": "48px",
-              "letterSpacing": "-0.02em",
-              "fontWeight": "800"
-            }
-          ],
-          "title-md": [
-            "16px",
-            {
-              "lineHeight": "24px",
-              "fontWeight": "600"
-            }
-          ],
-          "headline-sm": [
-            "18px",
-            {
-              "lineHeight": "26px",
-              "fontWeight": "600"
-            }
-          ],
-          "label-caps": [
-            "12px",
-            {
-              "lineHeight": "16px",
-              "letterSpacing": "0.08em",
-              "fontWeight": "700"
-            }
-          ],
-          "headline-lg-mobile": [
-            "24px",
-            {
-              "lineHeight": "32px",
-              "letterSpacing": "-0.01em",
-              "fontWeight": "700"
-            }
-          ]
-        }
-      },
-    },
-  }
-</script>
 <style>
   @layer base {
     html {
@@ -246,6 +26,7 @@
 </style>
 <meta content="web_standard" name="shell-type">
 @include('layouts.scale')
+@vite('resources/css/site/license.css')
 </head>
 <body class="bg-surface text-on-surface antialiased relative selection:bg-primary-container selection:text-on-primary">
 @php $cms = fn (string $key): string => (string) $pageSettings?->extra($key); @endphp
@@ -367,7 +148,7 @@
 
 <!-- MODAL: VERIFIKASI SERTIFIKAT INTERAKTIF -->
 <div class="fixed inset-0 z-50 bg-primary/70 backdrop-blur-sm hidden items-center justify-center p-4" id="verificationModal">
-<div class="bg-surface-container-lowest max-w-lg w-full rounded-xl shadow-2xl p-6 md:p-8 relative">
+<div class="bg-surface-container-lowest max-w-lg w-full max-h-[92vh] overflow-y-auto rounded-xl shadow-2xl p-6 md:p-8 relative">
 <button class="absolute top-4 right-4 text-outline hover:text-primary transition" onclick="closeVerificationModal()">
 <span aria-hidden="true" class="material-symbols-outlined">close</span>
 </button>

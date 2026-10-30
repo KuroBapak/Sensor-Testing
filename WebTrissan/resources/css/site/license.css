@@ -1,0 +1,16 @@
+@import 'tailwindcss/theme.css';
+@import 'tailwindcss/preflight.css';
+@import './compat.css';
+@import './typography-material.css';
+@import 'tailwindcss/utilities.css' source(none);
+
+@config './material.config.js';
+
+@source '../../views/license.blade.php';
+@source '../../views/layouts';
+@source '../../views/components';
+
+/* The Play CDN had no scrollbar-none utility, so the category chips kept their scrollbar; v4 would hide it. */
+.scrollbar-none {
+    scrollbar-width: auto;
+}

@@ -138,13 +138,68 @@ test('above-the-fold project images on works and portfolio are not lazy-loaded b
 test('third-party scripts are pinned to exact versions', function (string $routeName) {
     $content = $this->get(route($routeName))->assertOk()->getContent();
 
-    expect($content)
-        ->not->toContain('lucide@latest')
-        ->not->toMatch('#cdn\.tailwindcss\.com(?:\?|")#');
+    expect($content)->not->toContain('lucide@latest');
 })->with(['home', 'about', 'works', 'portfolio', 'licenses']);
+
+test('styles are compiled by Vite instead of the Tailwind Play CDN', function (string $routeName) {
+    $content = $this->get(route($routeName))->assertOk()->getContent();
+
+    expect($content)
+        ->not->toContain('cdn.tailwindcss.com')
+        ->not->toContain('tailwind.config');
+})->with(['home', 'about', 'works', 'portfolio', 'licenses']);
+
+test('every stylesheet a public page loads through Vite is built by vite.config.js', function (string $view) {
+    $entries = [];
+    preg_match_all("/@vite\\('([^']+)'\\)/", file_get_contents(resource_path("views/{$view}.blade.php")), $entries);
+
+    expect($entries[1])->not->toBeEmpty();
+
+    foreach ($entries[1] as $entry) {
+        expect(file_get_contents(base_path('vite.config.js')))->toContain("'{$entry}'");
+        expect(base_path($entry))->toBeFile();
+    }
+})->with(['home', 'abtus', 'license', 'works', 'portofolio']);
+
+test('the service landing page is also styled by Vite, not the Tailwind Play CDN', function () {
+    $view = file_get_contents(resource_path('views/service.blade.php'));
+
+    expect($view)
+        ->toContain("@vite('resources/css/site/home.css')")
+        ->not->toContain('cdn.tailwindcss.com')
+        ->not->toContain('tailwind.config');
+
+    expect(file_get_contents(resource_path('css/site/home.css')))->toContain('views/service.blade.php');
+});
+
+test('hover styles apply on every device so the navbar dropdowns open, as they did under Tailwind v3', function () {
+    // v4 wraps hover: and group-hover: in @media (hover: hover), which embedded browsers and some touch laptops fail.
+    expect(file_get_contents(resource_path('css/site/compat.css')))->toContain('@custom-variant hover (&:hover);');
+
+    foreach (['home', 'about', 'license', 'catalog'] as $entry) {
+        expect(file_get_contents(resource_path("css/site/{$entry}.css")))->toContain("@import './compat.css';");
+    }
+});
 
 test('the mobile Kontak button does not depend on a brand color the page might not define', function (string $routeName) {
     $content = $this->get(route($routeName))->assertOk()->getContent();
 
     expect($content)->toMatch('#<a class="lg:hidden[^>]*bg-\[\#0A192F\][^>]*href="[^"]*/\#contact"#');
 })->with(['home', 'works', 'portfolio', 'licenses']);
+
+test('wide screens scale the page up from the 1280px laptop layout instead of stretching it', function (string $routeName) {
+    $content = $this->get(route($routeName))->assertOk()->getContent();
+
+    expect($content)
+        ->toContain("root.style.setProperty('--page-zoom', Math.min(width * 0.75 / 1280, 1.5).toFixed(4))")
+        ->toContain('if (width >= 1280)');
+})->with(['home', 'about', 'works', 'portfolio', 'licenses']);
+
+test('the sticky filter bar on works sits flush under the navbar at both navbar heights', function () {
+    // Navbar is h-14 (56px) below lg and h-[72px] from lg; the bar must stick at exactly that offset, with no gap.
+    $this->get(route('works'))
+        ->assertOk()
+        ->assertSee('md:sticky md:top-14 lg:top-[72px]', false);
+
+    expect(file_get_contents(resource_path('views/layouts/navbar.blade.php')))->toContain('h-14 lg:h-[72px]');
+});
