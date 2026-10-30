@@ -61,9 +61,18 @@ void alarm_output(char number) {
   digitalWrite(DO_DISCHARGE, DISCHARGE_);     // JIKA NOL MAKA AKTIF
   digitalWrite(DO_ALARM, ALARM_);             // JIKA NOL MAKA AKTIF
   if (ALARM_)
-    digitalWrite(DO_FAULT, ALARM_); // JIKA NOL MAKA AKTIF
+    fault_led_steady();
   else
     digitalToggle(DO_FAULT); // JIKA NOL MAKA AKTIF
+}
+
+// Kondisi tanpa alarm: LED fault kedip jika LHD disconnect atau LHD terbakar (SHORT), selain itu normal.
+// Dipanggil dari alarm_output (TaskLogic) ~tiap 250 ms, jadi toggle = kedip, tanpa delay.
+void fault_led_steady(void) {
+  if (LHD == LHD_DISCONNECT || (lhd_burned && LHD == LHD_SHORT))
+    digitalToggle(DO_FAULT);
+  else
+    digitalWrite(DO_FAULT, HIGH);
 }
 
 void LED_toggle() {

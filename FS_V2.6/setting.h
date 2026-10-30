@@ -39,6 +39,9 @@ vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) {
 ADS1115_WE adc = ADS1115_WE(I2C_ADDRESS);
 float voltage = 0.0;
 char LHD;
+// true = LHD sudah terbakar (siklus pelepasan selesai) & tersimpan di EEPROM.
+// Selama true dan LHD masih SHORT, panel TIDAK alarm lagi, hanya LED fault kedip.
+volatile bool lhd_burned = false;
 bool CALLBUTTON = 1, PRESSURE_1, PRESSURE_2;
 bool ALARM_OUTPUT, DETONATOR_1, DETONATOR_2;
 char CYCLE;
@@ -128,6 +131,7 @@ const char *PRESSURE_STATUS[] = {
 const char *LHD_STATUS[] = {
     "                    ", // 0
     "LHD TIDAK TERHUBUNG ", // 1
+    "LHD SHORT           ", // 2 (LHD terbakar)
 };
 
 const char *ALARM_STATE[] = {
@@ -170,6 +174,8 @@ static char EPPROM_ALARM_STATE[10] = {51, 52, 53, 54, 55, 56, 57, 58, 59, 60};
 #define EPPROM_ALARM_COUNT 66
 #define EPPROM_DELAY_WARNING 68
 #define EPPROM_DELAY_RELEASE 69
+#define EPPROM_LHD_BURNED 70
+#define LHD_REARM_PASS 20 // LHD harus NORMAL 20 putaran TaskLogic (~5 detik) baru flag dihapus
 
 bool setup_lcd = 0;
 

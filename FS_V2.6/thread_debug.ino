@@ -254,6 +254,35 @@ void reset_alarm_count(void) {
   EEPROM.write(EPPROM_ALARM_COUNT, 0);  // simpan alamt memory
 }
 
+// Simpan/hapus flag LHD terbakar. Pola sama dengan write_alarm_log:
+// task lain dijeda (wait_asecond) selama tulis flash, tidak ada loop tanpa batas.
+// Flash hanya ditulis kalau nilainya memang berubah.
+void write_lhd_burned(bool value) {
+  if (lhd_burned == value) return;
+  wait_asecond = true;
+  vTaskDelay(250);
+  lhd_burned = value;
+  if (EEPROM.read(EPPROM_LHD_BURNED) != (unsigned char)value) EEPROM.write(EPPROM_LHD_BURNED, value);
+  vTaskDelay(25);
+  wait_asecond = false;
+}
+
+// Dipanggil tiap putaran TaskLogic (non-blocking). LHD stabil NORMAL = sudah diganti -> re-arm.
+// LHD DISCONNECT / SHORT tidak menghapus flag.
+void lhd_burned_watch(void) {
+  static unsigned char normal_pass = 0;
+  if (!lhd_burned || LHD != LHD_NORMAL) {
+    normal_pass = 0;
+    return;
+  }
+  if (normal_pass < LHD_REARM_PASS) {
+    normal_pass++;
+    return;
+  }
+  normal_pass = 0;
+  write_lhd_burned(false);
+}
+
 void write_alarm_log(uint32_t epochtime, char alarm_value) {
   read_alarm_count();
   // Tulis date datalogger
@@ -335,6 +364,7 @@ void eeprom_setup(void) {
   read_delay_warning();
   read_delay_release();
   read_alarm_count();
+  lhd_burned = (EEPROM.read(EPPROM_LHD_BURNED) == 1);  // EEPROM kosong (255) = belum pernah terbakar
 
   if (config.delay_release == 0 || config.delay_release == 255) config.delay_release = 2;
   if (config.delay_warning == 0 || config.delay_warning == 255) config.delay_warning = 5;

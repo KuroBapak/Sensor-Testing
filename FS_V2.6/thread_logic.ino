@@ -10,7 +10,8 @@ void TaskLogic(void *pvParameters __attribute__((unused)))  // This is a Task.
         break;
       case STEADY:
         alarm_output(STEADY_OUTPUT);
-        if (LHD == LHD_SHORT  && !menu_state) STATE_PROCCES = WARNING_LHD;
+        // LHD sudah terbakar & masih SHORT = fault saja (LED kedip), jangan alarm lagi
+        if (LHD == LHD_SHORT  && !lhd_burned && !menu_state) STATE_PROCCES = WARNING_LHD;
         else if (!CALLBUTTON  && !menu_state) STATE_PROCCES = WARNING_CALLBUTTON;
         break;
       case WARNING_LHD:
@@ -90,6 +91,8 @@ loncat_proses_callbutton_2:
       case END_CYCLE_LHD:
         // siklus selesai
         STATUS_CYLINDER = 5;
+        alarm_output(ALARM_DOWN_OUTPUT);
+        write_lhd_burned(true);  // LHD dianggap terbakar, tersimpan di EEPROM
         while (1) {
           heartbeat_logic = true;  // IWDG: menunggu reset button
           alarm_output(ALARM_DOWN_OUTPUT);
@@ -117,7 +120,8 @@ reset_bro:
       default:
         STATE_PROCCES = 0;
     }
-    vTaskDelay(250); 
+    lhd_burned_watch();
+    vTaskDelay(250);
   }
 }
 
