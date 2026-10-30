@@ -7,7 +7,7 @@ void TaskDisplay(void *pvParameters __attribute__((unused)))  // This is a Task.
     xSemaphoreTake(sem, portMAX_DELAY);
     if (!menu_state) {
       lcd.setCursor(0, 0);
-      lcd.printf("   PANEL BTR %s   ", NO_UNIT[PANEL_UNIT]);
+      lcd.print("    IGNIPRO " NO_UNIT_PANEL "     ");
       lcd.setCursor(0, 3);
       lcd.print(buf);
       if (STATE_PROCCES == STEADY) {
@@ -67,11 +67,11 @@ void TaskDisplay(void *pvParameters __attribute__((unused)))  // This is a Task.
            lcd.setCursor(0, 0);
       lcd.print("INFO UNIT           ");
       lcd.setCursor(0, 1);
-      lcd.printf("Unit Number:%s   ", NO_UNIT[PANEL_UNIT]);
+      lcd.print("Unit :IGNIPRO_" NO_UNIT_PANEL "   ");
       lcd.setCursor(0, 3);
-      lcd.print("HW. Version:V2.2.0 ");
+      lcd.print("HW. Version:V2.6.0 ");
       lcd.setCursor(0, 2);
-      lcd.print("Prod. Date :19/05/25");
+      lcd.print("Prod. Date :7/10/26");
     }
     else if (menu_state >= LCD_MENU_2_SETTING_PARAMETER && menu_state < 10) {
         lcd.setCursor(0, 0);

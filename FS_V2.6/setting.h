@@ -35,13 +35,6 @@ vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) {
   }
 }
 
-const char *NO_UNIT[] = {
-    "1050",
-    "2000", // 0
-    "2019", // 1
-    "2060", // 2
-};
-
 #define I2C_ADDRESS 0x48
 ADS1115_WE adc = ADS1115_WE(I2C_ADDRESS);
 float voltage = 0.0;

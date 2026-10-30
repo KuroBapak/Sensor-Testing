@@ -8,16 +8,13 @@
  */
 
 
-// LIST PANEL UNIT
-#define BTR_1050     0    
-#define BTR_2000     1   
-#define BTR_2019     2   
-#define BTR_2025     3    
 // PANEL UNIT SETTING
+// Nomor unit: tepat 3 digit, "000" sampai "999". Tampil sebagai IGNIPRO_xxx
+#define NO_UNIT_PANEL "003"
 
-#define PANEL_UNIT   BTR_1050
+// Teks splash saat booting (maks 20 karakter per baris)
 #define VERSI_PROGRAM "               V2.6"
-#define NAMA_PANEL    " IGNIPRO-02        "
+#define NAMA_PANEL    " IGNIPRO-V2        "
 #define NAMA_MAKER    " MAKER : PT.TRISSAN"
 
 #define VOLTAGE_DISCONNECT_MAX  0.1f
