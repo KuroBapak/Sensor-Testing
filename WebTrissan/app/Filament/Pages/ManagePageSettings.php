@@ -2,9 +2,9 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Support\PhotoUpload;
 use App\Models\PageSetting;
 use Filament\Actions\Action;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Tabs;
@@ -103,15 +103,8 @@ class ManagePageSettings extends Page implements HasForms
                         Repeater::make('hero_slides')
                             ->label('Hero Background Carousel Slides')
                             ->schema([
-                                FileUpload::make('image')
-                                    ->disk('public')
-                                    ->image()
-                                    ->directory('hero')
-                                    ->maxSize(2048)
-                                    ->imageResizeMode('contain')
-                                    ->imageResizeTargetWidth('2560')
-                                    ->imageResizeTargetHeight('1440')
-                                    ->helperText('Foto lebar, maksimal 2 MB (JPG atau WebP disarankan); otomatis diperkecil ke 2560×1440. Salinan WebP yang lebih kecil dibuat otomatis untuk ponsel dan laptop. Jangan unggah logo.'),
+                                PhotoUpload::make('image', 'hero')
+                                    ->helperText('Foto lebar (bukan logo), JPG, PNG atau WebP, maksimal 12 MB. Otomatis diperkecil (maks. 2560 px lebar) dan dikompres, jadi tidak perlu dikompres dulu.'),
                                 TextInput::make('alt_text')
                                     ->required(),
                             ])
@@ -153,11 +146,8 @@ class ManagePageSettings extends Page implements HasForms
                 Section::make('About Teaser Section')
                     ->description('Company introduction preview section on the landing page.')
                     ->schema([
-                        FileUpload::make('about_teaser.image')
-                            ->disk('public')
-                            ->label('Teaser Image')
-                            ->image()
-                            ->directory('about'),
+                        PhotoUpload::make('about_teaser.image', 'about')
+                            ->label('Teaser Image'),
                         TextInput::make('about_teaser.image_badge')
                             ->label('Image Badge')
                             ->placeholder('EST. 1998 • 25+ THN'),

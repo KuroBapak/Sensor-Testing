@@ -248,7 +248,6 @@ test('the hero upload field rejects oversized files and resizes photos before up
     $source = file_get_contents(app_path('Filament/Pages/ManagePageSettings.php'));
 
     expect($source)
-        ->toContain('->maxSize(2048)')
-        ->toContain("->imageResizeTargetWidth('2560')")
+        ->toContain("PhotoUpload::make('image', 'hero')")
         ->toContain('->maxItems(3)');
 });

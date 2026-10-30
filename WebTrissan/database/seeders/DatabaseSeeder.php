@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             CertificationSeeder::class,
             PortfolioSeeder::class,
             PersonnelSeeder::class,
+            DemoContactDetails::class,
         ]);
     }
 

@@ -34,7 +34,7 @@ class ImageVariants
     /**
      * Source images larger than this many pixels are skipped, to keep PHP's memory use bounded.
      */
-    private const MAX_PIXELS = 40_000_000;
+    public const MAX_PIXELS = 25_000_000;
 
     /**
      * Whether a file on the public disk is a kind of image that gets copies.
@@ -73,9 +73,10 @@ class ImageVariants
         $created = 0;
 
         try {
-            [$width, $height] = Image::fromStorage($path, 'public')->dimensions();
+            // The header is read without decoding the picture, so a huge file never exhausts memory here.
+            [$width, $height] = @getimagesize($disk->path($path)) ?: [0, 0];
 
-            if ($width * $height > self::MAX_PIXELS) {
+            if ($width === 0 || $width * $height > self::MAX_PIXELS) {
                 Log::warning("Image variants skipped, {$path} is larger than ".self::MAX_PIXELS.' pixels.');
 
                 return 0;

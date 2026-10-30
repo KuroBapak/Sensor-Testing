@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PortfolioItemResource\Pages;
+use App\Filament\Support\PhotoUpload;
 use App\Models\PortfolioItem;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -32,10 +33,7 @@ class PortfolioItemResource extends Resource
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\FileUpload::make('image')
-                    ->disk('public')
-                    ->directory('portfolio')
-                    ->image(),
+                PhotoUpload::make('image', 'portfolio'),
                 Forms\Components\TextInput::make('industry_tag')
                     ->maxLength(255),
                 Forms\Components\Textarea::make('description')

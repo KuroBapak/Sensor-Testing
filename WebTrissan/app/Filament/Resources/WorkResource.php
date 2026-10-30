@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\WorkResource\Pages;
+use App\Filament\Support\PhotoUpload;
 use App\Models\Work;
 use Closure;
 use Filament\Forms;
@@ -82,16 +83,10 @@ class WorkResource extends Resource
 
                 Forms\Components\Section::make('Media')
                     ->schema([
-                        Forms\Components\FileUpload::make('work_image')
-                            ->disk('public')
-                            ->image()
-                            ->directory('works'),
-                        Forms\Components\FileUpload::make('gallery_images')
-                            ->disk('public')
-                            ->image()
+                        PhotoUpload::make('work_image', 'works'),
+                        PhotoUpload::make('gallery_images', 'works/gallery')
                             ->multiple()
                             ->reorderable()
-                            ->directory('works/gallery')
                             ->minFiles(1)
                             ->maxFiles(3),
                     ]),

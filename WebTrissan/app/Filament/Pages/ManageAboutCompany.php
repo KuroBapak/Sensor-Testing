@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Support\PhotoUpload;
 use App\Models\AboutCompany;
 use App\Support\OrgChart;
 use Filament\Actions\Action;
@@ -86,10 +87,7 @@ class ManageAboutCompany extends Page implements HasForms
                 Textarea::make('hero_description')
                     ->rows(4)
                     ->columnSpanFull(),
-                FileUpload::make('hero_image')
-                    ->disk('public')
-                    ->image()
-                    ->directory('about'),
+                PhotoUpload::make('hero_image', 'about'),
                 FileUpload::make('company_profile_pdf')
                     ->disk('public')
                     ->acceptedFileTypes(['application/pdf'])
@@ -168,10 +166,7 @@ class ManageAboutCompany extends Page implements HasForms
             ->schema([
                 Repeater::make('facilities')
                     ->schema([
-                        FileUpload::make('facility_image')
-                            ->disk('public')
-                            ->image()
-                            ->directory('facilities'),
+                        PhotoUpload::make('facility_image', 'facilities'),
                         TextInput::make('facility_tag')->required(),
                         TextInput::make('facility_title')->required(),
                         TextInput::make('spec_tag_1')->required(),
@@ -245,7 +240,7 @@ class ManageAboutCompany extends Page implements HasForms
                             ->numeric()
                             ->default(0)
                             ->helperText('Lower numbers appear first among people with the same manager.'),
-                        FileUpload::make('photo')->disk('public')->image()->directory('team'),
+                        PhotoUpload::make('photo', 'team'),
                     ])
                     ->columns(2)
                     ->columnSpanFull(),
