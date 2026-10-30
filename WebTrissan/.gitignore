@@ -20,6 +20,7 @@
 /public/storage
 /storage/*.key
 /storage/pail
+/trissan.mdhost.site-audit*/
 /vendor
 _ide_helper.php
 Homestead.json

@@ -74,7 +74,7 @@
 </main>
 @include('layouts.footer')
 <!-- Lightbox Modal Component -->
-<div id="deliverableModal" class="fixed inset-0 z-50 items-center justify-center p-4 bg-primary/80 backdrop-blur-sm transition-all duration-300 hidden" onclick="closeDeliverableModal(event)"><div class="relative bg-surface-container-lowest rounded-xl max-w-3xl w-full overflow-hidden shadow-2xl border border-outline-variant/30 flex flex-col" onclick="event.stopPropagation()"><div class="relative w-full bg-surface-container-low max-h-[60vh] flex items-center justify-center overflow-hidden"><img id="modalImage" alt="" class="w-full h-auto max-h-[60vh] object-contain rounded-t-xl hidden"><div class="hidden w-full h-48 flex items-center justify-center text-outline-variant" id="modalImagePlaceholder"><span aria-hidden="true" class="material-symbols-outlined text-6xl">precision_manufacturing</span></div><button onclick="hideDeliverableModal()" aria-label="Tutup Modal" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 hover:bg-surface-container-highest text-primary shadow-md flex items-center justify-center transition-colors z-10 backdrop-blur-sm"><span aria-hidden="true" class="material-symbols-outlined text-[20px]">close</span></button></div><div class="p-space-lg flex flex-col"><h3 id="modalTitle" class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold mb-2"></h3><p id="modalDesc" class="font-body-md text-body-md text-on-surface-variant leading-relaxed"></p></div></div></div>
+<div id="deliverableModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" class="fixed inset-0 z-50 items-center justify-center p-4 bg-primary/80 backdrop-blur-sm transition-all duration-300 hidden" onclick="closeDeliverableModal(event)"><div class="relative bg-surface-container-lowest rounded-xl max-w-3xl w-full overflow-hidden shadow-2xl border border-outline-variant/30 flex flex-col" onclick="event.stopPropagation()"><div class="relative w-full bg-surface-container-low max-h-[60vh] flex items-center justify-center overflow-hidden"><img id="modalImage" alt="" class="w-full h-auto max-h-[60vh] object-contain rounded-t-xl hidden"><div class="hidden w-full h-48 flex items-center justify-center text-outline-variant" id="modalImagePlaceholder"><span aria-hidden="true" class="material-symbols-outlined text-6xl">precision_manufacturing</span></div><button onclick="hideDeliverableModal()" aria-label="Tutup Modal" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-surface-container-lowest/90 hover:bg-surface-container-highest text-primary shadow-md flex items-center justify-center transition-colors z-10 backdrop-blur-sm"><span aria-hidden="true" class="material-symbols-outlined text-[20px]">close</span></button></div><div class="p-space-lg flex flex-col"><h3 id="modalTitle" class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold mb-2"></h3><p id="modalDesc" class="font-body-md text-body-md text-on-surface-variant leading-relaxed"></p></div></div></div>
 
 <script>
   const pagerClasses = {
@@ -175,6 +175,8 @@
   const modalImage = document.getElementById('modalImage');
   const modalImagePlaceholder = document.getElementById('modalImagePlaceholder');
 
+  let modalOpener = null;
+
   function openDeliverableModal(card) {
     const image = card.getAttribute('data-image') || '';
     document.getElementById('modalTitle').textContent = card.getAttribute('data-title') || '';
@@ -187,15 +189,19 @@
     } else {
       modalImage.removeAttribute('src');
     }
+    modalOpener = document.activeElement;
     modal.classList.remove('hidden');
     modal.classList.add('flex');
     document.body.style.overflow = 'hidden';
+    modal.querySelector('button')?.focus();
   }
 
   function hideDeliverableModal() {
     modal.classList.add('hidden');
     modal.classList.remove('flex');
     document.body.style.overflow = '';
+    modalOpener?.focus();
+    modalOpener = null;
   }
 
   function closeDeliverableModal(event) {

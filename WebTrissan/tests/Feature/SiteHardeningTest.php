@@ -117,7 +117,7 @@ test('only the first hero image is fetched with priority and the others are defe
 
     expect(count($matches[1]))->toBeGreaterThan(1)
         ->and($matches[1][0])->toContain('fetchpriority="high"')->not->toContain('loading="lazy"')
-        ->and($matches[1][1])->toContain('fetchpriority="low"')->toContain('loading="lazy"');
+        ->and($matches[1][1])->toContain('data-src="')->not->toContain(' src="')->not->toContain('fetchpriority');
 });
 
 test('above-the-fold project images on works and portfolio are not lazy-loaded but later ones are', function (string $routeName, string $cardMarker) {
@@ -202,4 +202,53 @@ test('the sticky filter bar on works sits flush under the navbar at both navbar 
         ->assertSee('md:sticky md:top-14 lg:top-[72px]', false);
 
     expect(file_get_contents(resource_path('views/layouts/navbar.blade.php')))->toContain('h-14 lg:h-[72px]');
+});
+
+test('error responses show Indonesian noindex pages that never reveal exception details', function (int $status, string $title) {
+    config(['app.debug' => false]);
+
+    Route::get('/uji-galat/{status}', fn (int $status) => abort($status, 'Rahasia internal: '.base_path()));
+
+    $response = $this->get('/uji-galat/'.$status)->assertStatus($status);
+
+    expect($response->getContent())
+        ->toContain('<html lang="id">')
+        ->toContain($title)
+        ->toContain('<meta name="robots" content="noindex">')
+        ->not->toContain('Rahasia internal')
+        ->not->toContain(base_path());
+})->with([
+    '401' => [401, 'Perlu masuk'],
+    '403' => [403, 'Akses ditolak'],
+    '404' => [404, 'Halaman tidak ditemukan'],
+    '405 uses the 4xx fallback' => [405, 'Permintaan tidak dapat diproses'],
+    '419' => [419, 'Sesi telah berakhir'],
+    '429' => [429, 'Terlalu banyak permintaan'],
+    '500' => [500, 'Terjadi kesalahan pada server'],
+    '502 uses the 5xx fallback' => [502, 'Terjadi gangguan pada server'],
+    '503' => [503, 'Sedang dalam pemeliharaan'],
+]);
+
+test('every modal is a labelled dialog that locks page scroll and manages focus', function (string $routeName, string $modalId, string $labelId) {
+    $content = $this->get(route($routeName))->assertOk()->getContent();
+
+    expect($content)
+        ->toMatch('#<div[^>]*id="'.$modalId.'"[^>]*role="dialog"|<div[^>]*role="dialog"[^>]*id="'.$modalId.'"#')
+        ->toMatch('#<div[^>]*id="'.$modalId.'"[^>]*aria-modal="true"|<div[^>]*aria-modal="true"[^>]*id="'.$modalId.'"#')
+        ->toContain('aria-labelledby="'.$labelId.'"')
+        ->toContain("document.body.style.overflow = 'hidden'")
+        ->toContain('.focus()');
+})->with([
+    'contact modal' => ['home', 'contact-modal', 'contact-modal-title'],
+    'certificate modal' => ['licenses', 'verificationModal', 'modalCertTitle'],
+    'deliverable modal' => ['portfolio', 'deliverableModal', 'modalTitle'],
+]);
+
+test('the hero upload field rejects oversized files and resizes photos before upload', function () {
+    $source = file_get_contents(app_path('Filament/Pages/ManagePageSettings.php'));
+
+    expect($source)
+        ->toContain('->maxSize(1024)')
+        ->toContain("->imageResizeTargetWidth('1920')")
+        ->toContain('->maxItems(3)');
 });

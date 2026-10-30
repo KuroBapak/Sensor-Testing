@@ -49,7 +49,7 @@
         @endphp
         @foreach($heroSlides as $slide)
           <div class="hero-slide absolute inset-0 transition-opacity duration-1000 {{ $loop->first ? 'opacity-100' : 'opacity-0' }}">
-            <img src="{{ $slide['image'] }}" alt="{{ $slide['alt'] }}" @if($loop->first) fetchpriority="high" @else fetchpriority="low" loading="lazy" @endif decoding="async" class="w-full h-full object-cover object-center transform scale-105">
+            <img @if($loop->first) src="{{ $slide['image'] }}" fetchpriority="high" @else data-src="{{ $slide['image'] }}" @endif alt="{{ $slide['alt'] }}" decoding="async" class="w-full h-full object-cover object-center transform scale-105">
             <div class="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-brand-navyDark/75 via-brand-navy/55 to-brand-navy/45 lg:from-brand-navyDark/80 lg:via-brand-navy/45 lg:to-brand-navyDark/25"></div>
           </div>
         @endforeach
@@ -478,11 +478,15 @@
     </div>
   </div>
   <script>
+    let contactModalOpener = null;
+
     function openContactModal() {
       const modal = document.getElementById('contact-modal');
+      contactModalOpener = document.activeElement;
       modal.classList.remove('hidden');
       modal.classList.add('flex');
       document.body.style.overflow = 'hidden';
+      document.getElementById('contact-name')?.focus();
     }
 
     function closeContactModal() {
@@ -490,6 +494,8 @@
       modal.classList.add('hidden');
       modal.classList.remove('flex');
       document.body.style.overflow = '';
+      contactModalOpener?.focus();
+      contactModalOpener = null;
     }
 
     document.getElementById('contact-modal').addEventListener('click', (e) => {
@@ -531,6 +537,17 @@
 
       let current = 0;
       let timer = null;
+
+      // Slides 2 and 3 are fetched only after the page has loaded, so they never compete with the first image.
+      const loadLaterSlides = () => setTimeout(() => {
+        document.querySelectorAll('#hero-carousel-container img[data-src]').forEach((image) => {
+          image.src = image.dataset.src;
+          image.removeAttribute('data-src');
+        });
+      }, 1000);
+
+      if (document.readyState === 'complete') loadLaterSlides();
+      else window.addEventListener('load', loadLaterSlides);
 
       const show = (next) => {
         slides[current].classList.replace('opacity-100', 'opacity-0');

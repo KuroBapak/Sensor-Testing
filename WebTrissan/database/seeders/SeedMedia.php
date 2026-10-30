@@ -80,6 +80,14 @@ class SeedMedia
     }
 
     /**
+     * The path of the real photo in database/seeders/images for a seed name, or null when there is none.
+     */
+    public static function sourceFor(string $name): ?string
+    {
+        return self::photoPath($name);
+    }
+
+    /**
      * The real photo for a seed name: the mapped file, else a file following the naming convention.
      */
     private static function photoPath(string $name): ?string

@@ -147,7 +147,7 @@
 <!-- SECTION 5: AUDIT CONSULTATION & TENDER SUPPORT (NAVY INDUSTRIAL BLOCK) -->
 
 <!-- MODAL: VERIFIKASI SERTIFIKAT INTERAKTIF -->
-<div class="fixed inset-0 z-50 bg-primary/70 backdrop-blur-sm hidden items-center justify-center p-4" id="verificationModal">
+<div class="fixed inset-0 z-50 bg-primary/70 backdrop-blur-sm hidden items-center justify-center p-4" id="verificationModal" role="dialog" aria-modal="true" aria-labelledby="modalCertTitle">
 <div class="bg-surface-container-lowest max-w-lg w-full max-h-[92vh] overflow-y-auto rounded-xl shadow-2xl p-6 md:p-8 relative">
 <button class="absolute top-4 right-4 text-outline hover:text-primary transition" onclick="closeVerificationModal()">
 <span aria-hidden="true" class="material-symbols-outlined">close</span>
@@ -285,6 +285,8 @@
       }
     }
 
+    let modalOpener = null;
+
     function openVerificationModal(source) {
       const data = source.dataset;
       document.getElementById('modalCertTitle').textContent = data.title || '';
@@ -308,14 +310,20 @@
       if (data.pdf) download.href = data.pdf;
 
       const modal = document.getElementById('verificationModal');
+      modalOpener = document.activeElement;
       modal.classList.remove('hidden');
       modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      modal.querySelector('button')?.focus();
     }
 
     function closeVerificationModal() {
       const modal = document.getElementById('verificationModal');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
+      document.body.style.overflow = '';
+      modalOpener?.focus();
+      modalOpener = null;
     }
 
     document.addEventListener('click', (e) => {
