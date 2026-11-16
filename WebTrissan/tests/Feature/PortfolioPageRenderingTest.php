@@ -46,7 +46,7 @@ test('portfolio deliverable falls back to a placeholder when the image file is m
 
     $content = $this->get(route('portfolio'))->assertOk()->getContent();
 
-    expect($content)->toContain('>precision_manufacturing<')->not->toContain('tidak-ada.jpg');
+    expect($content)->toContain('data-icon="precision_manufacturing"')->not->toContain('tidak-ada.jpg');
 });
 
 test('portfolio page lists every active personnel with registry id role cluster and at most three skills', function () {

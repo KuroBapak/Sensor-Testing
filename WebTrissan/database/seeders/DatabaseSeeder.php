@@ -28,8 +28,15 @@ class DatabaseSeeder extends Seeder
             CertificationSeeder::class,
             PortfolioSeeder::class,
             PersonnelSeeder::class,
-            DemoContactDetails::class,
         ]);
+
+        // Demo copy for the development deployment. The tests start from the plain data above, so they skip it.
+        if (! app()->environment('testing')) {
+            $this->call([
+                DemoContactDetailsSeeder::class,
+                DemoServiceContentSeeder::class,
+            ]);
+        }
     }
 
     /**

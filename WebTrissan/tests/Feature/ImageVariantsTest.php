@@ -174,3 +174,37 @@ test('the pre-warm command writes the missing copies for every image on the disk
 
     $this->artisan('media:variants')->expectsOutputToContain('wrote 0 copy(ies)')->assertSuccessful();
 });
+
+test('the size of a stored image is read from its header, and is null for anything else', function () {
+    storeJpeg('hero/size.jpg', 1600, 900);
+
+    expect(ImageVariants::dimensions(asset('storage/hero/size.jpg')))->toBe(['width' => 1600, 'height' => 900])
+        ->and(ImageVariants::dimensions('https://example.com/a.jpg'))->toBeNull()
+        ->and(ImageVariants::dimensions(null))->toBeNull()
+        ->and(ImageVariants::dimensions(asset('storage/hero/absent.jpg')))->toBeNull();
+});
+
+test('the responsive image reserves its space with an aspect ratio, not stretching width and height attributes', function () {
+    storeJpeg('hero/ratio.jpg', 1600, 900);
+
+    $html = (string) $this->blade('<x-responsive-image :src="$src" alt="Foto" class="h-12" />', [
+        'src' => asset('storage/hero/ratio.jpg'),
+    ]);
+
+    expect($html)->toContain('style="aspect-ratio: 1600 / 900"')
+        ->not->toContain('width="')
+        ->not->toContain('height="');
+});
+
+test('an image of unknown size gets no aspect ratio, and a caller-provided style is kept', function () {
+    storeJpeg('hero/styled.jpg', 800, 400);
+
+    $external = (string) $this->blade('<x-responsive-image src="https://example.com/a.jpg" alt="Luar" />');
+    $styled = (string) $this->blade('<x-responsive-image :src="$src" alt="Foto" style="opacity: .5" />', [
+        'src' => asset('storage/hero/styled.jpg'),
+    ]);
+
+    expect($external)->not->toContain('aspect-ratio')
+        ->and($styled)->toContain('style="opacity: .5"')
+        ->not->toContain('aspect-ratio');
+});

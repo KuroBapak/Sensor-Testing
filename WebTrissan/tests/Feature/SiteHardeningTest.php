@@ -29,8 +29,9 @@ test('the sitemap still renders when a page has no CMS settings row', function (
 
     $xml = simplexml_load_string($this->get(route('sitemap'))->assertOk()->getContent());
 
+    // Without page settings, the date still comes from the records shown on the page.
     expect($xml->url)->toHaveCount(5)
-        ->and(isset($xml->url[0]->lastmod))->toBeFalse();
+        ->and(isset($xml->url[0]->lastmod))->toBeTrue();
 });
 
 /**
@@ -181,10 +182,13 @@ test('hover styles apply on every device so the navbar dropdowns open, as they d
     }
 });
 
-test('the mobile Kontak button does not depend on a brand color the page might not define', function (string $routeName) {
+test('the phone header has a menu button for the tab bar instead of a Kontak button, and the desktop menu keeps its Kontak link', function (string $routeName) {
     $content = $this->get(route($routeName))->assertOk()->getContent();
 
-    expect($content)->toMatch('#<a class="lg:hidden[^>]*bg-\[\#0A192F\][^>]*href="[^"]*/\#contact"#');
+    expect($content)->toContain('id="bottom-nav-toggle"')
+        ->toContain('aria-controls="bottom-nav"')
+        ->not->toMatch('#<a class="lg:hidden[^>]*>\s*<svg[^>]*>.*?</svg>\s*Kontak\s*</a>#s')
+        ->toMatch('#<a href="[^"]*/\#contact" class="nav-link[^>]*>Kontak</a>#');
 })->with(['home', 'works', 'portfolio', 'licenses']);
 
 test('wide screens scale the page up from the 1280px laptop layout instead of stretching it', function (string $routeName) {

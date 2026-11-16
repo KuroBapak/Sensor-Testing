@@ -55,7 +55,7 @@ test('about page hides the profile download and partners banner when files are m
         ->assertDontSee('Unduh Company Profile')
         ->assertDontSee('Our Partners')
         ->assertDontSee('tidak-ada', false)
-        ->assertSee('>precision_manufacturing<', false);
+        ->assertSee('data-icon="precision_manufacturing"', false);
 });
 
 test('about hero stats come from the global company stats using the about labels', function () {
@@ -96,7 +96,7 @@ test('about page renders facilities ordered by sort order and with a placeholder
     $content = $this->get(route('about'))->assertOk()->getContent();
 
     expect(strpos($content, 'Fasilitas Pertama Uji'))->toBeLessThan(strpos($content, 'Fasilitas Terakhir Uji'))
-        ->and($content)->toContain('>factory<')
+        ->and($content)->toContain('data-icon="factory"')
         ->toContain(e($facilities[0]['spec_tag_1']));
 });
 

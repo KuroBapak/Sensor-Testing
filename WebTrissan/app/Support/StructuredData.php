@@ -4,9 +4,11 @@ namespace App\Support;
 
 use App\Models\GlobalSetting;
 use App\Models\Service;
+use Illuminate\Support\Collection;
 
 /**
- * Builds the schema.org JSON-LD graph (Organization, WebSite, BreadcrumbList and Service) from CMS data.
+ * Builds the schema.org JSON-LD graph (Organization with its service catalogue, WebSite, the page itself,
+ * BreadcrumbList and Service) from CMS data.
  */
 class StructuredData
 {
@@ -17,17 +19,28 @@ class StructuredData
      */
     private const BREADCRUMB_LABELS = [
         'about' => 'Tentang Kami',
-        'works' => 'Works',
+        'works' => 'Proyek',
         'portfolio' => 'Portofolio',
         'licenses' => 'Lisensi',
     ];
 
     /**
+     * The schema.org type of the page itself per route name; other pages are a plain WebPage.
+     *
+     * @var array<string, string>
+     */
+    private const PAGE_TYPES = [
+        'about' => 'AboutPage',
+        'works' => 'CollectionPage',
+        'portfolio' => 'CollectionPage',
+    ];
+
+    /**
      * The JSON-LD payload safe to print inside a script tag, or null when there is no company name to describe.
      */
-    public static function json(?GlobalSetting $global, ?string $routeName, ?Service $service = null): ?string
+    public static function json(?GlobalSetting $global, ?string $routeName, ?Service $service = null, ?string $title = null, ?string $description = null, ?Collection $services = null): ?string
     {
-        $graph = self::graph($global, $routeName, $service);
+        $graph = self::graph($global, $routeName, $service, $title, $description, $services);
 
         if ($graph === []) {
             return null;
@@ -40,17 +53,20 @@ class StructuredData
     }
 
     /**
+     * @param  Collection<int, Service>|null  $services  The services already loaded for the page, to avoid asking again
      * @return array<int, array<string, mixed>>
      */
-    public static function graph(?GlobalSetting $global, ?string $routeName, ?Service $service = null): array
+    public static function graph(?GlobalSetting $global, ?string $routeName, ?Service $service = null, ?string $title = null, ?string $description = null, ?Collection $services = null): array
     {
         if ($global === null || blank($global->company_name)) {
             return [];
         }
 
-        $graph = [self::organization($global), self::website($global)];
+        $graph = [self::organization($global, $services), self::website($global)];
 
         $breadcrumb = self::breadcrumb($routeName, $service);
+
+        $graph[] = self::webPage($routeName, $title, $description, $breadcrumb !== null);
 
         if ($breadcrumb !== null) {
             $graph[] = $breadcrumb;
@@ -66,7 +82,7 @@ class StructuredData
     /**
      * @return array<string, mixed>
      */
-    private static function organization(GlobalSetting $global): array
+    private static function organization(GlobalSetting $global, ?Collection $services): array
     {
         $phones = collect($global->phones ?? [])
             ->map(fn (array $phone): ?string => self::internationalPhone((string) ($phone['tel_url'] ?? $phone['display_text'] ?? '')))
@@ -79,7 +95,9 @@ class StructuredData
             'name' => $global->company_name,
             'slogan' => $global->company_tagline,
             'url' => url('/'),
-            'logo' => $global->navbar_logo_url,
+            'description' => $global->footer_description,
+            'logo' => self::logo($global->navbar_logo_url),
+            'image' => BrandImages::social($global)['url'] ?? null,
             'email' => $global->primary_email,
             'telephone' => $phones->first(),
             'address' => filled($global->factory_address) ? self::postalAddress($global->factory_address) : null,
@@ -90,10 +108,73 @@ class StructuredData
                 'areaServed' => 'ID',
                 'availableLanguage' => 'id',
             ])->all(),
+            'areaServed' => ['@type' => 'Country', 'name' => 'Indonesia'],
+            'hasOfferCatalog' => self::offerCatalog($global, $services),
             'sameAs' => self::profileUrls($global),
         ], fn (mixed $value): bool => filled($value));
 
         return $organization;
+    }
+
+    /**
+     * The logo with its size when it is a stored picture, so search engines know its proportions, else just its address.
+     *
+     * @return array<string, mixed>|string|null
+     */
+    private static function logo(?string $url): array|string|null
+    {
+        $size = ImageVariants::dimensions($url);
+
+        return $size === null ? $url : ['@type' => 'ImageObject', 'url' => $url, ...$size];
+    }
+
+    /**
+     * The services the company offers, each with a link to its page when that page is ready to be indexed.
+     *
+     * @param  Collection<int, Service>|null  $services
+     * @return array<string, mixed>|null
+     */
+    private static function offerCatalog(GlobalSetting $global, ?Collection $services): ?array
+    {
+        $services = ($services?->whereInstanceOf(Service::class) ?? Service::query()->orderBy('sort_order')->get())->values();
+
+        if ($services->isEmpty()) {
+            return null;
+        }
+
+        return [
+            '@type' => 'OfferCatalog',
+            'name' => 'Layanan '.$global->company_name,
+            'itemListElement' => $services->map(fn (Service $service): array => [
+                '@type' => 'Offer',
+                'itemOffered' => array_filter([
+                    '@type' => 'Service',
+                    'name' => $service->service_title,
+                    'description' => $service->service_description,
+                    'url' => $service->hasLandingContent() ? route('services.show', $service) : null,
+                ], fn (mixed $value): bool => filled($value)),
+            ])->all(),
+        ];
+    }
+
+    /**
+     * The page being viewed, part of the website and about the organization.
+     *
+     * @return array<string, mixed>
+     */
+    private static function webPage(?string $routeName, ?string $title, ?string $description, bool $hasBreadcrumb): array
+    {
+        return array_filter([
+            '@type' => self::PAGE_TYPES[$routeName] ?? 'WebPage',
+            '@id' => url()->current().'#webpage',
+            'url' => url()->current(),
+            'name' => $title,
+            'description' => $description,
+            'inLanguage' => 'id',
+            'isPartOf' => ['@id' => rtrim(url('/'), '/').'/#website'],
+            'about' => ['@id' => self::organizationId()],
+            'breadcrumb' => $hasBreadcrumb ? ['@id' => url()->current().'#breadcrumb'] : null,
+        ], fn (mixed $value): bool => filled($value));
     }
 
     /**
@@ -126,6 +207,7 @@ class StructuredData
 
         return [
             '@type' => 'BreadcrumbList',
+            '@id' => url()->current().'#breadcrumb',
             'itemListElement' => [
                 ['@type' => 'ListItem', 'position' => 1, 'name' => 'Beranda', 'item' => url('/')],
                 ['@type' => 'ListItem', 'position' => 2, 'name' => $label, 'item' => url()->current()],

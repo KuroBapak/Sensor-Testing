@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Support\IconSelect;
 use App\Filament\Support\PhotoUpload;
 use App\Models\PageSetting;
 use Filament\Actions\Action;
@@ -234,9 +235,8 @@ class ManagePageSettings extends Page implements HasForms
                     ->schema([
                         Repeater::make('stats')
                             ->schema([
-                                TextInput::make('icon')
-                                    ->label('Icon (Material Symbol)')
-                                    ->placeholder('e.g. local_shipping'),
+                                IconSelect::make('icon')
+                                    ->label('Ikon'),
                                 TextInput::make('value')
                                     ->required()
                                     ->placeholder('e.g. 120+'),
@@ -287,9 +287,8 @@ class ManagePageSettings extends Page implements HasForms
                     ->schema([
                         Repeater::make('stats')
                             ->schema([
-                                TextInput::make('icon')
-                                    ->label('Icon (Material Symbol)')
-                                    ->placeholder('e.g. engineering'),
+                                IconSelect::make('icon')
+                                    ->label('Ikon'),
                                 TextInput::make('value')
                                     ->required()
                                     ->placeholder('e.g. 15'),
@@ -359,9 +358,8 @@ class ManagePageSettings extends Page implements HasForms
                     ->schema([
                         Repeater::make('stats')
                             ->schema([
-                                TextInput::make('icon')
-                                    ->label('Icon (Material Symbol)')
-                                    ->placeholder('e.g. verified'),
+                                IconSelect::make('icon')
+                                    ->label('Ikon'),
                                 TextInput::make('value')
                                     ->required()
                                     ->placeholder('e.g. 4+'),
@@ -382,10 +380,9 @@ class ManagePageSettings extends Page implements HasForms
                     ->schema([
                         Repeater::make('corporate_highlight_cards')
                             ->schema([
-                                TextInput::make('icon')
-                                    ->label('Icon (Material Symbol)')
-                                    ->required()
-                                    ->placeholder('e.g. verified_user'),
+                                IconSelect::make('icon')
+                                    ->label('Ikon')
+                                    ->required(),
                                 TextInput::make('title')
                                     ->label('Standard Title')
                                     ->required()

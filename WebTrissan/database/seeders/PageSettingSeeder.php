@@ -24,7 +24,7 @@ class PageSettingSeeder extends Seeder
         PageSetting::updateOrCreate(
             ['page' => 'landing'],
             [
-                'seo_title' => 'PT. Trissan | Solusi Kelistrikan, Mekanikal & Otomasi Industri',
+                'seo_title' => 'PT. Trissan | Kelistrikan, Mekanikal & Otomasi Industri',
                 'seo_description' => 'PT. Trissan menyediakan produk dan layanan kelistrikan serta mekanikal industri: material handling, otomasi, panel distribusi, hingga perawatan mesin.',
                 'hero_title' => 'Solusi Kelistrikan & Mekanikal untuk Industri Anda',
                 'hero_subtitle' => 'Dari material handling, otomasi, hingga instalasi dan perawatan mesin. PT. Trissan selalu hadir lebih baik dengan dukungan, keahlian, dan layanan purna jual yang maksimal.',
@@ -40,15 +40,15 @@ class PageSettingSeeder extends Seeder
                     'rating' => '',
                     'description' => 'Dipercaya oleh perusahaan manufaktur dan industri terkemuka di Indonesia untuk instalasi, otomasi, dan perawatan fasilitas produksi.',
                     'clients' => ['YAMAHA', 'YASKAWA', 'DAIKIN', 'FREEPORT'],
-                    'footer_left' => '3 Cabang Nasional',
-                    'footer_right' => 'Bekasi • Malang • Timika',
+                    'footer_left' => 'Kantor Pusat',
+                    'footer_right' => 'Bekasi, Jawa Barat',
                 ],
                 'about_teaser' => [
                     'image' => SeedMedia::image('about-teaser'),
                     'image_badge' => 'ALWAYS PRESENT BETTER',
                     'eyebrow' => 'TENTANG PERUSAHAAN',
                     'title' => 'Solusi Terbaik untuk Kebutuhan Pelanggan',
-                    'description' => "PT. Trissan didirikan dengan tujuan memberi solusi dalam pemenuhan kebutuhan pelanggan. Kami menawarkan beragam produk kelistrikan dan mekanikal dengan dukungan dan keahlian yang lebih baik.\n\nKomitmen kami adalah memberikan pelayanan purna jual yang maksimal untuk produk dan layanan yang berkualitas. Hari ini tim kami melayani pelanggan dari tiga kantor di Bekasi, Malang, dan Timika.",
+                    'description' => "PT. Trissan didirikan dengan tujuan memberi solusi dalam pemenuhan kebutuhan pelanggan. Kami menawarkan beragam produk kelistrikan dan mekanikal dengan dukungan dan keahlian yang lebih baik.\n\nKomitmen kami adalah memberikan pelayanan purna jual yang maksimal untuk produk dan layanan yang berkualitas. Hari ini tim kami melayani pelanggan dari kantor pusat kami di Bekasi.",
                     'cta_text' => 'Pelajari Profil Lengkap',
                     'cta_url' => '/about',
                 ],
@@ -81,9 +81,9 @@ class PageSettingSeeder extends Seeder
         PageSetting::updateOrCreate(
             ['page' => 'works'],
             [
-                'seo_title' => 'Daftar Proyek & Hasil Pengerjaan (Works) | PT. Trissan',
+                'seo_title' => 'Daftar Proyek & Hasil Pengerjaan | PT. Trissan',
                 'seo_description' => 'Dokumentasi proyek PT. Trissan: instalasi fire hydrant, water meter, chiller duct bypass, serta konveyor material handling untuk pelanggan industri.',
-                'hero_title' => 'DAFTAR PROYEK & HASIL PENGERJAAN (WORKS)',
+                'hero_title' => 'Daftar Proyek & Hasil Pengerjaan',
                 'hero_subtitle' => 'Rekam jejak proyek instalasi, konveyor material handling, dan perawatan mesin yang kami kerjakan untuk pelanggan industri.',
                 'stats' => [
                     ['value' => '7', 'label' => 'Proyek Terdokumentasi', 'icon' => 'task_alt', 'caption' => 'Instalasi, Konveyor & Maintenance'],
@@ -101,13 +101,13 @@ class PageSettingSeeder extends Seeder
             ['page' => 'portfolio'],
             [
                 'seo_title' => 'Portofolio & Tim Profesional | PT. Trissan',
-                'seo_description' => 'Portofolio proyek PT. Trissan: instalasi fire hydrant, chiller, dan konveyor untuk pelanggan industri, serta tim profesional di Bekasi, Malang, dan Timika.',
-                'hero_title' => 'PORTOFOLIO PROYEK & TIM PROFESIONAL',
+                'seo_description' => 'Portofolio proyek PT. Trissan: instalasi fire hydrant, chiller, dan konveyor untuk pelanggan industri, serta tim profesional di Bekasi.',
+                'hero_title' => 'Portofolio Proyek & Tim Profesional',
                 'hero_subtitle' => 'Kebutuhan pelanggan adalah faktor terpenting dalam pekerjaan kami, mulai dari desain hingga finishing assembly, dikerjakan secara terukur, terencana, dan terpadu.',
                 'registry_revision_tag' => 'TRISSAN REGISTRY',
                 'stats' => [
-                    ['value' => '3', 'label' => 'Kantor Cabang', 'caption' => 'Bekasi, Malang, Timika'],
-                    ['value' => '145', 'label' => 'Karyawan', 'caption' => 'Seluruh cabang'],
+                    ['value' => '1', 'label' => 'Kantor Pusat', 'caption' => 'Bekasi'],
+                    ['value' => '145', 'label' => 'Karyawan', 'caption' => 'Seluruh tim'],
                     ['value' => '20+', 'label' => 'Klien Industri', 'caption' => 'Otomotif, Pertambangan, Manufaktur'],
                     ['value' => '12', 'label' => 'Bidang Layanan', 'caption' => 'Specialty Clusters'],
                     ['value' => '7', 'label' => 'Deliverables', 'caption' => 'Documented Projects'],
@@ -132,7 +132,7 @@ class PageSettingSeeder extends Seeder
             [
                 'seo_title' => 'Lisensi & Akreditasi Mutu | PT. Trissan',
                 'seo_description' => 'Lisensi, sertifikasi, dan akreditasi mutu PT. Trissan sebagai bukti komitmen pada kualitas produk, keselamatan kerja, dan standar industri.',
-                'hero_title' => 'LISENSI & AKREDITASI MUTU',
+                'hero_title' => 'Lisensi & Akreditasi Mutu',
                 'hero_subtitle' => 'Komitmen terhadap mutu, keselamatan kerja, dan standar industri.',
                 'hero_badge_card' => [
                     'eyebrow' => 'Integritas Mutu',
@@ -169,7 +169,7 @@ class PageSettingSeeder extends Seeder
             ['page' => 'about'],
             [
                 'seo_title' => 'Tentang Kami | PT. Trissan',
-                'seo_description' => 'Profil PT. Trissan: komitmen, prinsip kerja, jaringan kantor di Bekasi, Malang, dan Timika, serta bidang layanan perusahaan.',
+                'seo_description' => 'Profil PT. Trissan: komitmen, prinsip kerja, kantor pusat di Bekasi, serta bidang layanan perusahaan.',
                 'extra_data' => [
                     'values_badge' => 'Komitmen & Prinsip Kerja',
                     'values_subtitle' => 'Prioritas PT. Trissan dalam Setiap Pekerjaan',
@@ -181,7 +181,7 @@ class PageSettingSeeder extends Seeder
                     'milestones_description' => 'Perjalanan dan pencapaian PT. Trissan dari tahun ke tahun.',
                     'structure_badge' => 'Tata Kelola & Kepemimpinan',
                     'structure_title' => 'Bagan Struktur Organisasi Perusahaan',
-                    'structure_description' => 'Struktur kepemimpinan dan tim PT. Trissan, dari jajaran direksi hingga tim proyek di kantor pusat dan kantor perwakilan Timika.',
+                    'structure_description' => 'Struktur kepemimpinan dan tim PT. Trissan, dari jajaran direksi hingga tim proyek di kantor pusat Bekasi.',
                 ],
             ]
         );

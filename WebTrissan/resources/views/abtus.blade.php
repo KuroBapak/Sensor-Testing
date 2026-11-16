@@ -7,10 +7,6 @@
 @if(!empty($pageSettings?->seo_description))
 <meta name="description" content="{{ $pageSettings->seo_description }}">
 @endif
-<link href="https://fonts.googleapis.com" rel="preconnect">
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
 <style>
     body {
       background-color: #f8f9ff;
@@ -23,25 +19,27 @@
       font-family: 'Montserrat', sans-serif;
     }
   </style>
+@include('layouts.fonts', ['mono' => true])
 @include('layouts.scale')
 @vite('resources/css/site/about.css')
 </head>
 <body class="bg-[#f8f9ff] min-h-screen antialiased text-slate-800 selection:bg-blue-600 selection:text-white">
 @php $cms = fn (string $key): string => (string) $pageSettings?->extra($key); @endphp
 @include('layouts.navbar')
-<!-- Top Hero / Header Section: Clean & Spacious Architectural Layout -->
+
+<main>
 <header id="about-hero" class="bg-gradient-to-b from-[#0d2137] via-[#091829] to-[#071321] text-white py-4 md:py-12 px-4 md:px-8 relative overflow-hidden" style="background: linear-gradient(rgb(13, 33, 55) 0%, rgb(9, 24, 41) 50%, rgb(7, 19, 33) calc(100% - 150px), rgb(248, 249, 255) calc(100% - 150px), rgb(248, 249, 255) 100%);">
   <div class="absolute -top-40 right-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
   <div class="absolute bottom-10 -left-20 w-[450px] h-[450px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
   <div class="max-w-7xl mx-auto relative z-10">
-    <!-- Main Hero Grid -->
+
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start mb-6">
-      <!-- Left Column -->
-      <div class="lg:col-span-6 flex flex-col justify-center lg:pt-20"><nav class="flex items-center gap-2 text-xs font-medium text-slate-300 mb-3 md:mb-6" aria-label="Breadcrumb"><a href="{{ url('/') }}" class="flex items-center gap-1.5 hover:text-white transition-colors"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg><span class="">Beranda</span></a><span class="text-slate-400">/</span><span class="text-white font-semibold">About Us</span></nav><div class="inline-flex items-center gap-2 px-2.5 py-1 md:px-3 rounded bg-blue-500/10 border border-blue-400/20 text-blue-300 font-mono text-[11px] md:text-xs font-semibold tracking-wider uppercase mb-3 md:mb-6 w-fit">{{ $aboutCompany->hero_badge }}</div><h1 class="text-xl sm:text-3xl md:text-5xl font-extrabold font-heading tracking-tight text-white leading-tight uppercase mb-3 md:mb-7">{{ $aboutCompany->hero_title }}</h1><div class="space-y-2 md:space-y-4 text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed mb-4 md:mb-10 max-w-xl font-normal">@foreach($aboutCompany->hero_paragraphs as $paragraph)<p class="{{ $loop->first ? '' : 'text-slate-400 text-xs sm:text-sm' }}">{{ $paragraph }}</p>@endforeach</div><div class="flex flex-wrap items-center gap-4">@if($aboutCompany->company_profile_pdf_url)<a class="inline-flex items-center gap-2.5 px-5 py-2.5 md:px-6 md:py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-mono font-bold uppercase tracking-wider transition-all duration-200 shadow-lg shadow-blue-900/30 hover:-translate-y-0.5 flex-shrink-0" download href="{{ $aboutCompany->company_profile_pdf_url }}"><span class="">Unduh Company Profile (PDF)</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>@endif</div></div>
-      <!-- Right Column -->
-      <div class="lg:col-span-6 relative pt-6"><div class="relative rounded-2xl p-1.5 md:p-2 bg-gradient-to-b from-slate-700/40 via-slate-800/20 to-slate-800/60 border border-slate-700/70 shadow-2xl backdrop-blur-sm"><div class="relative rounded-xl overflow-hidden aspect-[16/10] bg-slate-900">@if($aboutCompany->hero_image_url)<x-responsive-image :src="$aboutCompany->hero_image_url" :alt="$aboutCompany->hero_title" sizes="(min-width: 1024px) 50vw, 100vw" fetchpriority="high" decoding="async" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />@else<div class="w-full h-full flex items-center justify-center text-slate-600"><span aria-hidden="true" class="material-symbols-outlined text-7xl">precision_manufacturing</span></div>@endif<div class="absolute inset-0 bg-gradient-to-t from-[#071321]/90 via-transparent to-black/20 pointer-events-none"></div><div class="absolute top-3 left-3 md:top-4 md:left-4 z-10"><span class="inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-md bg-[#0d2137]/90 backdrop-blur-md border border-slate-600/60 text-white font-mono text-[10px] md:text-[11px] font-medium tracking-wide"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> {{ $aboutCompany->image_overlay['plant_badge'] ?? '' }}</span></div><div class="absolute bottom-3 left-3 right-3 md:bottom-4 md:left-4 md:right-4 z-10 flex flex-wrap items-center justify-between gap-2 md:gap-3 p-2.5 md:p-3.5 rounded-lg bg-[#071321]/90 backdrop-blur-md border border-slate-700/80"><div><div class="text-[11px] md:text-xs font-bold font-heading text-white tracking-wide">{{ $aboutCompany->image_overlay['caption_title'] ?? '' }}</div><div class="text-[10px] md:text-[11px] font-mono text-slate-400 mt-0.5">{{ $aboutCompany->image_overlay['caption_subtitle'] ?? '' }}</div></div><div class="inline-flex items-center gap-2 px-2 py-0.5 md:px-2.5 md:py-1 rounded bg-blue-600/30 border border-blue-400/40 text-blue-300 font-mono text-[10px] font-bold">{{ $aboutCompany->image_overlay['tolerance_chip'] ?? '' }}</div></div></div></div><div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mt-3 md:mt-4">@foreach(($globalSettings->company_stats ?? []) as $stat)<div class="p-2.5 md:p-3.5 rounded-xl bg-slate-900/60 border border-slate-700/70 backdrop-blur-md"><div class="text-lg md:text-xl font-extrabold font-heading {{ $loop->odd ? 'text-blue-400' : 'text-white' }} tracking-tight leading-tight">{{ $stat['value'] ?? '' }}</div><div class="text-[10px] md:text-[11px] text-slate-300 font-mono uppercase tracking-wider font-medium mt-0.5 md:mt-1">{{ $stat['label_about'] ?? ($stat['label_landing'] ?? '') }}</div></div>@endforeach</div><div class="w-full flex justify-center items-center mt-3 md:mt-4">@if($aboutCompany->partners_image_url)<x-responsive-image :src="$aboutCompany->partners_image_url" alt="Logo klien perusahaan" sizes="(min-width: 768px) 448px, 280px" loading="lazy" decoding="async" class="w-full max-w-[280px] sm:max-w-xs md:max-w-md h-auto object-contain rounded-xl transition-transform duration-500 hover:scale-105 shadow-sm mx-auto" />@endif</div></div>
+
+      <div class="lg:col-span-6 flex flex-col justify-center lg:pt-20"><nav class="flex items-center gap-2 text-xs font-medium text-slate-300 mb-3 md:mb-6" aria-label="Breadcrumb"><a href="{{ url('/') }}" class="flex items-center gap-1.5 hover:text-white transition-colors"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg><span class="">Beranda</span></a><span class="text-slate-400">/</span><span class="text-white font-semibold">Tentang Kami</span></nav><div class="inline-flex items-center gap-2 px-2.5 py-1 md:px-3 rounded bg-blue-500/10 border border-blue-400/20 text-blue-300 font-mono text-[11px] md:text-xs font-semibold tracking-wider uppercase mb-3 md:mb-6 w-fit">{{ $aboutCompany->hero_badge }}</div><h1 class="text-xl sm:text-3xl md:text-5xl font-extrabold font-heading tracking-tight text-white leading-tight uppercase mb-3 md:mb-7">{{ $aboutCompany->hero_title }}</h1><div class="space-y-2 md:space-y-4 text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed mb-4 md:mb-10 max-w-xl font-normal">@foreach($aboutCompany->hero_paragraphs as $paragraph)<p class="{{ $loop->first ? '' : 'text-slate-400 text-xs sm:text-sm' }}">{{ $paragraph }}</p>@endforeach</div><div class="flex flex-wrap items-center gap-4">@if($aboutCompany->company_profile_pdf_url)<a class="inline-flex items-center gap-2.5 px-5 py-2.5 md:px-6 md:py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-mono font-bold uppercase tracking-wider transition-all duration-200 shadow-lg shadow-blue-900/30 hover:-translate-y-0.5 flex-shrink-0" download href="{{ $aboutCompany->company_profile_pdf_url }}"><span class="">Unduh Company Profile (PDF)</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a>@endif</div></div>
+
+      <div class="lg:col-span-6 relative pt-6"><div class="relative rounded-2xl p-1.5 md:p-2 bg-gradient-to-b from-slate-700/40 via-slate-800/20 to-slate-800/60 border border-slate-700/70 shadow-2xl backdrop-blur-sm"><div class="relative rounded-xl overflow-hidden aspect-[16/10] bg-slate-900">@if($aboutCompany->hero_image_url)<x-responsive-image :src="$aboutCompany->hero_image_url" :alt="$aboutCompany->hero_title" sizes="(min-width: 1024px) 50vw, 100vw" fetchpriority="high" decoding="async" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />@else<div class="w-full h-full flex items-center justify-center text-slate-600"><x-material-icon name="precision_manufacturing" class="text-7xl" /></div>@endif<div class="absolute inset-0 bg-gradient-to-t from-[#071321]/90 via-transparent to-black/20 pointer-events-none"></div><div class="absolute top-3 left-3 md:top-4 md:left-4 z-10"><span class="inline-flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-md bg-[#0d2137]/90 backdrop-blur-md border border-slate-600/60 text-white font-mono text-[10px] md:text-[11px] font-medium tracking-wide"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> {{ $aboutCompany->image_overlay['plant_badge'] ?? '' }}</span></div><div class="absolute bottom-3 left-3 right-3 md:bottom-4 md:left-4 md:right-4 z-10 flex flex-wrap items-center justify-between gap-2 md:gap-3 p-2.5 md:p-3.5 rounded-lg bg-[#071321]/90 backdrop-blur-md border border-slate-700/80"><div><div class="text-[11px] md:text-xs font-bold font-heading text-white tracking-wide">{{ $aboutCompany->image_overlay['caption_title'] ?? '' }}</div><div class="text-[10px] md:text-[11px] font-mono text-slate-400 mt-0.5">{{ $aboutCompany->image_overlay['caption_subtitle'] ?? '' }}</div></div><div class="inline-flex items-center gap-2 px-2 py-0.5 md:px-2.5 md:py-1 rounded bg-blue-600/30 border border-blue-400/40 text-blue-300 font-mono text-[10px] font-bold">{{ $aboutCompany->image_overlay['tolerance_chip'] ?? '' }}</div></div></div></div><div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mt-3 md:mt-4">@foreach(($globalSettings->company_stats ?? []) as $stat)<div class="p-2.5 md:p-3.5 rounded-xl bg-slate-900/60 border border-slate-700/70 backdrop-blur-md"><div class="text-lg md:text-xl font-extrabold font-heading {{ $loop->odd ? 'text-blue-400' : 'text-white' }} tracking-tight leading-tight">{{ $stat['value'] ?? '' }}</div><div class="text-[10px] md:text-[11px] text-slate-300 font-mono uppercase tracking-wider font-medium mt-0.5 md:mt-1">{{ $stat['label_about'] ?? ($stat['label_landing'] ?? '') }}</div></div>@endforeach</div><div class="w-full flex justify-center items-center mt-3 md:mt-4">@if($aboutCompany->partners_image_url)<x-responsive-image :src="$aboutCompany->partners_image_url" alt="Logo klien perusahaan" sizes="(min-width: 768px) 448px, 280px" loading="lazy" decoding="async" class="w-full max-w-[280px] sm:max-w-xs md:max-w-md h-auto object-contain rounded-xl transition-transform duration-500 hover:scale-105 shadow-sm mx-auto" />@endif</div></div>
     </div>
-    <!-- Clean Integrated Visi & Misi Section without redundant wrappers -->
+
     <div class="border-t border-slate-800/60 pt-4">
       <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div class="inline-flex items-center gap-2.5 px-3 py-1.5 rounded bg-blue-500/10 border border-blue-400/30 text-blue-300 font-mono text-xs font-semibold uppercase tracking-wider {{ blank($cms('values_badge')) ? 'invisible' : '' }}">
@@ -96,9 +94,7 @@
     </div>
   </div>
 </header>
-<!-- Section 1: Profil Perusahaan, Visi & Misi (Spacious & Clean Cards) -->
 
-<!-- Section 2: Fasilitas & Infrastruktur Pabrik (Proportional 16:9 Aspect Ratio) -->
 <section class="py-8 md:py-14 px-4 md:px-8 lg:px-12 bg-[#f8f9ff] border-b border-slate-200" id="fasilitas">
 <div class="max-w-7xl mx-auto">
 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12">
@@ -122,7 +118,7 @@
 @if($facilityImage)
 <x-responsive-image :src="$facilityImage" :alt="$facility['facility_title'] ?? ''" sizes="(min-width: 1024px) 33vw, 100vw" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
 @else
-<div class="w-full h-full flex items-center justify-center text-slate-600"><span aria-hidden="true" class="material-symbols-outlined text-6xl">factory</span></div>
+<div class="w-full h-full flex items-center justify-center text-slate-600"><x-material-icon name="factory" class="text-6xl" /></div>
 @endif
 <span class="absolute top-2.5 left-2.5 md:top-3.5 md:left-3.5 bg-brand-navy/90 backdrop-blur-sm text-white font-mono text-[9px] md:text-[10px] px-2 py-0.5 md:px-2.5 md:py-1 rounded font-semibold tracking-wide border border-slate-700">{{ $facility['facility_tag'] ?? '' }}</span>
 </div>
@@ -142,7 +138,7 @@
 </div>
 </div>
 </section>
-<!-- Section 3: Company Milestone Per Year (Minimalist Architectural Vertical Timeline) -->
+
 <section class="py-8 md:py-14 px-4 md:px-8 lg:px-12 bg-white border-b border-slate-200">
 <div class="max-w-5xl mx-auto">
 <div class="text-center max-w-2xl mx-auto mb-16">
@@ -153,9 +149,9 @@
 <x-cms-text tag="h2" :value="$cms('milestones_title')" class="block text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-navy font-heading tracking-tight leading-tight" />
 <x-cms-text tag="p" :value="$cms('milestones_description')" class="block text-slate-600 text-sm md:text-base mt-3 leading-relaxed" />
 </div>
-<!-- Clean Minimal Timeline with generous vertical breathing room -->
+
 <div class="relative pl-6 md:pl-0">
-<!-- Center/Left continuous vertical guide line -->
+
 <div class="absolute left-6 md:left-1/2 top-4 bottom-4 w-[2px] bg-slate-200 transform md:-translate-x-1/2"></div>
 <div class="space-y-8 md:space-y-10">
 @foreach(collect($aboutCompany->milestones ?? [])->sortBy('sort_order')->values() as $milestone)
@@ -183,7 +179,7 @@
 </div>
 @endforeach
 </div></div></div></section>
-<!-- Section 4: Bagan Pohon Struktur Organisasi (Clean Hierarchy Tree) -->
+
 <section class="px-4 md:px-8 lg:px-12 bg-[#f8f9ff] pt-8 md:pt-14 pb-16 md:py-20">
 <div class="max-w-7xl mx-auto">
 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12">
@@ -199,7 +195,7 @@
           Dokumen Resmi: <strong class="text-slate-800">{{ $aboutCompany->org_chart['chart_revision_tag'] ?? '-' }}</strong>
 </div>
 </div>
-<!-- Org Tree Diagram: nested levels joined by connector lines, built from the CMS organization nodes -->
+
 @php $orgTree = $aboutCompany->org_tree; @endphp
 @if(count($orgTree) > 0)
 <style>
@@ -263,23 +259,8 @@
 </script>
 @endif
 </div></section>
-<!-- CTA Section: Balanced & Spacious Architectural Finish -->
+</main>
 
 @include('layouts.footer')
-<!-- Clean Bottom Bar -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </body></html>

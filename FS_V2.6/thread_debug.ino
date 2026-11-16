@@ -201,7 +201,10 @@ void TaskDebug(void* pvParameters __attribute__((unused)))  // This is a Task.
 
     // ── IWDG Supervisor Check ──
     // Feed watchdog HANYA jika semua task kritis masih hidup
-    if (heartbeat_analog && heartbeat_logic && heartbeat_control && heartbeat_input) {
+    // Saat urutan alarm (WARNING/RELEASE) sedang berjalan, hanya TaskLogic yang wajib hidup: reset di
+    // tengah urutan membuang state dan waktunya. Di luar itu semua task kritis wajib hidup.
+    bool alarm_berjalan = (STATE_PROCCES >= WARNING_LHD && STATE_PROCCES <= RELEASE_CALLBUTTON);
+    if (heartbeat_logic && (alarm_berjalan || (heartbeat_analog && heartbeat_control && heartbeat_input))) {
       IWatchdog.reload();  // Semua task kritis hidup → feed the dog
     } else {
       // Minimal 1 task kritis tidak merespons!

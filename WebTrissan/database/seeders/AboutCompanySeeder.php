@@ -24,7 +24,7 @@ class AboutCompanySeeder extends Seeder
             'plant_badge' => 'KANTOR PUSAT • BEKASI',
             'caption_title' => 'PT. Trissan',
             'caption_subtitle' => 'Ruko Metland Tambun, Tambun Selatan, Bekasi',
-            'tolerance_chip' => '3 Cabang • 145 Karyawan',
+            'tolerance_chip' => 'Kantor Pusat • 145 Karyawan',
         ];
         $about->company_profile_pdf = SeedMedia::pdf('Trissan_Company_Profile');
         $about->partners_image = SeedMedia::image('about-clients');

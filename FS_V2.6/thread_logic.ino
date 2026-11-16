@@ -2,7 +2,7 @@ void TaskLogic(void *pvParameters __attribute__((unused)))  // This is a Task.
 {
   for (;;)  // A Task shall never return or exit.
   {
-    heartbeat_logic = true;  // IWDG: logika alarm masih berjalan
+    HB_LOGIC();  // IWDG: logika alarm masih berjalan
     switch (STATE_PROCCES) {
 
       case ALARM_OFF:
@@ -94,7 +94,7 @@ loncat_proses_callbutton_2:
         alarm_output(ALARM_DOWN_OUTPUT);
         write_lhd_burned(true);  // LHD dianggap terbakar, tersimpan di EEPROM
         while (1) {
-          heartbeat_logic = true;  // IWDG: menunggu reset button
+          HB_LOGIC();  // IWDG: menunggu reset button
           alarm_output(ALARM_DOWN_OUTPUT);
           if (STATE_PROCCES == RESET_BUTTON) goto reset_bro;
           vTaskDelay(100); 
@@ -104,7 +104,7 @@ loncat_proses_callbutton_2:
         // siklus selesai
         STATUS_CYLINDER = 5;
         while (1) {
-          heartbeat_logic = true;  // IWDG: menunggu reset button
+          HB_LOGIC();  // IWDG: menunggu reset button
           alarm_output(ALARM_DOWN_OUTPUT);
           if (STATE_PROCCES == RESET_BUTTON) goto reset_bro;
           vTaskDelay(100); 
@@ -129,7 +129,7 @@ bool wait_release_proccess(char number) {
   waktu_warning = 0;
   while (waktu_warning < config.delay_release * 10) {
     waktu_warning++;
-    heartbeat_logic = true;  // IWDG: release sequence aktif
+    HB_LOGIC();  // IWDG: release sequence aktif
     alarm_output(number);
 if (STATE_PROCCES == RESET_BUTTON) return 1;
     vTaskDelay(100);  // one tick delay (15ms) in between reads for stability
@@ -140,7 +140,7 @@ bool wait_warning_proccess(char number) {
   waktu_warning = 0;
   while (waktu_warning < config.delay_warning * 10) {
     waktu_warning++;
-    heartbeat_logic = true;  // IWDG: warning sequence aktif
+    HB_LOGIC();  // IWDG: warning sequence aktif
     alarm_output(number);
 if (STATE_PROCCES == RESET_BUTTON) return 1;
     vTaskDelay(100);  // one tick delay (15ms) in between reads for stability

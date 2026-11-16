@@ -8,8 +8,10 @@ void TaskDisplay(void *pvParameters __attribute__((unused)))  // This is a Task.
     if (!menu_state) {
       lcd.setCursor(0, 0);
       lcd.print("    IGNIPRO " NO_UNIT_PANEL "     ");
-      lcd.setCursor(0, 3);
-      lcd.print(buf);
+      if (STATE_PROCCES != ALARM_OFF) {  // di mode OFF baris 4 dipakai untuk deteksi detonator
+        lcd.setCursor(0, 3);
+        lcd.print(buf);
+      }
       if (STATE_PROCCES == STEADY) {
       lcd.setCursor(0, 1); 
       lcd.printf("%s", CYCLE_STATUS[STATE_PROCCES]);
@@ -35,6 +37,8 @@ void TaskDisplay(void *pvParameters __attribute__((unused)))  // This is a Task.
       lcd.printf(" 1.LHD : %d.%02d / %d.%02d", (int)voltage, (int)(voltage * 100) % 100, (int)VOLTAGE_SHORT_MIN, (int)(VOLTAGE_SHORT_MIN * 100) % 100);
       lcd.setCursor(0, 2);
       lcd.printf(" 2.CB  : %s", CALLBUTTON ? "OPEN " : "CLOSE ");
+      lcd.setCursor(0, 3);
+      lcd.printf(" DET1:%-4s DET2:%-4s", digitalRead(PA4) ? "LOSS" : "OK", digitalRead(PA3) ? "LOSS" : "OK");  // LOW = detonator terdeteksi (pin sama dengan debug DET)
       }
       if (STATE_PROCCES > STEADY) {
       lcd.setCursor(0, 1); 

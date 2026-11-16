@@ -146,9 +146,33 @@ class ImageVariants
     }
 
     /**
+     * The pixel size of an image on the public disk, or null for any other URL or an unreadable file.
+     *
+     * Only the file header is read. Pages use it to reserve the image's space before it loads.
+     *
+     * @return array{width: int, height: int}|null
+     */
+    public static function dimensions(?string $url): ?array
+    {
+        $path = self::pathFromUrl($url);
+
+        if ($path === null || ! self::supports($path)) {
+            return null;
+        }
+
+        try {
+            [$width, $height] = @getimagesize(Storage::disk('public')->path($path)) ?: [0, 0];
+        } catch (Throwable) {
+            return null;
+        }
+
+        return $width > 0 && $height > 0 ? ['width' => $width, 'height' => $height] : null;
+    }
+
+    /**
      * The path on the public disk for a public storage URL, or null for any other URL.
      */
-    private static function pathFromUrl(?string $url): ?string
+    public static function pathFromUrl(?string $url): ?string
     {
         $prefix = asset('storage').'/';
 

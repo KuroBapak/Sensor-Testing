@@ -86,8 +86,8 @@ test('the landing page offers contact options from the global settings', functio
 });
 
 test('each landing page has a self canonical url and its own title, description and social tags', function () {
-    $first = Service::factory()->withLandingContent()->create(['service_title' => 'Fabrikasi Baja']);
-    $second = Service::factory()->withLandingContent()->create(['service_title' => 'Instalasi Panel']);
+    $first = Service::factory()->withLandingContent()->create(['service_title' => 'Fabrikasi Baja', 'short_title' => 'Fabrikasi Baja']);
+    $second = Service::factory()->withLandingContent()->create(['service_title' => 'Instalasi Panel', 'short_title' => 'Instalasi Panel']);
     $company = e(GlobalSetting::current()->company_name);
 
     $content = $this->get(route('services.show', $first).'?utm_source=iklan')->assertOk()->getContent();

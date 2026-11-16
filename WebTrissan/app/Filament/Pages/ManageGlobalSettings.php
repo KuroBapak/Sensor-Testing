@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -177,7 +178,7 @@ class ManageGlobalSettings extends Page implements HasForms
                     Repeater::make('social_media')
                         ->schema([
                             TextInput::make('platform_name')->required(),
-                            TextInput::make('platform_icon'),
+                            Select::make('platform_icon')->label('Ikon platform')->options(['facebook' => 'Facebook', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn', 'youtube' => 'YouTube', 'link' => 'Lainnya (ikon tautan)'])->helperText('Menentukan logo yang tampil di kartu media sosial.'),
                             TextInput::make('handle'),
                             TextInput::make('description'),
                             TextInput::make('profile_url')->url()->required(),

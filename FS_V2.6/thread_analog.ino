@@ -2,7 +2,9 @@ void TaskAnalog(void *pvParameters __attribute__((unused)))  // This is a Task.
 {
 init_init:
   // initialize digital LED_BUILTIN on pin 13 as an output.
+  bool i2c_got = i2c_lock(I2C_LOCK_MS_BOOT);  // seluruh inisialisasi I2C memegang kunci
   if (!rtc.begin()) {
+    if (i2c_got) i2c_unlock();
     while (1) {
       vTaskDelay(10);  // one tick delay (15ms) in between reads for stability
       Serial.flush();
@@ -18,7 +20,8 @@ init_init:
   adc.setVoltageRange_mV(ADS1115_RANGE_6144);  // comment line/change parameter to change range
   adc.setCompareChannels(ADS1115_COMP_0_GND);  // comment line/change parameter to change channel
   adc.setMeasureMode(ADS1115_CONTINUOUS);      // comment line/change parameter to change mode
-  for (;;)                                     // A Task shall never return or exit.
+  if (i2c_got) i2c_unlock();
+  for (;;)                                   // A Task shall never return or exit.
   {
     heartbeat_analog = true;  // IWDG: deteksi api masih berjalan
     while (wait_asecond) vTaskDelay(100);
@@ -45,13 +48,17 @@ init_init:
 
 float readChannel(ADS1115_MUX channel) {
   float voltage = 0.0;
+  bool got = i2c_lock(I2C_LOCK_MS_SENSOR);  // tetap baca walau kunci tidak didapat: deteksi tidak boleh berhenti
   adc.setCompareChannels(channel);
   voltage = adc.getResult_V();  // alternative: getResult_mV for Millivolt
+  if (got) i2c_unlock();
   return voltage;
 }
 
 int getTime() {
+  bool got = i2c_lock(I2C_LOCK_MS_SENSOR);
   kiw = rtc.now();
+  if (got) i2c_unlock();
   epoch = kiw.unixtime();
   time_t rawtime = epoch;
   ts = *localtime(&rawtime);

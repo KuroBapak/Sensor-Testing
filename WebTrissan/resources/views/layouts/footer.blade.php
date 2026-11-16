@@ -1,8 +1,8 @@
-<!-- Footer Penutup Sederhana -->
+
   <footer id="master-footer" class="w-full bg-[#040911] text-slate-200 border-t border-white/10 relative"><div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(14,165,233,0.08),rgba(255,255,255,0))] pointer-events-none"></div>
 <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 pt-10 lg:pt-14 pb-8 lg:pb-10">
   <div class="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-14 items-start">
-    <!-- Kolom Kiri: Logo, Deskripsi, Gambar Partner -->
+
     <div class="md:col-span-5 space-y-6">
       <a href="{{ url('/#landing') }}" class="flex items-center gap-3.5 group">
         <div class="w-11 h-11 flex items-center justify-center transition group-hover:scale-105 shrink-0">
@@ -29,19 +29,17 @@
       @endif
     </div>
 
-    <!-- Kolom Tengah: Navigasi Utama -->
     <div class="md:col-span-3 space-y-4">
       <p class="text-xs font-mono font-bold tracking-widest text-blue-400 uppercase">NAVIGASI UTAMA</p>
-      <ul class="space-y-2.5 text-sm text-slate-300 font-medium"><li class=""><a href="{{ url('/#landing') }}" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-400 font-mono text-[10px]">01.</span> Landing Page</a></li>
+      <ul class="space-y-2.5 text-sm text-slate-300 font-medium"><li class=""><a href="{{ url('/#landing') }}" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-400 font-mono text-[10px]">01.</span> Beranda</a></li>
 <li class=""><a href="{{ url('/#services') }}" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">02.</span> Layanan &amp; Kapabilitas</a></li>
-<li class=""><a href="{{ url('/#works') }}" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">03.</span> Featured Industrial Works</a></li>
+<li class=""><a href="{{ url('/#works') }}" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">03.</span> Proyek Unggulan</a></li>
 <li class=""><a href="{{ url('/portofolio') }}" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">04.</span> Portofolio</a></li>
-<li class=""><a href="{{ url('/about') }}" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">05.</span> About Us</a></li>
-<li class=""><a href="{{ url('/license') }}" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">06.</span> License &amp; Certification</a></li>
-<li class=""><a href="{{ url('/#contact') }}" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">07.</span> Contact Us / Hubungi Kami</a></li></ul>
+<li class=""><a href="{{ url('/about') }}" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">05.</span> Tentang Kami</a></li>
+<li class=""><a href="{{ url('/license') }}" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">06.</span> Lisensi &amp; Sertifikasi</a></li>
+<li class=""><a href="{{ url('/#contact') }}" class="hover:text-white hover:translate-x-1 inline-flex items-center gap-2 transition-all"><span class="text-blue-500 font-mono text-[10px]">07.</span> Hubungi Kami</a></li></ul>
     </div>
 
-    <!-- Kolom Kanan: Kantor Pusat & Fasilitas Manufaktur -->
     <div class="md:col-span-4 space-y-4">
       <p class="text-xs font-mono font-bold tracking-widest text-blue-400 uppercase">KANTOR PUSAT &amp; FASILITAS MANUFAKTUR</p>
       <div class="p-3.5 rounded-lg bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors flex items-start gap-3.5 group">
@@ -71,7 +69,7 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z"></path></svg>
         </div>
         <div>
-          <span class="text-[10px] font-mono tracking-wider text-slate-500 uppercase block">SURAT ELEKTRONIK (EMAIL):</span>
+          <span class="text-[10px] font-mono tracking-wider text-slate-500 uppercase block">EMAIL:</span>
           <p class="text-xs text-slate-300 font-medium leading-relaxed mt-0.5">
             <a href="mailto:{{ $globalSettings?->primary_email }}" class="text-blue-400 hover:underline">{{ $globalSettings?->primary_email }}</a>
             @if(!empty($globalSettings?->corporate_email))
@@ -83,10 +81,19 @@
     </div>
   </div>
 
-  <!-- Sub-footer / Bottom bar: 1 baris rapi tanpa celah/gap di bawahnya -->
+  @if(($footerServices ?? collect())->isNotEmpty())
+  <div class="mt-8 lg:mt-10 pt-6 border-t border-slate-800/80">
+    <p class="text-xs font-mono font-bold tracking-widest text-blue-400 uppercase mb-4">LAYANAN KAMI</p>
+    <ul class="flex flex-wrap gap-x-6 gap-y-2.5 text-sm text-slate-300 font-medium">
+      @foreach($footerServices as $footerService)
+        <li><a href="{{ $footerService->publicUrl() }}" class="hover:text-white transition-colors">{{ $footerService->short_title ?? $footerService->service_title }}</a></li>
+      @endforeach
+    </ul>
+  </div>
+  @endif
+
   <div class="border-t border-slate-800/80 mt-8 lg:mt-10 pt-5 flex flex-col md:flex-row items-center justify-between text-xs text-slate-400 gap-4">
     <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
-      <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
       <span class="">{{ $globalSettings?->copyright_text }}</span>
     </div>
     <div class="flex flex-wrap gap-6 items-center text-[11px] font-mono">
@@ -100,3 +107,4 @@
     </div>
   </div>
 </div></footer>
+@include('layouts.contact-widget')

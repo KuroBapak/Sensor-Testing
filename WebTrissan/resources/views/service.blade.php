@@ -3,7 +3,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   @php
     $companyName = $globalSettings?->company_name ?? config('app.name');
-    $seoTitle = $service->service_title.' | '.$companyName;
+    $seoTitle = $service->seoTitle($companyName);
     $seoDescription = $service->metaDescription();
     $seoNoindex = ! $isIndexable;
     $phone = collect($globalSettings?->phones ?? [])->first();
@@ -14,13 +14,11 @@
   @if(filled($seoDescription))
   <meta name="description" content="{{ $seoDescription }}">
   @endif
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; background-color: #FFFFFF; color: #0A192F; }
     h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Montserrat', sans-serif; }
   </style>
+@include('layouts.fonts')
 @include('layouts.scale')
 @vite('resources/css/site/home.css')
 </head>
@@ -28,7 +26,7 @@
   @include('layouts.navbar')
 
   <main class="relative">
-    <!-- Hero: breadcrumb, judul, dan deskripsi layanan -->
+
     <section class="bg-brand-grayBg border-b border-brand-grayBorder py-10 lg:py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs font-medium text-brand-grayMuted mb-6">
@@ -52,7 +50,6 @@
       </div>
     </section>
 
-    <!-- Uraian layanan -->
     @if(! empty($service->landing_paragraphs))
     <section class="py-10 lg:py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
@@ -68,7 +65,6 @@
     </section>
     @endif
 
-    <!-- Tahapan pengerjaan -->
     @if(! empty($service->landing_steps))
     <section class="py-10 lg:py-16 bg-brand-grayBg border-t border-b border-brand-grayBorder">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
@@ -88,7 +84,6 @@
     </section>
     @endif
 
-    <!-- Proyek terkait dari CMS -->
     @if($works->isNotEmpty())
     <section id="proyek" class="py-10 lg:py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
@@ -98,7 +93,7 @@
             <a href="{{ url('/works#'.($work->work_slug ?? '')) }}" class="group bg-white rounded-lg border border-brand-grayBorder overflow-hidden shadow-sm hover:shadow-card-hover transition flex flex-col">
               <div class="h-44 lg:h-52 bg-slate-900 overflow-hidden">
                 @if($work->image_url)
-                  <img src="{{ $work->image_url }}" alt="{{ $work->work_title }}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                  <x-responsive-image :src="$work->image_url" :alt="$work->work_title" sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
                 @endif
               </div>
               <div class="p-5 flex-1">
@@ -117,7 +112,6 @@
     </section>
     @endif
 
-    <!-- FAQ -->
     @if(! empty($service->landing_faqs))
     <section class="py-10 lg:py-16 bg-brand-grayBg border-t border-b border-brand-grayBorder">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
@@ -139,7 +133,6 @@
     </section>
     @endif
 
-    <!-- Ajakan menghubungi -->
     <section id="hubungi" class="py-10 lg:py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div class="bg-brand-navy text-white rounded-lg p-6 sm:p-10 lg:p-12 shadow-heavy border-t-4 border-brand-accent">
@@ -158,7 +151,6 @@
       </div>
     </section>
 
-    <!-- Layanan lain dalam kluster yang sama -->
     @if($relatedServices->isNotEmpty())
     <section class="pb-10 lg:pb-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">

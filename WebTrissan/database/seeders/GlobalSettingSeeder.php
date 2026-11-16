@@ -30,7 +30,7 @@ class GlobalSettingSeeder extends Seeder
                     ['label' => 'Terms of Service', 'url' => null],
                 ],
                 'company_stats' => [
-                    ['value' => '3', 'label_landing' => 'Kantor Cabang', 'label_about' => 'Kantor Cabang'],
+                    ['value' => '1', 'label_landing' => 'Kantor Pusat', 'label_about' => 'Kantor Pusat'],
                     ['value' => '145', 'label_landing' => 'Karyawan', 'label_about' => 'Tim Profesional'],
                     ['value' => '12', 'label_landing' => 'Bidang Layanan', 'label_about' => 'Layanan Utama'],
                     ['value' => '7', 'label_landing' => 'Proyek Terdokumentasi', 'label_about' => 'Proyek Terdokumentasi'],

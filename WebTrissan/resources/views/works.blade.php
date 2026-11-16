@@ -4,39 +4,40 @@
 @include('layouts.seo-head', ['seoTitle' => $seoTitle, 'seoDescription' => $pageSettings?->seo_description])
 @if(!empty($pageSettings?->seo_description))
 <meta name="description" content="{{ $pageSettings->seo_description }}">
-@endif<meta content="web_standard" name="shell-type"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Montserrat:wght@600;700;800&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style>@include('layouts.scale')
+@endif<meta content="web_standard" name="shell-type">
+<style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style>@include('layouts.fonts')
+@include('layouts.scale')
 @vite('resources/css/site/catalog.css')
 </head><body class="bg-surface font-body-md text-on-surface antialiased selection:bg-secondary-container selection:text-on-secondary-container min-h-screen overflow-y-auto">
 @include('layouts.navbar')
 <main class="w-full bg-surface min-h-screen pb-space-lg"><div class="flex flex-col w-full">
-<!-- Top Breadcrumb & Hero Archive Section -->
+
 <section class="w-full bg-surface-container-low border-b border-surface-container-high/60 py-space-xl lg:py-space-2xl">
 <div class="max-w-[1360px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex flex-col">
-<!-- Breadcrumb -->
+
 <nav class="flex items-center gap-2 text-xs font-medium text-slate-500 mb-6" aria-label="Breadcrumb">
   <a href="{{ url('/') }}" class="flex items-center gap-1.5 hover:text-blue-600 transition-colors" data-path="landing-page">
     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
     <span class="">Beranda</span>
   </a>
   <span class="text-slate-400">/</span>
-  <span class="text-slate-900 font-semibold">Works</span>
+  <span class="text-slate-900 font-semibold">Proyek</span>
 </nav>
-<!-- Badge & Title -->
+
 <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-lg">
 <div class="">
 <h1 class="font-headline-lg text-[24px] sm:text-headline-lg text-primary uppercase tracking-tight leading-tight">{{ $pageSettings?->hero_title }}</h1>
 <p class="font-body-lg text-body-lg text-on-surface-variant mt-space-sm leading-relaxed" data-stitch-orig-opacity="0">{{ $pageSettings?->hero_subtitle }}</p>
 </div>
 </div>
-<!-- Quick Metrics Strip -->
+
 <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-space-md mt-space-md md:mt-space-xl pt-space-md md:pt-space-lg border-t border-surface-container-high/80">
 @if(!empty($pageSettings?->stats))
   @foreach($pageSettings->stats as $stat)
   <div class="flex flex-col p-3 md:p-space-md bg-surface-container-lowest rounded shadow-sm">
     <div class="flex items-center justify-between text-secondary mb-0.5 md:mb-1">
       <span class="font-label-caps text-[10px] md:text-label-caps uppercase">{{ $stat['label'] ?? '' }}</span>
-      <span aria-hidden="true" class="material-symbols-outlined text-base md:text-lg">{{ $stat['icon'] ?? 'deployed_code' }}</span>
+      <x-material-icon :name="$stat['icon'] ?? 'deployed_code'" class="text-base md:text-lg" />
     </div>
     <span class="font-headline-sm md:font-headline-md text-headline-sm md:text-headline-md text-primary font-bold">{{ $stat['value'] ?? '' }}</span>
     <span class="font-body-sm text-[11px] md:text-body-sm text-on-surface-variant mt-0.5">{{ $stat['caption'] ?? '' }}</span>
@@ -46,63 +47,61 @@
 </div>
 </div>
 </section>
-<!-- Interactive Search, Filter Bar & Toolbar -->
+
 <section class="w-full bg-surface py-3 md:pt-3 md:pb-space-lg md:sticky md:top-14 lg:top-[72px] z-30 shadow-[0_4px_12px_rgba(0,0,0,0.03)] backdrop-blur-md bg-surface/95">
 <div class="max-w-[1360px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop">
 <div class="flex flex-col gap-space-md">
-<!-- Top Row: Horizontal Carousel Filter Tabs with Arrow Buttons -->
+
 <div class="relative flex items-center w-full">
 <button aria-label="Scroll Tabs Kiri" class="shrink-0 w-9 h-9 mr-2 flex items-center justify-center rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors shadow-sm focus:outline-none" id="tabScrollLeftBtn" type="button">
-<span aria-hidden="true" class="material-symbols-outlined text-lg">chevron_left</span>
+<x-material-icon name="chevron_left" class="text-lg" />
 </button>
-<!-- Carousel Scrollable Container -->
+
 <div class="flex items-center gap-space-xs overflow-x-auto scroll-smooth py-1 scrollbar-none flex-1" id="filterTabGroup" style="-ms-overflow-style:none; scrollbar-width:none;">
-<button class="filter-tab-btn active-tab shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-primary-container text-on-primary whitespace-nowrap transition-all shadow-sm" data-filter="all" data-label="Semua Layanan (ALL WORKS)">
-<span class="">Semua Layanan (ALL WORKS)</span>
+<button class="filter-tab-btn active-tab shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-primary-container text-on-primary whitespace-nowrap transition-all shadow-sm" data-filter="all" data-label="Semua Layanan">
+<span class="">Semua Layanan</span>
 <span class="tab-count px-1.5 py-0.5 text-[11px] rounded bg-on-primary/20 text-on-primary font-bold">{{ $works->count() }}</span>
 </button>
 @foreach($services as $service)
 <button class="filter-tab-btn shrink-0 inline-flex items-center gap-space-xs px-3.5 py-2 rounded font-label-md text-xs md:text-label-md bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high whitespace-nowrap transition-all" data-filter="{{ $service->slug }}" data-label="{{ $service->service_title }}">
-<span aria-hidden="true" class="material-symbols-outlined text-sm">{{ $service->service_icon ?: 'category' }}</span>
+<x-material-icon :name="$service->service_icon ?: 'category'" class="text-sm" />
 <span class="">{{ $service->service_title }}</span>
 </button>
 @endforeach
 </div>
 <button aria-label="Scroll Tabs Kanan" class="shrink-0 w-9 h-9 ml-2 flex items-center justify-center rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors shadow-sm focus:outline-none" id="tabScrollRightBtn" type="button">
-<span aria-hidden="true" class="material-symbols-outlined text-lg">chevron_right</span>
+<x-material-icon name="chevron_right" class="text-lg" />
 </button>
 </div>
-<!-- Bottom Row: Search Bar & Sorting Dropdown -->
+
 <div class="flex flex-col sm:flex-row items-center justify-between gap-space-sm pt-1">
 <div class="relative w-full sm:flex-1">
-<span aria-hidden="true" class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg pointer-events-none">search</span>
-<input class="w-full pl-10 pr-space-md py-2 text-body-sm font-body-sm bg-surface-container-lowest text-on-surface rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-outline-variant border border-surface-container-high/60" id="projectSearchInput" placeholder="Cari nama komponen, layanan, material (Ti-6Al-4V, 7075-T6), PLC, spek..." type="text">
+<x-material-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg pointer-events-none" />
+<input class="w-full pl-10 pr-space-md py-2 text-body-sm font-body-sm bg-surface-container-lowest text-on-surface rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-outline-variant border border-surface-container-high/60" id="projectSearchInput" placeholder="Cari proyek, klien, atau layanan..." type="text">
 </div>
 <div class="relative w-full sm:w-auto min-w-[220px]">
 <select class="w-full px-space-md py-2 text-label-sm font-label-sm bg-surface-container-lowest text-on-surface rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-primary appearance-none pr-8 border border-surface-container-high/60 cursor-pointer" id="projectSortSelect">
-<option selected="" value="newest">Terbaru / Newest First</option>
-<option value="tolerance">Toleransi Tertinggi (Micron)</option>
-<option value="scale">Skala Batch Terbesar</option>
+<option selected="" value="newest">Terbaru</option>
 </select>
-<span aria-hidden="true" class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline text-base pointer-events-none">expand_more</span>
+<x-material-icon name="expand_more" class="absolute right-2 top-1/2 -translate-y-1/2 text-outline text-base pointer-events-none" />
 </div>
 </div>
 </div>
 </div>
 </section>
-<!-- Project Grid Section -->
+
 <section class="w-full bg-surface pt-space-xl pb-space-md">
 <div class="max-w-[1360px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop">
-<!-- Active Results Overview -->
+
 <div class="flex items-center justify-between pb-space-md mb-space-lg border-b border-surface-container-high/60">
 <div class="flex items-center gap-space-xs font-label-sm text-label-sm text-secondary">
-<span aria-hidden="true" class="material-symbols-outlined text-base">tune</span>
-<span class="" id="activeFilterLabel">Kategori Aktif: Semua Layanan (ALL WORKS)</span>
+<x-material-icon name="tune" class="text-base" />
+<span class="" id="activeFilterLabel">Kategori Aktif: Semua Layanan</span>
 <span class="text-outline">/</span>
 <span class="font-semibold text-primary" id="resultsCountNotice">{{ $works->count() }} Proyek Aktif Terdaftar</span>
 </div>
 </div>
-<!-- Projects Grid (3 columns on desktop) -->
+
 <div class="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-gutter-desktop sm:grid-cols-2" id="projectCatalogGrid">
 @forelse($works as $work)
 @php
@@ -120,7 +119,7 @@
 @if(!empty($images))
 <x-responsive-image :src="$images[0]" :alt="$work->work_title" sizes="(min-width: 1024px) 33vw, 50vw" :fetchpriority="$loop->first ? 'high' : null" :loading="$loop->index < 4 ? 'eager' : 'lazy'" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
 @else
-<div class="w-full h-full flex items-center justify-center text-outline-variant"><span aria-hidden="true" class="material-symbols-outlined text-5xl">precision_manufacturing</span></div>
+<div class="w-full h-full flex items-center justify-center text-outline-variant"><x-material-icon name="precision_manufacturing" class="text-5xl" /></div>
 @endif
 @if($work->top_badge)
 <div class="absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 md:px-2.5 md:py-1 bg-primary text-on-primary rounded font-label-caps text-[9px] md:text-label-caps tracking-wider shadow"><span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span><span class="">{{ $work->top_badge }}</span></div>
@@ -141,16 +140,16 @@
 <span class="{{ $loop->index >= 2 ? 'hidden sm:inline-block' : '' }} px-1.5 py-0.5 {{ $loop->first ? 'bg-surface-container-low text-secondary' : 'bg-primary-container/10 text-primary-container font-medium' }} font-label-sm text-[10px] md:text-[12px] rounded">{{ $tag }}</span>
 @endforeach
 </div>
-<button class="open-modal-trigger w-full inline-flex items-center justify-center gap-1 px-2 py-1.5 md:py-2.5 bg-surface-container text-on-surface hover:bg-primary hover:text-on-primary font-label-md text-[11px] md:text-label-md rounded transition-all" type="button"><span class="">Detail</span><span aria-hidden="true" class="material-symbols-outlined text-sm md:text-base">arrow_forward</span></button>
+<button class="open-modal-trigger w-full inline-flex items-center justify-center gap-1 px-2 py-1.5 md:py-2.5 bg-surface-container text-on-surface hover:bg-primary hover:text-on-primary font-label-md text-[11px] md:text-label-md rounded transition-all" type="button"><span class="">Detail</span><x-material-icon name="arrow_forward" class="text-sm md:text-base" /></button>
 </div>
 </div>
 </article>
 @empty
 @endforelse
 </div>
-<!-- Empty Filter State Notice (Hidden by default) -->
+
 <div class="hidden flex-col items-center justify-center py-space-3xl text-center bg-surface-container-low rounded border border-surface-container-high/60 my-space-lg" id="noResultsState">
-<span aria-hidden="true" class="material-symbols-outlined text-5xl text-outline mb-space-sm">filter_alt_off</span>
+<x-material-icon name="filter_alt_off" class="text-5xl text-outline mb-space-sm" />
 <h3 class="font-headline-sm text-headline-sm text-primary uppercase">Tidak ada proyek yang sesuai</h3>
 <p class="font-body-sm text-body-sm text-on-surface-variant max-w-md mt-1">
           Kombinasi kata kunci pencarian atau filter kategori layanan tidak menghasilkan portofolio aktif. Coba gunakan istilah umum seperti "chucking", "panel", "shaft", atau pilih kategori lainnya.
@@ -159,54 +158,54 @@
           Reset Filter &amp; Pencarian
         </button>
 </div>
-<!-- Interactive Pagination & Display Configuration -->
+
 <div class="mt-space-2xl pt-space-lg border-t border-surface-container-high/60 flex flex-col md:flex-row items-center justify-between gap-space-md pb-6">
 <div class="flex items-center gap-space-sm text-secondary font-body-sm text-body-sm">
 <span class="" id="paginationInfo">Menampilkan 1 - {{ min($works->count(), 9) }} dari {{ $works->count() }} Total Hasil Proyek</span>
 </div>
 <div class="flex items-center gap-space-sm">
-<!-- Page Number Buttons -->
+
 <div class="flex items-center gap-1" id="paginationButtonList">
 <button aria-label="Previous Page" class="w-9 h-9 flex items-center justify-center rounded bg-surface-container text-on-surface hover:bg-surface-container-high disabled:opacity-40 disabled:pointer-events-none transition-colors" disabled="" id="prevPageBtn" onclick="changePage('prev')" type="button">
-<span aria-hidden="true" class="material-symbols-outlined text-base">chevron_left</span>
+<x-material-icon name="chevron_left" class="text-base" />
 </button>
 <div class="flex items-center gap-1" id="pageNumberList"></div>
 <button aria-label="Next Page" class="w-9 h-9 flex items-center justify-center rounded bg-surface-container text-on-surface hover:bg-surface-container-high disabled:opacity-40 disabled:pointer-events-none transition-colors" id="nextPageBtn" onclick="changePage('next')" type="button">
-<span aria-hidden="true" class="material-symbols-outlined text-base">chevron_right</span>
+<x-material-icon name="chevron_right" class="text-base" />
 </button>
 </div>
-<!-- Items Per Page Dropdown -->
+
 <div class="relative ml-space-sm">
 <select class="pl-space-sm pr-7 py-1.5 text-label-sm font-label-sm bg-surface-container text-on-surface rounded focus:outline-none appearance-none" id="itemsPerPageSelect">
 <option value="9">9 per halaman</option>
 <option value="18">18 per halaman</option>
 <option value="all">Semua</option>
 </select>
-<span aria-hidden="true" class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline text-sm pointer-events-none">expand_more</span>
+<x-material-icon name="expand_more" class="absolute right-2 top-1/2 -translate-y-1/2 text-outline text-sm pointer-events-none" />
 </div>
 </div>
 </div>
 </div>
 </section>
-<!-- Interactive Showcase Modal (Large Image & Full Comprehensive Details - 2 Columns) -->
+
 <div aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 md:p-6 bg-black/80 backdrop-blur-md transition-all duration-300 opacity-0 pointer-events-none" id="projectDetailModal" role="dialog">
 <div class="relative w-full max-w-5xl bg-surface-container-lowest rounded-lg sm:rounded-xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col border border-surface-container-high transform transition-all duration-300 scale-95" id="modalContentContainer">
-<!-- Modal Floating / Sticky Close Button -->
+
 <button aria-label="Tutup Showcase Modal" class="absolute top-3.5 right-3.5 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-surface-container-lowest/90 text-on-surface hover:bg-primary hover:text-on-primary shadow-md border border-surface-container-high transition-all focus:outline-none" onclick="closeProjectModal()" type="button">
-<span aria-hidden="true" class="material-symbols-outlined text-xl sm:text-2xl font-bold leading-none">close</span>
+<x-material-icon name="close" class="text-xl sm:text-2xl font-bold leading-none" />
 </button>
-<!-- Modal Scrollable Content (2-Column Responsive Layout) -->
+
 <div class="overflow-y-auto flex-1">
 <div class="grid grid-cols-1 lg:grid-cols-12 min-h-full">
-<!-- Kolom Kiri: Showcase Gambar Besar Beresolusi Tinggi -->
-<div class="lg:col-span-5 bg-surface-container-low flex flex-col justify-between p-space-md sm:p-space-lg border-b lg:border-b-0 lg:border-r border-surface-container-high/80"><div class="flex flex-col gap-3 h-full justify-between"><div class="flex flex-col gap-3"><div class="relative w-full aspect-[4/3] overflow-hidden rounded-xl bg-surface-container-high shadow-md group border border-surface-container-high/80"><img alt="" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="modalShowcaseImg"><div class="hidden w-full h-full flex items-center justify-center text-outline-variant" id="modalImagePlaceholder"><span aria-hidden="true" class="material-symbols-outlined text-6xl">precision_manufacturing</span></div></div><div class="grid grid-cols-3 gap-3" id="modalGalleryThumbs"></div></div></div></div>
-<!-- Kolom Kanan: Detail Teks Lengkap, Spesifikasi & Prosedur QA -->
-<div class="lg:col-span-7 p-space-lg sm:p-space-xl flex flex-col justify-between space-y-space-md bg-surface-container-lowest"><div class="space-y-space-md"><div class="pr-8"><div class="flex flex-wrap items-center gap-2 mb-2"><span class="px-2.5 py-0.5 bg-primary text-on-primary font-label-caps text-[10px] rounded uppercase font-semibold" id="modalCategoryTag"></span><span class="text-xs text-outline font-mono" id="modalSerialTag"></span></div><h2 class="font-headline-sm sm:font-headline-md text-headline-sm sm:text-headline-md text-primary uppercase font-bold tracking-tight leading-tight" id="modalTitle"></h2></div><p class="font-body-md text-body-sm sm:text-body-md text-on-surface-variant leading-relaxed" id="modalDescription"></p><div class="pt-2 border-t border-surface-container-high/60"><h4 class="font-label-caps text-label-caps text-secondary uppercase mb-2 flex items-center gap-1"><span aria-hidden="true" class="material-symbols-outlined text-sm">tune</span>Spesifikasi Utama</h4><div class="flex flex-wrap gap-1.5" id="modalSpecsList"><span class="px-2.5 py-1 bg-surface-container text-on-surface rounded font-label-sm text-xs" id="modalMaterial"></span><span class="px-2.5 py-1 bg-surface-container text-on-surface rounded font-label-sm text-xs" id="modalTolerance"></span><span class="px-2.5 py-1 bg-surface-container text-on-surface rounded font-label-sm text-xs" id="modalBatch"></span></div></div><div class="p-3 bg-surface-container-low rounded border border-surface-container-high/60 flex items-center justify-between" id="modalDeliveryDateWrap"><div class="flex items-center gap-2"><span aria-hidden="true" class="material-symbols-outlined text-base text-secondary">calendar_today</span><div><span class="font-label-caps text-[10px] text-secondary uppercase block">Tanggal Produksi / Delivery</span><span class="font-label-md text-xs sm:text-body-sm text-primary font-semibold" id="modalDeliveryDate"></span></div></div></div><div class="pt-1"><h4 class="font-label-caps text-label-caps text-secondary uppercase mb-2 flex items-center gap-1"><span aria-hidden="true" class="material-symbols-outlined text-sm">verified</span>Sertifikasi &amp; Standar Mutu</h4><div class="flex flex-wrap gap-1.5" id="modalStandardsTags"></div></div></div><div class="pt-space-md border-t border-surface-container flex items-center justify-end"><button class="w-full sm:w-auto px-space-xl py-2 bg-primary text-on-primary hover:bg-primary-container font-label-md text-label-md rounded transition-colors text-center shadow-sm" onclick="closeProjectModal()" type="button">Tutup Detail</button></div></div>
+
+<div class="lg:col-span-5 bg-surface-container-low flex flex-col justify-between p-space-md sm:p-space-lg border-b lg:border-b-0 lg:border-r border-surface-container-high/80"><div class="flex flex-col gap-3 h-full justify-between"><div class="flex flex-col gap-3"><div class="relative w-full aspect-[4/3] overflow-hidden rounded-xl bg-surface-container-high shadow-md group border border-surface-container-high/80"><img alt="" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" id="modalShowcaseImg"><div class="hidden w-full h-full flex items-center justify-center text-outline-variant" id="modalImagePlaceholder"><x-material-icon name="precision_manufacturing" class="text-6xl" /></div></div><div class="grid grid-cols-3 gap-3" id="modalGalleryThumbs"></div></div></div></div>
+
+<div class="lg:col-span-7 p-space-lg sm:p-space-xl flex flex-col justify-between space-y-space-md bg-surface-container-lowest"><div class="space-y-space-md"><div class="pr-8"><div class="flex flex-wrap items-center gap-2 mb-2"><span class="px-2.5 py-0.5 bg-primary text-on-primary font-label-caps text-[10px] rounded uppercase font-semibold" id="modalCategoryTag"></span><span class="text-xs text-outline font-mono" id="modalSerialTag"></span></div><h2 class="font-headline-sm sm:font-headline-md text-headline-sm sm:text-headline-md text-primary uppercase font-bold tracking-tight leading-tight" id="modalTitle">Detail proyek</h2></div><p class="font-body-md text-body-sm sm:text-body-md text-on-surface-variant leading-relaxed" id="modalDescription"></p><div class="pt-2 border-t border-surface-container-high/60"><h4 class="font-label-caps text-label-caps text-secondary uppercase mb-2 flex items-center gap-1"><x-material-icon name="tune" class="text-sm" />Spesifikasi Utama</h4><div class="flex flex-wrap gap-1.5" id="modalSpecsList"><span class="px-2.5 py-1 bg-surface-container text-on-surface rounded font-label-sm text-xs" id="modalMaterial"></span><span class="px-2.5 py-1 bg-surface-container text-on-surface rounded font-label-sm text-xs" id="modalTolerance"></span><span class="px-2.5 py-1 bg-surface-container text-on-surface rounded font-label-sm text-xs" id="modalBatch"></span></div></div><div class="p-3 bg-surface-container-low rounded border border-surface-container-high/60 flex items-center justify-between" id="modalDeliveryDateWrap"><div class="flex items-center gap-2"><x-material-icon name="calendar_today" class="text-base text-secondary" /><div><span class="font-label-caps text-[10px] text-secondary uppercase block">Tanggal Produksi / Delivery</span><span class="font-label-md text-xs sm:text-body-sm text-primary font-semibold" id="modalDeliveryDate"></span></div></div></div><div class="pt-1"><h4 class="font-label-caps text-label-caps text-secondary uppercase mb-2 flex items-center gap-1"><x-material-icon name="verified" class="text-sm" />Sertifikasi &amp; Standar Mutu</h4><div class="flex flex-wrap gap-1.5" id="modalStandardsTags"></div></div></div><div class="pt-space-md border-t border-surface-container flex items-center justify-end"><button class="w-full sm:w-auto px-space-xl py-2 bg-primary text-on-primary hover:bg-primary-container font-label-md text-label-md rounded transition-colors text-center shadow-sm" onclick="closeProjectModal()" type="button">Tutup Detail</button></div></div>
 </div>
 </div>
 </div>
 </div>
-<!-- Interactive Logic Script -->
+
 <script>
     // State for filter, search, sort, and pagination (all handled in the browser)
     let currentCategory = 'all';

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductCertificationResource\Pages;
+use App\Filament\Support\IconSelect;
 use App\Models\ProductCertification;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -53,10 +54,8 @@ class ProductCertificationResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('category_tag')
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('category_icon')
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('card_icon')
-                            ->maxLength(255),
+                        IconSelect::make('category_icon'),
+                        IconSelect::make('card_icon'),
                         Forms\Components\Toggle::make('is_featured')
                             ->required(),
                         Forms\Components\TextInput::make('sort_order')

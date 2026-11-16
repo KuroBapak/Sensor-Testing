@@ -6,6 +6,7 @@
 #include <STM32FreeRTOS.h>
 #include <Wire.h>
 #include <IWatchdog.h>
+#include <i2c_lock.h>  // kunci bus I2C + LockedLCD
 
 bool rtc_flag;
 // Struct untuk konfigurasi
@@ -203,9 +204,9 @@ uint32_t boot_epoch;
 int waktu_warning = 0;
 
 bool wait_asecond;
-LiquidCrystal_I2C
+LockedLCD
     lcd(0x27, 20,
-        4); // set the LCD address to 0x27 for a 16 chars and 2 line display
+        4); // set the LCD address to 0x27 for a 16 chars and 2 line display (LCD dengan kunci I2C)
 
 char DO_ISO[6] = {DO_ALARM, DO_2, DO_DETONATOR_1, DO_DETONATOR_2, DO_5, DO_6};
 char DO_LED[5] = {PC13, DO_DISCHARGE, DO_CYL_1, DO_CYL_2, DO_FAULT};

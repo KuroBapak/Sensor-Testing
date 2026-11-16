@@ -22,6 +22,13 @@ class Service extends Model
 
     public const MIN_FAQS = 3;
 
+    /**
+     * Longest meta description and page title search engines show without cutting them off.
+     */
+    public const META_DESCRIPTION_LIMIT = 155;
+
+    public const SEO_TITLE_LIMIT = 60;
+
     protected $guarded = ['id'];
 
     /**
@@ -89,13 +96,42 @@ class Service extends Model
     }
 
     /**
-     * Get the meta description: the start of the real body text, falling back to the CMS one-liner.
+     * Get the meta description: whole sentences from the start of the real body text (falling back to the CMS
+     * one-liner), never cut in the middle of a word. Only a first sentence that is too long on its own is
+     * shortened, at a word boundary.
      */
     public function metaDescription(): string
     {
-        $text = $this->landing_paragraphs[0] ?? (string) $this->service_description;
+        $text = trim((string) preg_replace('/\s+/', ' ', $this->landing_paragraphs[0] ?? (string) $this->service_description));
 
-        return Str::limit(trim((string) preg_replace('/\s+/', ' ', $text)), 154, '…');
+        if (mb_strlen($text) <= self::META_DESCRIPTION_LIMIT) {
+            return $text;
+        }
+
+        // A full stop after a company prefix such as "PT." is an abbreviation, not the end of a sentence.
+        $description = '';
+
+        foreach (preg_split('/(?<!\bPT\.)(?<!\bCV\.)(?<!\bTbk\.)(?<=[.!?])\s+(?=\p{Lu})/u', $text) ?: [$text] as $sentence) {
+            $candidate = trim($description.' '.$sentence);
+
+            if (mb_strlen($candidate) > self::META_DESCRIPTION_LIMIT) {
+                break;
+            }
+
+            $description = $candidate;
+        }
+
+        return $description !== '' ? $description : Str::limit($text, self::META_DESCRIPTION_LIMIT, '…', preserveWords: true);
+    }
+
+    /**
+     * Get the page title: the short service name and the company, kept within what search results show.
+     */
+    public function seoTitle(string $companyName): string
+    {
+        $suffix = ' | '.$companyName;
+
+        return Str::limit($this->short_title ?: $this->service_title, max(20, self::SEO_TITLE_LIMIT - mb_strlen($suffix)), '…', preserveWords: true).$suffix;
     }
 
     /**

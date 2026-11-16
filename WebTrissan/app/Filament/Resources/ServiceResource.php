@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ServiceResource\Pages;
+use App\Filament\Support\IconSelect;
 use App\Models\Service;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -76,8 +77,7 @@ class ServiceResource extends Resource
                     ->collapsible()
                     ->itemLabel(fn (array $state): ?string => $state['question'] ?? null)
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('service_icon')
-                    ->maxLength(255),
+                IconSelect::make('service_icon'),
                 Forms\Components\Textarea::make('service_icon_svg')
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('sort_order')

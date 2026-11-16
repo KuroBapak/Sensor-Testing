@@ -9,8 +9,8 @@ use Illuminate\Database\Seeder;
 /**
  * Fills the contact details that are still empty with clearly fake demo values, for the development deployment.
  *
- * Not part of DatabaseSeeder. Run it on purpose, e.g. `php artisan db:seed --class=DemoContactDetailsSeeder --force`.
- * It only fills what is blank, a bare site root such as https://www.facebook.com/, or the known template headline,
+ * DatabaseSeeder runs it outside the test environment; it can also be run alone, e.g.
+ * `php artisan db:seed --class=DemoContactDetailsSeeder --force`. It only fills what is blank, a bare site root such as https://www.facebook.com/, or the known template headline,
  * so real values entered in the admin panel are never overwritten, and running it twice changes nothing.
  *
  * Replace these values in the admin panel before launch.

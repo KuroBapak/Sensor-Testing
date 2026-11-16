@@ -26,9 +26,15 @@ function organizationJsonLd(): array
     return collect(json_decode($matches[1], true)['@graph'])->firstWhere('@type', 'Organization');
 }
 
-test('it is not part of the normal database seeder, so production data is only touched on purpose', function () {
+test('the normal seeder adds it everywhere except the test environment', function () {
     expect(GlobalSetting::current()->whatsapp_number)->toBeNull()
         ->and(organizationJsonLd())->not->toHaveKey('sameAs');
+
+    app()->detectEnvironment(fn (): string => 'local');
+    $this->seed(DatabaseSeeder::class);
+
+    expect(GlobalSetting::current()->whatsapp_number)->toBe(DemoContactDetailsSeeder::WHATSAPP_NUMBER)
+        ->and(organizationJsonLd())->toHaveKey('sameAs');
 });
 
 test('it fills the empty WhatsApp number with a number that cannot reach a real chat', function () {

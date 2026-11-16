@@ -102,7 +102,7 @@ test('work card uses the cms image and gallery, and a placeholder when none exis
         ])))
         ->not->toContain('works/gallery/c.jpg')
         ->not->toContain('tidak-ada.jpg')
-        ->toContain('>precision_manufacturing<');
+        ->toContain('data-icon="precision_manufacturing"');
 });
 
 test('work card escapes cms text', function () {

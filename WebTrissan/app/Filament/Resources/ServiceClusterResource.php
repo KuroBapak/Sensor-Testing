@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ServiceClusterResource\Pages;
+use App\Filament\Support\IconSelect;
 use App\Models\ServiceCluster;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -31,8 +32,7 @@ class ServiceClusterResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('cluster_tag')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('cluster_icon')
-                    ->maxLength(255),
+                IconSelect::make('cluster_icon'),
                 Forms\Components\TextInput::make('sort_order')
                     ->required()
                     ->numeric()

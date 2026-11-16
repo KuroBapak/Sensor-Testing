@@ -7,13 +7,6 @@
 @if(!empty($pageSettings?->seo_description))
 <meta name="description" content="{{ $pageSettings->seo_description }}">
 @endif
-<!-- Google Fonts: Montserrat & Inter -->
-<link href="https://fonts.googleapis.com" rel="preconnect">
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<!-- Lucide Icons -->
-<script src="https://unpkg.com/lucide@1.64.0/dist/umd/lucide.min.js"></script>
 <style>
   @layer base {
     html {
@@ -25,6 +18,7 @@
   }
 </style>
 <meta content="web_standard" name="shell-type">
+@include('layouts.fonts')
 @include('layouts.scale')
 @vite('resources/css/site/license.css')
 </head>
@@ -33,8 +27,8 @@
 @include('layouts.navbar')
 
 <main class="relative"><div class="flex flex-col w-full">
-<!-- SECTION 1: HEADER & COMPLIANCE METRICS -->
-<section class="relative w-full bg-surface-container-low overflow-hidden pt-8 pb-6 md:pt-16 md:pb-12"><div class="absolute inset-0 opacity-40 pointer-events-none bg-[radial-gradient(#416279_1px,transparent_1px)] [background-size:24px_24px]"></div><div class="relative max-w-7xl mx-auto px-margin-tablet lg:px-margin-desktop"><div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 md:gap-8 mb-6"><div class="max-w-3xl"><nav aria-label="Breadcrumb" class="flex items-center gap-2 mb-3 md:mb-4 font-body-sm text-body-sm"><a href="{{ url('/') }}" class="inline-flex items-center gap-1 text-on-surface-variant hover:text-primary transition"><span aria-hidden="true" class="material-symbols-outlined text-sm">home</span><span class="">Beranda</span></a><span class="text-outline text-xs">/</span><span class="text-primary font-semibold">License &amp; Certification</span></nav><h1 class="font-display-hero text-headline-lg-mobile md:text-display-hero text-primary tracking-tight leading-tight">{{ $pageSettings?->hero_title }}</h1><p class="font-body-md md:font-body-lg text-body-md md:text-body-lg text-on-surface-variant mt-2 md:mt-4 leading-relaxed">{{ $pageSettings?->hero_subtitle }}</p><div class="flex flex-wrap items-center gap-2.5 md:gap-3 mt-4 md:mt-6"><a href="#product-certs" class="inline-flex items-center gap-1.5 md:gap-2 px-3.5 md:px-4 py-2 bg-primary text-on-primary hover:bg-secondary rounded font-label-md text-label-md font-semibold transition shadow-sm text-xs md:text-sm"><span aria-hidden="true" class="material-symbols-outlined text-sm">precision_manufacturing</span>Sertifikasi Produk Manufaktur</a><a href="#corporate-certs" class="inline-flex items-center gap-1.5 md:gap-2 px-3.5 md:px-4 py-2 bg-surface-container hover:bg-surface-container-high text-primary rounded font-label-md text-label-md font-semibold transition text-xs md:text-sm"><span aria-hidden="true" class="material-symbols-outlined text-sm">domain</span>Akreditasi Fasilitas &amp; Korporat</a></div></div><div class="flex items-center gap-3 md:gap-4 bg-surface-container-lowest p-3 md:p-4 rounded-xl shadow-sm border-l-4 border-l-secondary"><div class="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-secondary-container flex items-center justify-center text-on-secondary-container shrink-0"><span aria-hidden="true" class="material-symbols-outlined text-lg md:text-2xl">verified</span></div><div><div class="font-label-caps text-label-caps text-secondary uppercase text-xs">{{ $pageSettings?->hero_badge_card['eyebrow'] ?? '' }}</div><div class="font-title-md text-sm md:text-title-md text-primary font-bold">{{ $pageSettings?->hero_badge_card['title'] ?? '' }}</div><div class="font-body-sm text-xs md:text-body-sm text-on-surface-variant">{{ $pageSettings?->hero_badge_card['caption'] ?? '' }}</div></div></div></div><div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 pt-4 md:pt-6 border-t border-outline-variant/30">
+
+<section class="relative w-full bg-surface-container-low overflow-hidden pt-8 pb-6 md:pt-16 md:pb-12"><div class="absolute inset-0 opacity-40 pointer-events-none bg-[radial-gradient(#416279_1px,transparent_1px)] [background-size:24px_24px]"></div><div class="relative max-w-7xl mx-auto px-margin-tablet lg:px-margin-desktop"><div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 md:gap-8 mb-6"><div class="max-w-3xl"><nav aria-label="Breadcrumb" class="flex items-center gap-2 mb-3 md:mb-4 font-body-sm text-body-sm"><a href="{{ url('/') }}" class="inline-flex items-center gap-1 text-on-surface-variant hover:text-primary transition"><x-material-icon name="home" class="text-sm" /><span class="">Beranda</span></a><span class="text-outline text-xs">/</span><span class="text-primary font-semibold">Lisensi &amp; Sertifikasi</span></nav><h1 class="font-display-hero text-headline-lg-mobile md:text-display-hero text-primary tracking-tight leading-tight">{{ $pageSettings?->hero_title }}</h1><p class="font-body-md md:font-body-lg text-body-md md:text-body-lg text-on-surface-variant mt-2 md:mt-4 leading-relaxed">{{ $pageSettings?->hero_subtitle }}</p><div class="flex flex-wrap items-center gap-2.5 md:gap-3 mt-4 md:mt-6"><a href="#product-certs" class="inline-flex items-center gap-1.5 md:gap-2 px-3.5 md:px-4 py-2 bg-primary text-on-primary hover:bg-secondary rounded font-label-md text-label-md font-semibold transition shadow-sm text-xs md:text-sm"><x-material-icon name="precision_manufacturing" class="text-sm" />Sertifikasi Produk Manufaktur</a><a href="#corporate-certs" class="inline-flex items-center gap-1.5 md:gap-2 px-3.5 md:px-4 py-2 bg-surface-container hover:bg-surface-container-high text-primary rounded font-label-md text-label-md font-semibold transition text-xs md:text-sm"><x-material-icon name="domain" class="text-sm" />Akreditasi Fasilitas &amp; Korporat</a></div></div><div class="flex items-center gap-3 md:gap-4 bg-surface-container-lowest p-3 md:p-4 rounded-xl shadow-sm border-l-4 border-l-secondary"><div class="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-secondary-container flex items-center justify-center text-on-secondary-container shrink-0"><x-material-icon name="verified" class="text-lg md:text-2xl" /></div><div><div class="font-label-caps text-label-caps text-secondary uppercase text-xs">{{ $pageSettings?->hero_badge_card['eyebrow'] ?? '' }}</div><div class="font-title-md text-sm md:text-title-md text-primary font-bold">{{ $pageSettings?->hero_badge_card['title'] ?? '' }}</div><div class="font-body-sm text-xs md:text-body-sm text-on-surface-variant">{{ $pageSettings?->hero_badge_card['caption'] ?? '' }}</div></div></div></div><div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 pt-4 md:pt-6 border-t border-outline-variant/30">
 @if(!empty($pageSettings?->stats))
   @foreach($pageSettings->stats as $stat)
   <div class="bg-surface-container-lowest p-3.5 md:p-5 rounded-lg shadow-sm">
@@ -46,14 +40,13 @@
   @endforeach
 @endif
 </div></div></section>
-<!-- SECTION 2: FEATURED CORE CERTIFICATIONS -->
-<!-- SECTION 3: DOCUMENT REGISTRY & VERIFICATION TABLE -->
+
 <section id="corporate-certs" class="w-full scroll-mt-20 bg-surface-container-lowest pt-10 pb-8 md:pt-20 md:pb-16"><div class="max-w-7xl mx-auto px-margin-tablet lg:px-margin-desktop"><div class="flex flex-col md:flex-row md:items-end justify-between mb-6 md:mb-8"><div><x-cms-text :value="$cms('corporate_badge')" class="block font-label-caps text-label-caps text-secondary uppercase tracking-widest" /><x-cms-text tag="h2" :value="$cms('corporate_title')" class="block font-headline-md md:font-headline-lg text-headline-md md:text-headline-lg text-primary mt-1" /></div><x-cms-text tag="p" :value="$cms('corporate_description')" class="block font-body-sm text-body-sm text-on-surface-variant max-w-md mt-2 md:mt-0" /></div><div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
 @if(!empty($pageSettings?->corporate_highlight_cards))
   @foreach($pageSettings->corporate_highlight_cards as $card)
   <div class="bg-surface-container-lowest p-3 md:p-5 rounded-xl border border-outline-variant/30 flex flex-col sm:flex-row items-start gap-2.5 md:gap-4 shadow-sm">
     <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0">
-      <span aria-hidden="true" class="material-symbols-outlined text-sm md:text-base">{{ $card['icon'] ?? 'verified' }}</span>
+      <x-material-icon :name="$card['icon'] ?? 'verified'" class="text-sm md:text-base" />
     </div>
     <div>
       <div class="font-title-md text-sm md:text-title-md font-bold text-primary">{{ $card['title'] ?? '' }}</div>
@@ -63,7 +56,7 @@
   </div>
   @endforeach
 @endif
-</div><div class="mb-4 md:mb-6 bg-surface-container-lowest p-3 md:p-6 rounded-xl shadow-md border border-outline-variant/30"><div class="flex flex-col md:flex-row gap-3 md:gap-4 items-stretch md:items-center justify-between"><div class="relative flex-1 min-w-[260px]"><span aria-hidden="true" class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline">search</span><input class="w-full pl-11 pr-4 py-2 md:py-2.5 bg-surface rounded text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary transition text-xs md:text-sm" id="certSearchInput" oninput="handleCertFilter()" placeholder="Cari kode lisensi, nama standar, atau badan akreditasi..." type="text"></div><div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none" id="categoryButtonsContainer">
+</div><div class="mb-4 md:mb-6 bg-surface-container-lowest p-3 md:p-6 rounded-xl shadow-md border border-outline-variant/30"><div class="flex flex-col md:flex-row gap-3 md:gap-4 items-stretch md:items-center justify-between"><div class="relative flex-1 min-w-[260px]"><x-material-icon name="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-outline" /><input class="w-full pl-11 pr-4 py-2 md:py-2.5 bg-surface rounded text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary transition text-xs md:text-sm" id="certSearchInput" oninput="handleCertFilter()" placeholder="Cari kode lisensi, nama standar, atau badan akreditasi..." type="text"></div><div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none" id="categoryButtonsContainer">
 <button class="cert-category-filter px-3 md:px-4 py-1.5 md:py-2 rounded font-label-md text-xs md:text-label-md transition bg-primary text-on-primary whitespace-nowrap" id="btn-cat-all" onclick="setCertCategory('all')" type="button">Semua Kategori</button>
 @foreach($certificationCategories as $category)
 <button class="cert-category-filter px-3 md:px-4 py-1.5 md:py-2 rounded font-label-md text-xs md:text-label-md transition bg-surface-container text-on-surface-variant hover:text-primary whitespace-nowrap" id="btn-cat-{{ $category->slug }}" data-cat="{{ $category->slug }}" onclick="setCertCategory(this.dataset.cat)" type="button">{{ $category->name }}</button>
@@ -82,7 +75,7 @@
 <td class="hidden sm:table-cell py-3 md:py-4 px-4 md:px-6 text-xs md:text-sm">{{ $accreditation->accreditation_body }}</td>
 <td class="hidden sm:table-cell py-3 md:py-4 px-4 md:px-6 font-mono text-xs text-primary font-medium">{{ $accreditation->registration_id }}</td>
 <td class="py-3 md:py-4 px-4 md:px-6 text-xs md:text-sm">{{ $accreditation->validity_label ?? '-' }}</td>
-<td class="py-3 md:py-4 px-4 md:px-6 text-right"><button class="cert-detail-btn inline-flex items-center gap-1.5 px-2.5 md:px-3 py-1 md:py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-primary font-label-sm text-xs md:text-label-sm transition shadow-sm whitespace-nowrap" type="button"><span aria-hidden="true" class="material-symbols-outlined text-sm">visibility</span> Show Image</button></td>
+<td class="py-3 md:py-4 px-4 md:px-6 text-right"><button class="cert-detail-btn inline-flex items-center gap-1.5 px-2.5 md:px-3 py-1 md:py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-primary font-label-sm text-xs md:text-label-sm transition shadow-sm whitespace-nowrap" type="button"><x-material-icon name="visibility" class="text-sm" /> Lihat gambar</button></td>
 </tr>
 @endforeach
 <tr class="hidden" id="certEmptyRow"><td class="py-8 px-6 text-center text-on-surface-variant text-sm" colspan="5">Tidak ada dokumen akreditasi yang sesuai dengan pencarian atau kategori ini.</td></tr>
@@ -99,10 +92,10 @@
 <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
 <div class="flex items-center gap-1.5">
 @if($certification->category_tag)
-<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-surface-container text-primary rounded font-label-sm text-xs md:text-label-sm font-semibold"><span aria-hidden="true" class="material-symbols-outlined text-xs">{{ $certification->category_icon ?: 'verified' }}</span> {{ $certification->category_tag }}</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-surface-container text-primary rounded font-label-sm text-xs md:text-label-sm font-semibold"><x-material-icon :name="$certification->category_icon ?: 'verified'" class="text-xs" /> {{ $certification->category_tag }}</span>
 @endif
 @if($certification->is_featured)
-<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-primary text-on-primary rounded font-label-sm text-xs font-semibold"><span aria-hidden="true" class="material-symbols-outlined text-xs">stars</span> Unggulan</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-primary text-on-primary rounded font-label-sm text-xs font-semibold"><x-material-icon name="stars" class="text-xs" /> Unggulan</span>
 @endif
 </div>
 @if($certification->validity_date)
@@ -115,7 +108,7 @@
 <div class="font-label-md text-xs md:text-label-md text-on-surface-variant mt-1 leading-normal">{{ $certification->subtitle }}</div>
 <div class="font-mono text-xs text-on-surface-variant mt-1">{{ $certification->model_spec_identifier }}</div>
 </div>
-<div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary-container text-inverse-primary flex items-center justify-center shrink-0"><span aria-hidden="true" class="material-symbols-outlined text-xl md:text-2xl">{{ $certification->card_icon ?: 'verified' }}</span></div>
+<div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary-container text-inverse-primary flex items-center justify-center shrink-0"><x-material-icon :name="$certification->card_icon ?: 'verified'" class="text-xl md:text-2xl" /></div>
 </div>
 @if(!empty($specRows))
 <div class="space-y-2 py-3 md:py-4 my-2 md:my-3 border-t border-b border-outline-variant/30 text-xs md:text-body-sm font-body-sm">
@@ -129,32 +122,26 @@
 @endif
 </div>
 <div class="pt-4 md:pt-6 mt-3 md:mt-4 flex flex-wrap sm:flex-nowrap items-center gap-2 md:gap-3">
-<button class="cert-detail-btn w-full sm:flex-1 py-2 md:py-2.5 px-3 bg-primary text-on-primary rounded font-label-md text-xs md:text-label-md hover:bg-secondary transition flex items-center justify-center gap-2 shadow-sm" type="button"><span aria-hidden="true" class="material-symbols-outlined text-sm">visibility</span> Show Gambar Sertifikasi</button>
+<button class="cert-detail-btn w-full sm:flex-1 py-2 md:py-2.5 px-3 bg-primary text-on-primary rounded font-label-md text-xs md:text-label-md hover:bg-secondary transition flex items-center justify-center gap-2 shadow-sm" type="button"><x-material-icon name="visibility" class="text-sm" /> Show Gambar Sertifikasi</button>
 @if($certification->certificate_pdf_url)
-<a class="flex-1 sm:flex-none py-2 md:py-2.5 px-4 bg-surface-container-low text-primary rounded font-label-md text-xs md:text-label-md hover:bg-surface-container-high transition flex items-center justify-center gap-1.5" download href="{{ $certification->certificate_pdf_url }}"><span aria-hidden="true" class="material-symbols-outlined text-sm">download</span> Download</a>
+<a class="flex-1 sm:flex-none py-2 md:py-2.5 px-4 bg-surface-container-low text-primary rounded font-label-md text-xs md:text-label-md hover:bg-surface-container-high transition flex items-center justify-center gap-1.5" download href="{{ $certification->certificate_pdf_url }}"><x-material-icon name="download" class="text-sm" /> Unduh</a>
 @endif
 @if($certification->work)
-<a class="flex-1 sm:flex-none py-2 md:py-2.5 px-4 bg-surface-container-low text-primary rounded font-label-md text-xs md:text-label-md hover:bg-surface-container-high transition flex items-center justify-center gap-1.5" href="{{ url('/works#'.$certification->work->work_slug) }}"><span aria-hidden="true" class="material-symbols-outlined text-sm">arrow_outward</span> Lihat Produk</a>
+<a class="flex-1 sm:flex-none py-2 md:py-2.5 px-4 bg-surface-container-low text-primary rounded font-label-md text-xs md:text-label-md hover:bg-surface-container-high transition flex items-center justify-center gap-1.5" href="{{ url('/works#'.$certification->work->work_slug) }}"><x-material-icon name="arrow_outward" class="text-sm" /> Lihat Produk</a>
 @endif
 </div>
 </article>
 @endforeach
 </div></div></section>
-<!-- SECTION 3: DOCUMENT REGISTRY & VERIFICATION TABLE -->
 
-<!-- SECTION 4: ACCREDITATION BODIES & AUDIT PARTNERS -->
-
-<!-- SECTION 5: AUDIT CONSULTATION & TENDER SUPPORT (NAVY INDUSTRIAL BLOCK) -->
-
-<!-- MODAL: VERIFIKASI SERTIFIKAT INTERAKTIF -->
 <div class="fixed inset-0 z-50 bg-primary/70 backdrop-blur-sm hidden items-center justify-center p-4" id="verificationModal" role="dialog" aria-modal="true" aria-labelledby="modalCertTitle">
 <div class="bg-surface-container-lowest max-w-lg w-full max-h-[92vh] overflow-y-auto rounded-xl shadow-2xl p-6 md:p-8 relative">
 <button class="absolute top-4 right-4 text-outline hover:text-primary transition" onclick="closeVerificationModal()">
-<span aria-hidden="true" class="material-symbols-outlined">close</span>
+<x-material-icon name="close" />
 </button>
 <div class="flex items-center gap-3 mb-6">
 <div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
-<span aria-hidden="true" class="material-symbols-outlined">verified</span>
+<x-material-icon name="verified" />
 </div>
 <div>
 <h3 class="font-headline-sm text-headline-sm text-primary font-bold" id="modalCertTitle">Detail Lisensi</h3>
@@ -180,14 +167,14 @@
 </div>
 <div class="hidden mt-4" id="modalCertImageWrap"><img alt="" class="w-full max-h-64 object-contain rounded-lg border border-outline-variant/30 bg-surface" id="modalCertImage"></div>
 <div class="mt-6 flex flex-col sm:flex-row items-center gap-3">
-<a class="hidden w-full sm:flex-1 py-2.5 px-4 bg-primary text-on-primary hover:bg-secondary font-label-md text-label-md rounded font-semibold transition text-center items-center justify-center gap-2" download href="#" id="modalCertDownload"><span aria-hidden="true" class="material-symbols-outlined text-sm">download</span> Download Sertifikat</a>
+<a class="hidden w-full sm:flex-1 py-2.5 px-4 bg-primary text-on-primary hover:bg-secondary font-label-md text-label-md rounded font-semibold transition text-center items-center justify-center gap-2" download id="modalCertDownload"><x-material-icon name="download" class="text-sm" /> Unduh sertifikat</a>
 <button class="w-full sm:w-auto py-2.5 px-4 bg-surface-container hover:bg-surface-container-high text-primary font-label-md text-label-md rounded transition" onclick="closeVerificationModal()">
           Tutup
         </button>
 </div>
 </div>
 </div>
-<!-- SCRIPT UNTUK INTERAKTIVITAS CLIENT-SIDE -->
+
 <script>
     const ROWS_PER_PAGE = 6;
     let activeCategory = 'all';
@@ -239,7 +226,8 @@
       button.disabled = disabled;
       const glyph = document.createElement('span');
       glyph.className = 'material-symbols-outlined text-sm';
-      glyph.textContent = icon;
+      glyph.dataset.icon = icon;
+      glyph.setAttribute('aria-hidden', 'true');
       button.appendChild(glyph);
       button.addEventListener('click', () => goToCertPage(page));
       return button;
@@ -341,7 +329,7 @@
   </script>
 </div></main>
 @include('layouts.footer')
-<!-- Footer Penutup Sederhana -->
+
 <script>
   window.addEventListener('DOMContentLoaded', () => {
     const hash = window.location.hash;
@@ -359,31 +347,5 @@
     }
   });
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </body></html>
