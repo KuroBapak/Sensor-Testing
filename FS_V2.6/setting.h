@@ -9,6 +9,11 @@
 #include <i2c_lock.h>  // kunci bus I2C + LockedLCD
 
 bool rtc_flag;
+// true = RTC DS3231 terdeteksi. Jika false, TaskAnalog tetap membaca LHD (deteksi api tidak bergantung
+// pada RTC) dan waktu diambil dari waktu compile + uptime, sambil mencoba RTC lagi secara berkala.
+volatile bool rtc_ok = false;
+#define RTC_INIT_COBA  3   // percobaan rtc.begin() saat boot
+#define RTC_RETRY_LOOP 40  // coba RTC lagi tiap 40 putaran TaskAnalog (~30 detik) selama RTC belum ada
 // Struct untuk konfigurasi
 typedef struct {
   bool mode_operasi;
@@ -89,6 +94,10 @@ char STATUS_PRESSURE = 0;
 #define DO_DETONATOR_2 PB6
 #define DO_5 PC13
 #define DO_6 PC13
+
+// Sensor deteksi detonator: HIGH = LOSS (terputus), LOW = OK (terhubung). Logika sama dengan tampilan LCD & debug.
+#define DI_DET_1 PA4
+#define DI_DET_2 PA3
 
 #define DI_BTN_1 PA1  // UP
 #define DI_BTN_2 PA0  // DOWN
@@ -210,6 +219,19 @@ LockedLCD
 
 char DO_ISO[6] = {DO_ALARM, DO_2, DO_DETONATOR_1, DO_DETONATOR_2, DO_5, DO_6};
 char DO_LED[5] = {PC13, DO_DISCHARGE, DO_CYL_1, DO_CYL_2, DO_FAULT};
+
+// Jadikan semua pin output aman (HIGH = tidak aktif) langsung di setup(), sebelum scheduler berjalan dan
+// tanpa menunggu LCD. HIGH ditulis lebih dulu, baru pin dijadikan output, supaya tidak ada glitch LOW
+// (aktif) sesaat pada detonator/alarm. Clock port dinyalakan dulu agar penulisan sebelum pinMode berlaku.
+static void outputs_safe_init(void) {
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  for (int iii = 0; iii < 5; iii++) digitalWrite(DO_LED[iii], HIGH);
+  for (int iii = 0; iii < 6; iii++) digitalWrite(DO_ISO[iii], HIGH);
+  for (int iii = 0; iii < 5; iii++) pinMode(DO_LED[iii], OUTPUT);
+  for (int iii = 0; iii < 6; iii++) pinMode(DO_ISO[iii], OUTPUT);
+}
 
 // define two Tasks for DigitalRead & AnalogRead
 void TaskInput(void *pvParameters);

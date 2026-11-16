@@ -16,6 +16,7 @@ TaskHandle_t monitor;
 void setup()
 {
   hw_stabil_init();  // pelindung reset (lihat hw_stabil.h)
+  outputs_safe_init();  // pin output aman sejak awal boot, tidak menunggu LCD
 
   Serial1.begin(9600);
   Serial1.setRx(PA10);

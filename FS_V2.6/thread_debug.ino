@@ -131,10 +131,7 @@ void readSerialCommands() {
 
 void TaskDebug(void* pvParameters __attribute__((unused)))  // This is a Task.
 {
-  while (setup_lcd < 1) {
-    vTaskDelay(100);
-  }
-
+  // Tidak menunggu LCD: bila LCD/I2C bermasalah saat boot, IWDG tetap harus aktif.
   // ── IWDG Initialization ──
   // Cek apakah reset sebelumnya disebabkan oleh watchdog
   if (IWatchdog.isReset(true)) {
@@ -234,7 +231,7 @@ void read_delay_warning(void) {
 }
 
 void write_delay_warning(void) {
-  EEPROM.write(EPPROM_DELAY_WARNING, config.delay_warning);  // simpan alamt memory
+  EEPROM.update(EPPROM_DELAY_WARNING, config.delay_warning);  // simpan alamt memory
 }
 
 void read_delay_release(void) {
@@ -242,7 +239,7 @@ void read_delay_release(void) {
 }
 
 void write_delay_release(void) {
-  EEPROM.write(EPPROM_DELAY_RELEASE, config.delay_release);  // simpan alamt memory
+  EEPROM.update(EPPROM_DELAY_RELEASE, config.delay_release);  // simpan alamt memory
 }
 
 void read_alarm_count(void) {
@@ -250,11 +247,11 @@ void read_alarm_count(void) {
 }
 
 void write_alarm_count(char counting) {
-  EEPROM.write(EPPROM_ALARM_COUNT, counting);  // simpan alamt memory
+  EEPROM.update(EPPROM_ALARM_COUNT, counting);  // simpan alamt memory
 }
 
 void reset_alarm_count(void) {
-  EEPROM.write(EPPROM_ALARM_COUNT, 0);  // simpan alamt memory
+  EEPROM.update(EPPROM_ALARM_COUNT, 0);  // simpan alamt memory
 }
 
 // Simpan/hapus flag LHD terbakar. Pola sama dengan write_alarm_log:
@@ -265,7 +262,7 @@ void write_lhd_burned(bool value) {
   wait_asecond = true;
   vTaskDelay(250);
   lhd_burned = value;
-  if (EEPROM.read(EPPROM_LHD_BURNED) != (unsigned char)value) EEPROM.write(EPPROM_LHD_BURNED, value);
+  if (EEPROM.read(EPPROM_LHD_BURNED) != (unsigned char)value) EEPROM.update(EPPROM_LHD_BURNED, value);
   vTaskDelay(25);
   wait_asecond = false;
 }
@@ -297,13 +294,13 @@ void write_alarm_log(uint32_t epochtime, char alarm_value) {
   data_write[1] = (unsigned)epochtime >> 16;
   data_write[2] = (unsigned)epochtime >> 8;
   data_write[3] = (unsigned)epochtime;
-  EEPROM.write(address_reg_date_temp++, data_write[0]);
-  EEPROM.write(address_reg_date_temp++, data_write[1]);
-  EEPROM.write(address_reg_date_temp++, data_write[2]);
-  EEPROM.write(address_reg_date_temp++, data_write[3]);
+  EEPROM.update(address_reg_date_temp++, data_write[0]);
+  EEPROM.update(address_reg_date_temp++, data_write[1]);
+  EEPROM.update(address_reg_date_temp++, data_write[2]);
+  EEPROM.update(address_reg_date_temp++, data_write[3]);
 
   // Tulis STATUS ALARM
-  EEPROM.write(EPPROM_ALARM_STATE[counting_alarm], alarm_value);  // simpan alarm value
+  EEPROM.update(EPPROM_ALARM_STATE[counting_alarm], alarm_value);  // simpan alarm value
   config.alarm_count++;
   write_alarm_count(config.alarm_count);
 }
@@ -340,11 +337,11 @@ void reset_alarm_logger(void) {
 
   for (int count = 0; count < 10; ++count) {
     int address_reg_date_temp = EPPROM_ALARM_EPOCH[count];
-    EEPROM.write(EPPROM_ALARM_STATE[count], 0);  // simpan alarm value
-    EEPROM.write(address_reg_date_temp++, data_write[0]);
-    EEPROM.write(address_reg_date_temp++, data_write[1]);
-    EEPROM.write(address_reg_date_temp++, data_write[2]);
-    EEPROM.write(address_reg_date_temp++, data_write[3]);
+    EEPROM.update(EPPROM_ALARM_STATE[count], 0);  // simpan alarm value
+    EEPROM.update(address_reg_date_temp++, data_write[0]);
+    EEPROM.update(address_reg_date_temp++, data_write[1]);
+    EEPROM.update(address_reg_date_temp++, data_write[2]);
+    EEPROM.update(address_reg_date_temp++, data_write[3]);
     vTaskDelay(10);  // one tick delay (15ms) in between reads for stability
   }
   reset_alarm_count();
