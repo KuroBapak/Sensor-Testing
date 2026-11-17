@@ -3,9 +3,6 @@
 char btBuffer[32];
 uint8_t btIndex = 0;
 
-char usbBuffer[32];
-uint8_t usbIndex = 0;
-
 // --- Debug Channel Bitmask ---
 #define DBG_STACK   0x0001
 #define DBG_STATE   0x0002
@@ -102,7 +99,7 @@ void processCommand(const char* cmd, Print* port) {
 }
 
 void readSerialCommands() {
-  // --- Baca dari Bluetooth (Serial1) ---
+  // --- Baca dari Bluetooth (Serial1). "Serial" adalah alias Serial1 di board ini, jadi satu jalur cukup. ---
   while (Serial1.available() > 0) {
     char c = Serial1.read();
     if (c == '\r') continue; // Abaikan carriage return
@@ -114,41 +111,18 @@ void readSerialCommands() {
       btBuffer[btIndex++] = c;
     }
   }
-
-  // --- Baca dari USB (Serial) ---
-  while (Serial.available() > 0) {
-    char c = Serial.read();
-    if (c == '\r') continue;
-    if (c == '\n') {
-      usbBuffer[usbIndex] = '\0';
-      if (usbIndex > 0) processCommand(usbBuffer, &Serial);
-      usbIndex = 0;
-    } else if (usbIndex < sizeof(usbBuffer) - 1) {
-      usbBuffer[usbIndex++] = c;
-    }
-  }
 }
 
 void TaskDebug(void* pvParameters __attribute__((unused)))  // This is a Task.
 {
-  // Tidak menunggu LCD: bila LCD/I2C bermasalah saat boot, IWDG tetap harus aktif.
-  // ── IWDG Initialization ──
-  // Cek apakah reset sebelumnya disebabkan oleh watchdog
-  if (IWatchdog.isReset(true)) {
+  // IWDG sudah dimulai paling awal di setup() dan diberi makan oleh TaskWdg (thread_wdg.ino).
+  // Task ini hanya melaporkan lewat Bluetooth.
+  if (wdg_was_reset) {  // dibaca di setup() sebelum IWDG dimulai
     Serial1.println("========================================");
     Serial1.println("!! WATCHDOG RESET TERDETEKSI !!");
     Serial1.println("!! Sistem di-restart otomatis oleh IWDG");
     Serial1.println("========================================");
   }
-
-  // Grace period: tunggu semua task stabil sebelum mulai watchdog
-  // Selama 2 detik ini, semua task sudah set heartbeat = true
-  vTaskDelay(2000);
-
-  // Mulai IWDG — timeout 8 detik
-  // PERINGATAN: Setelah baris ini, watchdog TIDAK BISA dihentikan!
-  // Jika tidak di-feed dalam 8 detik, MCU akan hard-reset.
-  IWatchdog.begin(8000000);  // 8.000.000 us = 8 detik
   Serial1.println("IWDG: Watchdog aktif (timeout 8s)");
 
   for (;;)  // A Task shall never return or exit.
@@ -179,7 +153,7 @@ void TaskDebug(void* pvParameters __attribute__((unused)))  // This is a Task.
         Serial1.printf("analog input   : %d.%02d V\r\n", (int)voltage, (int)(voltage * 100) % 100);
       }
       if (debug_mask & DBG_DIN) {
-        Serial1.printf("digital_input   : %d %d %d %d\r\n", CALLBUTTON, PRESSURE_1, PRESSURE_2, DIN_4.state());
+        Serial1.printf("digital_input   : %d %d %d\r\n", CALLBUTTON, PRESSURE_1, PRESSURE_2);
       }
       if (debug_mask & DBG_DET) {
         Serial1.printf("detonator_status: %d %d\r\n", digitalRead(PA4), digitalRead(PA3));
@@ -196,26 +170,12 @@ void TaskDebug(void* pvParameters __attribute__((unused)))  // This is a Task.
       Serial1.println("----------------------------------------");
     }
 
-    // ── IWDG Supervisor Check ──
-    // Feed watchdog HANYA jika semua task kritis masih hidup
-    // Saat urutan alarm (WARNING/RELEASE) sedang berjalan, hanya TaskLogic yang wajib hidup: reset di
-    // tengah urutan membuang state dan waktunya. Di luar itu semua task kritis wajib hidup.
-    bool alarm_berjalan = (STATE_PROCCES >= WARNING_LHD && STATE_PROCCES <= RELEASE_CALLBUTTON);
-    if (heartbeat_logic && (alarm_berjalan || (heartbeat_analog && heartbeat_control && heartbeat_input))) {
-      IWatchdog.reload();  // Semua task kritis hidup → feed the dog
-    } else {
-      // Minimal 1 task kritis tidak merespons!
-      // JANGAN feed watchdog → MCU akan reset dalam 8 detik
+    // Laporan dari TaskWdg: pengecekan terakhir gagal (IWDG tidak diberi makan).
+    if (wdg_fail) {
       Serial1.println("!! IWDG: HEARTBEAT MISSING !!");
       Serial1.printf("  Analog:%d Logic:%d Control:%d Input:%d\r\n",
-        heartbeat_analog, heartbeat_logic, heartbeat_control, heartbeat_input);
+        wdg_alive & 1, (wdg_alive >> 1) & 1, (wdg_alive >> 2) & 1, (wdg_alive >> 3) & 1);
     }
-    // SELALU clear flag setiap siklus — mencegah carry-over bug
-    // dimana flag lama dari siklus sebelumnya menutupi task yang hang
-    heartbeat_analog  = false;
-    heartbeat_logic   = false;
-    heartbeat_control = false;
-    heartbeat_input   = false;
 
     // Loop kecil untuk membaca command dari Bluetooth
     // Memecah 5000ms menjadi 50 x 100ms agar lebih responsif terhadap input
@@ -348,17 +308,8 @@ void reset_alarm_logger(void) {
 }
 
 
-void read_epprom(void) {
-  read_delay_warning();
-  read_delay_release();
-  read_alarm_count();
-}
-
 void eeprom_setup(void) {
 
-  config.mode_operasi = MODE_AUTO;
-  config.resistor = RESISTOR_10K;
-  config.alarm_state = 0;
   config.alarm_count = 0;
 
   read_delay_warning();

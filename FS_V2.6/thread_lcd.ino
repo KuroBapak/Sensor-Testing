@@ -1,7 +1,6 @@
 void TaskDisplay(void *pvParameters __attribute__((unused)))  // This is a Task.
 {
   setup_display();
-  setup_lcd = 1;
   for (;;) {
     while (wait_asecond) vTaskDelay(100);
     xSemaphoreTake(sem, portMAX_DELAY);

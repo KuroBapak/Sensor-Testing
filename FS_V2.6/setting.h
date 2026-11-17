@@ -8,7 +8,6 @@
 #include <IWatchdog.h>
 #include <i2c_lock.h>  // kunci bus I2C + LockedLCD
 
-bool rtc_flag;
 // true = RTC DS3231 terdeteksi. Jika false, TaskAnalog tetap membaca LHD (deteksi api tidak bergantung
 // pada RTC) dan waktu diambil dari waktu compile + uptime, sambil mencoba RTC lagi secara berkala.
 volatile bool rtc_ok = false;
@@ -16,13 +15,9 @@ volatile bool rtc_ok = false;
 #define RTC_RETRY_LOOP 40  // coba RTC lagi tiap 40 putaran TaskAnalog (~30 detik) selama RTC belum ada
 // Struct untuk konfigurasi
 typedef struct {
-  bool mode_operasi;
-  bool resistor;
   int delay_warning; // delay dalam detik
   int delay_release; // delay dalam detik
-  char alarm_state;  // 2 = LHD || 3 = MANUAL RELEASE
   char alarm_count;  // max 6
-
 } Settingan;
 
 Settingan config;
@@ -49,22 +44,23 @@ char LHD;
 // Selama true dan LHD masih SHORT, panel TIDAK alarm lagi, hanya LED fault kedip.
 volatile bool lhd_burned = false;
 bool CALLBUTTON = 1, PRESSURE_1, PRESSURE_2;
-bool ALARM_OUTPUT, DETONATOR_1, DETONATOR_2;
-char CYCLE;
 
 SemaphoreHandle_t sem;
 
 // ── IWDG Supervisor Heartbeat Flags ──
 // Setiap task kritis set flag=true setiap loop.
-// Supervisor (TaskDebug) hanya feed watchdog jika SEMUA flag true.
+// Supervisor (TaskWdg) hanya feed watchdog jika SEMUA flag true.
 volatile bool heartbeat_analog  = false;
 volatile bool heartbeat_logic   = false;
 volatile bool heartbeat_control = false;
 volatile bool heartbeat_input   = false;
+// Laporan TaskWdg ke TaskDebug (hanya untuk dicetak): wdg_alive = bit0 analog, bit1 logic, bit2 control, bit3 input.
+volatile bool wdg_fail = false;
+volatile uint8_t wdg_alive = 0;
+bool wdg_was_reset = false;  // true bila reset terakhir disebabkan IWDG (dibaca di setup())
 
 unsigned char STATE_PROCCES = 1;
 unsigned char STATUS_CYLINDER = 0;
-unsigned char STATUS_LHD = 0;
 char STATUS_PRESSURE = 0;
 
 #define LL 1
@@ -107,7 +103,6 @@ char STATUS_PRESSURE = 0;
 #define DI_CALLBUTTON PB7 // Callbutton
 #define DI_PRESSURE_1 PB8
 #define DI_PRESSURE_2 PB9
-#define DI_4 PC13
 
 const char *CYCLE_STATUS[] = {
     "> OFF ",               // 0
@@ -152,7 +147,7 @@ const char *ALARM_STATE[] = {
 };
 
 char DI_BTN[4] = {DI_BTN_1, DI_BTN_2, DI_BTN_3, DI_BTN_4};
-char DI[4] = {DI_CALLBUTTON, DI_PRESSURE_1, DI_PRESSURE_2, DI_4};
+char DI[3] = {DI_CALLBUTTON, DI_PRESSURE_1, DI_PRESSURE_2};
 // bool RESET = 0;
 #define ALARM_OFF 0
 #define STEADY 1
@@ -187,8 +182,6 @@ static char EPPROM_ALARM_STATE[10] = {51, 52, 53, 54, 55, 56, 57, 58, 59, 60};
 #define EPPROM_LHD_BURNED 70
 #define LHD_REARM_PASS 20 // LHD harus NORMAL 20 putaran TaskLogic (~5 detik) baru flag dihapus
 
-bool setup_lcd = 0;
-
 // Declarations
 Button UP(DI_BTN[0]);
 Button DOWN(DI_BTN[1]);
@@ -198,11 +191,9 @@ Button INFO(DI_BTN[3]);
 Button DIN_CALLBUTTON(DI[0]);
 Button DIN_PRESSURE_1(DI[1]);
 Button DIN_PRESSURE_2(DI[2]);
-Button DIN_4(DI[3]);
 
 RTC_DS3231 rtc;
 DateTime kiw;
-time_t now;
 struct tm ts;
 char buf[21];
 char date_log[10][20];
@@ -235,29 +226,16 @@ static void outputs_safe_init(void) {
 
 // define two Tasks for DigitalRead & AnalogRead
 void TaskInput(void *pvParameters);
-void TaskOutput(void *pvParameters);
 void TaskDisplay(void *pvParameters);
 void TaskDebug(void *pvParameters);
 void TaskAnalog(void *pvParameters);
 
 char menu_state;
-char page_state;
 char status_state;
 char cursor_state;
 char cursor_alarm_state;
 
 char edit_state;
-
-char mode_operation;
-
-// Enum untuk mode operasi
-typedef enum { MODE_MANUAL, MODE_AUTO } Mode;
-
-// Enum untuk jenis resistor
-typedef enum {
-  RESISTOR_4K7, // 4700 ohm
-  RESISTOR_10K  // 10000 ohm
-} ResistorType;
 
 #define AKTIF 0
 #define NON_AKTIF 1

@@ -55,9 +55,3 @@ void fault_led_steady(void) {
     digitalWrite(DO_FAULT, HIGH);
 }
 
-void LED_toggle() {
-  for (int iii = 0; iii < 5; iii++) {
-    digitalToggle(DO_LED[iii]); // turn the LED on (HIGH is the voltage level)
-    vTaskDelay(50); // one tick delay (15ms) in between reads for stability
-  }
-}

@@ -29,6 +29,12 @@
 #define STACK_LOGIC   (configMINIMAL_STACK_SIZE + 50)  // SAFETY #2 — Peak 50,  margin 128 (72%) — alarm sequence
 #define STACK_INPUT   (configMINIMAL_STACK_SIZE + 128) // HIGH     — Peak 146, margin 110 (43%) — tombol+sensor
 #define STACK_DEBUG   (configMINIMAL_STACK_SIZE + 256) // NON-CRIT — Peak 268, margin 116 (30%) — serial debug
+#define STACK_WDG     (configMINIMAL_STACK_SIZE - 32)  // SAFETY — hanya baca flag + reload IWDG, tanpa printf (ukur dengan STACK 1)
+
+// IWDG: dimulai paling awal di setup(); TaskWdg memberi makan hanya jika task kritis hidup.
+#define WDG_TIMEOUT_US     8000000UL  // IWDG mereset MCU jika tidak diberi makan selama 8 detik
+#define WDG_WINDOW_MS      5000       // satu jendela pengecekan tanda-hidup
+#define WDG_BOOT_GRACE_MS  10000      // batas menunggu keempat task hidup pertama kali saat boot
 
 
 // PRIORITAS TASK FreeRTOS (angka lebih besar = lebih tinggi; maksimum 6 karena configMAX_PRIORITIES = 7).
@@ -37,6 +43,7 @@
 // tidak diubah dari versi sebelumnya.
 #define PRIO_LOGIC    6
 #define PRIO_DEBUG    5
+#define PRIO_WDG      5  // sama dengan debug: round-robin, jadi debug tidak bisa menahan pemberi makan IWDG
 #define PRIO_DISPLAY  3
 #define PRIO_INPUT    2
 #define PRIO_ANALOG   1
